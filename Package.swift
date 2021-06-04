@@ -10,13 +10,17 @@ let package = Package(
         .iOS(.v10)
     ],
     products: [
-        .library(name: "OktaSdk", targets: [ "OktaSdk" ])
+        .library(name: "OktaSdk", targets: [ "OktaSdk", "OpenApi" ])
     ],
     dependencies: [
         .package(url: "https://github.com/Flight-School/AnyCodable", .exact("0.4.0"))
     ],
     targets: [
         .target(name: "OktaSdk",
+            dependencies: [
+                .target(name: "OpenApi")
+            ]),
+        .target(name: "OpenApi",
             dependencies: [
                 .product(name: "AnyCodable", package: "AnyCodable")
             ])
