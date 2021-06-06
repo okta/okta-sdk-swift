@@ -7,10 +7,6 @@
 
 import Foundation
 
-#if SWIFT_PACKAGE
-import OpenApi
-#endif
-
 public struct OktaConfiguration {
     public let apiKey: String
     public let domain: String
