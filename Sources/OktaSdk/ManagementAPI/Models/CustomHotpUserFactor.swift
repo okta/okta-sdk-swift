@@ -8,10 +8,12 @@
 import Foundation
 import AnyCodable
 
-public struct CustomHotpUserFactor: Codable, Hashable {
+public struct CustomHotpUserFactor: Codable, Hashable, UserFactorType {
 
     public var factorProfileId: String?
     public var profile: CustomHotpUserFactorProfile?
+    public var provider: Provider?
+    public var factorType: FactorType?
 
     public init(factorProfileId: String? = nil, profile: CustomHotpUserFactorProfile? = nil) {
         self.factorProfileId = factorProfileId
@@ -20,6 +22,8 @@ public struct CustomHotpUserFactor: Codable, Hashable {
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case factorProfileId
         case profile
+        case provider
+        case factorType
     }
 
     // Encodable protocol methods
@@ -28,7 +32,9 @@ public struct CustomHotpUserFactor: Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(factorProfileId, forKey: .factorProfileId)
         try container.encodeIfPresent(profile, forKey: .profile)
-    }
+        try container.encode(factorType, forKey: .factorType)
+        try container.encode(provider, forKey: .provider)
+   }
 
 
 

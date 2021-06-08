@@ -8,15 +8,21 @@
 import Foundation
 import AnyCodable
 
-public struct EmailUserFactor: Codable, Hashable {
+public struct EmailUserFactor: Codable, Hashable, UserFactorType {
 
     public var profile: EmailUserFactorProfile?
+    public var provider: Provider?
+    public var factorType: FactorType?
 
     public init(profile: EmailUserFactorProfile? = nil) {
         self.profile = profile
+        self.provider = .okta
+        self.factorType = .email
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case profile
+        case provider
+        case factorType
     }
 
     // Encodable protocol methods
@@ -24,6 +30,8 @@ public struct EmailUserFactor: Codable, Hashable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(profile, forKey: .profile)
+        try container.encodeIfPresent(factorType, forKey: .factorType)
+        try container.encodeIfPresent(provider, forKey: .provider)
     }
 
 

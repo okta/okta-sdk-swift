@@ -8,11 +8,13 @@
 import Foundation
 import AnyCodable
 
-public struct PushUserFactor: Codable, Hashable {
+public struct PushUserFactor: Codable, Hashable, UserFactorType {
 
     public var expiresAt: Date?
     public var factorResult: FactorResultType?
     public var profile: PushUserFactorProfile?
+    public var provider: Provider?
+    public var factorType: FactorType?
 
     public init(expiresAt: Date? = nil, factorResult: FactorResultType? = nil, profile: PushUserFactorProfile? = nil) {
         self.expiresAt = expiresAt
@@ -23,6 +25,8 @@ public struct PushUserFactor: Codable, Hashable {
         case expiresAt
         case factorResult
         case profile
+        case provider
+        case factorType
     }
 
     // Encodable protocol methods
@@ -32,6 +36,8 @@ public struct PushUserFactor: Codable, Hashable {
         try container.encodeIfPresent(expiresAt, forKey: .expiresAt)
         try container.encodeIfPresent(factorResult, forKey: .factorResult)
         try container.encodeIfPresent(profile, forKey: .profile)
+        try container.encode(factorType, forKey: .factorType)
+        try container.encode(provider, forKey: .provider)
     }
 
 
