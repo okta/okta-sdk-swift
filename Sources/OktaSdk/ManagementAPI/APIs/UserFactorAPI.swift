@@ -6,6 +6,16 @@
 //
 
 import Foundation
+import AnyCodable
+
+public enum Provider: String, Codable, CaseIterable {
+    case any = "ANY"
+    case okta = "OKTA"
+    case specificIdp = "SPECIFIC_IDP"
+}
+
+public protocol UserFactorType {
+}
 
 open class UserFactorAPI {
     /**
@@ -128,7 +138,7 @@ open class UserFactorAPI {
      - parameter apiResponseQueue: The queue on which api response is dispatched.
      - parameter completion: completion handler to receive the data and the error objects
      */
-    open class func enrollFactor(userId: String, body: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil, apiResponseQueue: DispatchQueue = OpenAPIClientAPI.apiResponseQueue, completion: @escaping ((_ data: UserFactor?, _ error: Error?) -> Void)) {
+    open class func enrollFactor<Factor>(userId: String, body: Factor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil, apiResponseQueue: DispatchQueue = OpenAPIClientAPI.apiResponseQueue, completion: @escaping ((_ data: UserFactor?, _ error: Error?) -> Void)) where Factor: Codable {
         enrollFactorWithRequestBuilder(userId: userId, body: body, updatePhone: updatePhone, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, activate: activate).execute(apiResponseQueue) { result -> Void in
             switch result {
             case let .success(response):
@@ -154,7 +164,7 @@ open class UserFactorAPI {
      - parameter activate: (query)  (optional, default to false)
      - returns: RequestBuilder<UserFactor> 
      */
-    open class func enrollFactorWithRequestBuilder(userId: String, body: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) -> RequestBuilder<UserFactor> {
+    open class func enrollFactorWithRequestBuilder<Factor>(userId: String, body: Factor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) -> RequestBuilder<UserFactor> where Factor: Codable {
         var path = "/api/v1/users/{userId}/factors"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""

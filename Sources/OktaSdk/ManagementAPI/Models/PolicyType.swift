@@ -13,4 +13,5 @@ public enum PolicyType: String, Codable, CaseIterable {
     case oktaSignOn = "OKTA_SIGN_ON"
     case password = "PASSWORD"
     case idpDiscovery = "IDP_DISCOVERY"
+    case oktaProfileEnrollment = "Okta:ProfileEnrollment"
 }
