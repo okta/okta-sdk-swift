@@ -30,7 +30,7 @@ class ApplicationsClientTests: XCTestCase {
             }
             listExpectation.fulfill()
         }
-        waitForExpectations(timeout: 10.0) { error in
+        waitForExpectations(timeout: 60.0) { error in
             XCTAssertNil(error)
         }
     }
