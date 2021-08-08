@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct UserFactorAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class UserFactorAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -35,7 +33,11 @@ public struct UserFactorAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activateFactor(userId: String, factorId: String, body: ActivateFactorRequest? = nil) -> AnyPublisher<UserFactor, Error> {
         return Future<UserFactor, Error>.init { promise in
-            activateFactorWithRequestBuilder(userId: userId, factorId: factorId, body: body).execute(queue) { result -> Void in
+            guard let builder = self.activateFactorWithRequestBuilder(userId: userId, factorId: factorId, body: body) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -55,7 +57,11 @@ public struct UserFactorAPI {
      - parameter completion: completion handler to receive the result
      */
     func activateFactor(userId: String, factorId: String, body: ActivateFactorRequest? = nil, completion: @escaping ((_ result: Swift.Result<UserFactor, Error>) -> Void)) {
-        activateFactorWithRequestBuilder(userId: userId, factorId: factorId, body: body).execute(queue) { result -> Void in
+        guard let builder = activateFactorWithRequestBuilder(userId: userId, factorId: factorId, body: body) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -65,19 +71,10 @@ public struct UserFactorAPI {
         }
     }
 
-    /**
-     Activate Factor
-     - POST /api/v1/users/{userId}/factors/{factorId}/lifecycle/activate
-     - The `sms` and `token:software:totp` factor types require activation to complete the enrollment process.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter factorId: (path)  
-     - parameter body: (body)  (optional)
-     - returns: RequestBuilder<UserFactor> 
-     */
-    public func activateFactorWithRequestBuilder(userId: String, factorId: String, body: ActivateFactorRequest? = nil) -> RequestBuilder<UserFactor> {
+    internal func activateFactorWithRequestBuilder(userId: String, factorId: String, body: ActivateFactorRequest? = nil) -> RequestBuilder<UserFactor>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/factors/{factorId}/lifecycle/activate"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -85,7 +82,7 @@ public struct UserFactorAPI {
         let factorIdPreEscape = "\(APIHelper.mapValueToPathItem(factorId))"
         let factorIdPostEscape = factorIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{factorId}", with: factorIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: body)
 
         let urlComponents = URLComponents(string: URLString)
@@ -95,13 +92,13 @@ public struct UserFactorAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<UserFactor>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<UserFactor>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -114,7 +111,11 @@ public struct UserFactorAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteFactor(userId: String, factorId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteFactorWithRequestBuilder(userId: userId, factorId: factorId).execute(queue) { result -> Void in
+            guard let builder = self.deleteFactorWithRequestBuilder(userId: userId, factorId: factorId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -132,7 +133,11 @@ public struct UserFactorAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteFactor(userId: String, factorId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteFactorWithRequestBuilder(userId: userId, factorId: factorId).execute(queue) { result -> Void in
+        guard let builder = deleteFactorWithRequestBuilder(userId: userId, factorId: factorId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -142,17 +147,10 @@ public struct UserFactorAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/users/{userId}/factors/{factorId}
-     - Unenrolls an existing factor for the specified user, allowing the user to enroll a new factor.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter factorId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteFactorWithRequestBuilder(userId: String, factorId: String) -> RequestBuilder<Void> {
+    internal func deleteFactorWithRequestBuilder(userId: String, factorId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/factors/{factorId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -160,7 +158,7 @@ public struct UserFactorAPI {
         let factorIdPreEscape = "\(APIHelper.mapValueToPathItem(factorId))"
         let factorIdPostEscape = factorIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{factorId}", with: factorIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -170,13 +168,13 @@ public struct UserFactorAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -194,7 +192,11 @@ public struct UserFactorAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func enrollFactor(userId: String, body: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) -> AnyPublisher<UserFactor, Error> {
         return Future<UserFactor, Error>.init { promise in
-            enrollFactorWithRequestBuilder(userId: userId, body: body, updatePhone: updatePhone, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, activate: activate).execute(queue) { result -> Void in
+            guard let builder = self.enrollFactorWithRequestBuilder(userId: userId, body: body, updatePhone: updatePhone, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, activate: activate) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -217,7 +219,11 @@ public struct UserFactorAPI {
      - parameter completion: completion handler to receive the result
      */
     func enrollFactor(userId: String, body: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil, completion: @escaping ((_ result: Swift.Result<UserFactor, Error>) -> Void)) {
-        enrollFactorWithRequestBuilder(userId: userId, body: body, updatePhone: updatePhone, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, activate: activate).execute(queue) { result -> Void in
+        guard let builder = enrollFactorWithRequestBuilder(userId: userId, body: body, updatePhone: updatePhone, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, activate: activate) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -227,27 +233,15 @@ public struct UserFactorAPI {
         }
     }
 
-    /**
-     Enroll Factor
-     - POST /api/v1/users/{userId}/factors
-     - Enrolls a user with a supported factor.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter body: (body) Factor 
-     - parameter updatePhone: (query)  (optional, default to false)
-     - parameter templateId: (query) id of SMS template (only for SMS factor) (optional)
-     - parameter tokenLifetimeSeconds: (query)  (optional, default to 300)
-     - parameter activate: (query)  (optional, default to false)
-     - returns: RequestBuilder<UserFactor> 
-     */
-    public func enrollFactorWithRequestBuilder(userId: String, body: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) -> RequestBuilder<UserFactor> {
+    internal func enrollFactorWithRequestBuilder(userId: String, body: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) -> RequestBuilder<UserFactor>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/factors"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: body)
 
         var urlComponents = URLComponents(string: URLString)
@@ -263,13 +257,13 @@ public struct UserFactorAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<UserFactor>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<UserFactor>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -282,7 +276,11 @@ public struct UserFactorAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getFactor(userId: String, factorId: String) -> AnyPublisher<UserFactor, Error> {
         return Future<UserFactor, Error>.init { promise in
-            getFactorWithRequestBuilder(userId: userId, factorId: factorId).execute(queue) { result -> Void in
+            guard let builder = self.getFactorWithRequestBuilder(userId: userId, factorId: factorId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -300,7 +298,11 @@ public struct UserFactorAPI {
      - parameter completion: completion handler to receive the result
      */
     func getFactor(userId: String, factorId: String, completion: @escaping ((_ result: Swift.Result<UserFactor, Error>) -> Void)) {
-        getFactorWithRequestBuilder(userId: userId, factorId: factorId).execute(queue) { result -> Void in
+        guard let builder = getFactorWithRequestBuilder(userId: userId, factorId: factorId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -310,17 +312,10 @@ public struct UserFactorAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/factors/{factorId}
-     - Fetches a factor for the specified user
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter factorId: (path)  
-     - returns: RequestBuilder<UserFactor> 
-     */
-    public func getFactorWithRequestBuilder(userId: String, factorId: String) -> RequestBuilder<UserFactor> {
+    internal func getFactorWithRequestBuilder(userId: String, factorId: String) -> RequestBuilder<UserFactor>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/factors/{factorId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -328,7 +323,7 @@ public struct UserFactorAPI {
         let factorIdPreEscape = "\(APIHelper.mapValueToPathItem(factorId))"
         let factorIdPostEscape = factorIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{factorId}", with: factorIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -338,13 +333,13 @@ public struct UserFactorAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<UserFactor>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<UserFactor>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -358,7 +353,11 @@ public struct UserFactorAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getFactorTransactionStatus(userId: String, factorId: String, transactionId: String) -> AnyPublisher<VerifyUserFactorResponse, Error> {
         return Future<VerifyUserFactorResponse, Error>.init { promise in
-            getFactorTransactionStatusWithRequestBuilder(userId: userId, factorId: factorId, transactionId: transactionId).execute(queue) { result -> Void in
+            guard let builder = self.getFactorTransactionStatusWithRequestBuilder(userId: userId, factorId: factorId, transactionId: transactionId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -377,7 +376,11 @@ public struct UserFactorAPI {
      - parameter completion: completion handler to receive the result
      */
     func getFactorTransactionStatus(userId: String, factorId: String, transactionId: String, completion: @escaping ((_ result: Swift.Result<VerifyUserFactorResponse, Error>) -> Void)) {
-        getFactorTransactionStatusWithRequestBuilder(userId: userId, factorId: factorId, transactionId: transactionId).execute(queue) { result -> Void in
+        guard let builder = getFactorTransactionStatusWithRequestBuilder(userId: userId, factorId: factorId, transactionId: transactionId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -387,18 +390,10 @@ public struct UserFactorAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/factors/{factorId}/transactions/{transactionId}
-     - Polls factors verification transaction for status.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter factorId: (path)  
-     - parameter transactionId: (path)  
-     - returns: RequestBuilder<VerifyUserFactorResponse> 
-     */
-    public func getFactorTransactionStatusWithRequestBuilder(userId: String, factorId: String, transactionId: String) -> RequestBuilder<VerifyUserFactorResponse> {
+    internal func getFactorTransactionStatusWithRequestBuilder(userId: String, factorId: String, transactionId: String) -> RequestBuilder<VerifyUserFactorResponse>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/factors/{factorId}/transactions/{transactionId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -409,7 +404,7 @@ public struct UserFactorAPI {
         let transactionIdPreEscape = "\(APIHelper.mapValueToPathItem(transactionId))"
         let transactionIdPostEscape = transactionIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{transactionId}", with: transactionIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -419,13 +414,13 @@ public struct UserFactorAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<VerifyUserFactorResponse>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<VerifyUserFactorResponse>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -437,7 +432,11 @@ public struct UserFactorAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listFactors(userId: String) -> AnyPublisher<[UserFactor], Error> {
         return Future<[UserFactor], Error>.init { promise in
-            listFactorsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.listFactorsWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -454,7 +453,11 @@ public struct UserFactorAPI {
      - parameter completion: completion handler to receive the result
      */
     func listFactors(userId: String, completion: @escaping ((_ result: Swift.Result<[UserFactor], Error>) -> Void)) {
-        listFactorsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = listFactorsWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -464,21 +467,15 @@ public struct UserFactorAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/factors
-     - Enumerates all the enrolled factors for the specified user
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<[UserFactor]> 
-     */
-    public func listFactorsWithRequestBuilder(userId: String) -> RequestBuilder<[UserFactor]> {
+    internal func listFactorsWithRequestBuilder(userId: String) -> RequestBuilder<[UserFactor]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/factors"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -488,13 +485,13 @@ public struct UserFactorAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[UserFactor]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[UserFactor]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -506,7 +503,11 @@ public struct UserFactorAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listSupportedFactors(userId: String) -> AnyPublisher<[UserFactor], Error> {
         return Future<[UserFactor], Error>.init { promise in
-            listSupportedFactorsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.listSupportedFactorsWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -523,7 +524,11 @@ public struct UserFactorAPI {
      - parameter completion: completion handler to receive the result
      */
     func listSupportedFactors(userId: String, completion: @escaping ((_ result: Swift.Result<[UserFactor], Error>) -> Void)) {
-        listSupportedFactorsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = listSupportedFactorsWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -533,21 +538,15 @@ public struct UserFactorAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/factors/catalog
-     - Enumerates all the supported factors that can be enrolled for the specified user
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<[UserFactor]> 
-     */
-    public func listSupportedFactorsWithRequestBuilder(userId: String) -> RequestBuilder<[UserFactor]> {
+    internal func listSupportedFactorsWithRequestBuilder(userId: String) -> RequestBuilder<[UserFactor]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/factors/catalog"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -557,13 +556,13 @@ public struct UserFactorAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[UserFactor]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[UserFactor]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -575,7 +574,11 @@ public struct UserFactorAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listSupportedSecurityQuestions(userId: String) -> AnyPublisher<[SecurityQuestion], Error> {
         return Future<[SecurityQuestion], Error>.init { promise in
-            listSupportedSecurityQuestionsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.listSupportedSecurityQuestionsWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -592,7 +595,11 @@ public struct UserFactorAPI {
      - parameter completion: completion handler to receive the result
      */
     func listSupportedSecurityQuestions(userId: String, completion: @escaping ((_ result: Swift.Result<[SecurityQuestion], Error>) -> Void)) {
-        listSupportedSecurityQuestionsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = listSupportedSecurityQuestionsWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -602,21 +609,15 @@ public struct UserFactorAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/factors/questions
-     - Enumerates all available security questions for a user's `question` factor
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<[SecurityQuestion]> 
-     */
-    public func listSupportedSecurityQuestionsWithRequestBuilder(userId: String) -> RequestBuilder<[SecurityQuestion]> {
+    internal func listSupportedSecurityQuestionsWithRequestBuilder(userId: String) -> RequestBuilder<[SecurityQuestion]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/factors/questions"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -626,13 +627,13 @@ public struct UserFactorAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[SecurityQuestion]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[SecurityQuestion]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -652,7 +653,11 @@ public struct UserFactorAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func verifyFactor(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, body: VerifyFactorRequest? = nil) -> AnyPublisher<VerifyUserFactorResponse, Error> {
         return Future<VerifyUserFactorResponse, Error>.init { promise in
-            verifyFactorWithRequestBuilder(userId: userId, factorId: factorId, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, xForwardedFor: xForwardedFor, userAgent: userAgent, acceptLanguage: acceptLanguage, body: body).execute(queue) { result -> Void in
+            guard let builder = self.verifyFactorWithRequestBuilder(userId: userId, factorId: factorId, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, xForwardedFor: xForwardedFor, userAgent: userAgent, acceptLanguage: acceptLanguage, body: body) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -677,7 +682,11 @@ public struct UserFactorAPI {
      - parameter completion: completion handler to receive the result
      */
     func verifyFactor(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, body: VerifyFactorRequest? = nil, completion: @escaping ((_ result: Swift.Result<VerifyUserFactorResponse, Error>) -> Void)) {
-        verifyFactorWithRequestBuilder(userId: userId, factorId: factorId, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, xForwardedFor: xForwardedFor, userAgent: userAgent, acceptLanguage: acceptLanguage, body: body).execute(queue) { result -> Void in
+        guard let builder = verifyFactorWithRequestBuilder(userId: userId, factorId: factorId, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, xForwardedFor: xForwardedFor, userAgent: userAgent, acceptLanguage: acceptLanguage, body: body) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -687,24 +696,10 @@ public struct UserFactorAPI {
         }
     }
 
-    /**
-     Verify MFA Factor
-     - POST /api/v1/users/{userId}/factors/{factorId}/verify
-     - Verifies an OTP for a `token` or `token:hardware` factor
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter factorId: (path)  
-     - parameter templateId: (query)  (optional)
-     - parameter tokenLifetimeSeconds: (query)  (optional, default to 300)
-     - parameter xForwardedFor: (header)  (optional)
-     - parameter userAgent: (header)  (optional)
-     - parameter acceptLanguage: (header)  (optional)
-     - parameter body: (body)  (optional)
-     - returns: RequestBuilder<VerifyUserFactorResponse> 
-     */
-    public func verifyFactorWithRequestBuilder(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, body: VerifyFactorRequest? = nil) -> RequestBuilder<VerifyUserFactorResponse> {
+    internal func verifyFactorWithRequestBuilder(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, body: VerifyFactorRequest? = nil) -> RequestBuilder<VerifyUserFactorResponse>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/factors/{factorId}/verify"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -712,7 +707,7 @@ public struct UserFactorAPI {
         let factorIdPreEscape = "\(APIHelper.mapValueToPathItem(factorId))"
         let factorIdPostEscape = factorIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{factorId}", with: factorIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: body)
 
         var urlComponents = URLComponents(string: URLString)
@@ -728,13 +723,13 @@ public struct UserFactorAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<VerifyUserFactorResponse>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<VerifyUserFactorResponse>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

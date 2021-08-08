@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct ProfileMappingAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class ProfileMappingAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -33,7 +31,11 @@ public struct ProfileMappingAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getProfileMapping(mappingId: String) -> AnyPublisher<ProfileMapping, Error> {
         return Future<ProfileMapping, Error>.init { promise in
-            getProfileMappingWithRequestBuilder(mappingId: mappingId).execute(queue) { result -> Void in
+            guard let builder = self.getProfileMappingWithRequestBuilder(mappingId: mappingId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -51,7 +53,11 @@ public struct ProfileMappingAPI {
      - parameter completion: completion handler to receive the result
      */
     func getProfileMapping(mappingId: String, completion: @escaping ((_ result: Swift.Result<ProfileMapping, Error>) -> Void)) {
-        getProfileMappingWithRequestBuilder(mappingId: mappingId).execute(queue) { result -> Void in
+        guard let builder = getProfileMappingWithRequestBuilder(mappingId: mappingId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -61,22 +67,15 @@ public struct ProfileMappingAPI {
         }
     }
 
-    /**
-     Get Profile Mapping
-     - GET /api/v1/mappings/{mappingId}
-     - Fetches a single Profile Mapping referenced by its ID.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter mappingId: (path)  
-     - returns: RequestBuilder<ProfileMapping> 
-     */
-    public func getProfileMappingWithRequestBuilder(mappingId: String) -> RequestBuilder<ProfileMapping> {
+    internal func getProfileMappingWithRequestBuilder(mappingId: String) -> RequestBuilder<ProfileMapping>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/mappings/{mappingId}"
         let mappingIdPreEscape = "\(APIHelper.mapValueToPathItem(mappingId))"
         let mappingIdPostEscape = mappingIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{mappingId}", with: mappingIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -86,13 +85,13 @@ public struct ProfileMappingAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<ProfileMapping>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<ProfileMapping>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -107,7 +106,11 @@ public struct ProfileMappingAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) -> AnyPublisher<[ProfileMapping], Error> {
         return Future<[ProfileMapping], Error>.init { promise in
-            listProfileMappingsWithRequestBuilder(after: after, limit: limit, sourceId: sourceId, targetId: targetId).execute(queue) { result -> Void in
+            guard let builder = self.listProfileMappingsWithRequestBuilder(after: after, limit: limit, sourceId: sourceId, targetId: targetId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -127,7 +130,11 @@ public struct ProfileMappingAPI {
      - parameter completion: completion handler to receive the result
      */
     func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil, completion: @escaping ((_ result: Swift.Result<[ProfileMapping], Error>) -> Void)) {
-        listProfileMappingsWithRequestBuilder(after: after, limit: limit, sourceId: sourceId, targetId: targetId).execute(queue) { result -> Void in
+        guard let builder = listProfileMappingsWithRequestBuilder(after: after, limit: limit, sourceId: sourceId, targetId: targetId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -137,21 +144,12 @@ public struct ProfileMappingAPI {
         }
     }
 
-    /**
-     - GET /api/v1/mappings
-     - Enumerates Profile Mappings in your organization with pagination.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter after: (query)  (optional)
-     - parameter limit: (query)  (optional, default to -1)
-     - parameter sourceId: (query)  (optional)
-     - parameter targetId: (query)  (optional)
-     - returns: RequestBuilder<[ProfileMapping]> 
-     */
-    public func listProfileMappingsWithRequestBuilder(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) -> RequestBuilder<[ProfileMapping]> {
+    internal func listProfileMappingsWithRequestBuilder(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) -> RequestBuilder<[ProfileMapping]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/mappings"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -167,13 +165,13 @@ public struct ProfileMappingAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[ProfileMapping]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[ProfileMapping]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -187,7 +185,11 @@ public struct ProfileMappingAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) -> AnyPublisher<ProfileMapping, Error> {
         return Future<ProfileMapping, Error>.init { promise in
-            updateProfileMappingWithRequestBuilder(mappingId: mappingId, profileMapping: profileMapping).execute(queue) { result -> Void in
+            guard let builder = self.updateProfileMappingWithRequestBuilder(mappingId: mappingId, profileMapping: profileMapping) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -206,7 +208,11 @@ public struct ProfileMappingAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping, completion: @escaping ((_ result: Swift.Result<ProfileMapping, Error>) -> Void)) {
-        updateProfileMappingWithRequestBuilder(mappingId: mappingId, profileMapping: profileMapping).execute(queue) { result -> Void in
+        guard let builder = updateProfileMappingWithRequestBuilder(mappingId: mappingId, profileMapping: profileMapping) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -216,23 +222,15 @@ public struct ProfileMappingAPI {
         }
     }
 
-    /**
-     Update Profile Mapping
-     - POST /api/v1/mappings/{mappingId}
-     - Updates an existing Profile Mapping by adding, updating, or removing one or many Property Mappings.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter mappingId: (path)  
-     - parameter profileMapping: (body)  
-     - returns: RequestBuilder<ProfileMapping> 
-     */
-    public func updateProfileMappingWithRequestBuilder(mappingId: String, profileMapping: ProfileMapping) -> RequestBuilder<ProfileMapping> {
+    internal func updateProfileMappingWithRequestBuilder(mappingId: String, profileMapping: ProfileMapping) -> RequestBuilder<ProfileMapping>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/mappings/{mappingId}"
         let mappingIdPreEscape = "\(APIHelper.mapValueToPathItem(mappingId))"
         let mappingIdPostEscape = mappingIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{mappingId}", with: mappingIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: profileMapping)
 
         let urlComponents = URLComponents(string: URLString)
@@ -242,13 +240,13 @@ public struct ProfileMappingAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<ProfileMapping>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<ProfileMapping>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

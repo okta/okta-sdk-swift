@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct SessionAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class SessionAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -33,7 +31,11 @@ public struct SessionAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createSession(createSessionRequest: CreateSessionRequest) -> AnyPublisher<Session, Error> {
         return Future<Session, Error>.init { promise in
-            createSessionWithRequestBuilder(createSessionRequest: createSessionRequest).execute(queue) { result -> Void in
+            guard let builder = self.createSessionWithRequestBuilder(createSessionRequest: createSessionRequest) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -51,7 +53,11 @@ public struct SessionAPI {
      - parameter completion: completion handler to receive the result
      */
     func createSession(createSessionRequest: CreateSessionRequest, completion: @escaping ((_ result: Swift.Result<Session, Error>) -> Void)) {
-        createSessionWithRequestBuilder(createSessionRequest: createSessionRequest).execute(queue) { result -> Void in
+        guard let builder = createSessionWithRequestBuilder(createSessionRequest: createSessionRequest) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -61,19 +67,12 @@ public struct SessionAPI {
         }
     }
 
-    /**
-     Create Session with Session Token
-     - POST /api/v1/sessions
-     - Creates a new session for a user with a valid session token. Use this API if, for example, you want to set the session cookie yourself instead of allowing Okta to set it, or want to hold the session ID in order to delete a session via the API instead of visiting the logout URL.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter createSessionRequest: (body)  
-     - returns: RequestBuilder<Session> 
-     */
-    public func createSessionWithRequestBuilder(createSessionRequest: CreateSessionRequest) -> RequestBuilder<Session> {
+    internal func createSessionWithRequestBuilder(createSessionRequest: CreateSessionRequest) -> RequestBuilder<Session>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/sessions"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: createSessionRequest)
 
         let urlComponents = URLComponents(string: URLString)
@@ -83,13 +82,13 @@ public struct SessionAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Session>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Session>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -102,7 +101,11 @@ public struct SessionAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func endSession(sessionId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            endSessionWithRequestBuilder(sessionId: sessionId).execute(queue) { result -> Void in
+            guard let builder = self.endSessionWithRequestBuilder(sessionId: sessionId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -120,7 +123,11 @@ public struct SessionAPI {
      - parameter completion: completion handler to receive the result
      */
     func endSession(sessionId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        endSessionWithRequestBuilder(sessionId: sessionId).execute(queue) { result -> Void in
+        guard let builder = endSessionWithRequestBuilder(sessionId: sessionId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -130,22 +137,15 @@ public struct SessionAPI {
         }
     }
 
-    /**
-     End Session
-     - DELETE /api/v1/sessions/{sessionId}
-     - End a session.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter sessionId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func endSessionWithRequestBuilder(sessionId: String) -> RequestBuilder<Void> {
+    internal func endSessionWithRequestBuilder(sessionId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/sessions/{sessionId}"
         let sessionIdPreEscape = "\(APIHelper.mapValueToPathItem(sessionId))"
         let sessionIdPostEscape = sessionIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{sessionId}", with: sessionIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -155,13 +155,13 @@ public struct SessionAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -174,7 +174,11 @@ public struct SessionAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getSession(sessionId: String) -> AnyPublisher<Session, Error> {
         return Future<Session, Error>.init { promise in
-            getSessionWithRequestBuilder(sessionId: sessionId).execute(queue) { result -> Void in
+            guard let builder = self.getSessionWithRequestBuilder(sessionId: sessionId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -192,7 +196,11 @@ public struct SessionAPI {
      - parameter completion: completion handler to receive the result
      */
     func getSession(sessionId: String, completion: @escaping ((_ result: Swift.Result<Session, Error>) -> Void)) {
-        getSessionWithRequestBuilder(sessionId: sessionId).execute(queue) { result -> Void in
+        guard let builder = getSessionWithRequestBuilder(sessionId: sessionId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -202,22 +210,15 @@ public struct SessionAPI {
         }
     }
 
-    /**
-     Get Session
-     - GET /api/v1/sessions/{sessionId}
-     - Get details about a session.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter sessionId: (path)  
-     - returns: RequestBuilder<Session> 
-     */
-    public func getSessionWithRequestBuilder(sessionId: String) -> RequestBuilder<Session> {
+    internal func getSessionWithRequestBuilder(sessionId: String) -> RequestBuilder<Session>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/sessions/{sessionId}"
         let sessionIdPreEscape = "\(APIHelper.mapValueToPathItem(sessionId))"
         let sessionIdPostEscape = sessionIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{sessionId}", with: sessionIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -227,13 +228,13 @@ public struct SessionAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Session>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Session>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -246,7 +247,11 @@ public struct SessionAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func refreshSession(sessionId: String) -> AnyPublisher<Session, Error> {
         return Future<Session, Error>.init { promise in
-            refreshSessionWithRequestBuilder(sessionId: sessionId).execute(queue) { result -> Void in
+            guard let builder = self.refreshSessionWithRequestBuilder(sessionId: sessionId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -264,7 +269,11 @@ public struct SessionAPI {
      - parameter completion: completion handler to receive the result
      */
     func refreshSession(sessionId: String, completion: @escaping ((_ result: Swift.Result<Session, Error>) -> Void)) {
-        refreshSessionWithRequestBuilder(sessionId: sessionId).execute(queue) { result -> Void in
+        guard let builder = refreshSessionWithRequestBuilder(sessionId: sessionId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -274,22 +283,15 @@ public struct SessionAPI {
         }
     }
 
-    /**
-     Refresh Session
-     - POST /api/v1/sessions/{sessionId}/lifecycle/refresh
-     - Refresh a session.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter sessionId: (path)  
-     - returns: RequestBuilder<Session> 
-     */
-    public func refreshSessionWithRequestBuilder(sessionId: String) -> RequestBuilder<Session> {
+    internal func refreshSessionWithRequestBuilder(sessionId: String) -> RequestBuilder<Session>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/sessions/{sessionId}/lifecycle/refresh"
         let sessionIdPreEscape = "\(APIHelper.mapValueToPathItem(sessionId))"
         let sessionIdPostEscape = sessionIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{sessionId}", with: sessionIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -299,13 +301,13 @@ public struct SessionAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Session>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Session>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

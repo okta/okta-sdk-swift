@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct TemplateAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class TemplateAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -33,7 +31,11 @@ public struct TemplateAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createSmsTemplate(smsTemplate: SmsTemplate) -> AnyPublisher<SmsTemplate, Error> {
         return Future<SmsTemplate, Error>.init { promise in
-            createSmsTemplateWithRequestBuilder(smsTemplate: smsTemplate).execute(queue) { result -> Void in
+            guard let builder = self.createSmsTemplateWithRequestBuilder(smsTemplate: smsTemplate) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -51,7 +53,11 @@ public struct TemplateAPI {
      - parameter completion: completion handler to receive the result
      */
     func createSmsTemplate(smsTemplate: SmsTemplate, completion: @escaping ((_ result: Swift.Result<SmsTemplate, Error>) -> Void)) {
-        createSmsTemplateWithRequestBuilder(smsTemplate: smsTemplate).execute(queue) { result -> Void in
+        guard let builder = createSmsTemplateWithRequestBuilder(smsTemplate: smsTemplate) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -61,19 +67,12 @@ public struct TemplateAPI {
         }
     }
 
-    /**
-     Add SMS Template
-     - POST /api/v1/templates/sms
-     - Adds a new custom SMS template to your organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter smsTemplate: (body)  
-     - returns: RequestBuilder<SmsTemplate> 
-     */
-    public func createSmsTemplateWithRequestBuilder(smsTemplate: SmsTemplate) -> RequestBuilder<SmsTemplate> {
+    internal func createSmsTemplateWithRequestBuilder(smsTemplate: SmsTemplate) -> RequestBuilder<SmsTemplate>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/templates/sms"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: smsTemplate)
 
         let urlComponents = URLComponents(string: URLString)
@@ -83,13 +82,13 @@ public struct TemplateAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<SmsTemplate>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<SmsTemplate>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -102,7 +101,11 @@ public struct TemplateAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteSmsTemplate(templateId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteSmsTemplateWithRequestBuilder(templateId: templateId).execute(queue) { result -> Void in
+            guard let builder = self.deleteSmsTemplateWithRequestBuilder(templateId: templateId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -120,7 +123,11 @@ public struct TemplateAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteSmsTemplate(templateId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteSmsTemplateWithRequestBuilder(templateId: templateId).execute(queue) { result -> Void in
+        guard let builder = deleteSmsTemplateWithRequestBuilder(templateId: templateId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -130,22 +137,15 @@ public struct TemplateAPI {
         }
     }
 
-    /**
-     Remove SMS Template
-     - DELETE /api/v1/templates/sms/{templateId}
-     - Removes an SMS template.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter templateId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteSmsTemplateWithRequestBuilder(templateId: String) -> RequestBuilder<Void> {
+    internal func deleteSmsTemplateWithRequestBuilder(templateId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/templates/sms/{templateId}"
         let templateIdPreEscape = "\(APIHelper.mapValueToPathItem(templateId))"
         let templateIdPostEscape = templateIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{templateId}", with: templateIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -155,13 +155,13 @@ public struct TemplateAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -174,7 +174,11 @@ public struct TemplateAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getSmsTemplate(templateId: String) -> AnyPublisher<SmsTemplate, Error> {
         return Future<SmsTemplate, Error>.init { promise in
-            getSmsTemplateWithRequestBuilder(templateId: templateId).execute(queue) { result -> Void in
+            guard let builder = self.getSmsTemplateWithRequestBuilder(templateId: templateId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -192,7 +196,11 @@ public struct TemplateAPI {
      - parameter completion: completion handler to receive the result
      */
     func getSmsTemplate(templateId: String, completion: @escaping ((_ result: Swift.Result<SmsTemplate, Error>) -> Void)) {
-        getSmsTemplateWithRequestBuilder(templateId: templateId).execute(queue) { result -> Void in
+        guard let builder = getSmsTemplateWithRequestBuilder(templateId: templateId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -202,22 +210,15 @@ public struct TemplateAPI {
         }
     }
 
-    /**
-     Get SMS Template
-     - GET /api/v1/templates/sms/{templateId}
-     - Fetches a specific template by `id`
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter templateId: (path)  
-     - returns: RequestBuilder<SmsTemplate> 
-     */
-    public func getSmsTemplateWithRequestBuilder(templateId: String) -> RequestBuilder<SmsTemplate> {
+    internal func getSmsTemplateWithRequestBuilder(templateId: String) -> RequestBuilder<SmsTemplate>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/templates/sms/{templateId}"
         let templateIdPreEscape = "\(APIHelper.mapValueToPathItem(templateId))"
         let templateIdPostEscape = templateIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{templateId}", with: templateIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -227,13 +228,13 @@ public struct TemplateAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<SmsTemplate>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<SmsTemplate>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -246,7 +247,11 @@ public struct TemplateAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listSmsTemplates(templateType: String? = nil) -> AnyPublisher<[SmsTemplate], Error> {
         return Future<[SmsTemplate], Error>.init { promise in
-            listSmsTemplatesWithRequestBuilder(templateType: templateType).execute(queue) { result -> Void in
+            guard let builder = self.listSmsTemplatesWithRequestBuilder(templateType: templateType) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -264,7 +269,11 @@ public struct TemplateAPI {
      - parameter completion: completion handler to receive the result
      */
     func listSmsTemplates(templateType: String? = nil, completion: @escaping ((_ result: Swift.Result<[SmsTemplate], Error>) -> Void)) {
-        listSmsTemplatesWithRequestBuilder(templateType: templateType).execute(queue) { result -> Void in
+        guard let builder = listSmsTemplatesWithRequestBuilder(templateType: templateType) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -274,19 +283,12 @@ public struct TemplateAPI {
         }
     }
 
-    /**
-     List SMS Templates
-     - GET /api/v1/templates/sms
-     - Enumerates custom SMS templates in your organization. A subset of templates can be returned that match a template type.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter templateType: (query)  (optional)
-     - returns: RequestBuilder<[SmsTemplate]> 
-     */
-    public func listSmsTemplatesWithRequestBuilder(templateType: String? = nil) -> RequestBuilder<[SmsTemplate]> {
+    internal func listSmsTemplatesWithRequestBuilder(templateType: String? = nil) -> RequestBuilder<[SmsTemplate]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/templates/sms"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -299,13 +301,13 @@ public struct TemplateAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[SmsTemplate]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[SmsTemplate]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -319,7 +321,11 @@ public struct TemplateAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func partialUpdateSmsTemplate(templateId: String, smsTemplate: SmsTemplate) -> AnyPublisher<SmsTemplate, Error> {
         return Future<SmsTemplate, Error>.init { promise in
-            partialUpdateSmsTemplateWithRequestBuilder(templateId: templateId, smsTemplate: smsTemplate).execute(queue) { result -> Void in
+            guard let builder = self.partialUpdateSmsTemplateWithRequestBuilder(templateId: templateId, smsTemplate: smsTemplate) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -338,7 +344,11 @@ public struct TemplateAPI {
      - parameter completion: completion handler to receive the result
      */
     func partialUpdateSmsTemplate(templateId: String, smsTemplate: SmsTemplate, completion: @escaping ((_ result: Swift.Result<SmsTemplate, Error>) -> Void)) {
-        partialUpdateSmsTemplateWithRequestBuilder(templateId: templateId, smsTemplate: smsTemplate).execute(queue) { result -> Void in
+        guard let builder = partialUpdateSmsTemplateWithRequestBuilder(templateId: templateId, smsTemplate: smsTemplate) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -348,23 +358,15 @@ public struct TemplateAPI {
         }
     }
 
-    /**
-     Partial SMS Template Update
-     - POST /api/v1/templates/sms/{templateId}
-     - Updates only some of the SMS template properties:
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter templateId: (path)  
-     - parameter smsTemplate: (body)  
-     - returns: RequestBuilder<SmsTemplate> 
-     */
-    public func partialUpdateSmsTemplateWithRequestBuilder(templateId: String, smsTemplate: SmsTemplate) -> RequestBuilder<SmsTemplate> {
+    internal func partialUpdateSmsTemplateWithRequestBuilder(templateId: String, smsTemplate: SmsTemplate) -> RequestBuilder<SmsTemplate>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/templates/sms/{templateId}"
         let templateIdPreEscape = "\(APIHelper.mapValueToPathItem(templateId))"
         let templateIdPostEscape = templateIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{templateId}", with: templateIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: smsTemplate)
 
         let urlComponents = URLComponents(string: URLString)
@@ -374,13 +376,13 @@ public struct TemplateAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<SmsTemplate>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<SmsTemplate>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -394,7 +396,11 @@ public struct TemplateAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateSmsTemplate(templateId: String, smsTemplate: SmsTemplate) -> AnyPublisher<SmsTemplate, Error> {
         return Future<SmsTemplate, Error>.init { promise in
-            updateSmsTemplateWithRequestBuilder(templateId: templateId, smsTemplate: smsTemplate).execute(queue) { result -> Void in
+            guard let builder = self.updateSmsTemplateWithRequestBuilder(templateId: templateId, smsTemplate: smsTemplate) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -413,7 +419,11 @@ public struct TemplateAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateSmsTemplate(templateId: String, smsTemplate: SmsTemplate, completion: @escaping ((_ result: Swift.Result<SmsTemplate, Error>) -> Void)) {
-        updateSmsTemplateWithRequestBuilder(templateId: templateId, smsTemplate: smsTemplate).execute(queue) { result -> Void in
+        guard let builder = updateSmsTemplateWithRequestBuilder(templateId: templateId, smsTemplate: smsTemplate) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -423,23 +433,15 @@ public struct TemplateAPI {
         }
     }
 
-    /**
-     Update SMS Template
-     - PUT /api/v1/templates/sms/{templateId}
-     - Updates the SMS template.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter templateId: (path)  
-     - parameter smsTemplate: (body)  
-     - returns: RequestBuilder<SmsTemplate> 
-     */
-    public func updateSmsTemplateWithRequestBuilder(templateId: String, smsTemplate: SmsTemplate) -> RequestBuilder<SmsTemplate> {
+    internal func updateSmsTemplateWithRequestBuilder(templateId: String, smsTemplate: SmsTemplate) -> RequestBuilder<SmsTemplate>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/templates/sms/{templateId}"
         let templateIdPreEscape = "\(APIHelper.mapValueToPathItem(templateId))"
         let templateIdPostEscape = templateIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{templateId}", with: templateIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: smsTemplate)
 
         let urlComponents = URLComponents(string: URLString)
@@ -449,13 +451,13 @@ public struct TemplateAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<SmsTemplate>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<SmsTemplate>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

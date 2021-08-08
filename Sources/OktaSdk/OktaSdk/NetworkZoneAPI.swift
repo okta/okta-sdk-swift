@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct NetworkZoneAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class NetworkZoneAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -33,7 +31,11 @@ public struct NetworkZoneAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activateNetworkZone(zoneId: String) -> AnyPublisher<NetworkZone, Error> {
         return Future<NetworkZone, Error>.init { promise in
-            activateNetworkZoneWithRequestBuilder(zoneId: zoneId).execute(queue) { result -> Void in
+            guard let builder = self.activateNetworkZoneWithRequestBuilder(zoneId: zoneId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -51,7 +53,11 @@ public struct NetworkZoneAPI {
      - parameter completion: completion handler to receive the result
      */
     func activateNetworkZone(zoneId: String, completion: @escaping ((_ result: Swift.Result<NetworkZone, Error>) -> Void)) {
-        activateNetworkZoneWithRequestBuilder(zoneId: zoneId).execute(queue) { result -> Void in
+        guard let builder = activateNetworkZoneWithRequestBuilder(zoneId: zoneId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -61,22 +67,15 @@ public struct NetworkZoneAPI {
         }
     }
 
-    /**
-     Activate Network Zone
-     - POST /api/v1/zones/{zoneId}/lifecycle/activate
-     - Activate Network Zone
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter zoneId: (path)  
-     - returns: RequestBuilder<NetworkZone> 
-     */
-    public func activateNetworkZoneWithRequestBuilder(zoneId: String) -> RequestBuilder<NetworkZone> {
+    internal func activateNetworkZoneWithRequestBuilder(zoneId: String) -> RequestBuilder<NetworkZone>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/zones/{zoneId}/lifecycle/activate"
         let zoneIdPreEscape = "\(APIHelper.mapValueToPathItem(zoneId))"
         let zoneIdPostEscape = zoneIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{zoneId}", with: zoneIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -86,13 +85,13 @@ public struct NetworkZoneAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<NetworkZone>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<NetworkZone>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -105,7 +104,11 @@ public struct NetworkZoneAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createNetworkZone(zone: NetworkZone) -> AnyPublisher<NetworkZone, Error> {
         return Future<NetworkZone, Error>.init { promise in
-            createNetworkZoneWithRequestBuilder(zone: zone).execute(queue) { result -> Void in
+            guard let builder = self.createNetworkZoneWithRequestBuilder(zone: zone) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -123,7 +126,11 @@ public struct NetworkZoneAPI {
      - parameter completion: completion handler to receive the result
      */
     func createNetworkZone(zone: NetworkZone, completion: @escaping ((_ result: Swift.Result<NetworkZone, Error>) -> Void)) {
-        createNetworkZoneWithRequestBuilder(zone: zone).execute(queue) { result -> Void in
+        guard let builder = createNetworkZoneWithRequestBuilder(zone: zone) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -133,19 +140,12 @@ public struct NetworkZoneAPI {
         }
     }
 
-    /**
-     Add Network Zone
-     - POST /api/v1/zones
-     - Adds a new network zone to your Okta organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter zone: (body)  
-     - returns: RequestBuilder<NetworkZone> 
-     */
-    public func createNetworkZoneWithRequestBuilder(zone: NetworkZone) -> RequestBuilder<NetworkZone> {
+    internal func createNetworkZoneWithRequestBuilder(zone: NetworkZone) -> RequestBuilder<NetworkZone>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/zones"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: zone)
 
         let urlComponents = URLComponents(string: URLString)
@@ -155,13 +155,13 @@ public struct NetworkZoneAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<NetworkZone>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<NetworkZone>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -174,7 +174,11 @@ public struct NetworkZoneAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivateNetworkZone(zoneId: String) -> AnyPublisher<NetworkZone, Error> {
         return Future<NetworkZone, Error>.init { promise in
-            deactivateNetworkZoneWithRequestBuilder(zoneId: zoneId).execute(queue) { result -> Void in
+            guard let builder = self.deactivateNetworkZoneWithRequestBuilder(zoneId: zoneId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -192,7 +196,11 @@ public struct NetworkZoneAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivateNetworkZone(zoneId: String, completion: @escaping ((_ result: Swift.Result<NetworkZone, Error>) -> Void)) {
-        deactivateNetworkZoneWithRequestBuilder(zoneId: zoneId).execute(queue) { result -> Void in
+        guard let builder = deactivateNetworkZoneWithRequestBuilder(zoneId: zoneId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -202,22 +210,15 @@ public struct NetworkZoneAPI {
         }
     }
 
-    /**
-     Deactivate Network Zone
-     - POST /api/v1/zones/{zoneId}/lifecycle/deactivate
-     - Deactivates a network zone.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter zoneId: (path)  
-     - returns: RequestBuilder<NetworkZone> 
-     */
-    public func deactivateNetworkZoneWithRequestBuilder(zoneId: String) -> RequestBuilder<NetworkZone> {
+    internal func deactivateNetworkZoneWithRequestBuilder(zoneId: String) -> RequestBuilder<NetworkZone>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/zones/{zoneId}/lifecycle/deactivate"
         let zoneIdPreEscape = "\(APIHelper.mapValueToPathItem(zoneId))"
         let zoneIdPostEscape = zoneIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{zoneId}", with: zoneIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -227,13 +228,13 @@ public struct NetworkZoneAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<NetworkZone>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<NetworkZone>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -246,7 +247,11 @@ public struct NetworkZoneAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteNetworkZone(zoneId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteNetworkZoneWithRequestBuilder(zoneId: zoneId).execute(queue) { result -> Void in
+            guard let builder = self.deleteNetworkZoneWithRequestBuilder(zoneId: zoneId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -264,7 +269,11 @@ public struct NetworkZoneAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteNetworkZone(zoneId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteNetworkZoneWithRequestBuilder(zoneId: zoneId).execute(queue) { result -> Void in
+        guard let builder = deleteNetworkZoneWithRequestBuilder(zoneId: zoneId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -274,22 +283,15 @@ public struct NetworkZoneAPI {
         }
     }
 
-    /**
-     Delete Network Zone
-     - DELETE /api/v1/zones/{zoneId}
-     - Removes network zone.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter zoneId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteNetworkZoneWithRequestBuilder(zoneId: String) -> RequestBuilder<Void> {
+    internal func deleteNetworkZoneWithRequestBuilder(zoneId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/zones/{zoneId}"
         let zoneIdPreEscape = "\(APIHelper.mapValueToPathItem(zoneId))"
         let zoneIdPostEscape = zoneIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{zoneId}", with: zoneIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -299,13 +301,13 @@ public struct NetworkZoneAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -318,7 +320,11 @@ public struct NetworkZoneAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getNetworkZone(zoneId: String) -> AnyPublisher<NetworkZone, Error> {
         return Future<NetworkZone, Error>.init { promise in
-            getNetworkZoneWithRequestBuilder(zoneId: zoneId).execute(queue) { result -> Void in
+            guard let builder = self.getNetworkZoneWithRequestBuilder(zoneId: zoneId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -336,7 +342,11 @@ public struct NetworkZoneAPI {
      - parameter completion: completion handler to receive the result
      */
     func getNetworkZone(zoneId: String, completion: @escaping ((_ result: Swift.Result<NetworkZone, Error>) -> Void)) {
-        getNetworkZoneWithRequestBuilder(zoneId: zoneId).execute(queue) { result -> Void in
+        guard let builder = getNetworkZoneWithRequestBuilder(zoneId: zoneId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -346,22 +356,15 @@ public struct NetworkZoneAPI {
         }
     }
 
-    /**
-     Get Network Zone
-     - GET /api/v1/zones/{zoneId}
-     - Fetches a network zone from your Okta organization by `id`.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter zoneId: (path)  
-     - returns: RequestBuilder<NetworkZone> 
-     */
-    public func getNetworkZoneWithRequestBuilder(zoneId: String) -> RequestBuilder<NetworkZone> {
+    internal func getNetworkZoneWithRequestBuilder(zoneId: String) -> RequestBuilder<NetworkZone>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/zones/{zoneId}"
         let zoneIdPreEscape = "\(APIHelper.mapValueToPathItem(zoneId))"
         let zoneIdPostEscape = zoneIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{zoneId}", with: zoneIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -371,13 +374,13 @@ public struct NetworkZoneAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<NetworkZone>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<NetworkZone>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -392,7 +395,11 @@ public struct NetworkZoneAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listNetworkZones(after: String? = nil, limit: Int? = nil, filter: String? = nil) -> AnyPublisher<[NetworkZone], Error> {
         return Future<[NetworkZone], Error>.init { promise in
-            listNetworkZonesWithRequestBuilder(after: after, limit: limit, filter: filter).execute(queue) { result -> Void in
+            guard let builder = self.listNetworkZonesWithRequestBuilder(after: after, limit: limit, filter: filter) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -412,7 +419,11 @@ public struct NetworkZoneAPI {
      - parameter completion: completion handler to receive the result
      */
     func listNetworkZones(after: String? = nil, limit: Int? = nil, filter: String? = nil, completion: @escaping ((_ result: Swift.Result<[NetworkZone], Error>) -> Void)) {
-        listNetworkZonesWithRequestBuilder(after: after, limit: limit, filter: filter).execute(queue) { result -> Void in
+        guard let builder = listNetworkZonesWithRequestBuilder(after: after, limit: limit, filter: filter) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -422,21 +433,12 @@ public struct NetworkZoneAPI {
         }
     }
 
-    /**
-     List Network Zones
-     - GET /api/v1/zones
-     - Enumerates network zones added to your organization with pagination. A subset of zones can be returned that match a supported filter expression or query.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter after: (query) Specifies the pagination cursor for the next page of network zones (optional)
-     - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
-     - parameter filter: (query) Filters zones by usage or id expression (optional)
-     - returns: RequestBuilder<[NetworkZone]> 
-     */
-    public func listNetworkZonesWithRequestBuilder(after: String? = nil, limit: Int? = nil, filter: String? = nil) -> RequestBuilder<[NetworkZone]> {
+    internal func listNetworkZonesWithRequestBuilder(after: String? = nil, limit: Int? = nil, filter: String? = nil) -> RequestBuilder<[NetworkZone]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/zones"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -451,13 +453,13 @@ public struct NetworkZoneAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[NetworkZone]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[NetworkZone]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -471,7 +473,11 @@ public struct NetworkZoneAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateNetworkZone(zoneId: String, zone: NetworkZone) -> AnyPublisher<NetworkZone, Error> {
         return Future<NetworkZone, Error>.init { promise in
-            updateNetworkZoneWithRequestBuilder(zoneId: zoneId, zone: zone).execute(queue) { result -> Void in
+            guard let builder = self.updateNetworkZoneWithRequestBuilder(zoneId: zoneId, zone: zone) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -490,7 +496,11 @@ public struct NetworkZoneAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateNetworkZone(zoneId: String, zone: NetworkZone, completion: @escaping ((_ result: Swift.Result<NetworkZone, Error>) -> Void)) {
-        updateNetworkZoneWithRequestBuilder(zoneId: zoneId, zone: zone).execute(queue) { result -> Void in
+        guard let builder = updateNetworkZoneWithRequestBuilder(zoneId: zoneId, zone: zone) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -500,23 +510,15 @@ public struct NetworkZoneAPI {
         }
     }
 
-    /**
-     Update Network Zone
-     - PUT /api/v1/zones/{zoneId}
-     - Updates a network zone in your organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter zoneId: (path)  
-     - parameter zone: (body)  
-     - returns: RequestBuilder<NetworkZone> 
-     */
-    public func updateNetworkZoneWithRequestBuilder(zoneId: String, zone: NetworkZone) -> RequestBuilder<NetworkZone> {
+    internal func updateNetworkZoneWithRequestBuilder(zoneId: String, zone: NetworkZone) -> RequestBuilder<NetworkZone>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/zones/{zoneId}"
         let zoneIdPreEscape = "\(APIHelper.mapValueToPathItem(zoneId))"
         let zoneIdPostEscape = zoneIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{zoneId}", with: zoneIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: zone)
 
         let urlComponents = URLComponents(string: URLString)
@@ -526,13 +528,13 @@ public struct NetworkZoneAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<NetworkZone>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<NetworkZone>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

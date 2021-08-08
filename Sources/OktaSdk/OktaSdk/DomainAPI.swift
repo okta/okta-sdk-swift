@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct DomainAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class DomainAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -34,7 +32,11 @@ public struct DomainAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createCertificate(domainId: String, certificate: DomainCertificate) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            createCertificateWithRequestBuilder(domainId: domainId, certificate: certificate).execute(queue) { result -> Void in
+            guard let builder = self.createCertificateWithRequestBuilder(domainId: domainId, certificate: certificate) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -53,7 +55,11 @@ public struct DomainAPI {
      - parameter completion: completion handler to receive the result
      */
     func createCertificate(domainId: String, certificate: DomainCertificate, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        createCertificateWithRequestBuilder(domainId: domainId, certificate: certificate).execute(queue) { result -> Void in
+        guard let builder = createCertificateWithRequestBuilder(domainId: domainId, certificate: certificate) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -63,23 +69,15 @@ public struct DomainAPI {
         }
     }
 
-    /**
-     Create Certificate
-     - PUT /api/v1/domains/{domainId}/certificate
-     - Creates the Certificate for the Domain.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter domainId: (path)  
-     - parameter certificate: (body)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func createCertificateWithRequestBuilder(domainId: String, certificate: DomainCertificate) -> RequestBuilder<Void> {
+    internal func createCertificateWithRequestBuilder(domainId: String, certificate: DomainCertificate) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/domains/{domainId}/certificate"
         let domainIdPreEscape = "\(APIHelper.mapValueToPathItem(domainId))"
         let domainIdPostEscape = domainIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{domainId}", with: domainIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: certificate)
 
         let urlComponents = URLComponents(string: URLString)
@@ -89,13 +87,13 @@ public struct DomainAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -108,7 +106,11 @@ public struct DomainAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createDomain(domain: Domain) -> AnyPublisher<DomainResponse, Error> {
         return Future<DomainResponse, Error>.init { promise in
-            createDomainWithRequestBuilder(domain: domain).execute(queue) { result -> Void in
+            guard let builder = self.createDomainWithRequestBuilder(domain: domain) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -126,7 +128,11 @@ public struct DomainAPI {
      - parameter completion: completion handler to receive the result
      */
     func createDomain(domain: Domain, completion: @escaping ((_ result: Swift.Result<DomainResponse, Error>) -> Void)) {
-        createDomainWithRequestBuilder(domain: domain).execute(queue) { result -> Void in
+        guard let builder = createDomainWithRequestBuilder(domain: domain) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -136,19 +142,12 @@ public struct DomainAPI {
         }
     }
 
-    /**
-     Create Domain
-     - POST /api/v1/domains
-     - Creates your domain.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter domain: (body)  
-     - returns: RequestBuilder<DomainResponse> 
-     */
-    public func createDomainWithRequestBuilder(domain: Domain) -> RequestBuilder<DomainResponse> {
+    internal func createDomainWithRequestBuilder(domain: Domain) -> RequestBuilder<DomainResponse>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/domains"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: domain)
 
         let urlComponents = URLComponents(string: URLString)
@@ -158,13 +157,13 @@ public struct DomainAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<DomainResponse>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<DomainResponse>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -177,7 +176,11 @@ public struct DomainAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteDomain(domainId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteDomainWithRequestBuilder(domainId: domainId).execute(queue) { result -> Void in
+            guard let builder = self.deleteDomainWithRequestBuilder(domainId: domainId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -195,7 +198,11 @@ public struct DomainAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteDomain(domainId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteDomainWithRequestBuilder(domainId: domainId).execute(queue) { result -> Void in
+        guard let builder = deleteDomainWithRequestBuilder(domainId: domainId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -205,22 +212,15 @@ public struct DomainAPI {
         }
     }
 
-    /**
-     Delete Domain
-     - DELETE /api/v1/domains/{domainId}
-     - Deletes a Domain by `id`.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter domainId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteDomainWithRequestBuilder(domainId: String) -> RequestBuilder<Void> {
+    internal func deleteDomainWithRequestBuilder(domainId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/domains/{domainId}"
         let domainIdPreEscape = "\(APIHelper.mapValueToPathItem(domainId))"
         let domainIdPostEscape = domainIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{domainId}", with: domainIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -230,13 +230,13 @@ public struct DomainAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -249,7 +249,11 @@ public struct DomainAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getDomain(domainId: String) -> AnyPublisher<DomainResponse, Error> {
         return Future<DomainResponse, Error>.init { promise in
-            getDomainWithRequestBuilder(domainId: domainId).execute(queue) { result -> Void in
+            guard let builder = self.getDomainWithRequestBuilder(domainId: domainId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -267,7 +271,11 @@ public struct DomainAPI {
      - parameter completion: completion handler to receive the result
      */
     func getDomain(domainId: String, completion: @escaping ((_ result: Swift.Result<DomainResponse, Error>) -> Void)) {
-        getDomainWithRequestBuilder(domainId: domainId).execute(queue) { result -> Void in
+        guard let builder = getDomainWithRequestBuilder(domainId: domainId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -277,22 +285,15 @@ public struct DomainAPI {
         }
     }
 
-    /**
-     Get Domain
-     - GET /api/v1/domains/{domainId}
-     - Fetches a Domain by `id`.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter domainId: (path)  
-     - returns: RequestBuilder<DomainResponse> 
-     */
-    public func getDomainWithRequestBuilder(domainId: String) -> RequestBuilder<DomainResponse> {
+    internal func getDomainWithRequestBuilder(domainId: String) -> RequestBuilder<DomainResponse>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/domains/{domainId}"
         let domainIdPreEscape = "\(APIHelper.mapValueToPathItem(domainId))"
         let domainIdPostEscape = domainIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{domainId}", with: domainIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -302,13 +303,13 @@ public struct DomainAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<DomainResponse>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<DomainResponse>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -320,7 +321,11 @@ public struct DomainAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listDomains() -> AnyPublisher<DomainListResponse, Error> {
         return Future<DomainListResponse, Error>.init { promise in
-            listDomainsWithRequestBuilder().execute(queue) { result -> Void in
+            guard let builder = self.listDomainsWithRequestBuilder() else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -337,7 +342,11 @@ public struct DomainAPI {
      - parameter completion: completion handler to receive the result
      */
     func listDomains(completion: @escaping ((_ result: Swift.Result<DomainListResponse, Error>) -> Void)) {
-        listDomainsWithRequestBuilder().execute(queue) { result -> Void in
+        guard let builder = listDomainsWithRequestBuilder() else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -347,18 +356,12 @@ public struct DomainAPI {
         }
     }
 
-    /**
-     List Domains
-     - GET /api/v1/domains
-     - List all verified custom Domains for the org.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - returns: RequestBuilder<DomainListResponse> 
-     */
-    public func listDomainsWithRequestBuilder() -> RequestBuilder<DomainListResponse> {
+    internal func listDomainsWithRequestBuilder() -> RequestBuilder<DomainListResponse>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/domains"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -368,13 +371,13 @@ public struct DomainAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<DomainListResponse>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<DomainListResponse>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -387,7 +390,11 @@ public struct DomainAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func verifyDomain(domainId: String) -> AnyPublisher<DomainResponse, Error> {
         return Future<DomainResponse, Error>.init { promise in
-            verifyDomainWithRequestBuilder(domainId: domainId).execute(queue) { result -> Void in
+            guard let builder = self.verifyDomainWithRequestBuilder(domainId: domainId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -405,7 +412,11 @@ public struct DomainAPI {
      - parameter completion: completion handler to receive the result
      */
     func verifyDomain(domainId: String, completion: @escaping ((_ result: Swift.Result<DomainResponse, Error>) -> Void)) {
-        verifyDomainWithRequestBuilder(domainId: domainId).execute(queue) { result -> Void in
+        guard let builder = verifyDomainWithRequestBuilder(domainId: domainId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -415,22 +426,15 @@ public struct DomainAPI {
         }
     }
 
-    /**
-     Verify Domain
-     - POST /api/v1/domains/{domainId}/verify
-     - Verifies the Domain by `id`.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter domainId: (path)  
-     - returns: RequestBuilder<DomainResponse> 
-     */
-    public func verifyDomainWithRequestBuilder(domainId: String) -> RequestBuilder<DomainResponse> {
+    internal func verifyDomainWithRequestBuilder(domainId: String) -> RequestBuilder<DomainResponse>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/domains/{domainId}/verify"
         let domainIdPreEscape = "\(APIHelper.mapValueToPathItem(domainId))"
         let domainIdPostEscape = domainIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{domainId}", with: domainIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -440,13 +444,13 @@ public struct DomainAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<DomainResponse>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<DomainResponse>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

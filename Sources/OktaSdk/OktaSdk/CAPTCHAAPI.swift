@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct CAPTCHAAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class CAPTCHAAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -33,7 +31,11 @@ public struct CAPTCHAAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createCaptchaInstance(cAPTCHAInstance: CAPTCHAInstance? = nil) -> AnyPublisher<CAPTCHAInstance, Error> {
         return Future<CAPTCHAInstance, Error>.init { promise in
-            createCaptchaInstanceWithRequestBuilder(cAPTCHAInstance: cAPTCHAInstance).execute(queue) { result -> Void in
+            guard let builder = self.createCaptchaInstanceWithRequestBuilder(cAPTCHAInstance: cAPTCHAInstance) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -51,7 +53,11 @@ public struct CAPTCHAAPI {
      - parameter completion: completion handler to receive the result
      */
     func createCaptchaInstance(cAPTCHAInstance: CAPTCHAInstance? = nil, completion: @escaping ((_ result: Swift.Result<CAPTCHAInstance, Error>) -> Void)) {
-        createCaptchaInstanceWithRequestBuilder(cAPTCHAInstance: cAPTCHAInstance).execute(queue) { result -> Void in
+        guard let builder = createCaptchaInstanceWithRequestBuilder(cAPTCHAInstance: cAPTCHAInstance) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -61,19 +67,12 @@ public struct CAPTCHAAPI {
         }
     }
 
-    /**
-     Create new CAPTCHA instance
-     - POST /api/v1/captchas
-     - Adds a new CAPTCHA instance to your organization. In current release, we only allow one CAPTCHA instance per org
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter cAPTCHAInstance: (body)  (optional)
-     - returns: RequestBuilder<CAPTCHAInstance> 
-     */
-    public func createCaptchaInstanceWithRequestBuilder(cAPTCHAInstance: CAPTCHAInstance? = nil) -> RequestBuilder<CAPTCHAInstance> {
+    internal func createCaptchaInstanceWithRequestBuilder(cAPTCHAInstance: CAPTCHAInstance? = nil) -> RequestBuilder<CAPTCHAInstance>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/captchas"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: cAPTCHAInstance)
 
         let urlComponents = URLComponents(string: URLString)
@@ -83,13 +82,13 @@ public struct CAPTCHAAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<CAPTCHAInstance>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<CAPTCHAInstance>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -102,7 +101,11 @@ public struct CAPTCHAAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteCaptchaInstance(captchaId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteCaptchaInstanceWithRequestBuilder(captchaId: captchaId).execute(queue) { result -> Void in
+            guard let builder = self.deleteCaptchaInstanceWithRequestBuilder(captchaId: captchaId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -120,7 +123,11 @@ public struct CAPTCHAAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteCaptchaInstance(captchaId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteCaptchaInstanceWithRequestBuilder(captchaId: captchaId).execute(queue) { result -> Void in
+        guard let builder = deleteCaptchaInstanceWithRequestBuilder(captchaId: captchaId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -130,22 +137,15 @@ public struct CAPTCHAAPI {
         }
     }
 
-    /**
-     Delete CAPTCHA Instance
-     - DELETE /api/v1/captchas/{captchaId}
-     - Delete a CAPTCHA instance by `id`.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter captchaId: (path) id of the CAPTCHA 
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteCaptchaInstanceWithRequestBuilder(captchaId: String) -> RequestBuilder<Void> {
+    internal func deleteCaptchaInstanceWithRequestBuilder(captchaId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/captchas/{captchaId}"
         let captchaIdPreEscape = "\(APIHelper.mapValueToPathItem(captchaId))"
         let captchaIdPostEscape = captchaIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{captchaId}", with: captchaIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -155,13 +155,13 @@ public struct CAPTCHAAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -174,7 +174,11 @@ public struct CAPTCHAAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getCaptchaInstance(captchaId: String) -> AnyPublisher<CAPTCHAInstance, Error> {
         return Future<CAPTCHAInstance, Error>.init { promise in
-            getCaptchaInstanceWithRequestBuilder(captchaId: captchaId).execute(queue) { result -> Void in
+            guard let builder = self.getCaptchaInstanceWithRequestBuilder(captchaId: captchaId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -192,7 +196,11 @@ public struct CAPTCHAAPI {
      - parameter completion: completion handler to receive the result
      */
     func getCaptchaInstance(captchaId: String, completion: @escaping ((_ result: Swift.Result<CAPTCHAInstance, Error>) -> Void)) {
-        getCaptchaInstanceWithRequestBuilder(captchaId: captchaId).execute(queue) { result -> Void in
+        guard let builder = getCaptchaInstanceWithRequestBuilder(captchaId: captchaId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -202,22 +210,15 @@ public struct CAPTCHAAPI {
         }
     }
 
-    /**
-     Get CAPTCHA Instance
-     - GET /api/v1/captchas/{captchaId}
-     - Fetches a CAPTCHA instance by `id`.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter captchaId: (path) id of the CAPTCHA 
-     - returns: RequestBuilder<CAPTCHAInstance> 
-     */
-    public func getCaptchaInstanceWithRequestBuilder(captchaId: String) -> RequestBuilder<CAPTCHAInstance> {
+    internal func getCaptchaInstanceWithRequestBuilder(captchaId: String) -> RequestBuilder<CAPTCHAInstance>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/captchas/{captchaId}"
         let captchaIdPreEscape = "\(APIHelper.mapValueToPathItem(captchaId))"
         let captchaIdPostEscape = captchaIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{captchaId}", with: captchaIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -227,13 +228,13 @@ public struct CAPTCHAAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<CAPTCHAInstance>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<CAPTCHAInstance>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -245,7 +246,11 @@ public struct CAPTCHAAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listCaptchaInstances() -> AnyPublisher<[CAPTCHAInstance], Error> {
         return Future<[CAPTCHAInstance], Error>.init { promise in
-            listCaptchaInstancesWithRequestBuilder().execute(queue) { result -> Void in
+            guard let builder = self.listCaptchaInstancesWithRequestBuilder() else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -262,7 +267,11 @@ public struct CAPTCHAAPI {
      - parameter completion: completion handler to receive the result
      */
     func listCaptchaInstances(completion: @escaping ((_ result: Swift.Result<[CAPTCHAInstance], Error>) -> Void)) {
-        listCaptchaInstancesWithRequestBuilder().execute(queue) { result -> Void in
+        guard let builder = listCaptchaInstancesWithRequestBuilder() else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -272,18 +281,12 @@ public struct CAPTCHAAPI {
         }
     }
 
-    /**
-     List CAPTCHA instances
-     - GET /api/v1/captchas
-     - Enumerates CAPTCHA instances in your organization with pagination. A subset of CAPTCHA instances can be returned that match a supported filter expression or query.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - returns: RequestBuilder<[CAPTCHAInstance]> 
-     */
-    public func listCaptchaInstancesWithRequestBuilder() -> RequestBuilder<[CAPTCHAInstance]> {
+    internal func listCaptchaInstancesWithRequestBuilder() -> RequestBuilder<[CAPTCHAInstance]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/captchas"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -293,13 +296,13 @@ public struct CAPTCHAAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[CAPTCHAInstance]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[CAPTCHAInstance]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -313,7 +316,11 @@ public struct CAPTCHAAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func partialUpdateCaptchaInstance(captchaId: String, cAPTCHAInstance: CAPTCHAInstance? = nil) -> AnyPublisher<CAPTCHAInstance, Error> {
         return Future<CAPTCHAInstance, Error>.init { promise in
-            partialUpdateCaptchaInstanceWithRequestBuilder(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance).execute(queue) { result -> Void in
+            guard let builder = self.partialUpdateCaptchaInstanceWithRequestBuilder(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -332,7 +339,11 @@ public struct CAPTCHAAPI {
      - parameter completion: completion handler to receive the result
      */
     func partialUpdateCaptchaInstance(captchaId: String, cAPTCHAInstance: CAPTCHAInstance? = nil, completion: @escaping ((_ result: Swift.Result<CAPTCHAInstance, Error>) -> Void)) {
-        partialUpdateCaptchaInstanceWithRequestBuilder(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance).execute(queue) { result -> Void in
+        guard let builder = partialUpdateCaptchaInstanceWithRequestBuilder(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -342,23 +353,15 @@ public struct CAPTCHAAPI {
         }
     }
 
-    /**
-     Partial Update CAPTCHA instance
-     - POST /api/v1/captchas/{captchaId}
-     - Partially update a CAPTCHA instance by `id`.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter captchaId: (path) id of the CAPTCHA 
-     - parameter cAPTCHAInstance: (body)  (optional)
-     - returns: RequestBuilder<CAPTCHAInstance> 
-     */
-    public func partialUpdateCaptchaInstanceWithRequestBuilder(captchaId: String, cAPTCHAInstance: CAPTCHAInstance? = nil) -> RequestBuilder<CAPTCHAInstance> {
+    internal func partialUpdateCaptchaInstanceWithRequestBuilder(captchaId: String, cAPTCHAInstance: CAPTCHAInstance? = nil) -> RequestBuilder<CAPTCHAInstance>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/captchas/{captchaId}"
         let captchaIdPreEscape = "\(APIHelper.mapValueToPathItem(captchaId))"
         let captchaIdPostEscape = captchaIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{captchaId}", with: captchaIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: cAPTCHAInstance)
 
         let urlComponents = URLComponents(string: URLString)
@@ -368,13 +371,13 @@ public struct CAPTCHAAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<CAPTCHAInstance>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<CAPTCHAInstance>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -388,7 +391,11 @@ public struct CAPTCHAAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateCaptchaInstance(captchaId: String, cAPTCHAInstance: CAPTCHAInstance? = nil) -> AnyPublisher<CAPTCHAInstance, Error> {
         return Future<CAPTCHAInstance, Error>.init { promise in
-            updateCaptchaInstanceWithRequestBuilder(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance).execute(queue) { result -> Void in
+            guard let builder = self.updateCaptchaInstanceWithRequestBuilder(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -407,7 +414,11 @@ public struct CAPTCHAAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateCaptchaInstance(captchaId: String, cAPTCHAInstance: CAPTCHAInstance? = nil, completion: @escaping ((_ result: Swift.Result<CAPTCHAInstance, Error>) -> Void)) {
-        updateCaptchaInstanceWithRequestBuilder(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance).execute(queue) { result -> Void in
+        guard let builder = updateCaptchaInstanceWithRequestBuilder(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -417,23 +428,15 @@ public struct CAPTCHAAPI {
         }
     }
 
-    /**
-     Update CAPTCHA instance
-     - PUT /api/v1/captchas/{captchaId}
-     - Update a CAPTCHA instance by `id`.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter captchaId: (path) id of the CAPTCHA 
-     - parameter cAPTCHAInstance: (body)  (optional)
-     - returns: RequestBuilder<CAPTCHAInstance> 
-     */
-    public func updateCaptchaInstanceWithRequestBuilder(captchaId: String, cAPTCHAInstance: CAPTCHAInstance? = nil) -> RequestBuilder<CAPTCHAInstance> {
+    internal func updateCaptchaInstanceWithRequestBuilder(captchaId: String, cAPTCHAInstance: CAPTCHAInstance? = nil) -> RequestBuilder<CAPTCHAInstance>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/captchas/{captchaId}"
         let captchaIdPreEscape = "\(APIHelper.mapValueToPathItem(captchaId))"
         let captchaIdPostEscape = captchaIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{captchaId}", with: captchaIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: cAPTCHAInstance)
 
         let urlComponents = URLComponents(string: URLString)
@@ -443,13 +446,13 @@ public struct CAPTCHAAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<CAPTCHAInstance>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<CAPTCHAInstance>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

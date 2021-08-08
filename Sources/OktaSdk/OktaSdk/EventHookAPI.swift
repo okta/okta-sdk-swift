@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct EventHookAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class EventHookAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -32,7 +30,11 @@ public struct EventHookAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activateEventHook(eventHookId: String) -> AnyPublisher<EventHook, Error> {
         return Future<EventHook, Error>.init { promise in
-            activateEventHookWithRequestBuilder(eventHookId: eventHookId).execute(queue) { result -> Void in
+            guard let builder = self.activateEventHookWithRequestBuilder(eventHookId: eventHookId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -49,7 +51,11 @@ public struct EventHookAPI {
      - parameter completion: completion handler to receive the result
      */
     func activateEventHook(eventHookId: String, completion: @escaping ((_ result: Swift.Result<EventHook, Error>) -> Void)) {
-        activateEventHookWithRequestBuilder(eventHookId: eventHookId).execute(queue) { result -> Void in
+        guard let builder = activateEventHookWithRequestBuilder(eventHookId: eventHookId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -59,21 +65,15 @@ public struct EventHookAPI {
         }
     }
 
-    /**
-     - POST /api/v1/eventHooks/{eventHookId}/lifecycle/activate
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter eventHookId: (path)  
-     - returns: RequestBuilder<EventHook> 
-     */
-    public func activateEventHookWithRequestBuilder(eventHookId: String) -> RequestBuilder<EventHook> {
+    internal func activateEventHookWithRequestBuilder(eventHookId: String) -> RequestBuilder<EventHook>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/eventHooks/{eventHookId}/lifecycle/activate"
         let eventHookIdPreEscape = "\(APIHelper.mapValueToPathItem(eventHookId))"
         let eventHookIdPostEscape = eventHookIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{eventHookId}", with: eventHookIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -83,13 +83,13 @@ public struct EventHookAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<EventHook>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<EventHook>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -101,7 +101,11 @@ public struct EventHookAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createEventHook(eventHook: EventHook) -> AnyPublisher<EventHook, Error> {
         return Future<EventHook, Error>.init { promise in
-            createEventHookWithRequestBuilder(eventHook: eventHook).execute(queue) { result -> Void in
+            guard let builder = self.createEventHookWithRequestBuilder(eventHook: eventHook) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -118,7 +122,11 @@ public struct EventHookAPI {
      - parameter completion: completion handler to receive the result
      */
     func createEventHook(eventHook: EventHook, completion: @escaping ((_ result: Swift.Result<EventHook, Error>) -> Void)) {
-        createEventHookWithRequestBuilder(eventHook: eventHook).execute(queue) { result -> Void in
+        guard let builder = createEventHookWithRequestBuilder(eventHook: eventHook) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -128,18 +136,12 @@ public struct EventHookAPI {
         }
     }
 
-    /**
-     - POST /api/v1/eventHooks
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter eventHook: (body)  
-     - returns: RequestBuilder<EventHook> 
-     */
-    public func createEventHookWithRequestBuilder(eventHook: EventHook) -> RequestBuilder<EventHook> {
+    internal func createEventHookWithRequestBuilder(eventHook: EventHook) -> RequestBuilder<EventHook>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/eventHooks"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: eventHook)
 
         let urlComponents = URLComponents(string: URLString)
@@ -149,13 +151,13 @@ public struct EventHookAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<EventHook>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<EventHook>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -167,7 +169,11 @@ public struct EventHookAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivateEventHook(eventHookId: String) -> AnyPublisher<EventHook, Error> {
         return Future<EventHook, Error>.init { promise in
-            deactivateEventHookWithRequestBuilder(eventHookId: eventHookId).execute(queue) { result -> Void in
+            guard let builder = self.deactivateEventHookWithRequestBuilder(eventHookId: eventHookId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -184,7 +190,11 @@ public struct EventHookAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivateEventHook(eventHookId: String, completion: @escaping ((_ result: Swift.Result<EventHook, Error>) -> Void)) {
-        deactivateEventHookWithRequestBuilder(eventHookId: eventHookId).execute(queue) { result -> Void in
+        guard let builder = deactivateEventHookWithRequestBuilder(eventHookId: eventHookId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -194,21 +204,15 @@ public struct EventHookAPI {
         }
     }
 
-    /**
-     - POST /api/v1/eventHooks/{eventHookId}/lifecycle/deactivate
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter eventHookId: (path)  
-     - returns: RequestBuilder<EventHook> 
-     */
-    public func deactivateEventHookWithRequestBuilder(eventHookId: String) -> RequestBuilder<EventHook> {
+    internal func deactivateEventHookWithRequestBuilder(eventHookId: String) -> RequestBuilder<EventHook>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/eventHooks/{eventHookId}/lifecycle/deactivate"
         let eventHookIdPreEscape = "\(APIHelper.mapValueToPathItem(eventHookId))"
         let eventHookIdPostEscape = eventHookIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{eventHookId}", with: eventHookIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -218,13 +222,13 @@ public struct EventHookAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<EventHook>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<EventHook>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -236,7 +240,11 @@ public struct EventHookAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteEventHook(eventHookId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteEventHookWithRequestBuilder(eventHookId: eventHookId).execute(queue) { result -> Void in
+            guard let builder = self.deleteEventHookWithRequestBuilder(eventHookId: eventHookId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -253,7 +261,11 @@ public struct EventHookAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteEventHook(eventHookId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteEventHookWithRequestBuilder(eventHookId: eventHookId).execute(queue) { result -> Void in
+        guard let builder = deleteEventHookWithRequestBuilder(eventHookId: eventHookId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -263,21 +275,15 @@ public struct EventHookAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/eventHooks/{eventHookId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter eventHookId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteEventHookWithRequestBuilder(eventHookId: String) -> RequestBuilder<Void> {
+    internal func deleteEventHookWithRequestBuilder(eventHookId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/eventHooks/{eventHookId}"
         let eventHookIdPreEscape = "\(APIHelper.mapValueToPathItem(eventHookId))"
         let eventHookIdPostEscape = eventHookIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{eventHookId}", with: eventHookIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -287,13 +293,13 @@ public struct EventHookAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -305,7 +311,11 @@ public struct EventHookAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getEventHook(eventHookId: String) -> AnyPublisher<EventHook, Error> {
         return Future<EventHook, Error>.init { promise in
-            getEventHookWithRequestBuilder(eventHookId: eventHookId).execute(queue) { result -> Void in
+            guard let builder = self.getEventHookWithRequestBuilder(eventHookId: eventHookId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -322,7 +332,11 @@ public struct EventHookAPI {
      - parameter completion: completion handler to receive the result
      */
     func getEventHook(eventHookId: String, completion: @escaping ((_ result: Swift.Result<EventHook, Error>) -> Void)) {
-        getEventHookWithRequestBuilder(eventHookId: eventHookId).execute(queue) { result -> Void in
+        guard let builder = getEventHookWithRequestBuilder(eventHookId: eventHookId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -332,21 +346,15 @@ public struct EventHookAPI {
         }
     }
 
-    /**
-     - GET /api/v1/eventHooks/{eventHookId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter eventHookId: (path)  
-     - returns: RequestBuilder<EventHook> 
-     */
-    public func getEventHookWithRequestBuilder(eventHookId: String) -> RequestBuilder<EventHook> {
+    internal func getEventHookWithRequestBuilder(eventHookId: String) -> RequestBuilder<EventHook>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/eventHooks/{eventHookId}"
         let eventHookIdPreEscape = "\(APIHelper.mapValueToPathItem(eventHookId))"
         let eventHookIdPostEscape = eventHookIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{eventHookId}", with: eventHookIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -356,13 +364,13 @@ public struct EventHookAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<EventHook>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<EventHook>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -373,7 +381,11 @@ public struct EventHookAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listEventHooks() -> AnyPublisher<[EventHook], Error> {
         return Future<[EventHook], Error>.init { promise in
-            listEventHooksWithRequestBuilder().execute(queue) { result -> Void in
+            guard let builder = self.listEventHooksWithRequestBuilder() else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -389,7 +401,11 @@ public struct EventHookAPI {
      - parameter completion: completion handler to receive the result
      */
     func listEventHooks(completion: @escaping ((_ result: Swift.Result<[EventHook], Error>) -> Void)) {
-        listEventHooksWithRequestBuilder().execute(queue) { result -> Void in
+        guard let builder = listEventHooksWithRequestBuilder() else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -399,17 +415,12 @@ public struct EventHookAPI {
         }
     }
 
-    /**
-     - GET /api/v1/eventHooks
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - returns: RequestBuilder<[EventHook]> 
-     */
-    public func listEventHooksWithRequestBuilder() -> RequestBuilder<[EventHook]> {
+    internal func listEventHooksWithRequestBuilder() -> RequestBuilder<[EventHook]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/eventHooks"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -419,13 +430,13 @@ public struct EventHookAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[EventHook]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[EventHook]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -438,7 +449,11 @@ public struct EventHookAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateEventHook(eventHookId: String, eventHook: EventHook) -> AnyPublisher<EventHook, Error> {
         return Future<EventHook, Error>.init { promise in
-            updateEventHookWithRequestBuilder(eventHookId: eventHookId, eventHook: eventHook).execute(queue) { result -> Void in
+            guard let builder = self.updateEventHookWithRequestBuilder(eventHookId: eventHookId, eventHook: eventHook) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -456,7 +471,11 @@ public struct EventHookAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateEventHook(eventHookId: String, eventHook: EventHook, completion: @escaping ((_ result: Swift.Result<EventHook, Error>) -> Void)) {
-        updateEventHookWithRequestBuilder(eventHookId: eventHookId, eventHook: eventHook).execute(queue) { result -> Void in
+        guard let builder = updateEventHookWithRequestBuilder(eventHookId: eventHookId, eventHook: eventHook) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -466,22 +485,15 @@ public struct EventHookAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/eventHooks/{eventHookId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter eventHookId: (path)  
-     - parameter eventHook: (body)  
-     - returns: RequestBuilder<EventHook> 
-     */
-    public func updateEventHookWithRequestBuilder(eventHookId: String, eventHook: EventHook) -> RequestBuilder<EventHook> {
+    internal func updateEventHookWithRequestBuilder(eventHookId: String, eventHook: EventHook) -> RequestBuilder<EventHook>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/eventHooks/{eventHookId}"
         let eventHookIdPreEscape = "\(APIHelper.mapValueToPathItem(eventHookId))"
         let eventHookIdPostEscape = eventHookIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{eventHookId}", with: eventHookIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: eventHook)
 
         let urlComponents = URLComponents(string: URLString)
@@ -491,13 +503,13 @@ public struct EventHookAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<EventHook>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<EventHook>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -509,7 +521,11 @@ public struct EventHookAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func verifyEventHook(eventHookId: String) -> AnyPublisher<EventHook, Error> {
         return Future<EventHook, Error>.init { promise in
-            verifyEventHookWithRequestBuilder(eventHookId: eventHookId).execute(queue) { result -> Void in
+            guard let builder = self.verifyEventHookWithRequestBuilder(eventHookId: eventHookId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -526,7 +542,11 @@ public struct EventHookAPI {
      - parameter completion: completion handler to receive the result
      */
     func verifyEventHook(eventHookId: String, completion: @escaping ((_ result: Swift.Result<EventHook, Error>) -> Void)) {
-        verifyEventHookWithRequestBuilder(eventHookId: eventHookId).execute(queue) { result -> Void in
+        guard let builder = verifyEventHookWithRequestBuilder(eventHookId: eventHookId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -536,21 +556,15 @@ public struct EventHookAPI {
         }
     }
 
-    /**
-     - POST /api/v1/eventHooks/{eventHookId}/lifecycle/verify
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter eventHookId: (path)  
-     - returns: RequestBuilder<EventHook> 
-     */
-    public func verifyEventHookWithRequestBuilder(eventHookId: String) -> RequestBuilder<EventHook> {
+    internal func verifyEventHookWithRequestBuilder(eventHookId: String) -> RequestBuilder<EventHook>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/eventHooks/{eventHookId}/lifecycle/verify"
         let eventHookIdPreEscape = "\(APIHelper.mapValueToPathItem(eventHookId))"
         let eventHookIdPostEscape = eventHookIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{eventHookId}", with: eventHookIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -560,13 +574,13 @@ public struct EventHookAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<EventHook>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<EventHook>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

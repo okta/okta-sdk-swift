@@ -38,8 +38,8 @@ class URLSessionRequestBuilder<T>: RequestBuilder<T> {
     @available(*, deprecated, message: "Please override execute() method to intercept and handle errors like authorization or retry the request. Check the Wiki for more info. https://github.com/OpenAPITools/openapi-generator/wiki/FAQ#how-do-i-implement-bearer-token-authentication-with-urlsession-on-the-swift-api-client")
     var taskCompletionShouldRetry: ((Data?, URLResponse?, Error?, @escaping (Bool) -> Void) -> Void)?
 
-    required init(method: String, URLString: String, parameters: [String: Any]?, headers: [String: String] = [:]) {
-        super.init(method: method, URLString: URLString, parameters: parameters, headers: headers)
+    required init(api: OktaSdkAPI, method: String, URLString: String, parameters: [String: Any]?, headers: [String: String] = [:]) {
+        super.init(api: api, method: method, URLString: URLString, parameters: parameters, headers: headers)
     }
 
     /**
@@ -93,7 +93,7 @@ class URLSessionRequestBuilder<T>: RequestBuilder<T> {
         return modifiedRequest
     }
 
-    override func execute(_ apiResponseQueue: DispatchQueue = OktaSdkAPI.apiResponseQueue, _ completion: @escaping (_ result: Swift.Result<Response<T>, Error>) -> Void) {
+    override func execute(_ completion: @escaping (_ result: Swift.Result<Response<T>, Error>) -> Void) {
         let urlSessionId = UUID().uuidString
         // Create a new manager for each request to customize its request header
         let urlSession = createURLSession()
@@ -139,16 +139,16 @@ class URLSessionRequestBuilder<T>: RequestBuilder<T> {
 
                         if shouldRetry {
                             cleanupRequest()
-                            self.execute(apiResponseQueue, completion)
+                            self.execute(completion)
                         } else {
-                            apiResponseQueue.async {
+                            self.api.apiResponseQueue.async {
                                 self.processRequestResponse(urlRequest: request, data: data, response: response, error: error, completion: completion)
                                 cleanupRequest()
                             }
                         }
                     }
                 } else {
-                    apiResponseQueue.async {
+                    self.api.apiResponseQueue.async {
                         self.processRequestResponse(urlRequest: request, data: data, response: response, error: error, completion: completion)
                         cleanupRequest()
                     }
@@ -162,7 +162,7 @@ class URLSessionRequestBuilder<T>: RequestBuilder<T> {
             dataTask.resume()
 
         } catch {
-            apiResponseQueue.async {
+            self.api.apiResponseQueue.async {
                 cleanupRequest()
                 completion(.failure(ErrorResponse.error(415, nil, nil, error)))
             }
@@ -244,7 +244,7 @@ class URLSessionRequestBuilder<T>: RequestBuilder<T> {
         for (key, value) in headers {
             httpHeaders[key] = value
         }
-        for (key, value) in OktaSdkAPI.customHeaders {
+        for (key, value) in self.api.customHeaders {
             httpHeaders[key] = value
         }
         return httpHeaders

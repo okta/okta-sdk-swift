@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct PolicyAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class PolicyAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -32,7 +30,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activatePolicy(policyId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            activatePolicyWithRequestBuilder(policyId: policyId).execute(queue) { result -> Void in
+            guard let builder = self.activatePolicyWithRequestBuilder(policyId: policyId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -49,7 +51,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func activatePolicy(policyId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        activatePolicyWithRequestBuilder(policyId: policyId).execute(queue) { result -> Void in
+        guard let builder = activatePolicyWithRequestBuilder(policyId: policyId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -59,21 +65,15 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - POST /api/v1/policies/{policyId}/lifecycle/activate
-     - Activates a policy.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func activatePolicyWithRequestBuilder(policyId: String) -> RequestBuilder<Void> {
+    internal func activatePolicyWithRequestBuilder(policyId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/policies/{policyId}/lifecycle/activate"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{policyId}", with: policyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -83,13 +83,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -102,7 +102,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activatePolicyRule(policyId: String, ruleId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            activatePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId).execute(queue) { result -> Void in
+            guard let builder = self.activatePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -120,7 +124,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func activatePolicyRule(policyId: String, ruleId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        activatePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId).execute(queue) { result -> Void in
+        guard let builder = activatePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -130,17 +138,10 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - POST /api/v1/policies/{policyId}/rules/{ruleId}/lifecycle/activate
-     - Activates a policy rule.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter ruleId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func activatePolicyRuleWithRequestBuilder(policyId: String, ruleId: String) -> RequestBuilder<Void> {
+    internal func activatePolicyRuleWithRequestBuilder(policyId: String, ruleId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/policies/{policyId}/rules/{ruleId}/lifecycle/activate"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -148,7 +149,7 @@ public struct PolicyAPI {
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -158,13 +159,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -177,7 +178,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createPolicy(policy: Policy, activate: Bool? = nil) -> AnyPublisher<Policy, Error> {
         return Future<Policy, Error>.init { promise in
-            createPolicyWithRequestBuilder(policy: policy, activate: activate).execute(queue) { result -> Void in
+            guard let builder = self.createPolicyWithRequestBuilder(policy: policy, activate: activate) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -195,7 +200,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func createPolicy(policy: Policy, activate: Bool? = nil, completion: @escaping ((_ result: Swift.Result<Policy, Error>) -> Void)) {
-        createPolicyWithRequestBuilder(policy: policy, activate: activate).execute(queue) { result -> Void in
+        guard let builder = createPolicyWithRequestBuilder(policy: policy, activate: activate) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -205,19 +214,12 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - POST /api/v1/policies
-     - Creates a policy.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policy: (body)  
-     - parameter activate: (query)  (optional, default to true)
-     - returns: RequestBuilder<Policy> 
-     */
-    public func createPolicyWithRequestBuilder(policy: Policy, activate: Bool? = nil) -> RequestBuilder<Policy> {
+    internal func createPolicyWithRequestBuilder(policy: Policy, activate: Bool? = nil) -> RequestBuilder<Policy>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/policies"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: policy)
 
         var urlComponents = URLComponents(string: URLString)
@@ -230,13 +232,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Policy>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Policy>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -249,7 +251,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createPolicyRule(policyId: String, policyRule: PolicyRule) -> AnyPublisher<PolicyRule, Error> {
         return Future<PolicyRule, Error>.init { promise in
-            createPolicyRuleWithRequestBuilder(policyId: policyId, policyRule: policyRule).execute(queue) { result -> Void in
+            guard let builder = self.createPolicyRuleWithRequestBuilder(policyId: policyId, policyRule: policyRule) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -267,7 +273,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func createPolicyRule(policyId: String, policyRule: PolicyRule, completion: @escaping ((_ result: Swift.Result<PolicyRule, Error>) -> Void)) {
-        createPolicyRuleWithRequestBuilder(policyId: policyId, policyRule: policyRule).execute(queue) { result -> Void in
+        guard let builder = createPolicyRuleWithRequestBuilder(policyId: policyId, policyRule: policyRule) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -277,22 +287,15 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - POST /api/v1/policies/{policyId}/rules
-     - Creates a policy rule.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter policyRule: (body)  
-     - returns: RequestBuilder<PolicyRule> 
-     */
-    public func createPolicyRuleWithRequestBuilder(policyId: String, policyRule: PolicyRule) -> RequestBuilder<PolicyRule> {
+    internal func createPolicyRuleWithRequestBuilder(policyId: String, policyRule: PolicyRule) -> RequestBuilder<PolicyRule>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/policies/{policyId}/rules"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{policyId}", with: policyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: policyRule)
 
         let urlComponents = URLComponents(string: URLString)
@@ -302,13 +305,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<PolicyRule>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<PolicyRule>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -320,7 +323,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivatePolicy(policyId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deactivatePolicyWithRequestBuilder(policyId: policyId).execute(queue) { result -> Void in
+            guard let builder = self.deactivatePolicyWithRequestBuilder(policyId: policyId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -337,7 +344,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivatePolicy(policyId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deactivatePolicyWithRequestBuilder(policyId: policyId).execute(queue) { result -> Void in
+        guard let builder = deactivatePolicyWithRequestBuilder(policyId: policyId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -347,21 +358,15 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - POST /api/v1/policies/{policyId}/lifecycle/deactivate
-     - Deactivates a policy.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deactivatePolicyWithRequestBuilder(policyId: String) -> RequestBuilder<Void> {
+    internal func deactivatePolicyWithRequestBuilder(policyId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/policies/{policyId}/lifecycle/deactivate"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{policyId}", with: policyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -371,13 +376,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -390,7 +395,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivatePolicyRule(policyId: String, ruleId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deactivatePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId).execute(queue) { result -> Void in
+            guard let builder = self.deactivatePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -408,7 +417,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivatePolicyRule(policyId: String, ruleId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deactivatePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId).execute(queue) { result -> Void in
+        guard let builder = deactivatePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -418,17 +431,10 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - POST /api/v1/policies/{policyId}/rules/{ruleId}/lifecycle/deactivate
-     - Deactivates a policy rule.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter ruleId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deactivatePolicyRuleWithRequestBuilder(policyId: String, ruleId: String) -> RequestBuilder<Void> {
+    internal func deactivatePolicyRuleWithRequestBuilder(policyId: String, ruleId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/policies/{policyId}/rules/{ruleId}/lifecycle/deactivate"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -436,7 +442,7 @@ public struct PolicyAPI {
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -446,13 +452,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -464,7 +470,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deletePolicy(policyId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deletePolicyWithRequestBuilder(policyId: policyId).execute(queue) { result -> Void in
+            guard let builder = self.deletePolicyWithRequestBuilder(policyId: policyId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -481,7 +491,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func deletePolicy(policyId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deletePolicyWithRequestBuilder(policyId: policyId).execute(queue) { result -> Void in
+        guard let builder = deletePolicyWithRequestBuilder(policyId: policyId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -491,21 +505,15 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/policies/{policyId}
-     - Removes a policy.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deletePolicyWithRequestBuilder(policyId: String) -> RequestBuilder<Void> {
+    internal func deletePolicyWithRequestBuilder(policyId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/policies/{policyId}"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{policyId}", with: policyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -515,13 +523,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -534,7 +542,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deletePolicyRule(policyId: String, ruleId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deletePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId).execute(queue) { result -> Void in
+            guard let builder = self.deletePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -552,7 +564,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func deletePolicyRule(policyId: String, ruleId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deletePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId).execute(queue) { result -> Void in
+        guard let builder = deletePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -562,17 +578,10 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/policies/{policyId}/rules/{ruleId}
-     - Removes a policy rule.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter ruleId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deletePolicyRuleWithRequestBuilder(policyId: String, ruleId: String) -> RequestBuilder<Void> {
+    internal func deletePolicyRuleWithRequestBuilder(policyId: String, ruleId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/policies/{policyId}/rules/{ruleId}"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -580,7 +589,7 @@ public struct PolicyAPI {
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -590,13 +599,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -609,7 +618,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getPolicy(policyId: String, expand: String? = nil) -> AnyPublisher<Policy, Error> {
         return Future<Policy, Error>.init { promise in
-            getPolicyWithRequestBuilder(policyId: policyId, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.getPolicyWithRequestBuilder(policyId: policyId, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -627,7 +640,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func getPolicy(policyId: String, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<Policy, Error>) -> Void)) {
-        getPolicyWithRequestBuilder(policyId: policyId, expand: expand).execute(queue) { result -> Void in
+        guard let builder = getPolicyWithRequestBuilder(policyId: policyId, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -637,22 +654,15 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - GET /api/v1/policies/{policyId}
-     - Gets a policy.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<Policy> 
-     */
-    public func getPolicyWithRequestBuilder(policyId: String, expand: String? = nil) -> RequestBuilder<Policy> {
+    internal func getPolicyWithRequestBuilder(policyId: String, expand: String? = nil) -> RequestBuilder<Policy>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/policies/{policyId}"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{policyId}", with: policyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -665,13 +675,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Policy>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Policy>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -684,7 +694,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getPolicyRule(policyId: String, ruleId: String) -> AnyPublisher<PolicyRule, Error> {
         return Future<PolicyRule, Error>.init { promise in
-            getPolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId).execute(queue) { result -> Void in
+            guard let builder = self.getPolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -702,7 +716,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func getPolicyRule(policyId: String, ruleId: String, completion: @escaping ((_ result: Swift.Result<PolicyRule, Error>) -> Void)) {
-        getPolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId).execute(queue) { result -> Void in
+        guard let builder = getPolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -712,17 +730,10 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - GET /api/v1/policies/{policyId}/rules/{ruleId}
-     - Gets a policy rule.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter ruleId: (path)  
-     - returns: RequestBuilder<PolicyRule> 
-     */
-    public func getPolicyRuleWithRequestBuilder(policyId: String, ruleId: String) -> RequestBuilder<PolicyRule> {
+    internal func getPolicyRuleWithRequestBuilder(policyId: String, ruleId: String) -> RequestBuilder<PolicyRule>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/policies/{policyId}/rules/{ruleId}"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -730,7 +741,7 @@ public struct PolicyAPI {
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -740,13 +751,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<PolicyRule>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<PolicyRule>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -760,7 +771,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listPolicies(type: String, status: String? = nil, expand: String? = nil) -> AnyPublisher<[AuthorizationServerPolicy], Error> {
         return Future<[AuthorizationServerPolicy], Error>.init { promise in
-            listPoliciesWithRequestBuilder(type: type, status: status, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.listPoliciesWithRequestBuilder(type: type, status: status, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -779,7 +794,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func listPolicies(type: String, status: String? = nil, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<[AuthorizationServerPolicy], Error>) -> Void)) {
-        listPoliciesWithRequestBuilder(type: type, status: status, expand: expand).execute(queue) { result -> Void in
+        guard let builder = listPoliciesWithRequestBuilder(type: type, status: status, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -789,20 +808,12 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - GET /api/v1/policies
-     - Gets all policies with the specified type.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter type: (query)  
-     - parameter status: (query)  (optional)
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<[AuthorizationServerPolicy]> 
-     */
-    public func listPoliciesWithRequestBuilder(type: String, status: String? = nil, expand: String? = nil) -> RequestBuilder<[AuthorizationServerPolicy]> {
+    internal func listPoliciesWithRequestBuilder(type: String, status: String? = nil, expand: String? = nil) -> RequestBuilder<[AuthorizationServerPolicy]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/policies"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -817,13 +828,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[AuthorizationServerPolicy]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[AuthorizationServerPolicy]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -835,7 +846,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listPolicyRules(policyId: String) -> AnyPublisher<[PolicyRule], Error> {
         return Future<[PolicyRule], Error>.init { promise in
-            listPolicyRulesWithRequestBuilder(policyId: policyId).execute(queue) { result -> Void in
+            guard let builder = self.listPolicyRulesWithRequestBuilder(policyId: policyId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -852,7 +867,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func listPolicyRules(policyId: String, completion: @escaping ((_ result: Swift.Result<[PolicyRule], Error>) -> Void)) {
-        listPolicyRulesWithRequestBuilder(policyId: policyId).execute(queue) { result -> Void in
+        guard let builder = listPolicyRulesWithRequestBuilder(policyId: policyId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -862,21 +881,15 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - GET /api/v1/policies/{policyId}/rules
-     - Enumerates all policy rules.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - returns: RequestBuilder<[PolicyRule]> 
-     */
-    public func listPolicyRulesWithRequestBuilder(policyId: String) -> RequestBuilder<[PolicyRule]> {
+    internal func listPolicyRulesWithRequestBuilder(policyId: String) -> RequestBuilder<[PolicyRule]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/policies/{policyId}/rules"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{policyId}", with: policyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -886,13 +899,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[PolicyRule]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[PolicyRule]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -905,7 +918,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updatePolicy(policyId: String, policy: Policy) -> AnyPublisher<Policy, Error> {
         return Future<Policy, Error>.init { promise in
-            updatePolicyWithRequestBuilder(policyId: policyId, policy: policy).execute(queue) { result -> Void in
+            guard let builder = self.updatePolicyWithRequestBuilder(policyId: policyId, policy: policy) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -923,7 +940,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func updatePolicy(policyId: String, policy: Policy, completion: @escaping ((_ result: Swift.Result<Policy, Error>) -> Void)) {
-        updatePolicyWithRequestBuilder(policyId: policyId, policy: policy).execute(queue) { result -> Void in
+        guard let builder = updatePolicyWithRequestBuilder(policyId: policyId, policy: policy) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -933,22 +954,15 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/policies/{policyId}
-     - Updates a policy.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter policy: (body)  
-     - returns: RequestBuilder<Policy> 
-     */
-    public func updatePolicyWithRequestBuilder(policyId: String, policy: Policy) -> RequestBuilder<Policy> {
+    internal func updatePolicyWithRequestBuilder(policyId: String, policy: Policy) -> RequestBuilder<Policy>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/policies/{policyId}"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{policyId}", with: policyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: policy)
 
         let urlComponents = URLComponents(string: URLString)
@@ -958,13 +972,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Policy>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Policy>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -978,7 +992,11 @@ public struct PolicyAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updatePolicyRule(policyId: String, ruleId: String, policyRule: PolicyRule) -> AnyPublisher<PolicyRule, Error> {
         return Future<PolicyRule, Error>.init { promise in
-            updatePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId, policyRule: policyRule).execute(queue) { result -> Void in
+            guard let builder = self.updatePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId, policyRule: policyRule) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -997,7 +1015,11 @@ public struct PolicyAPI {
      - parameter completion: completion handler to receive the result
      */
     func updatePolicyRule(policyId: String, ruleId: String, policyRule: PolicyRule, completion: @escaping ((_ result: Swift.Result<PolicyRule, Error>) -> Void)) {
-        updatePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId, policyRule: policyRule).execute(queue) { result -> Void in
+        guard let builder = updatePolicyRuleWithRequestBuilder(policyId: policyId, ruleId: ruleId, policyRule: policyRule) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1007,18 +1029,10 @@ public struct PolicyAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/policies/{policyId}/rules/{ruleId}
-     - Updates a policy rule.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter ruleId: (path)  
-     - parameter policyRule: (body)  
-     - returns: RequestBuilder<PolicyRule> 
-     */
-    public func updatePolicyRuleWithRequestBuilder(policyId: String, ruleId: String, policyRule: PolicyRule) -> RequestBuilder<PolicyRule> {
+    internal func updatePolicyRuleWithRequestBuilder(policyId: String, ruleId: String, policyRule: PolicyRule) -> RequestBuilder<PolicyRule>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/policies/{policyId}/rules/{ruleId}"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1026,7 +1040,7 @@ public struct PolicyAPI {
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: policyRule)
 
         let urlComponents = URLComponents(string: URLString)
@@ -1036,13 +1050,13 @@ public struct PolicyAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<PolicyRule>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<PolicyRule>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

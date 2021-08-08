@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct UserTypeAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class UserTypeAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -32,7 +30,11 @@ public struct UserTypeAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createUserType(userType: UserType) -> AnyPublisher<UserType, Error> {
         return Future<UserType, Error>.init { promise in
-            createUserTypeWithRequestBuilder(userType: userType).execute(queue) { result -> Void in
+            guard let builder = self.createUserTypeWithRequestBuilder(userType: userType) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -49,7 +51,11 @@ public struct UserTypeAPI {
      - parameter completion: completion handler to receive the result
      */
     func createUserType(userType: UserType, completion: @escaping ((_ result: Swift.Result<UserType, Error>) -> Void)) {
-        createUserTypeWithRequestBuilder(userType: userType).execute(queue) { result -> Void in
+        guard let builder = createUserTypeWithRequestBuilder(userType: userType) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -59,18 +65,12 @@ public struct UserTypeAPI {
         }
     }
 
-    /**
-     - POST /api/v1/meta/types/user
-     - Creates a new User Type. A default User Type is automatically created along with your org, and you may add another 9 User Types for a maximum of 10.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userType: (body)  
-     - returns: RequestBuilder<UserType> 
-     */
-    public func createUserTypeWithRequestBuilder(userType: UserType) -> RequestBuilder<UserType> {
+    internal func createUserTypeWithRequestBuilder(userType: UserType) -> RequestBuilder<UserType>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/meta/types/user"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: userType)
 
         let urlComponents = URLComponents(string: URLString)
@@ -80,13 +80,13 @@ public struct UserTypeAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<UserType>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<UserType>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -98,7 +98,11 @@ public struct UserTypeAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteUserType(typeId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteUserTypeWithRequestBuilder(typeId: typeId).execute(queue) { result -> Void in
+            guard let builder = self.deleteUserTypeWithRequestBuilder(typeId: typeId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -115,7 +119,11 @@ public struct UserTypeAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteUserType(typeId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteUserTypeWithRequestBuilder(typeId: typeId).execute(queue) { result -> Void in
+        guard let builder = deleteUserTypeWithRequestBuilder(typeId: typeId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -125,21 +133,15 @@ public struct UserTypeAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/meta/types/user/{typeId}
-     - Deletes a User Type permanently. This operation is not permitted for the default type, nor for any User Type that has existing users
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter typeId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteUserTypeWithRequestBuilder(typeId: String) -> RequestBuilder<Void> {
+    internal func deleteUserTypeWithRequestBuilder(typeId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/meta/types/user/{typeId}"
         let typeIdPreEscape = "\(APIHelper.mapValueToPathItem(typeId))"
         let typeIdPostEscape = typeIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{typeId}", with: typeIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -149,13 +151,13 @@ public struct UserTypeAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -167,7 +169,11 @@ public struct UserTypeAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getUserType(typeId: String) -> AnyPublisher<UserType, Error> {
         return Future<UserType, Error>.init { promise in
-            getUserTypeWithRequestBuilder(typeId: typeId).execute(queue) { result -> Void in
+            guard let builder = self.getUserTypeWithRequestBuilder(typeId: typeId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -184,7 +190,11 @@ public struct UserTypeAPI {
      - parameter completion: completion handler to receive the result
      */
     func getUserType(typeId: String, completion: @escaping ((_ result: Swift.Result<UserType, Error>) -> Void)) {
-        getUserTypeWithRequestBuilder(typeId: typeId).execute(queue) { result -> Void in
+        guard let builder = getUserTypeWithRequestBuilder(typeId: typeId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -194,21 +204,15 @@ public struct UserTypeAPI {
         }
     }
 
-    /**
-     - GET /api/v1/meta/types/user/{typeId}
-     - Fetches a User Type by ID. The special identifier `default` may be used to fetch the default User Type.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter typeId: (path)  
-     - returns: RequestBuilder<UserType> 
-     */
-    public func getUserTypeWithRequestBuilder(typeId: String) -> RequestBuilder<UserType> {
+    internal func getUserTypeWithRequestBuilder(typeId: String) -> RequestBuilder<UserType>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/meta/types/user/{typeId}"
         let typeIdPreEscape = "\(APIHelper.mapValueToPathItem(typeId))"
         let typeIdPostEscape = typeIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{typeId}", with: typeIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -218,13 +222,13 @@ public struct UserTypeAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<UserType>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<UserType>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -235,7 +239,11 @@ public struct UserTypeAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listUserTypes() -> AnyPublisher<[UserType], Error> {
         return Future<[UserType], Error>.init { promise in
-            listUserTypesWithRequestBuilder().execute(queue) { result -> Void in
+            guard let builder = self.listUserTypesWithRequestBuilder() else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -251,7 +259,11 @@ public struct UserTypeAPI {
      - parameter completion: completion handler to receive the result
      */
     func listUserTypes(completion: @escaping ((_ result: Swift.Result<[UserType], Error>) -> Void)) {
-        listUserTypesWithRequestBuilder().execute(queue) { result -> Void in
+        guard let builder = listUserTypesWithRequestBuilder() else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -261,17 +273,12 @@ public struct UserTypeAPI {
         }
     }
 
-    /**
-     - GET /api/v1/meta/types/user
-     - Fetches all User Types in your org
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - returns: RequestBuilder<[UserType]> 
-     */
-    public func listUserTypesWithRequestBuilder() -> RequestBuilder<[UserType]> {
+    internal func listUserTypesWithRequestBuilder() -> RequestBuilder<[UserType]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/meta/types/user"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -281,13 +288,13 @@ public struct UserTypeAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[UserType]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[UserType]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -300,7 +307,11 @@ public struct UserTypeAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func replaceUserType(typeId: String, userType: UserType) -> AnyPublisher<UserType, Error> {
         return Future<UserType, Error>.init { promise in
-            replaceUserTypeWithRequestBuilder(typeId: typeId, userType: userType).execute(queue) { result -> Void in
+            guard let builder = self.replaceUserTypeWithRequestBuilder(typeId: typeId, userType: userType) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -318,7 +329,11 @@ public struct UserTypeAPI {
      - parameter completion: completion handler to receive the result
      */
     func replaceUserType(typeId: String, userType: UserType, completion: @escaping ((_ result: Swift.Result<UserType, Error>) -> Void)) {
-        replaceUserTypeWithRequestBuilder(typeId: typeId, userType: userType).execute(queue) { result -> Void in
+        guard let builder = replaceUserTypeWithRequestBuilder(typeId: typeId, userType: userType) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -328,22 +343,15 @@ public struct UserTypeAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/meta/types/user/{typeId}
-     - Replace an existing User Type
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter typeId: (path)  
-     - parameter userType: (body)  
-     - returns: RequestBuilder<UserType> 
-     */
-    public func replaceUserTypeWithRequestBuilder(typeId: String, userType: UserType) -> RequestBuilder<UserType> {
+    internal func replaceUserTypeWithRequestBuilder(typeId: String, userType: UserType) -> RequestBuilder<UserType>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/meta/types/user/{typeId}"
         let typeIdPreEscape = "\(APIHelper.mapValueToPathItem(typeId))"
         let typeIdPostEscape = typeIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{typeId}", with: typeIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: userType)
 
         let urlComponents = URLComponents(string: URLString)
@@ -353,13 +361,13 @@ public struct UserTypeAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<UserType>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<UserType>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -372,7 +380,11 @@ public struct UserTypeAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateUserType(typeId: String, userType: UserType) -> AnyPublisher<UserType, Error> {
         return Future<UserType, Error>.init { promise in
-            updateUserTypeWithRequestBuilder(typeId: typeId, userType: userType).execute(queue) { result -> Void in
+            guard let builder = self.updateUserTypeWithRequestBuilder(typeId: typeId, userType: userType) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -390,7 +402,11 @@ public struct UserTypeAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateUserType(typeId: String, userType: UserType, completion: @escaping ((_ result: Swift.Result<UserType, Error>) -> Void)) {
-        updateUserTypeWithRequestBuilder(typeId: typeId, userType: userType).execute(queue) { result -> Void in
+        guard let builder = updateUserTypeWithRequestBuilder(typeId: typeId, userType: userType) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -400,22 +416,15 @@ public struct UserTypeAPI {
         }
     }
 
-    /**
-     - POST /api/v1/meta/types/user/{typeId}
-     - Updates an existing User Type
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter typeId: (path)  
-     - parameter userType: (body)  
-     - returns: RequestBuilder<UserType> 
-     */
-    public func updateUserTypeWithRequestBuilder(typeId: String, userType: UserType) -> RequestBuilder<UserType> {
+    internal func updateUserTypeWithRequestBuilder(typeId: String, userType: UserType) -> RequestBuilder<UserType>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/meta/types/user/{typeId}"
         let typeIdPreEscape = "\(APIHelper.mapValueToPathItem(typeId))"
         let typeIdPostEscape = typeIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{typeId}", with: typeIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: userType)
 
         let urlComponents = URLComponents(string: URLString)
@@ -425,13 +434,13 @@ public struct UserTypeAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<UserType>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<UserType>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct UserAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class UserAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -34,7 +32,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activateUser(userId: String, sendEmail: Bool) -> AnyPublisher<UserActivationToken, Error> {
         return Future<UserActivationToken, Error>.init { promise in
-            activateUserWithRequestBuilder(userId: userId, sendEmail: sendEmail).execute(queue) { result -> Void in
+            guard let builder = self.activateUserWithRequestBuilder(userId: userId, sendEmail: sendEmail) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -53,7 +55,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func activateUser(userId: String, sendEmail: Bool, completion: @escaping ((_ result: Swift.Result<UserActivationToken, Error>) -> Void)) {
-        activateUserWithRequestBuilder(userId: userId, sendEmail: sendEmail).execute(queue) { result -> Void in
+        guard let builder = activateUserWithRequestBuilder(userId: userId, sendEmail: sendEmail) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -63,23 +69,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Activate User
-     - POST /api/v1/users/{userId}/lifecycle/activate
-     - Activates a user.  This operation can only be performed on users with a `STAGED` status.  Activation of a user is an asynchronous operation. The user will have the `transitioningToStatus` property with a value of `ACTIVE` during activation to indicate that the user hasn't completed the asynchronous operation.  The user will have a status of `ACTIVE` when the activation process is complete.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter sendEmail: (query) Sends an activation email to the user if true 
-     - returns: RequestBuilder<UserActivationToken> 
-     */
-    public func activateUserWithRequestBuilder(userId: String, sendEmail: Bool) -> RequestBuilder<UserActivationToken> {
+    internal func activateUserWithRequestBuilder(userId: String, sendEmail: Bool) -> RequestBuilder<UserActivationToken>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/lifecycle/activate"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -92,13 +90,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<UserActivationToken>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<UserActivationToken>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -111,7 +109,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func addAllAppsAsTargetToRole(userId: String, roleId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            addAllAppsAsTargetToRoleWithRequestBuilder(userId: userId, roleId: roleId).execute(queue) { result -> Void in
+            guard let builder = self.addAllAppsAsTargetToRoleWithRequestBuilder(userId: userId, roleId: roleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -129,7 +131,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func addAllAppsAsTargetToRole(userId: String, roleId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        addAllAppsAsTargetToRoleWithRequestBuilder(userId: userId, roleId: roleId).execute(queue) { result -> Void in
+        guard let builder = addAllAppsAsTargetToRoleWithRequestBuilder(userId: userId, roleId: roleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -139,17 +145,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter roleId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func addAllAppsAsTargetToRoleWithRequestBuilder(userId: String, roleId: String) -> RequestBuilder<Void> {
+    internal func addAllAppsAsTargetToRoleWithRequestBuilder(userId: String, roleId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -157,7 +156,7 @@ public struct UserAPI {
         let roleIdPreEscape = "\(APIHelper.mapValueToPathItem(roleId))"
         let roleIdPostEscape = roleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{roleId}", with: roleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -167,13 +166,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -187,7 +186,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func addApplicationTargetToAdminRoleForUser(userId: String, roleId: String, appName: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            addApplicationTargetToAdminRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName).execute(queue) { result -> Void in
+            guard let builder = self.addApplicationTargetToAdminRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -206,7 +209,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func addApplicationTargetToAdminRoleForUser(userId: String, roleId: String, appName: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        addApplicationTargetToAdminRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName).execute(queue) { result -> Void in
+        guard let builder = addApplicationTargetToAdminRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -216,18 +223,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter roleId: (path)  
-     - parameter appName: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func addApplicationTargetToAdminRoleForUserWithRequestBuilder(userId: String, roleId: String, appName: String) -> RequestBuilder<Void> {
+    internal func addApplicationTargetToAdminRoleForUserWithRequestBuilder(userId: String, roleId: String, appName: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -238,7 +237,7 @@ public struct UserAPI {
         let appNamePreEscape = "\(APIHelper.mapValueToPathItem(appName))"
         let appNamePostEscape = appNamePreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appName}", with: appNamePostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -248,13 +247,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -270,7 +269,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func addApplicationTargetToAppAdminRoleForUser(userId: String, roleId: String, appName: String, applicationId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            addApplicationTargetToAppAdminRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId).execute(queue) { result -> Void in
+            guard let builder = self.addApplicationTargetToAppAdminRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -291,7 +294,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func addApplicationTargetToAppAdminRoleForUser(userId: String, roleId: String, appName: String, applicationId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        addApplicationTargetToAppAdminRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId).execute(queue) { result -> Void in
+        guard let builder = addApplicationTargetToAppAdminRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -301,20 +308,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Add App Instance Target to App Administrator Role given to a User
-     - PUT /api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}
-     - Add App Instance Target to App Administrator Role given to a User
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter roleId: (path)  
-     - parameter appName: (path)  
-     - parameter applicationId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func addApplicationTargetToAppAdminRoleForUserWithRequestBuilder(userId: String, roleId: String, appName: String, applicationId: String) -> RequestBuilder<Void> {
+    internal func addApplicationTargetToAppAdminRoleForUserWithRequestBuilder(userId: String, roleId: String, appName: String, applicationId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -328,7 +325,7 @@ public struct UserAPI {
         let applicationIdPreEscape = "\(APIHelper.mapValueToPathItem(applicationId))"
         let applicationIdPostEscape = applicationIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{applicationId}", with: applicationIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -338,13 +335,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -358,7 +355,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func addGroupTargetToRole(userId: String, roleId: String, groupId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            addGroupTargetToRoleWithRequestBuilder(userId: userId, roleId: roleId, groupId: groupId).execute(queue) { result -> Void in
+            guard let builder = self.addGroupTargetToRoleWithRequestBuilder(userId: userId, roleId: roleId, groupId: groupId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -377,7 +378,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func addGroupTargetToRole(userId: String, roleId: String, groupId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        addGroupTargetToRoleWithRequestBuilder(userId: userId, roleId: roleId, groupId: groupId).execute(queue) { result -> Void in
+        guard let builder = addGroupTargetToRoleWithRequestBuilder(userId: userId, roleId: roleId, groupId: groupId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -387,18 +392,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/users/{userId}/roles/{roleId}/targets/groups/{groupId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter roleId: (path)  
-     - parameter groupId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func addGroupTargetToRoleWithRequestBuilder(userId: String, roleId: String, groupId: String) -> RequestBuilder<Void> {
+    internal func addGroupTargetToRoleWithRequestBuilder(userId: String, roleId: String, groupId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/roles/{roleId}/targets/groups/{groupId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -409,7 +406,7 @@ public struct UserAPI {
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{groupId}", with: groupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -419,13 +416,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -439,7 +436,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func assignRoleToUser(userId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) -> AnyPublisher<Role, Error> {
         return Future<Role, Error>.init { promise in
-            assignRoleToUserWithRequestBuilder(userId: userId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications).execute(queue) { result -> Void in
+            guard let builder = self.assignRoleToUserWithRequestBuilder(userId: userId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -458,7 +459,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func assignRoleToUser(userId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil, completion: @escaping ((_ result: Swift.Result<Role, Error>) -> Void)) {
-        assignRoleToUserWithRequestBuilder(userId: userId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications).execute(queue) { result -> Void in
+        guard let builder = assignRoleToUserWithRequestBuilder(userId: userId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -468,23 +473,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - POST /api/v1/users/{userId}/roles
-     - Assigns a role to a user.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter assignRoleRequest: (body)  
-     - parameter disableNotifications: (query)  (optional)
-     - returns: RequestBuilder<Role> 
-     */
-    public func assignRoleToUserWithRequestBuilder(userId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) -> RequestBuilder<Role> {
+    internal func assignRoleToUserWithRequestBuilder(userId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) -> RequestBuilder<Role>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/roles"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: assignRoleRequest)
 
         var urlComponents = URLComponents(string: URLString)
@@ -497,13 +494,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Role>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Role>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -518,7 +515,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func changePassword(userId: String, changePasswordRequest: ChangePasswordRequest, strict: Bool? = nil) -> AnyPublisher<UserCredentials, Error> {
         return Future<UserCredentials, Error>.init { promise in
-            changePasswordWithRequestBuilder(userId: userId, changePasswordRequest: changePasswordRequest, strict: strict).execute(queue) { result -> Void in
+            guard let builder = self.changePasswordWithRequestBuilder(userId: userId, changePasswordRequest: changePasswordRequest, strict: strict) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -538,7 +539,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func changePassword(userId: String, changePasswordRequest: ChangePasswordRequest, strict: Bool? = nil, completion: @escaping ((_ result: Swift.Result<UserCredentials, Error>) -> Void)) {
-        changePasswordWithRequestBuilder(userId: userId, changePasswordRequest: changePasswordRequest, strict: strict).execute(queue) { result -> Void in
+        guard let builder = changePasswordWithRequestBuilder(userId: userId, changePasswordRequest: changePasswordRequest, strict: strict) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -548,24 +553,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Change Password
-     - POST /api/v1/users/{userId}/credentials/change_password
-     - Changes a user's password by validating the user's current password. This operation can only be performed on users in `STAGED`, `ACTIVE`, `PASSWORD_EXPIRED`, or `RECOVERY` status that have a valid password credential
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter changePasswordRequest: (body)  
-     - parameter strict: (query)  (optional)
-     - returns: RequestBuilder<UserCredentials> 
-     */
-    public func changePasswordWithRequestBuilder(userId: String, changePasswordRequest: ChangePasswordRequest, strict: Bool? = nil) -> RequestBuilder<UserCredentials> {
+    internal func changePasswordWithRequestBuilder(userId: String, changePasswordRequest: ChangePasswordRequest, strict: Bool? = nil) -> RequestBuilder<UserCredentials>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/credentials/change_password"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: changePasswordRequest)
 
         var urlComponents = URLComponents(string: URLString)
@@ -578,13 +574,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<UserCredentials>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<UserCredentials>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -598,7 +594,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func changeRecoveryQuestion(userId: String, userCredentials: UserCredentials) -> AnyPublisher<UserCredentials, Error> {
         return Future<UserCredentials, Error>.init { promise in
-            changeRecoveryQuestionWithRequestBuilder(userId: userId, userCredentials: userCredentials).execute(queue) { result -> Void in
+            guard let builder = self.changeRecoveryQuestionWithRequestBuilder(userId: userId, userCredentials: userCredentials) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -617,7 +617,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func changeRecoveryQuestion(userId: String, userCredentials: UserCredentials, completion: @escaping ((_ result: Swift.Result<UserCredentials, Error>) -> Void)) {
-        changeRecoveryQuestionWithRequestBuilder(userId: userId, userCredentials: userCredentials).execute(queue) { result -> Void in
+        guard let builder = changeRecoveryQuestionWithRequestBuilder(userId: userId, userCredentials: userCredentials) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -627,23 +631,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Change Recovery Question
-     - POST /api/v1/users/{userId}/credentials/change_recovery_question
-     - Changes a user's recovery question & answer credential by validating the user's current password.  This operation can only be performed on users in **STAGED**, **ACTIVE** or **RECOVERY** `status` that have a valid password credential
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter userCredentials: (body)  
-     - returns: RequestBuilder<UserCredentials> 
-     */
-    public func changeRecoveryQuestionWithRequestBuilder(userId: String, userCredentials: UserCredentials) -> RequestBuilder<UserCredentials> {
+    internal func changeRecoveryQuestionWithRequestBuilder(userId: String, userCredentials: UserCredentials) -> RequestBuilder<UserCredentials>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/credentials/change_recovery_question"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: userCredentials)
 
         let urlComponents = URLComponents(string: URLString)
@@ -653,13 +649,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<UserCredentials>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<UserCredentials>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -672,7 +668,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func clearUserSessions(userId: String, oauthTokens: Bool? = nil) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            clearUserSessionsWithRequestBuilder(userId: userId, oauthTokens: oauthTokens).execute(queue) { result -> Void in
+            guard let builder = self.clearUserSessionsWithRequestBuilder(userId: userId, oauthTokens: oauthTokens) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -690,7 +690,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func clearUserSessions(userId: String, oauthTokens: Bool? = nil, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        clearUserSessionsWithRequestBuilder(userId: userId, oauthTokens: oauthTokens).execute(queue) { result -> Void in
+        guard let builder = clearUserSessionsWithRequestBuilder(userId: userId, oauthTokens: oauthTokens) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -700,22 +704,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/users/{userId}/sessions
-     - Removes all active identity provider sessions. This forces the user to authenticate on the next operation. Optionally revokes OpenID Connect and OAuth refresh and access tokens issued to the user.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter oauthTokens: (query) Revoke issued OpenID Connect and OAuth refresh and access tokens (optional, default to false)
-     - returns: RequestBuilder<Void> 
-     */
-    public func clearUserSessionsWithRequestBuilder(userId: String, oauthTokens: Bool? = nil) -> RequestBuilder<Void> {
+    internal func clearUserSessionsWithRequestBuilder(userId: String, oauthTokens: Bool? = nil) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/sessions"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -728,13 +725,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -750,7 +747,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createUser(body: CreateUserRequest, activate: Bool? = nil, provider: Bool? = nil, nextLogin: String? = nil) -> AnyPublisher<User, Error> {
         return Future<User, Error>.init { promise in
-            createUserWithRequestBuilder(body: body, activate: activate, provider: provider, nextLogin: nextLogin).execute(queue) { result -> Void in
+            guard let builder = self.createUserWithRequestBuilder(body: body, activate: activate, provider: provider, nextLogin: nextLogin) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -771,7 +772,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func createUser(body: CreateUserRequest, activate: Bool? = nil, provider: Bool? = nil, nextLogin: String? = nil, completion: @escaping ((_ result: Swift.Result<User, Error>) -> Void)) {
-        createUserWithRequestBuilder(body: body, activate: activate, provider: provider, nextLogin: nextLogin).execute(queue) { result -> Void in
+        guard let builder = createUserWithRequestBuilder(body: body, activate: activate, provider: provider, nextLogin: nextLogin) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -781,22 +786,12 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Create User
-     - POST /api/v1/users
-     - Creates a new user in your Okta organization with or without credentials.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter body: (body)  
-     - parameter activate: (query) Executes activation lifecycle operation when creating the user (optional, default to true)
-     - parameter provider: (query) Indicates whether to create a user with a specified authentication provider (optional, default to false)
-     - parameter nextLogin: (query) With activate&#x3D;true, set nextLogin to \&quot;changePassword\&quot; to have the password be EXPIRED, so user must change it the next time they log in. (optional)
-     - returns: RequestBuilder<User> 
-     */
-    public func createUserWithRequestBuilder(body: CreateUserRequest, activate: Bool? = nil, provider: Bool? = nil, nextLogin: String? = nil) -> RequestBuilder<User> {
+    internal func createUserWithRequestBuilder(body: CreateUserRequest, activate: Bool? = nil, provider: Bool? = nil, nextLogin: String? = nil) -> RequestBuilder<User>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/users"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: body)
 
         var urlComponents = URLComponents(string: URLString)
@@ -811,13 +806,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<User>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<User>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -831,7 +826,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivateOrDeleteUser(userId: String, sendEmail: Bool? = nil) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deactivateOrDeleteUserWithRequestBuilder(userId: userId, sendEmail: sendEmail).execute(queue) { result -> Void in
+            guard let builder = self.deactivateOrDeleteUserWithRequestBuilder(userId: userId, sendEmail: sendEmail) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -850,7 +849,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivateOrDeleteUser(userId: String, sendEmail: Bool? = nil, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deactivateOrDeleteUserWithRequestBuilder(userId: userId, sendEmail: sendEmail).execute(queue) { result -> Void in
+        guard let builder = deactivateOrDeleteUserWithRequestBuilder(userId: userId, sendEmail: sendEmail) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -860,23 +863,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Delete User
-     - DELETE /api/v1/users/{userId}
-     - Deletes a user permanently.  This operation can only be performed on users that have a `DEPROVISIONED` status.  **This action cannot be recovered!**
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter sendEmail: (query)  (optional, default to false)
-     - returns: RequestBuilder<Void> 
-     */
-    public func deactivateOrDeleteUserWithRequestBuilder(userId: String, sendEmail: Bool? = nil) -> RequestBuilder<Void> {
+    internal func deactivateOrDeleteUserWithRequestBuilder(userId: String, sendEmail: Bool? = nil) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -889,13 +884,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -909,7 +904,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivateUser(userId: String, sendEmail: Bool? = nil) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deactivateUserWithRequestBuilder(userId: userId, sendEmail: sendEmail).execute(queue) { result -> Void in
+            guard let builder = self.deactivateUserWithRequestBuilder(userId: userId, sendEmail: sendEmail) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -928,7 +927,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivateUser(userId: String, sendEmail: Bool? = nil, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deactivateUserWithRequestBuilder(userId: userId, sendEmail: sendEmail).execute(queue) { result -> Void in
+        guard let builder = deactivateUserWithRequestBuilder(userId: userId, sendEmail: sendEmail) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -938,23 +941,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Deactivate User
-     - POST /api/v1/users/{userId}/lifecycle/deactivate
-     - Deactivates a user.  This operation can only be performed on users that do not have a `DEPROVISIONED` status.  Deactivation of a user is an asynchronous operation.  The user will have the `transitioningToStatus` property with a value of `DEPROVISIONED` during deactivation to indicate that the user hasn't completed the asynchronous operation.  The user will have a status of `DEPROVISIONED` when the deactivation process is complete.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter sendEmail: (query)  (optional, default to false)
-     - returns: RequestBuilder<Void> 
-     */
-    public func deactivateUserWithRequestBuilder(userId: String, sendEmail: Bool? = nil) -> RequestBuilder<Void> {
+    internal func deactivateUserWithRequestBuilder(userId: String, sendEmail: Bool? = nil) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/lifecycle/deactivate"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -967,13 +962,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -987,7 +982,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func expirePassword(userId: String, tempPassword: Bool? = nil) -> AnyPublisher<User, Error> {
         return Future<User, Error>.init { promise in
-            expirePasswordWithRequestBuilder(userId: userId, tempPassword: tempPassword).execute(queue) { result -> Void in
+            guard let builder = self.expirePasswordWithRequestBuilder(userId: userId, tempPassword: tempPassword) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1006,7 +1005,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func expirePassword(userId: String, tempPassword: Bool? = nil, completion: @escaping ((_ result: Swift.Result<User, Error>) -> Void)) {
-        expirePasswordWithRequestBuilder(userId: userId, tempPassword: tempPassword).execute(queue) { result -> Void in
+        guard let builder = expirePasswordWithRequestBuilder(userId: userId, tempPassword: tempPassword) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1016,23 +1019,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Expire Password
-     - POST /api/v1/users/{userId}/lifecycle/expire_password
-     - This operation transitions the user to the status of `PASSWORD_EXPIRED` so that the user is required to change their password at their next login.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter tempPassword: (query) When set to &#39;true&#39; the user&#39;s password is reset to a temporary password that is returned. When omitted or set to &#39;false&#39; the user will be required to change their password at their next login. (optional, default to false)
-     - returns: RequestBuilder<User> 
-     */
-    public func expirePasswordWithRequestBuilder(userId: String, tempPassword: Bool? = nil) -> RequestBuilder<User> {
+    internal func expirePasswordWithRequestBuilder(userId: String, tempPassword: Bool? = nil) -> RequestBuilder<User>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/lifecycle/expire_password"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1045,13 +1040,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<User>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<User>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1066,7 +1061,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func forgotPassword(userId: String, sendEmail: Bool? = nil, userCredentials: UserCredentials? = nil) -> AnyPublisher<ForgotPasswordResponse, Error> {
         return Future<ForgotPasswordResponse, Error>.init { promise in
-            forgotPasswordWithRequestBuilder(userId: userId, sendEmail: sendEmail, userCredentials: userCredentials).execute(queue) { result -> Void in
+            guard let builder = self.forgotPasswordWithRequestBuilder(userId: userId, sendEmail: sendEmail, userCredentials: userCredentials) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1086,7 +1085,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func forgotPassword(userId: String, sendEmail: Bool? = nil, userCredentials: UserCredentials? = nil, completion: @escaping ((_ result: Swift.Result<ForgotPasswordResponse, Error>) -> Void)) {
-        forgotPasswordWithRequestBuilder(userId: userId, sendEmail: sendEmail, userCredentials: userCredentials).execute(queue) { result -> Void in
+        guard let builder = forgotPasswordWithRequestBuilder(userId: userId, sendEmail: sendEmail, userCredentials: userCredentials) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1096,24 +1099,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Forgot Password
-     - POST /api/v1/users/{userId}/credentials/forgot_password
-     - Initiate forgot password flow, see desciptions for parameters.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter sendEmail: (query) Determines whether an email is sent to the user. This only applies when &#39;user&#39; is not provided in the request body. (optional, default to true)
-     - parameter userCredentials: (body) Factor (optional)
-     - returns: RequestBuilder<ForgotPasswordResponse> 
-     */
-    public func forgotPasswordWithRequestBuilder(userId: String, sendEmail: Bool? = nil, userCredentials: UserCredentials? = nil) -> RequestBuilder<ForgotPasswordResponse> {
+    internal func forgotPasswordWithRequestBuilder(userId: String, sendEmail: Bool? = nil, userCredentials: UserCredentials? = nil) -> RequestBuilder<ForgotPasswordResponse>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/credentials/forgot_password"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: userCredentials)
 
         var urlComponents = URLComponents(string: URLString)
@@ -1126,13 +1120,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<ForgotPasswordResponse>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<ForgotPasswordResponse>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1147,7 +1141,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getLinkedObjectsForUser(userId: String, relationshipName: String, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[AnyCodable], Error> {
         return Future<[AnyCodable], Error>.init { promise in
-            getLinkedObjectsForUserWithRequestBuilder(userId: userId, relationshipName: relationshipName, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.getLinkedObjectsForUserWithRequestBuilder(userId: userId, relationshipName: relationshipName, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1167,7 +1165,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func getLinkedObjectsForUser(userId: String, relationshipName: String, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[AnyCodable], Error>) -> Void)) {
-        getLinkedObjectsForUserWithRequestBuilder(userId: userId, relationshipName: relationshipName, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = getLinkedObjectsForUserWithRequestBuilder(userId: userId, relationshipName: relationshipName, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1177,19 +1179,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/linkedObjects/{relationshipName}
-     - Get linked objects for a user, relationshipName can be a primary or associated relationship name
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter relationshipName: (path)  
-     - parameter after: (query)  (optional)
-     - parameter limit: (query)  (optional, default to -1)
-     - returns: RequestBuilder<[AnyCodable]> 
-     */
-    public func getLinkedObjectsForUserWithRequestBuilder(userId: String, relationshipName: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[AnyCodable]> {
+    internal func getLinkedObjectsForUserWithRequestBuilder(userId: String, relationshipName: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[AnyCodable]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/linkedObjects/{relationshipName}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1197,7 +1190,7 @@ public struct UserAPI {
         let relationshipNamePreEscape = "\(APIHelper.mapValueToPathItem(relationshipName))"
         let relationshipNamePostEscape = relationshipNamePreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{relationshipName}", with: relationshipNamePostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1211,13 +1204,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[AnyCodable]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[AnyCodable]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1234,7 +1227,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getRefreshTokenForUserAndClient(userId: String, clientId: String, tokenId: String, expand: String? = nil, limit: Int? = nil, after: String? = nil) -> AnyPublisher<OAuth2RefreshToken, Error> {
         return Future<OAuth2RefreshToken, Error>.init { promise in
-            getRefreshTokenForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, tokenId: tokenId, expand: expand, limit: limit, after: after).execute(queue) { result -> Void in
+            guard let builder = self.getRefreshTokenForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, tokenId: tokenId, expand: expand, limit: limit, after: after) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1256,7 +1253,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func getRefreshTokenForUserAndClient(userId: String, clientId: String, tokenId: String, expand: String? = nil, limit: Int? = nil, after: String? = nil, completion: @escaping ((_ result: Swift.Result<OAuth2RefreshToken, Error>) -> Void)) {
-        getRefreshTokenForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, tokenId: tokenId, expand: expand, limit: limit, after: after).execute(queue) { result -> Void in
+        guard let builder = getRefreshTokenForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, tokenId: tokenId, expand: expand, limit: limit, after: after) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1266,21 +1267,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/clients/{clientId}/tokens/{tokenId}
-     - Gets a refresh token issued for the specified User and Client.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter clientId: (path)  
-     - parameter tokenId: (path)  
-     - parameter expand: (query)  (optional)
-     - parameter limit: (query)  (optional, default to 20)
-     - parameter after: (query)  (optional)
-     - returns: RequestBuilder<OAuth2RefreshToken> 
-     */
-    public func getRefreshTokenForUserAndClientWithRequestBuilder(userId: String, clientId: String, tokenId: String, expand: String? = nil, limit: Int? = nil, after: String? = nil) -> RequestBuilder<OAuth2RefreshToken> {
+    internal func getRefreshTokenForUserAndClientWithRequestBuilder(userId: String, clientId: String, tokenId: String, expand: String? = nil, limit: Int? = nil, after: String? = nil) -> RequestBuilder<OAuth2RefreshToken>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/clients/{clientId}/tokens/{tokenId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1291,7 +1281,7 @@ public struct UserAPI {
         let tokenIdPreEscape = "\(APIHelper.mapValueToPathItem(tokenId))"
         let tokenIdPostEscape = tokenIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{tokenId}", with: tokenIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1306,13 +1296,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<OAuth2RefreshToken>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<OAuth2RefreshToken>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1325,7 +1315,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getUser(userId: String) -> AnyPublisher<User, Error> {
         return Future<User, Error>.init { promise in
-            getUserWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.getUserWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1343,7 +1337,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func getUser(userId: String, completion: @escaping ((_ result: Swift.Result<User, Error>) -> Void)) {
-        getUserWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = getUserWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1353,22 +1351,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Get User
-     - GET /api/v1/users/{userId}
-     - Fetches a user from your Okta organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<User> 
-     */
-    public func getUserWithRequestBuilder(userId: String) -> RequestBuilder<User> {
+    internal func getUserWithRequestBuilder(userId: String) -> RequestBuilder<User>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1378,13 +1369,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<User>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<User>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1398,7 +1389,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getUserGrant(userId: String, grantId: String, expand: String? = nil) -> AnyPublisher<OAuth2ScopeConsentGrant, Error> {
         return Future<OAuth2ScopeConsentGrant, Error>.init { promise in
-            getUserGrantWithRequestBuilder(userId: userId, grantId: grantId, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.getUserGrantWithRequestBuilder(userId: userId, grantId: grantId, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1417,7 +1412,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func getUserGrant(userId: String, grantId: String, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<OAuth2ScopeConsentGrant, Error>) -> Void)) {
-        getUserGrantWithRequestBuilder(userId: userId, grantId: grantId, expand: expand).execute(queue) { result -> Void in
+        guard let builder = getUserGrantWithRequestBuilder(userId: userId, grantId: grantId, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1427,18 +1426,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/grants/{grantId}
-     - Gets a grant for the specified user
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter grantId: (path)  
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<OAuth2ScopeConsentGrant> 
-     */
-    public func getUserGrantWithRequestBuilder(userId: String, grantId: String, expand: String? = nil) -> RequestBuilder<OAuth2ScopeConsentGrant> {
+    internal func getUserGrantWithRequestBuilder(userId: String, grantId: String, expand: String? = nil) -> RequestBuilder<OAuth2ScopeConsentGrant>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/grants/{grantId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1446,7 +1437,7 @@ public struct UserAPI {
         let grantIdPreEscape = "\(APIHelper.mapValueToPathItem(grantId))"
         let grantIdPostEscape = grantIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{grantId}", with: grantIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1459,13 +1450,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<OAuth2ScopeConsentGrant>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<OAuth2ScopeConsentGrant>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1478,7 +1469,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listAppLinks(userId: String) -> AnyPublisher<[AppLink], Error> {
         return Future<[AppLink], Error>.init { promise in
-            listAppLinksWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.listAppLinksWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1496,7 +1491,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func listAppLinks(userId: String, completion: @escaping ((_ result: Swift.Result<[AppLink], Error>) -> Void)) {
-        listAppLinksWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = listAppLinksWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1506,22 +1505,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Get Assigned App Links
-     - GET /api/v1/users/{userId}/appLinks
-     - Fetches appLinks for all direct or indirect (via group membership) assigned applications.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<[AppLink]> 
-     */
-    public func listAppLinksWithRequestBuilder(userId: String) -> RequestBuilder<[AppLink]> {
+    internal func listAppLinksWithRequestBuilder(userId: String) -> RequestBuilder<[AppLink]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/appLinks"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1531,13 +1523,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[AppLink]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[AppLink]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1552,7 +1544,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listApplicationTargetsForApplicationAdministratorRoleForUser(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[CatalogApplication], Error> {
         return Future<[CatalogApplication], Error>.init { promise in
-            listApplicationTargetsForApplicationAdministratorRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listApplicationTargetsForApplicationAdministratorRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1572,7 +1568,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func listApplicationTargetsForApplicationAdministratorRoleForUser(userId: String, roleId: String, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[CatalogApplication], Error>) -> Void)) {
-        listApplicationTargetsForApplicationAdministratorRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listApplicationTargetsForApplicationAdministratorRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1582,19 +1582,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps
-     - Lists all App targets for an `APP_ADMIN` Role assigned to a User. This methods return list may include full Applications or Instances. The response for an instance will have an `ID` value, while Application will not have an ID.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter roleId: (path)  
-     - parameter after: (query)  (optional)
-     - parameter limit: (query)  (optional, default to 20)
-     - returns: RequestBuilder<[CatalogApplication]> 
-     */
-    public func listApplicationTargetsForApplicationAdministratorRoleForUserWithRequestBuilder(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[CatalogApplication]> {
+    internal func listApplicationTargetsForApplicationAdministratorRoleForUserWithRequestBuilder(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[CatalogApplication]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1602,7 +1593,7 @@ public struct UserAPI {
         let roleIdPreEscape = "\(APIHelper.mapValueToPathItem(roleId))"
         let roleIdPostEscape = roleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{roleId}", with: roleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1616,13 +1607,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[CatalogApplication]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[CatalogApplication]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1635,7 +1626,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listAssignedRolesForUser(userId: String, expand: String? = nil) -> AnyPublisher<[Role], Error> {
         return Future<[Role], Error>.init { promise in
-            listAssignedRolesForUserWithRequestBuilder(userId: userId, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.listAssignedRolesForUserWithRequestBuilder(userId: userId, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1653,7 +1648,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func listAssignedRolesForUser(userId: String, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<[Role], Error>) -> Void)) {
-        listAssignedRolesForUserWithRequestBuilder(userId: userId, expand: expand).execute(queue) { result -> Void in
+        guard let builder = listAssignedRolesForUserWithRequestBuilder(userId: userId, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1663,22 +1662,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/roles
-     - Lists all roles assigned to a user.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<[Role]> 
-     */
-    public func listAssignedRolesForUserWithRequestBuilder(userId: String, expand: String? = nil) -> RequestBuilder<[Role]> {
+    internal func listAssignedRolesForUserWithRequestBuilder(userId: String, expand: String? = nil) -> RequestBuilder<[Role]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/roles"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1691,13 +1683,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Role]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Role]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1713,7 +1705,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listGrantsForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[OAuth2ScopeConsentGrant], Error> {
         return Future<[OAuth2ScopeConsentGrant], Error>.init { promise in
-            listGrantsForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listGrantsForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1734,7 +1730,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func listGrantsForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[OAuth2ScopeConsentGrant], Error>) -> Void)) {
-        listGrantsForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listGrantsForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1744,20 +1744,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/clients/{clientId}/grants
-     - Lists all grants for a specified user and client
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter clientId: (path)  
-     - parameter expand: (query)  (optional)
-     - parameter after: (query)  (optional)
-     - parameter limit: (query)  (optional, default to 20)
-     - returns: RequestBuilder<[OAuth2ScopeConsentGrant]> 
-     */
-    public func listGrantsForUserAndClientWithRequestBuilder(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[OAuth2ScopeConsentGrant]> {
+    internal func listGrantsForUserAndClientWithRequestBuilder(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[OAuth2ScopeConsentGrant]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/clients/{clientId}/grants"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1765,7 +1755,7 @@ public struct UserAPI {
         let clientIdPreEscape = "\(APIHelper.mapValueToPathItem(clientId))"
         let clientIdPostEscape = clientIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{clientId}", with: clientIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1780,13 +1770,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[OAuth2ScopeConsentGrant]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[OAuth2ScopeConsentGrant]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1801,7 +1791,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listGroupTargetsForRole(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[Group], Error> {
         return Future<[Group], Error>.init { promise in
-            listGroupTargetsForRoleWithRequestBuilder(userId: userId, roleId: roleId, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listGroupTargetsForRoleWithRequestBuilder(userId: userId, roleId: roleId, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1821,7 +1815,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func listGroupTargetsForRole(userId: String, roleId: String, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[Group], Error>) -> Void)) {
-        listGroupTargetsForRoleWithRequestBuilder(userId: userId, roleId: roleId, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listGroupTargetsForRoleWithRequestBuilder(userId: userId, roleId: roleId, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1831,19 +1829,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/roles/{roleId}/targets/groups
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter roleId: (path)  
-     - parameter after: (query)  (optional)
-     - parameter limit: (query)  (optional, default to 20)
-     - returns: RequestBuilder<[Group]> 
-     */
-    public func listGroupTargetsForRoleWithRequestBuilder(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[Group]> {
+    internal func listGroupTargetsForRoleWithRequestBuilder(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[Group]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/roles/{roleId}/targets/groups"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1851,7 +1840,7 @@ public struct UserAPI {
         let roleIdPreEscape = "\(APIHelper.mapValueToPathItem(roleId))"
         let roleIdPostEscape = roleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{roleId}", with: roleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1865,13 +1854,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Group]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Group]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1887,7 +1876,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listRefreshTokensForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[OAuth2RefreshToken], Error> {
         return Future<[OAuth2RefreshToken], Error>.init { promise in
-            listRefreshTokensForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listRefreshTokensForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1908,7 +1901,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func listRefreshTokensForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[OAuth2RefreshToken], Error>) -> Void)) {
-        listRefreshTokensForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listRefreshTokensForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1918,20 +1915,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/clients/{clientId}/tokens
-     - Lists all refresh tokens issued for the specified User and Client.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter clientId: (path)  
-     - parameter expand: (query)  (optional)
-     - parameter after: (query)  (optional)
-     - parameter limit: (query)  (optional, default to 20)
-     - returns: RequestBuilder<[OAuth2RefreshToken]> 
-     */
-    public func listRefreshTokensForUserAndClientWithRequestBuilder(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[OAuth2RefreshToken]> {
+    internal func listRefreshTokensForUserAndClientWithRequestBuilder(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[OAuth2RefreshToken]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/clients/{clientId}/tokens"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1939,7 +1926,7 @@ public struct UserAPI {
         let clientIdPreEscape = "\(APIHelper.mapValueToPathItem(clientId))"
         let clientIdPostEscape = clientIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{clientId}", with: clientIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1954,13 +1941,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[OAuth2RefreshToken]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[OAuth2RefreshToken]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1972,7 +1959,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listUserClients(userId: String) -> AnyPublisher<[OAuth2Client], Error> {
         return Future<[OAuth2Client], Error>.init { promise in
-            listUserClientsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.listUserClientsWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1989,7 +1980,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func listUserClients(userId: String, completion: @escaping ((_ result: Swift.Result<[OAuth2Client], Error>) -> Void)) {
-        listUserClientsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = listUserClientsWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1999,21 +1994,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/clients
-     - Lists all client resources for which the specified user has grants or tokens.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<[OAuth2Client]> 
-     */
-    public func listUserClientsWithRequestBuilder(userId: String) -> RequestBuilder<[OAuth2Client]> {
+    internal func listUserClientsWithRequestBuilder(userId: String) -> RequestBuilder<[OAuth2Client]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/clients"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2023,13 +2012,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[OAuth2Client]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[OAuth2Client]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2045,7 +2034,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listUserGrants(userId: String, scopeId: String? = nil, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[OAuth2ScopeConsentGrant], Error> {
         return Future<[OAuth2ScopeConsentGrant], Error>.init { promise in
-            listUserGrantsWithRequestBuilder(userId: userId, scopeId: scopeId, expand: expand, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listUserGrantsWithRequestBuilder(userId: userId, scopeId: scopeId, expand: expand, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2066,7 +2059,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func listUserGrants(userId: String, scopeId: String? = nil, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[OAuth2ScopeConsentGrant], Error>) -> Void)) {
-        listUserGrantsWithRequestBuilder(userId: userId, scopeId: scopeId, expand: expand, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listUserGrantsWithRequestBuilder(userId: userId, scopeId: scopeId, expand: expand, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2076,25 +2073,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - GET /api/v1/users/{userId}/grants
-     - Lists all grants for the specified user
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter scopeId: (query)  (optional)
-     - parameter expand: (query)  (optional)
-     - parameter after: (query)  (optional)
-     - parameter limit: (query)  (optional, default to 20)
-     - returns: RequestBuilder<[OAuth2ScopeConsentGrant]> 
-     */
-    public func listUserGrantsWithRequestBuilder(userId: String, scopeId: String? = nil, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[OAuth2ScopeConsentGrant]> {
+    internal func listUserGrantsWithRequestBuilder(userId: String, scopeId: String? = nil, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[OAuth2ScopeConsentGrant]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/grants"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -2110,13 +2097,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[OAuth2ScopeConsentGrant]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[OAuth2ScopeConsentGrant]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2129,7 +2116,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listUserGroups(userId: String) -> AnyPublisher<[Group], Error> {
         return Future<[Group], Error>.init { promise in
-            listUserGroupsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.listUserGroupsWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2147,7 +2138,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func listUserGroups(userId: String, completion: @escaping ((_ result: Swift.Result<[Group], Error>) -> Void)) {
-        listUserGroupsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = listUserGroupsWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2157,22 +2152,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Get Member Groups
-     - GET /api/v1/users/{userId}/groups
-     - Fetches the groups of which the user is a member.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<[Group]> 
-     */
-    public func listUserGroupsWithRequestBuilder(userId: String) -> RequestBuilder<[Group]> {
+    internal func listUserGroupsWithRequestBuilder(userId: String) -> RequestBuilder<[Group]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/groups"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2182,13 +2170,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Group]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Group]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2201,7 +2189,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listUserIdentityProviders(userId: String) -> AnyPublisher<[IdentityProvider], Error> {
         return Future<[IdentityProvider], Error>.init { promise in
-            listUserIdentityProvidersWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.listUserIdentityProvidersWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2219,7 +2211,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func listUserIdentityProviders(userId: String, completion: @escaping ((_ result: Swift.Result<[IdentityProvider], Error>) -> Void)) {
-        listUserIdentityProvidersWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = listUserIdentityProvidersWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2229,22 +2225,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Listing IdPs associated with a user
-     - GET /api/v1/users/{userId}/idps
-     - Lists the IdPs associated with the user.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<[IdentityProvider]> 
-     */
-    public func listUserIdentityProvidersWithRequestBuilder(userId: String) -> RequestBuilder<[IdentityProvider]> {
+    internal func listUserIdentityProvidersWithRequestBuilder(userId: String) -> RequestBuilder<[IdentityProvider]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/idps"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2254,13 +2243,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[IdentityProvider]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[IdentityProvider]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2279,7 +2268,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listUsers(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, search: String? = nil, sortBy: String? = nil, sortOrder: String? = nil) -> AnyPublisher<[User], Error> {
         return Future<[User], Error>.init { promise in
-            listUsersWithRequestBuilder(q: q, after: after, limit: limit, filter: filter, search: search, sortBy: sortBy, sortOrder: sortOrder).execute(queue) { result -> Void in
+            guard let builder = self.listUsersWithRequestBuilder(q: q, after: after, limit: limit, filter: filter, search: search, sortBy: sortBy, sortOrder: sortOrder) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2303,7 +2296,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func listUsers(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, search: String? = nil, sortBy: String? = nil, sortOrder: String? = nil, completion: @escaping ((_ result: Swift.Result<[User], Error>) -> Void)) {
-        listUsersWithRequestBuilder(q: q, after: after, limit: limit, filter: filter, search: search, sortBy: sortBy, sortOrder: sortOrder).execute(queue) { result -> Void in
+        guard let builder = listUsersWithRequestBuilder(q: q, after: after, limit: limit, filter: filter, search: search, sortBy: sortBy, sortOrder: sortOrder) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2313,25 +2310,12 @@ public struct UserAPI {
         }
     }
 
-    /**
-     List Users
-     - GET /api/v1/users
-     - Lists users in your organization with pagination in most cases.  A subset of users can be returned that match a supported filter expression or search criteria.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter q: (query) Finds a user that matches firstName, lastName, and email properties (optional)
-     - parameter after: (query) Specifies the pagination cursor for the next page of users (optional)
-     - parameter limit: (query) Specifies the number of results returned (optional, default to 10)
-     - parameter filter: (query) Filters users with a supported expression for a subset of properties (optional)
-     - parameter search: (query) Searches for users with a supported filtering  expression for most properties (optional)
-     - parameter sortBy: (query)  (optional)
-     - parameter sortOrder: (query)  (optional)
-     - returns: RequestBuilder<[User]> 
-     */
-    public func listUsersWithRequestBuilder(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, search: String? = nil, sortBy: String? = nil, sortOrder: String? = nil) -> RequestBuilder<[User]> {
+    internal func listUsersWithRequestBuilder(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, search: String? = nil, sortBy: String? = nil, sortOrder: String? = nil) -> RequestBuilder<[User]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/users"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -2350,13 +2334,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[User]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[User]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2370,7 +2354,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func partialUpdateUser(userId: String, user: User, strict: Bool? = nil) -> AnyPublisher<User, Error> {
         return Future<User, Error>.init { promise in
-            partialUpdateUserWithRequestBuilder(userId: userId, user: user, strict: strict).execute(queue) { result -> Void in
+            guard let builder = self.partialUpdateUserWithRequestBuilder(userId: userId, user: user, strict: strict) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2389,7 +2377,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func partialUpdateUser(userId: String, user: User, strict: Bool? = nil, completion: @escaping ((_ result: Swift.Result<User, Error>) -> Void)) {
-        partialUpdateUserWithRequestBuilder(userId: userId, user: user, strict: strict).execute(queue) { result -> Void in
+        guard let builder = partialUpdateUserWithRequestBuilder(userId: userId, user: user, strict: strict) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2399,23 +2391,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - POST /api/v1/users/{userId}
-     - Fetch a user by `id`, `login`, or `login shortname` if the short name is unambiguous.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter user: (body)  
-     - parameter strict: (query)  (optional)
-     - returns: RequestBuilder<User> 
-     */
-    public func partialUpdateUserWithRequestBuilder(userId: String, user: User, strict: Bool? = nil) -> RequestBuilder<User> {
+    internal func partialUpdateUserWithRequestBuilder(userId: String, user: User, strict: Bool? = nil) -> RequestBuilder<User>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: user)
 
         var urlComponents = URLComponents(string: URLString)
@@ -2428,13 +2412,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<User>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<User>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2448,7 +2432,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func reactivateUser(userId: String, sendEmail: Bool? = nil) -> AnyPublisher<UserActivationToken, Error> {
         return Future<UserActivationToken, Error>.init { promise in
-            reactivateUserWithRequestBuilder(userId: userId, sendEmail: sendEmail).execute(queue) { result -> Void in
+            guard let builder = self.reactivateUserWithRequestBuilder(userId: userId, sendEmail: sendEmail) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2467,7 +2455,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func reactivateUser(userId: String, sendEmail: Bool? = nil, completion: @escaping ((_ result: Swift.Result<UserActivationToken, Error>) -> Void)) {
-        reactivateUserWithRequestBuilder(userId: userId, sendEmail: sendEmail).execute(queue) { result -> Void in
+        guard let builder = reactivateUserWithRequestBuilder(userId: userId, sendEmail: sendEmail) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2477,23 +2469,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Reactivate User
-     - POST /api/v1/users/{userId}/lifecycle/reactivate
-     - Reactivates a user.  This operation can only be performed on users with a `PROVISIONED` status.  This operation restarts the activation workflow if for some reason the user activation was not completed when using the activationToken from [Activate User](#activate-user).
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter sendEmail: (query) Sends an activation email to the user if true (optional, default to false)
-     - returns: RequestBuilder<UserActivationToken> 
-     */
-    public func reactivateUserWithRequestBuilder(userId: String, sendEmail: Bool? = nil) -> RequestBuilder<UserActivationToken> {
+    internal func reactivateUserWithRequestBuilder(userId: String, sendEmail: Bool? = nil) -> RequestBuilder<UserActivationToken>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/lifecycle/reactivate"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -2506,13 +2490,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<UserActivationToken>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<UserActivationToken>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2528,7 +2512,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func removeApplicationTargetFromAdministratorRoleForUser(userId: String, roleId: String, appName: String, applicationId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            removeApplicationTargetFromAdministratorRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId).execute(queue) { result -> Void in
+            guard let builder = self.removeApplicationTargetFromAdministratorRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2549,7 +2537,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func removeApplicationTargetFromAdministratorRoleForUser(userId: String, roleId: String, appName: String, applicationId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        removeApplicationTargetFromAdministratorRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId).execute(queue) { result -> Void in
+        guard let builder = removeApplicationTargetFromAdministratorRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2559,20 +2551,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Remove App Instance Target to App Administrator Role given to a User
-     - DELETE /api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}
-     - Remove App Instance Target to App Administrator Role given to a User
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter roleId: (path)  
-     - parameter appName: (path)  
-     - parameter applicationId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func removeApplicationTargetFromAdministratorRoleForUserWithRequestBuilder(userId: String, roleId: String, appName: String, applicationId: String) -> RequestBuilder<Void> {
+    internal func removeApplicationTargetFromAdministratorRoleForUserWithRequestBuilder(userId: String, roleId: String, appName: String, applicationId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2586,7 +2568,7 @@ public struct UserAPI {
         let applicationIdPreEscape = "\(APIHelper.mapValueToPathItem(applicationId))"
         let applicationIdPostEscape = applicationIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{applicationId}", with: applicationIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2596,13 +2578,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2616,7 +2598,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func removeApplicationTargetFromApplicationAdministratorRoleForUser(userId: String, roleId: String, appName: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            removeApplicationTargetFromApplicationAdministratorRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName).execute(queue) { result -> Void in
+            guard let builder = self.removeApplicationTargetFromApplicationAdministratorRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2635,7 +2621,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func removeApplicationTargetFromApplicationAdministratorRoleForUser(userId: String, roleId: String, appName: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        removeApplicationTargetFromApplicationAdministratorRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName).execute(queue) { result -> Void in
+        guard let builder = removeApplicationTargetFromApplicationAdministratorRoleForUserWithRequestBuilder(userId: userId, roleId: roleId, appName: appName) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2645,18 +2635,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter roleId: (path)  
-     - parameter appName: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func removeApplicationTargetFromApplicationAdministratorRoleForUserWithRequestBuilder(userId: String, roleId: String, appName: String) -> RequestBuilder<Void> {
+    internal func removeApplicationTargetFromApplicationAdministratorRoleForUserWithRequestBuilder(userId: String, roleId: String, appName: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2667,7 +2649,7 @@ public struct UserAPI {
         let appNamePreEscape = "\(APIHelper.mapValueToPathItem(appName))"
         let appNamePostEscape = appNamePreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appName}", with: appNamePostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2677,13 +2659,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2697,7 +2679,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func removeGroupTargetFromRole(userId: String, roleId: String, groupId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            removeGroupTargetFromRoleWithRequestBuilder(userId: userId, roleId: roleId, groupId: groupId).execute(queue) { result -> Void in
+            guard let builder = self.removeGroupTargetFromRoleWithRequestBuilder(userId: userId, roleId: roleId, groupId: groupId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2716,7 +2702,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func removeGroupTargetFromRole(userId: String, roleId: String, groupId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        removeGroupTargetFromRoleWithRequestBuilder(userId: userId, roleId: roleId, groupId: groupId).execute(queue) { result -> Void in
+        guard let builder = removeGroupTargetFromRoleWithRequestBuilder(userId: userId, roleId: roleId, groupId: groupId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2726,18 +2716,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/users/{userId}/roles/{roleId}/targets/groups/{groupId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter roleId: (path)  
-     - parameter groupId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func removeGroupTargetFromRoleWithRequestBuilder(userId: String, roleId: String, groupId: String) -> RequestBuilder<Void> {
+    internal func removeGroupTargetFromRoleWithRequestBuilder(userId: String, roleId: String, groupId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/roles/{roleId}/targets/groups/{groupId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2748,7 +2730,7 @@ public struct UserAPI {
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{groupId}", with: groupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2758,13 +2740,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2777,7 +2759,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func removeLinkedObjectForUser(userId: String, relationshipName: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            removeLinkedObjectForUserWithRequestBuilder(userId: userId, relationshipName: relationshipName).execute(queue) { result -> Void in
+            guard let builder = self.removeLinkedObjectForUserWithRequestBuilder(userId: userId, relationshipName: relationshipName) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2795,7 +2781,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func removeLinkedObjectForUser(userId: String, relationshipName: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        removeLinkedObjectForUserWithRequestBuilder(userId: userId, relationshipName: relationshipName).execute(queue) { result -> Void in
+        guard let builder = removeLinkedObjectForUserWithRequestBuilder(userId: userId, relationshipName: relationshipName) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2805,17 +2795,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/users/{userId}/linkedObjects/{relationshipName}
-     - Delete linked objects for a user, relationshipName can be ONLY a primary relationship name
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter relationshipName: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func removeLinkedObjectForUserWithRequestBuilder(userId: String, relationshipName: String) -> RequestBuilder<Void> {
+    internal func removeLinkedObjectForUserWithRequestBuilder(userId: String, relationshipName: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/linkedObjects/{relationshipName}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2823,7 +2806,7 @@ public struct UserAPI {
         let relationshipNamePreEscape = "\(APIHelper.mapValueToPathItem(relationshipName))"
         let relationshipNamePostEscape = relationshipNamePreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{relationshipName}", with: relationshipNamePostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2833,13 +2816,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2852,7 +2835,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func removeRoleFromUser(userId: String, roleId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            removeRoleFromUserWithRequestBuilder(userId: userId, roleId: roleId).execute(queue) { result -> Void in
+            guard let builder = self.removeRoleFromUserWithRequestBuilder(userId: userId, roleId: roleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2870,7 +2857,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func removeRoleFromUser(userId: String, roleId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        removeRoleFromUserWithRequestBuilder(userId: userId, roleId: roleId).execute(queue) { result -> Void in
+        guard let builder = removeRoleFromUserWithRequestBuilder(userId: userId, roleId: roleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2880,17 +2871,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/users/{userId}/roles/{roleId}
-     - Unassigns a role from a user.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter roleId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func removeRoleFromUserWithRequestBuilder(userId: String, roleId: String) -> RequestBuilder<Void> {
+    internal func removeRoleFromUserWithRequestBuilder(userId: String, roleId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/roles/{roleId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2898,7 +2882,7 @@ public struct UserAPI {
         let roleIdPreEscape = "\(APIHelper.mapValueToPathItem(roleId))"
         let roleIdPostEscape = roleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{roleId}", with: roleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2908,13 +2892,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2927,7 +2911,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func resetFactors(userId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            resetFactorsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.resetFactorsWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2945,7 +2933,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func resetFactors(userId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        resetFactorsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = resetFactorsWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2955,22 +2947,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Reset Factors
-     - POST /api/v1/users/{userId}/lifecycle/reset_factors
-     - This operation resets all factors for the specified user. All MFA factor enrollments returned to the unenrolled state. The user's status remains ACTIVE. This link is present only if the user is currently enrolled in one or more MFA factors.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func resetFactorsWithRequestBuilder(userId: String) -> RequestBuilder<Void> {
+    internal func resetFactorsWithRequestBuilder(userId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/lifecycle/reset_factors"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2980,13 +2965,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -3000,7 +2985,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func resetPassword(userId: String, sendEmail: Bool) -> AnyPublisher<ResetPasswordToken, Error> {
         return Future<ResetPasswordToken, Error>.init { promise in
-            resetPasswordWithRequestBuilder(userId: userId, sendEmail: sendEmail).execute(queue) { result -> Void in
+            guard let builder = self.resetPasswordWithRequestBuilder(userId: userId, sendEmail: sendEmail) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -3019,7 +3008,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func resetPassword(userId: String, sendEmail: Bool, completion: @escaping ((_ result: Swift.Result<ResetPasswordToken, Error>) -> Void)) {
-        resetPasswordWithRequestBuilder(userId: userId, sendEmail: sendEmail).execute(queue) { result -> Void in
+        guard let builder = resetPasswordWithRequestBuilder(userId: userId, sendEmail: sendEmail) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -3029,23 +3022,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Reset Password
-     - POST /api/v1/users/{userId}/lifecycle/reset_password
-     - Generates a one-time token (OTT) that can be used to reset a user's password.  The OTT link can be automatically emailed to the user or returned to the API caller and distributed using a custom flow.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter sendEmail: (query)  
-     - returns: RequestBuilder<ResetPasswordToken> 
-     */
-    public func resetPasswordWithRequestBuilder(userId: String, sendEmail: Bool) -> RequestBuilder<ResetPasswordToken> {
+    internal func resetPasswordWithRequestBuilder(userId: String, sendEmail: Bool) -> RequestBuilder<ResetPasswordToken>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/lifecycle/reset_password"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -3058,13 +3043,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<ResetPasswordToken>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<ResetPasswordToken>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -3077,7 +3062,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func revokeGrantsForUserAndClient(userId: String, clientId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            revokeGrantsForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId).execute(queue) { result -> Void in
+            guard let builder = self.revokeGrantsForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -3095,7 +3084,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func revokeGrantsForUserAndClient(userId: String, clientId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        revokeGrantsForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId).execute(queue) { result -> Void in
+        guard let builder = revokeGrantsForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -3105,17 +3098,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/users/{userId}/clients/{clientId}/grants
-     - Revokes all grants for the specified user and client
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter clientId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func revokeGrantsForUserAndClientWithRequestBuilder(userId: String, clientId: String) -> RequestBuilder<Void> {
+    internal func revokeGrantsForUserAndClientWithRequestBuilder(userId: String, clientId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/clients/{clientId}/grants"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -3123,7 +3109,7 @@ public struct UserAPI {
         let clientIdPreEscape = "\(APIHelper.mapValueToPathItem(clientId))"
         let clientIdPostEscape = clientIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{clientId}", with: clientIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -3133,13 +3119,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -3153,7 +3139,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func revokeTokenForUserAndClient(userId: String, clientId: String, tokenId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            revokeTokenForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, tokenId: tokenId).execute(queue) { result -> Void in
+            guard let builder = self.revokeTokenForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, tokenId: tokenId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -3172,7 +3162,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func revokeTokenForUserAndClient(userId: String, clientId: String, tokenId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        revokeTokenForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, tokenId: tokenId).execute(queue) { result -> Void in
+        guard let builder = revokeTokenForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId, tokenId: tokenId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -3182,18 +3176,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/users/{userId}/clients/{clientId}/tokens/{tokenId}
-     - Revokes the specified refresh token.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter clientId: (path)  
-     - parameter tokenId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func revokeTokenForUserAndClientWithRequestBuilder(userId: String, clientId: String, tokenId: String) -> RequestBuilder<Void> {
+    internal func revokeTokenForUserAndClientWithRequestBuilder(userId: String, clientId: String, tokenId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/clients/{clientId}/tokens/{tokenId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -3204,7 +3190,7 @@ public struct UserAPI {
         let tokenIdPreEscape = "\(APIHelper.mapValueToPathItem(tokenId))"
         let tokenIdPostEscape = tokenIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{tokenId}", with: tokenIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -3214,13 +3200,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -3233,7 +3219,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func revokeTokensForUserAndClient(userId: String, clientId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            revokeTokensForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId).execute(queue) { result -> Void in
+            guard let builder = self.revokeTokensForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -3251,7 +3241,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func revokeTokensForUserAndClient(userId: String, clientId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        revokeTokensForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId).execute(queue) { result -> Void in
+        guard let builder = revokeTokensForUserAndClientWithRequestBuilder(userId: userId, clientId: clientId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -3261,17 +3255,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/users/{userId}/clients/{clientId}/tokens
-     - Revokes all refresh tokens issued for the specified User and Client.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter clientId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func revokeTokensForUserAndClientWithRequestBuilder(userId: String, clientId: String) -> RequestBuilder<Void> {
+    internal func revokeTokensForUserAndClientWithRequestBuilder(userId: String, clientId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/clients/{clientId}/tokens"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -3279,7 +3266,7 @@ public struct UserAPI {
         let clientIdPreEscape = "\(APIHelper.mapValueToPathItem(clientId))"
         let clientIdPostEscape = clientIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{clientId}", with: clientIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -3289,13 +3276,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -3308,7 +3295,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func revokeUserGrant(userId: String, grantId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            revokeUserGrantWithRequestBuilder(userId: userId, grantId: grantId).execute(queue) { result -> Void in
+            guard let builder = self.revokeUserGrantWithRequestBuilder(userId: userId, grantId: grantId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -3326,7 +3317,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func revokeUserGrant(userId: String, grantId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        revokeUserGrantWithRequestBuilder(userId: userId, grantId: grantId).execute(queue) { result -> Void in
+        guard let builder = revokeUserGrantWithRequestBuilder(userId: userId, grantId: grantId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -3336,17 +3331,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/users/{userId}/grants/{grantId}
-     - Revokes one grant for a specified user
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter grantId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func revokeUserGrantWithRequestBuilder(userId: String, grantId: String) -> RequestBuilder<Void> {
+    internal func revokeUserGrantWithRequestBuilder(userId: String, grantId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/grants/{grantId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -3354,7 +3342,7 @@ public struct UserAPI {
         let grantIdPreEscape = "\(APIHelper.mapValueToPathItem(grantId))"
         let grantIdPostEscape = grantIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{grantId}", with: grantIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -3364,13 +3352,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -3382,7 +3370,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func revokeUserGrants(userId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            revokeUserGrantsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.revokeUserGrantsWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -3399,7 +3391,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func revokeUserGrants(userId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        revokeUserGrantsWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = revokeUserGrantsWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -3409,21 +3405,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/users/{userId}/grants
-     - Revokes all grants for a specified user
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func revokeUserGrantsWithRequestBuilder(userId: String) -> RequestBuilder<Void> {
+    internal func revokeUserGrantsWithRequestBuilder(userId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/grants"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -3433,13 +3423,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -3454,7 +3444,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func setLinkedObjectForUser(associatedUserId: String, primaryRelationshipName: String, primaryUserId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            setLinkedObjectForUserWithRequestBuilder(associatedUserId: associatedUserId, primaryRelationshipName: primaryRelationshipName, primaryUserId: primaryUserId).execute(queue) { result -> Void in
+            guard let builder = self.setLinkedObjectForUserWithRequestBuilder(associatedUserId: associatedUserId, primaryRelationshipName: primaryRelationshipName, primaryUserId: primaryUserId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -3474,7 +3468,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func setLinkedObjectForUser(associatedUserId: String, primaryRelationshipName: String, primaryUserId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        setLinkedObjectForUserWithRequestBuilder(associatedUserId: associatedUserId, primaryRelationshipName: primaryRelationshipName, primaryUserId: primaryUserId).execute(queue) { result -> Void in
+        guard let builder = setLinkedObjectForUserWithRequestBuilder(associatedUserId: associatedUserId, primaryRelationshipName: primaryRelationshipName, primaryUserId: primaryUserId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -3484,16 +3482,10 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Set Linked Object for User
-     - PUT /api/v1/users/{associatedUserId}/linkedObjects/{primaryRelationshipName}/{primaryUserId}
-     - Sets a linked object for a user.
-     - parameter associatedUserId: (path)  
-     - parameter primaryRelationshipName: (path)  
-     - parameter primaryUserId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func setLinkedObjectForUserWithRequestBuilder(associatedUserId: String, primaryRelationshipName: String, primaryUserId: String) -> RequestBuilder<Void> {
+    internal func setLinkedObjectForUserWithRequestBuilder(associatedUserId: String, primaryRelationshipName: String, primaryUserId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{associatedUserId}/linkedObjects/{primaryRelationshipName}/{primaryUserId}"
         let associatedUserIdPreEscape = "\(APIHelper.mapValueToPathItem(associatedUserId))"
         let associatedUserIdPostEscape = associatedUserIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -3504,7 +3496,7 @@ public struct UserAPI {
         let primaryUserIdPreEscape = "\(APIHelper.mapValueToPathItem(primaryUserId))"
         let primaryUserIdPostEscape = primaryUserIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{primaryUserId}", with: primaryUserIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -3514,13 +3506,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -3533,7 +3525,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func suspendUser(userId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            suspendUserWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.suspendUserWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -3551,7 +3547,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func suspendUser(userId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        suspendUserWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = suspendUserWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -3561,22 +3561,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Suspend User
-     - POST /api/v1/users/{userId}/lifecycle/suspend
-     - Suspends a user.  This operation can only be performed on users with an `ACTIVE` status.  The user will have a status of `SUSPENDED` when the process is complete.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func suspendUserWithRequestBuilder(userId: String) -> RequestBuilder<Void> {
+    internal func suspendUserWithRequestBuilder(userId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/lifecycle/suspend"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -3586,13 +3579,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -3605,7 +3598,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func unlockUser(userId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            unlockUserWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.unlockUserWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -3623,7 +3620,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func unlockUser(userId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        unlockUserWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = unlockUserWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -3633,22 +3634,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Unlock User
-     - POST /api/v1/users/{userId}/lifecycle/unlock
-     - Unlocks a user with a `LOCKED_OUT` status and returns them to `ACTIVE` status.  Users will be able to login with their current password.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func unlockUserWithRequestBuilder(userId: String) -> RequestBuilder<Void> {
+    internal func unlockUserWithRequestBuilder(userId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/lifecycle/unlock"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -3658,13 +3652,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -3677,7 +3671,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func unsuspendUser(userId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            unsuspendUserWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.unsuspendUserWithRequestBuilder(userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -3695,7 +3693,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func unsuspendUser(userId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        unsuspendUserWithRequestBuilder(userId: userId).execute(queue) { result -> Void in
+        guard let builder = unsuspendUserWithRequestBuilder(userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -3705,22 +3707,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Unsuspend User
-     - POST /api/v1/users/{userId}/lifecycle/unsuspend
-     - Unsuspends a user and returns them to the `ACTIVE` state.  This operation can only be performed on users that have a `SUSPENDED` status.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func unsuspendUserWithRequestBuilder(userId: String) -> RequestBuilder<Void> {
+    internal func unsuspendUserWithRequestBuilder(userId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}/lifecycle/unsuspend"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -3730,13 +3725,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -3751,7 +3746,11 @@ public struct UserAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateUser(userId: String, user: User, strict: Bool? = nil) -> AnyPublisher<User, Error> {
         return Future<User, Error>.init { promise in
-            updateUserWithRequestBuilder(userId: userId, user: user, strict: strict).execute(queue) { result -> Void in
+            guard let builder = self.updateUserWithRequestBuilder(userId: userId, user: user, strict: strict) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -3771,7 +3770,11 @@ public struct UserAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateUser(userId: String, user: User, strict: Bool? = nil, completion: @escaping ((_ result: Swift.Result<User, Error>) -> Void)) {
-        updateUserWithRequestBuilder(userId: userId, user: user, strict: strict).execute(queue) { result -> Void in
+        guard let builder = updateUserWithRequestBuilder(userId: userId, user: user, strict: strict) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -3781,24 +3784,15 @@ public struct UserAPI {
         }
     }
 
-    /**
-     Update User
-     - PUT /api/v1/users/{userId}
-     - Update a user's profile and/or credentials using strict-update semantics.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter userId: (path)  
-     - parameter user: (body)  
-     - parameter strict: (query)  (optional)
-     - returns: RequestBuilder<User> 
-     */
-    public func updateUserWithRequestBuilder(userId: String, user: User, strict: Bool? = nil) -> RequestBuilder<User> {
+    internal func updateUserWithRequestBuilder(userId: String, user: User, strict: Bool? = nil) -> RequestBuilder<User>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/users/{userId}"
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: user)
 
         var urlComponents = URLComponents(string: URLString)
@@ -3811,13 +3805,13 @@ public struct UserAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<User>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<User>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

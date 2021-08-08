@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct GroupAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class GroupAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -33,7 +31,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activateGroupRule(ruleId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            activateGroupRuleWithRequestBuilder(ruleId: ruleId).execute(queue) { result -> Void in
+            guard let builder = self.activateGroupRuleWithRequestBuilder(ruleId: ruleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -51,7 +53,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func activateGroupRule(ruleId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        activateGroupRuleWithRequestBuilder(ruleId: ruleId).execute(queue) { result -> Void in
+        guard let builder = activateGroupRuleWithRequestBuilder(ruleId: ruleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -61,22 +67,15 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Activate a group Rule
-     - POST /api/v1/groups/rules/{ruleId}/lifecycle/activate
-     - Activates a specific group rule by id from your organization
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter ruleId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func activateGroupRuleWithRequestBuilder(ruleId: String) -> RequestBuilder<Void> {
+    internal func activateGroupRuleWithRequestBuilder(ruleId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/rules/{ruleId}/lifecycle/activate"
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -86,13 +85,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -108,7 +107,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func addApplicationInstanceTargetToAppAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            addApplicationInstanceTargetToAppAdminRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId).execute(queue) { result -> Void in
+            guard let builder = self.addApplicationInstanceTargetToAppAdminRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -129,7 +132,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func addApplicationInstanceTargetToAppAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        addApplicationInstanceTargetToAppAdminRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId).execute(queue) { result -> Void in
+        guard let builder = addApplicationInstanceTargetToAppAdminRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -139,20 +146,10 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Add App Instance Target to App Administrator Role given to a Group
-     - PUT /api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}
-     - Add App Instance Target to App Administrator Role given to a Group
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter roleId: (path)  
-     - parameter appName: (path)  
-     - parameter applicationId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func addApplicationInstanceTargetToAppAdminRoleGivenToGroupWithRequestBuilder(groupId: String, roleId: String, appName: String, applicationId: String) -> RequestBuilder<Void> {
+    internal func addApplicationInstanceTargetToAppAdminRoleGivenToGroupWithRequestBuilder(groupId: String, roleId: String, appName: String, applicationId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -166,7 +163,7 @@ public struct GroupAPI {
         let applicationIdPreEscape = "\(APIHelper.mapValueToPathItem(applicationId))"
         let applicationIdPostEscape = applicationIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{applicationId}", with: applicationIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -176,13 +173,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -196,7 +193,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func addApplicationTargetToAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            addApplicationTargetToAdminRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName).execute(queue) { result -> Void in
+            guard let builder = self.addApplicationTargetToAdminRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -215,7 +216,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func addApplicationTargetToAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        addApplicationTargetToAdminRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName).execute(queue) { result -> Void in
+        guard let builder = addApplicationTargetToAdminRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -225,18 +230,10 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter roleId: (path)  
-     - parameter appName: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func addApplicationTargetToAdminRoleGivenToGroupWithRequestBuilder(groupId: String, roleId: String, appName: String) -> RequestBuilder<Void> {
+    internal func addApplicationTargetToAdminRoleGivenToGroupWithRequestBuilder(groupId: String, roleId: String, appName: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -247,7 +244,7 @@ public struct GroupAPI {
         let appNamePreEscape = "\(APIHelper.mapValueToPathItem(appName))"
         let appNamePostEscape = appNamePreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appName}", with: appNamePostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -257,13 +254,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -278,7 +275,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func addGroupTargetToGroupAdministratorRoleForGroup(groupId: String, roleId: String, targetGroupId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            addGroupTargetToGroupAdministratorRoleForGroupWithRequestBuilder(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId).execute(queue) { result -> Void in
+            guard let builder = self.addGroupTargetToGroupAdministratorRoleForGroupWithRequestBuilder(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -298,7 +299,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func addGroupTargetToGroupAdministratorRoleForGroup(groupId: String, roleId: String, targetGroupId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        addGroupTargetToGroupAdministratorRoleForGroupWithRequestBuilder(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId).execute(queue) { result -> Void in
+        guard let builder = addGroupTargetToGroupAdministratorRoleForGroupWithRequestBuilder(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -308,16 +313,10 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Add Group Target for Group Role
-     - PUT /api/v1/groups/{groupId}/roles/{roleId}/targets/groups/{targetGroupId}
-     - Enumerates group targets for a group role.
-     - parameter groupId: (path)  
-     - parameter roleId: (path)  
-     - parameter targetGroupId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func addGroupTargetToGroupAdministratorRoleForGroupWithRequestBuilder(groupId: String, roleId: String, targetGroupId: String) -> RequestBuilder<Void> {
+    internal func addGroupTargetToGroupAdministratorRoleForGroupWithRequestBuilder(groupId: String, roleId: String, targetGroupId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/roles/{roleId}/targets/groups/{targetGroupId}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -328,7 +327,7 @@ public struct GroupAPI {
         let targetGroupIdPreEscape = "\(APIHelper.mapValueToPathItem(targetGroupId))"
         let targetGroupIdPostEscape = targetGroupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{targetGroupId}", with: targetGroupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -338,13 +337,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -358,7 +357,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func addUserToGroup(groupId: String, userId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            addUserToGroupWithRequestBuilder(groupId: groupId, userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.addUserToGroupWithRequestBuilder(groupId: groupId, userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -377,7 +380,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func addUserToGroup(groupId: String, userId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        addUserToGroupWithRequestBuilder(groupId: groupId, userId: userId).execute(queue) { result -> Void in
+        guard let builder = addUserToGroupWithRequestBuilder(groupId: groupId, userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -387,18 +394,10 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Add User to Group
-     - PUT /api/v1/groups/{groupId}/users/{userId}
-     - Adds a user to a group with 'OKTA_GROUP' type.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter userId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func addUserToGroupWithRequestBuilder(groupId: String, userId: String) -> RequestBuilder<Void> {
+    internal func addUserToGroupWithRequestBuilder(groupId: String, userId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/users/{userId}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -406,7 +405,7 @@ public struct GroupAPI {
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -416,13 +415,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -436,7 +435,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func assignRoleToGroup(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) -> AnyPublisher<Role, Error> {
         return Future<Role, Error>.init { promise in
-            assignRoleToGroupWithRequestBuilder(groupId: groupId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications).execute(queue) { result -> Void in
+            guard let builder = self.assignRoleToGroupWithRequestBuilder(groupId: groupId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -455,7 +458,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func assignRoleToGroup(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil, completion: @escaping ((_ result: Swift.Result<Role, Error>) -> Void)) {
-        assignRoleToGroupWithRequestBuilder(groupId: groupId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications).execute(queue) { result -> Void in
+        guard let builder = assignRoleToGroupWithRequestBuilder(groupId: groupId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -465,23 +472,15 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     - POST /api/v1/groups/{groupId}/roles
-     - Assigns a Role to a Group
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter assignRoleRequest: (body)  
-     - parameter disableNotifications: (query)  (optional)
-     - returns: RequestBuilder<Role> 
-     */
-    public func assignRoleToGroupWithRequestBuilder(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) -> RequestBuilder<Role> {
+    internal func assignRoleToGroupWithRequestBuilder(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) -> RequestBuilder<Role>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/roles"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{groupId}", with: groupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: assignRoleRequest)
 
         var urlComponents = URLComponents(string: URLString)
@@ -494,13 +493,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Role>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Role>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -513,7 +512,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createGroup(group: Group) -> AnyPublisher<Group, Error> {
         return Future<Group, Error>.init { promise in
-            createGroupWithRequestBuilder(group: group).execute(queue) { result -> Void in
+            guard let builder = self.createGroupWithRequestBuilder(group: group) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -531,7 +534,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func createGroup(group: Group, completion: @escaping ((_ result: Swift.Result<Group, Error>) -> Void)) {
-        createGroupWithRequestBuilder(group: group).execute(queue) { result -> Void in
+        guard let builder = createGroupWithRequestBuilder(group: group) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -541,19 +548,12 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Add Group
-     - POST /api/v1/groups
-     - Adds a new group with `OKTA_GROUP` type to your organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter group: (body)  
-     - returns: RequestBuilder<Group> 
-     */
-    public func createGroupWithRequestBuilder(group: Group) -> RequestBuilder<Group> {
+    internal func createGroupWithRequestBuilder(group: Group) -> RequestBuilder<Group>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/groups"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: group)
 
         let urlComponents = URLComponents(string: URLString)
@@ -563,13 +563,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Group>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Group>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -582,7 +582,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createGroupRule(groupRule: GroupRule) -> AnyPublisher<GroupRule, Error> {
         return Future<GroupRule, Error>.init { promise in
-            createGroupRuleWithRequestBuilder(groupRule: groupRule).execute(queue) { result -> Void in
+            guard let builder = self.createGroupRuleWithRequestBuilder(groupRule: groupRule) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -600,7 +604,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func createGroupRule(groupRule: GroupRule, completion: @escaping ((_ result: Swift.Result<GroupRule, Error>) -> Void)) {
-        createGroupRuleWithRequestBuilder(groupRule: groupRule).execute(queue) { result -> Void in
+        guard let builder = createGroupRuleWithRequestBuilder(groupRule: groupRule) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -610,19 +618,12 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Create Group Rule
-     - POST /api/v1/groups/rules
-     - Creates a group rule to dynamically add users to the specified group if they match the condition
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupRule: (body)  
-     - returns: RequestBuilder<GroupRule> 
-     */
-    public func createGroupRuleWithRequestBuilder(groupRule: GroupRule) -> RequestBuilder<GroupRule> {
+    internal func createGroupRuleWithRequestBuilder(groupRule: GroupRule) -> RequestBuilder<GroupRule>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/groups/rules"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: groupRule)
 
         let urlComponents = URLComponents(string: URLString)
@@ -632,13 +633,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<GroupRule>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<GroupRule>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -651,7 +652,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivateGroupRule(ruleId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deactivateGroupRuleWithRequestBuilder(ruleId: ruleId).execute(queue) { result -> Void in
+            guard let builder = self.deactivateGroupRuleWithRequestBuilder(ruleId: ruleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -669,7 +674,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivateGroupRule(ruleId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deactivateGroupRuleWithRequestBuilder(ruleId: ruleId).execute(queue) { result -> Void in
+        guard let builder = deactivateGroupRuleWithRequestBuilder(ruleId: ruleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -679,22 +688,15 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Deactivate a group Rule
-     - POST /api/v1/groups/rules/{ruleId}/lifecycle/deactivate
-     - Deactivates a specific group rule by id from your organization
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter ruleId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deactivateGroupRuleWithRequestBuilder(ruleId: String) -> RequestBuilder<Void> {
+    internal func deactivateGroupRuleWithRequestBuilder(ruleId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/rules/{ruleId}/lifecycle/deactivate"
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -704,13 +706,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -723,7 +725,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteGroup(groupId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteGroupWithRequestBuilder(groupId: groupId).execute(queue) { result -> Void in
+            guard let builder = self.deleteGroupWithRequestBuilder(groupId: groupId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -741,7 +747,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteGroup(groupId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteGroupWithRequestBuilder(groupId: groupId).execute(queue) { result -> Void in
+        guard let builder = deleteGroupWithRequestBuilder(groupId: groupId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -751,22 +761,15 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Remove Group
-     - DELETE /api/v1/groups/{groupId}
-     - Removes a group with `OKTA_GROUP` type from your organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteGroupWithRequestBuilder(groupId: String) -> RequestBuilder<Void> {
+    internal func deleteGroupWithRequestBuilder(groupId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{groupId}", with: groupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -776,13 +779,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -796,7 +799,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteGroupRule(ruleId: String, removeUsers: Bool? = nil) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteGroupRuleWithRequestBuilder(ruleId: ruleId, removeUsers: removeUsers).execute(queue) { result -> Void in
+            guard let builder = self.deleteGroupRuleWithRequestBuilder(ruleId: ruleId, removeUsers: removeUsers) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -815,7 +822,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteGroupRule(ruleId: String, removeUsers: Bool? = nil, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteGroupRuleWithRequestBuilder(ruleId: ruleId, removeUsers: removeUsers).execute(queue) { result -> Void in
+        guard let builder = deleteGroupRuleWithRequestBuilder(ruleId: ruleId, removeUsers: removeUsers) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -825,23 +836,15 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Delete a group Rule
-     - DELETE /api/v1/groups/rules/{ruleId}
-     - Removes a specific group rule by id from your organization
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter ruleId: (path)  
-     - parameter removeUsers: (query) Indicates whether to keep or remove users from groups assigned by this rule. (optional)
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteGroupRuleWithRequestBuilder(ruleId: String, removeUsers: Bool? = nil) -> RequestBuilder<Void> {
+    internal func deleteGroupRuleWithRequestBuilder(ruleId: String, removeUsers: Bool? = nil) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/rules/{ruleId}"
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -854,13 +857,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -873,7 +876,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getGroup(groupId: String) -> AnyPublisher<Group, Error> {
         return Future<Group, Error>.init { promise in
-            getGroupWithRequestBuilder(groupId: groupId).execute(queue) { result -> Void in
+            guard let builder = self.getGroupWithRequestBuilder(groupId: groupId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -891,7 +898,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func getGroup(groupId: String, completion: @escaping ((_ result: Swift.Result<Group, Error>) -> Void)) {
-        getGroupWithRequestBuilder(groupId: groupId).execute(queue) { result -> Void in
+        guard let builder = getGroupWithRequestBuilder(groupId: groupId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -901,22 +912,15 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     List Group Rules
-     - GET /api/v1/groups/{groupId}
-     - Lists all group rules for your organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - returns: RequestBuilder<Group> 
-     */
-    public func getGroupWithRequestBuilder(groupId: String) -> RequestBuilder<Group> {
+    internal func getGroupWithRequestBuilder(groupId: String) -> RequestBuilder<Group>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{groupId}", with: groupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -926,13 +930,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Group>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Group>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -946,7 +950,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getGroupRule(ruleId: String, expand: String? = nil) -> AnyPublisher<GroupRule, Error> {
         return Future<GroupRule, Error>.init { promise in
-            getGroupRuleWithRequestBuilder(ruleId: ruleId, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.getGroupRuleWithRequestBuilder(ruleId: ruleId, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -965,7 +973,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func getGroupRule(ruleId: String, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<GroupRule, Error>) -> Void)) {
-        getGroupRuleWithRequestBuilder(ruleId: ruleId, expand: expand).execute(queue) { result -> Void in
+        guard let builder = getGroupRuleWithRequestBuilder(ruleId: ruleId, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -975,23 +987,15 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Get Group Rule
-     - GET /api/v1/groups/rules/{ruleId}
-     - Fetches a specific group rule by id from your organization
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter ruleId: (path)  
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<GroupRule> 
-     */
-    public func getGroupRuleWithRequestBuilder(ruleId: String, expand: String? = nil) -> RequestBuilder<GroupRule> {
+    internal func getGroupRuleWithRequestBuilder(ruleId: String, expand: String? = nil) -> RequestBuilder<GroupRule>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/rules/{ruleId}"
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1004,13 +1008,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<GroupRule>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<GroupRule>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1023,7 +1027,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getRole(groupId: String, roleId: String) -> AnyPublisher<Role, Error> {
         return Future<Role, Error>.init { promise in
-            getRoleWithRequestBuilder(groupId: groupId, roleId: roleId).execute(queue) { result -> Void in
+            guard let builder = self.getRoleWithRequestBuilder(groupId: groupId, roleId: roleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1041,7 +1049,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func getRole(groupId: String, roleId: String, completion: @escaping ((_ result: Swift.Result<Role, Error>) -> Void)) {
-        getRoleWithRequestBuilder(groupId: groupId, roleId: roleId).execute(queue) { result -> Void in
+        guard let builder = getRoleWithRequestBuilder(groupId: groupId, roleId: roleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1051,17 +1063,10 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     - GET /api/v1/groups/{groupId}/roles/{roleId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter roleId: (path)  
-     - returns: RequestBuilder<Role> 
-     */
-    public func getRoleWithRequestBuilder(groupId: String, roleId: String) -> RequestBuilder<Role> {
+    internal func getRoleWithRequestBuilder(groupId: String, roleId: String) -> RequestBuilder<Role>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/roles/{roleId}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1069,7 +1074,7 @@ public struct GroupAPI {
         let roleIdPreEscape = "\(APIHelper.mapValueToPathItem(roleId))"
         let roleIdPostEscape = roleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{roleId}", with: roleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1079,13 +1084,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Role>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Role>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1100,7 +1105,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listApplicationTargetsForApplicationAdministratorRoleForGroup(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[CatalogApplication], Error> {
         return Future<[CatalogApplication], Error>.init { promise in
-            listApplicationTargetsForApplicationAdministratorRoleForGroupWithRequestBuilder(groupId: groupId, roleId: roleId, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listApplicationTargetsForApplicationAdministratorRoleForGroupWithRequestBuilder(groupId: groupId, roleId: roleId, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1120,7 +1129,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func listApplicationTargetsForApplicationAdministratorRoleForGroup(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[CatalogApplication], Error>) -> Void)) {
-        listApplicationTargetsForApplicationAdministratorRoleForGroupWithRequestBuilder(groupId: groupId, roleId: roleId, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listApplicationTargetsForApplicationAdministratorRoleForGroupWithRequestBuilder(groupId: groupId, roleId: roleId, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1130,19 +1143,10 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     - GET /api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps
-     - Lists all App targets for an `APP_ADMIN` Role assigned to a Group. This methods return list may include full Applications or Instances. The response for an instance will have an `ID` value, while Application will not have an ID.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter roleId: (path)  
-     - parameter after: (query)  (optional)
-     - parameter limit: (query)  (optional, default to 20)
-     - returns: RequestBuilder<[CatalogApplication]> 
-     */
-    public func listApplicationTargetsForApplicationAdministratorRoleForGroupWithRequestBuilder(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[CatalogApplication]> {
+    internal func listApplicationTargetsForApplicationAdministratorRoleForGroupWithRequestBuilder(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[CatalogApplication]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1150,7 +1154,7 @@ public struct GroupAPI {
         let roleIdPreEscape = "\(APIHelper.mapValueToPathItem(roleId))"
         let roleIdPostEscape = roleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{roleId}", with: roleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1164,13 +1168,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[CatalogApplication]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[CatalogApplication]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1185,7 +1189,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[Application], Error> {
         return Future<[Application], Error>.init { promise in
-            listAssignedApplicationsForGroupWithRequestBuilder(groupId: groupId, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listAssignedApplicationsForGroupWithRequestBuilder(groupId: groupId, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1205,7 +1213,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[Application], Error>) -> Void)) {
-        listAssignedApplicationsForGroupWithRequestBuilder(groupId: groupId, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listAssignedApplicationsForGroupWithRequestBuilder(groupId: groupId, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1215,24 +1227,15 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     List Assigned Applications
-     - GET /api/v1/groups/{groupId}/apps
-     - Enumerates all applications that are assigned to a group.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter after: (query) Specifies the pagination cursor for the next page of apps (optional)
-     - parameter limit: (query) Specifies the number of app results for a page (optional, default to 20)
-     - returns: RequestBuilder<[Application]> 
-     */
-    public func listAssignedApplicationsForGroupWithRequestBuilder(groupId: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[Application]> {
+    internal func listAssignedApplicationsForGroupWithRequestBuilder(groupId: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[Application]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/apps"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{groupId}", with: groupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1246,13 +1249,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Application]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Application]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1265,7 +1268,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listGroupAssignedRoles(groupId: String, expand: String? = nil) -> AnyPublisher<[Role], Error> {
         return Future<[Role], Error>.init { promise in
-            listGroupAssignedRolesWithRequestBuilder(groupId: groupId, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.listGroupAssignedRolesWithRequestBuilder(groupId: groupId, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1283,7 +1290,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func listGroupAssignedRoles(groupId: String, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<[Role], Error>) -> Void)) {
-        listGroupAssignedRolesWithRequestBuilder(groupId: groupId, expand: expand).execute(queue) { result -> Void in
+        guard let builder = listGroupAssignedRolesWithRequestBuilder(groupId: groupId, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1293,22 +1304,15 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     - GET /api/v1/groups/{groupId}/roles
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<[Role]> 
-     */
-    public func listGroupAssignedRolesWithRequestBuilder(groupId: String, expand: String? = nil) -> RequestBuilder<[Role]> {
+    internal func listGroupAssignedRolesWithRequestBuilder(groupId: String, expand: String? = nil) -> RequestBuilder<[Role]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/roles"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{groupId}", with: groupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1321,13 +1325,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Role]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Role]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1343,7 +1347,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listGroupRules(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil) -> AnyPublisher<[GroupRule], Error> {
         return Future<[GroupRule], Error>.init { promise in
-            listGroupRulesWithRequestBuilder(limit: limit, after: after, search: search, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.listGroupRulesWithRequestBuilder(limit: limit, after: after, search: search, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1364,7 +1372,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func listGroupRules(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<[GroupRule], Error>) -> Void)) {
-        listGroupRulesWithRequestBuilder(limit: limit, after: after, search: search, expand: expand).execute(queue) { result -> Void in
+        guard let builder = listGroupRulesWithRequestBuilder(limit: limit, after: after, search: search, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1374,22 +1386,12 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     List Group Rules
-     - GET /api/v1/groups/rules
-     - Lists all group rules for your organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter limit: (query) Specifies the number of rule results in a page (optional, default to 50)
-     - parameter after: (query) Specifies the pagination cursor for the next page of rules (optional)
-     - parameter search: (query) Specifies the keyword to search fules for (optional)
-     - parameter expand: (query) If specified as &#x60;groupIdToGroupNameMap&#x60;, then show group names (optional)
-     - returns: RequestBuilder<[GroupRule]> 
-     */
-    public func listGroupRulesWithRequestBuilder(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil) -> RequestBuilder<[GroupRule]> {
+    internal func listGroupRulesWithRequestBuilder(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil) -> RequestBuilder<[GroupRule]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/groups/rules"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1405,13 +1407,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[GroupRule]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[GroupRule]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1427,7 +1429,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listGroupTargetsForGroupRole(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[Group], Error> {
         return Future<[Group], Error>.init { promise in
-            listGroupTargetsForGroupRoleWithRequestBuilder(groupId: groupId, roleId: roleId, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listGroupTargetsForGroupRoleWithRequestBuilder(groupId: groupId, roleId: roleId, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1448,7 +1454,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func listGroupTargetsForGroupRole(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[Group], Error>) -> Void)) {
-        listGroupTargetsForGroupRoleWithRequestBuilder(groupId: groupId, roleId: roleId, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listGroupTargetsForGroupRoleWithRequestBuilder(groupId: groupId, roleId: roleId, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1458,20 +1468,10 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     List Group Targets for Group Role
-     - GET /api/v1/groups/{groupId}/roles/{roleId}/targets/groups
-     - Enumerates group targets for a group role.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter roleId: (path)  
-     - parameter after: (query)  (optional)
-     - parameter limit: (query)  (optional, default to 20)
-     - returns: RequestBuilder<[Group]> 
-     */
-    public func listGroupTargetsForGroupRoleWithRequestBuilder(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[Group]> {
+    internal func listGroupTargetsForGroupRoleWithRequestBuilder(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[Group]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/roles/{roleId}/targets/groups"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1479,7 +1479,7 @@ public struct GroupAPI {
         let roleIdPreEscape = "\(APIHelper.mapValueToPathItem(roleId))"
         let roleIdPostEscape = roleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{roleId}", with: roleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1493,13 +1493,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Group]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Group]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1514,7 +1514,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listGroupUsers(groupId: String, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[User], Error> {
         return Future<[User], Error>.init { promise in
-            listGroupUsersWithRequestBuilder(groupId: groupId, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listGroupUsersWithRequestBuilder(groupId: groupId, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1534,7 +1538,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func listGroupUsers(groupId: String, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[User], Error>) -> Void)) {
-        listGroupUsersWithRequestBuilder(groupId: groupId, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listGroupUsersWithRequestBuilder(groupId: groupId, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1544,24 +1552,15 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     List Group Members
-     - GET /api/v1/groups/{groupId}/users
-     - Enumerates all users that are a member of a group.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter after: (query) Specifies the pagination cursor for the next page of users (optional)
-     - parameter limit: (query) Specifies the number of user results in a page (optional, default to 1000)
-     - returns: RequestBuilder<[User]> 
-     */
-    public func listGroupUsersWithRequestBuilder(groupId: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[User]> {
+    internal func listGroupUsersWithRequestBuilder(groupId: String, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[User]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/users"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{groupId}", with: groupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1575,13 +1574,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[User]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[User]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1598,7 +1597,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listGroups(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) -> AnyPublisher<[Group], Error> {
         return Future<[Group], Error>.init { promise in
-            listGroupsWithRequestBuilder(q: q, search: search, after: after, limit: limit, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.listGroupsWithRequestBuilder(q: q, search: search, after: after, limit: limit, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1620,7 +1623,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func listGroups(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<[Group], Error>) -> Void)) {
-        listGroupsWithRequestBuilder(q: q, search: search, after: after, limit: limit, expand: expand).execute(queue) { result -> Void in
+        guard let builder = listGroupsWithRequestBuilder(q: q, search: search, after: after, limit: limit, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1630,23 +1637,12 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     List Groups
-     - GET /api/v1/groups
-     - Enumerates groups in your organization with pagination. A subset of groups can be returned that match a supported filter expression or query.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter q: (query) Searches the name property of groups for matching value (optional)
-     - parameter search: (query) Filter expression for groups (optional)
-     - parameter after: (query) Specifies the pagination cursor for the next page of groups (optional)
-     - parameter limit: (query) Specifies the number of group results in a page (optional, default to 10000)
-     - parameter expand: (query) If specified, it causes additional metadata to be included in the response. (optional)
-     - returns: RequestBuilder<[Group]> 
-     */
-    public func listGroupsWithRequestBuilder(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) -> RequestBuilder<[Group]> {
+    internal func listGroupsWithRequestBuilder(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) -> RequestBuilder<[Group]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/groups"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1663,13 +1659,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Group]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Group]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1685,7 +1681,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func removeApplicationTargetFromAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            removeApplicationTargetFromAdministratorRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId).execute(queue) { result -> Void in
+            guard let builder = self.removeApplicationTargetFromAdministratorRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -1706,7 +1706,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func removeApplicationTargetFromAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        removeApplicationTargetFromAdministratorRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId).execute(queue) { result -> Void in
+        guard let builder = removeApplicationTargetFromAdministratorRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -1716,20 +1720,10 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Remove App Instance Target to App Administrator Role given to a Group
-     - DELETE /api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}
-     - Remove App Instance Target to App Administrator Role given to a Group
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter roleId: (path)  
-     - parameter appName: (path)  
-     - parameter applicationId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func removeApplicationTargetFromAdministratorRoleGivenToGroupWithRequestBuilder(groupId: String, roleId: String, appName: String, applicationId: String) -> RequestBuilder<Void> {
+    internal func removeApplicationTargetFromAdministratorRoleGivenToGroupWithRequestBuilder(groupId: String, roleId: String, appName: String, applicationId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1743,7 +1737,7 @@ public struct GroupAPI {
         let applicationIdPreEscape = "\(APIHelper.mapValueToPathItem(applicationId))"
         let applicationIdPostEscape = applicationIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{applicationId}", with: applicationIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1753,13 +1747,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1773,7 +1767,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            removeApplicationTargetFromApplicationAdministratorRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName).execute(queue) { result -> Void in
+            guard let builder = self.removeApplicationTargetFromApplicationAdministratorRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -1792,7 +1790,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        removeApplicationTargetFromApplicationAdministratorRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName).execute(queue) { result -> Void in
+        guard let builder = removeApplicationTargetFromApplicationAdministratorRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, appName: appName) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -1802,18 +1804,10 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter roleId: (path)  
-     - parameter appName: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroupWithRequestBuilder(groupId: String, roleId: String, appName: String) -> RequestBuilder<Void> {
+    internal func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroupWithRequestBuilder(groupId: String, roleId: String, appName: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1824,7 +1818,7 @@ public struct GroupAPI {
         let appNamePreEscape = "\(APIHelper.mapValueToPathItem(appName))"
         let appNamePostEscape = appNamePreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appName}", with: appNamePostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1834,13 +1828,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1855,7 +1849,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func removeGroupTargetFromGroupAdministratorRoleGivenToGroup(groupId: String, roleId: String, targetGroupId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            removeGroupTargetFromGroupAdministratorRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId).execute(queue) { result -> Void in
+            guard let builder = self.removeGroupTargetFromGroupAdministratorRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -1875,7 +1873,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func removeGroupTargetFromGroupAdministratorRoleGivenToGroup(groupId: String, roleId: String, targetGroupId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        removeGroupTargetFromGroupAdministratorRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId).execute(queue) { result -> Void in
+        guard let builder = removeGroupTargetFromGroupAdministratorRoleGivenToGroupWithRequestBuilder(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -1885,16 +1887,10 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Delete Group Target for Group Role
-     - DELETE /api/v1/groups/{groupId}/roles/{roleId}/targets/groups/{targetGroupId}
-     - remove group target for a group role.
-     - parameter groupId: (path)  
-     - parameter roleId: (path)  
-     - parameter targetGroupId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func removeGroupTargetFromGroupAdministratorRoleGivenToGroupWithRequestBuilder(groupId: String, roleId: String, targetGroupId: String) -> RequestBuilder<Void> {
+    internal func removeGroupTargetFromGroupAdministratorRoleGivenToGroupWithRequestBuilder(groupId: String, roleId: String, targetGroupId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/roles/{roleId}/targets/groups/{targetGroupId}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1905,7 +1901,7 @@ public struct GroupAPI {
         let targetGroupIdPreEscape = "\(APIHelper.mapValueToPathItem(targetGroupId))"
         let targetGroupIdPostEscape = targetGroupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{targetGroupId}", with: targetGroupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1915,13 +1911,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1934,7 +1930,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func removeRoleFromGroup(groupId: String, roleId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            removeRoleFromGroupWithRequestBuilder(groupId: groupId, roleId: roleId).execute(queue) { result -> Void in
+            guard let builder = self.removeRoleFromGroupWithRequestBuilder(groupId: groupId, roleId: roleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -1952,7 +1952,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func removeRoleFromGroup(groupId: String, roleId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        removeRoleFromGroupWithRequestBuilder(groupId: groupId, roleId: roleId).execute(queue) { result -> Void in
+        guard let builder = removeRoleFromGroupWithRequestBuilder(groupId: groupId, roleId: roleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -1962,17 +1966,10 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/groups/{groupId}/roles/{roleId}
-     - Unassigns a Role from a Group
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter roleId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func removeRoleFromGroupWithRequestBuilder(groupId: String, roleId: String) -> RequestBuilder<Void> {
+    internal func removeRoleFromGroupWithRequestBuilder(groupId: String, roleId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/roles/{roleId}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1980,7 +1977,7 @@ public struct GroupAPI {
         let roleIdPreEscape = "\(APIHelper.mapValueToPathItem(roleId))"
         let roleIdPostEscape = roleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{roleId}", with: roleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1990,13 +1987,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2010,7 +2007,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func removeUserFromGroup(groupId: String, userId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            removeUserFromGroupWithRequestBuilder(groupId: groupId, userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.removeUserFromGroupWithRequestBuilder(groupId: groupId, userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2029,7 +2030,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func removeUserFromGroup(groupId: String, userId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        removeUserFromGroupWithRequestBuilder(groupId: groupId, userId: userId).execute(queue) { result -> Void in
+        guard let builder = removeUserFromGroupWithRequestBuilder(groupId: groupId, userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2039,18 +2044,10 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Remove User from Group
-     - DELETE /api/v1/groups/{groupId}/users/{userId}
-     - Removes a user from a group with 'OKTA_GROUP' type.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter userId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func removeUserFromGroupWithRequestBuilder(groupId: String, userId: String) -> RequestBuilder<Void> {
+    internal func removeUserFromGroupWithRequestBuilder(groupId: String, userId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}/users/{userId}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2058,7 +2055,7 @@ public struct GroupAPI {
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2068,13 +2065,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2088,7 +2085,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateGroup(groupId: String, group: Group) -> AnyPublisher<Group, Error> {
         return Future<Group, Error>.init { promise in
-            updateGroupWithRequestBuilder(groupId: groupId, group: group).execute(queue) { result -> Void in
+            guard let builder = self.updateGroupWithRequestBuilder(groupId: groupId, group: group) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2107,7 +2108,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateGroup(groupId: String, group: Group, completion: @escaping ((_ result: Swift.Result<Group, Error>) -> Void)) {
-        updateGroupWithRequestBuilder(groupId: groupId, group: group).execute(queue) { result -> Void in
+        guard let builder = updateGroupWithRequestBuilder(groupId: groupId, group: group) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2117,23 +2122,15 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     Update Group
-     - PUT /api/v1/groups/{groupId}
-     - Updates the profile for a group with `OKTA_GROUP` type from your organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter groupId: (path)  
-     - parameter group: (body)  
-     - returns: RequestBuilder<Group> 
-     */
-    public func updateGroupWithRequestBuilder(groupId: String, group: Group) -> RequestBuilder<Group> {
+    internal func updateGroupWithRequestBuilder(groupId: String, group: Group) -> RequestBuilder<Group>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/{groupId}"
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{groupId}", with: groupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: group)
 
         let urlComponents = URLComponents(string: URLString)
@@ -2143,13 +2140,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Group>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Group>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2162,7 +2159,11 @@ public struct GroupAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateGroupRule(ruleId: String, groupRule: GroupRule) -> AnyPublisher<GroupRule, Error> {
         return Future<GroupRule, Error>.init { promise in
-            updateGroupRuleWithRequestBuilder(ruleId: ruleId, groupRule: groupRule).execute(queue) { result -> Void in
+            guard let builder = self.updateGroupRuleWithRequestBuilder(ruleId: ruleId, groupRule: groupRule) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2180,7 +2181,11 @@ public struct GroupAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateGroupRule(ruleId: String, groupRule: GroupRule, completion: @escaping ((_ result: Swift.Result<GroupRule, Error>) -> Void)) {
-        updateGroupRuleWithRequestBuilder(ruleId: ruleId, groupRule: groupRule).execute(queue) { result -> Void in
+        guard let builder = updateGroupRuleWithRequestBuilder(ruleId: ruleId, groupRule: groupRule) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2190,22 +2195,15 @@ public struct GroupAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/groups/rules/{ruleId}
-     - Updates a group rule. Only `INACTIVE` rules can be updated.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter ruleId: (path)  
-     - parameter groupRule: (body)  
-     - returns: RequestBuilder<GroupRule> 
-     */
-    public func updateGroupRuleWithRequestBuilder(ruleId: String, groupRule: GroupRule) -> RequestBuilder<GroupRule> {
+    internal func updateGroupRuleWithRequestBuilder(ruleId: String, groupRule: GroupRule) -> RequestBuilder<GroupRule>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/groups/rules/{ruleId}"
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: groupRule)
 
         let urlComponents = URLComponents(string: URLString)
@@ -2215,13 +2213,13 @@ public struct GroupAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<GroupRule>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<GroupRule>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

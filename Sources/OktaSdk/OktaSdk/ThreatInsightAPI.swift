@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct ThreatInsightAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class ThreatInsightAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -31,7 +29,11 @@ public struct ThreatInsightAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getCurrentConfiguration() -> AnyPublisher<ThreatInsightConfiguration, Error> {
         return Future<ThreatInsightConfiguration, Error>.init { promise in
-            getCurrentConfigurationWithRequestBuilder().execute(queue) { result -> Void in
+            guard let builder = self.getCurrentConfigurationWithRequestBuilder() else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -47,7 +49,11 @@ public struct ThreatInsightAPI {
      - parameter completion: completion handler to receive the result
      */
     func getCurrentConfiguration(completion: @escaping ((_ result: Swift.Result<ThreatInsightConfiguration, Error>) -> Void)) {
-        getCurrentConfigurationWithRequestBuilder().execute(queue) { result -> Void in
+        guard let builder = getCurrentConfigurationWithRequestBuilder() else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -57,17 +63,12 @@ public struct ThreatInsightAPI {
         }
     }
 
-    /**
-     - GET /api/v1/threats/configuration
-     - Gets current ThreatInsight configuration
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - returns: RequestBuilder<ThreatInsightConfiguration> 
-     */
-    public func getCurrentConfigurationWithRequestBuilder() -> RequestBuilder<ThreatInsightConfiguration> {
+    internal func getCurrentConfigurationWithRequestBuilder() -> RequestBuilder<ThreatInsightConfiguration>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/threats/configuration"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -77,13 +78,13 @@ public struct ThreatInsightAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<ThreatInsightConfiguration>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<ThreatInsightConfiguration>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -95,7 +96,11 @@ public struct ThreatInsightAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration) -> AnyPublisher<ThreatInsightConfiguration, Error> {
         return Future<ThreatInsightConfiguration, Error>.init { promise in
-            updateConfigurationWithRequestBuilder(threatInsightConfiguration: threatInsightConfiguration).execute(queue) { result -> Void in
+            guard let builder = self.updateConfigurationWithRequestBuilder(threatInsightConfiguration: threatInsightConfiguration) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -112,7 +117,11 @@ public struct ThreatInsightAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration, completion: @escaping ((_ result: Swift.Result<ThreatInsightConfiguration, Error>) -> Void)) {
-        updateConfigurationWithRequestBuilder(threatInsightConfiguration: threatInsightConfiguration).execute(queue) { result -> Void in
+        guard let builder = updateConfigurationWithRequestBuilder(threatInsightConfiguration: threatInsightConfiguration) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -122,18 +131,12 @@ public struct ThreatInsightAPI {
         }
     }
 
-    /**
-     - POST /api/v1/threats/configuration
-     - Updates ThreatInsight configuration
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter threatInsightConfiguration: (body)  
-     - returns: RequestBuilder<ThreatInsightConfiguration> 
-     */
-    public func updateConfigurationWithRequestBuilder(threatInsightConfiguration: ThreatInsightConfiguration) -> RequestBuilder<ThreatInsightConfiguration> {
+    internal func updateConfigurationWithRequestBuilder(threatInsightConfiguration: ThreatInsightConfiguration) -> RequestBuilder<ThreatInsightConfiguration>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/threats/configuration"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: threatInsightConfiguration)
 
         let urlComponents = URLComponents(string: URLString)
@@ -143,13 +146,13 @@ public struct ThreatInsightAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<ThreatInsightConfiguration>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<ThreatInsightConfiguration>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

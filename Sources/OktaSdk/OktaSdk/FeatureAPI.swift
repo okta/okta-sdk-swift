@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct FeatureAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class FeatureAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -32,7 +30,11 @@ public struct FeatureAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getFeature(featureId: String) -> AnyPublisher<Feature, Error> {
         return Future<Feature, Error>.init { promise in
-            getFeatureWithRequestBuilder(featureId: featureId).execute(queue) { result -> Void in
+            guard let builder = self.getFeatureWithRequestBuilder(featureId: featureId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -49,7 +51,11 @@ public struct FeatureAPI {
      - parameter completion: completion handler to receive the result
      */
     func getFeature(featureId: String, completion: @escaping ((_ result: Swift.Result<Feature, Error>) -> Void)) {
-        getFeatureWithRequestBuilder(featureId: featureId).execute(queue) { result -> Void in
+        guard let builder = getFeatureWithRequestBuilder(featureId: featureId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -59,21 +65,15 @@ public struct FeatureAPI {
         }
     }
 
-    /**
-     - GET /api/v1/features/{featureId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter featureId: (path)  
-     - returns: RequestBuilder<Feature> 
-     */
-    public func getFeatureWithRequestBuilder(featureId: String) -> RequestBuilder<Feature> {
+    internal func getFeatureWithRequestBuilder(featureId: String) -> RequestBuilder<Feature>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/features/{featureId}"
         let featureIdPreEscape = "\(APIHelper.mapValueToPathItem(featureId))"
         let featureIdPostEscape = featureIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{featureId}", with: featureIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -83,13 +83,13 @@ public struct FeatureAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Feature>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Feature>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -101,7 +101,11 @@ public struct FeatureAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listFeatureDependencies(featureId: String) -> AnyPublisher<[Feature], Error> {
         return Future<[Feature], Error>.init { promise in
-            listFeatureDependenciesWithRequestBuilder(featureId: featureId).execute(queue) { result -> Void in
+            guard let builder = self.listFeatureDependenciesWithRequestBuilder(featureId: featureId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -118,7 +122,11 @@ public struct FeatureAPI {
      - parameter completion: completion handler to receive the result
      */
     func listFeatureDependencies(featureId: String, completion: @escaping ((_ result: Swift.Result<[Feature], Error>) -> Void)) {
-        listFeatureDependenciesWithRequestBuilder(featureId: featureId).execute(queue) { result -> Void in
+        guard let builder = listFeatureDependenciesWithRequestBuilder(featureId: featureId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -128,21 +136,15 @@ public struct FeatureAPI {
         }
     }
 
-    /**
-     - GET /api/v1/features/{featureId}/dependencies
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter featureId: (path)  
-     - returns: RequestBuilder<[Feature]> 
-     */
-    public func listFeatureDependenciesWithRequestBuilder(featureId: String) -> RequestBuilder<[Feature]> {
+    internal func listFeatureDependenciesWithRequestBuilder(featureId: String) -> RequestBuilder<[Feature]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/features/{featureId}/dependencies"
         let featureIdPreEscape = "\(APIHelper.mapValueToPathItem(featureId))"
         let featureIdPostEscape = featureIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{featureId}", with: featureIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -152,13 +154,13 @@ public struct FeatureAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Feature]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Feature]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -170,7 +172,11 @@ public struct FeatureAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listFeatureDependents(featureId: String) -> AnyPublisher<[Feature], Error> {
         return Future<[Feature], Error>.init { promise in
-            listFeatureDependentsWithRequestBuilder(featureId: featureId).execute(queue) { result -> Void in
+            guard let builder = self.listFeatureDependentsWithRequestBuilder(featureId: featureId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -187,7 +193,11 @@ public struct FeatureAPI {
      - parameter completion: completion handler to receive the result
      */
     func listFeatureDependents(featureId: String, completion: @escaping ((_ result: Swift.Result<[Feature], Error>) -> Void)) {
-        listFeatureDependentsWithRequestBuilder(featureId: featureId).execute(queue) { result -> Void in
+        guard let builder = listFeatureDependentsWithRequestBuilder(featureId: featureId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -197,21 +207,15 @@ public struct FeatureAPI {
         }
     }
 
-    /**
-     - GET /api/v1/features/{featureId}/dependents
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter featureId: (path)  
-     - returns: RequestBuilder<[Feature]> 
-     */
-    public func listFeatureDependentsWithRequestBuilder(featureId: String) -> RequestBuilder<[Feature]> {
+    internal func listFeatureDependentsWithRequestBuilder(featureId: String) -> RequestBuilder<[Feature]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/features/{featureId}/dependents"
         let featureIdPreEscape = "\(APIHelper.mapValueToPathItem(featureId))"
         let featureIdPostEscape = featureIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{featureId}", with: featureIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -221,13 +225,13 @@ public struct FeatureAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Feature]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Feature]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -238,7 +242,11 @@ public struct FeatureAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listFeatures() -> AnyPublisher<[Feature], Error> {
         return Future<[Feature], Error>.init { promise in
-            listFeaturesWithRequestBuilder().execute(queue) { result -> Void in
+            guard let builder = self.listFeaturesWithRequestBuilder() else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -254,7 +262,11 @@ public struct FeatureAPI {
      - parameter completion: completion handler to receive the result
      */
     func listFeatures(completion: @escaping ((_ result: Swift.Result<[Feature], Error>) -> Void)) {
-        listFeaturesWithRequestBuilder().execute(queue) { result -> Void in
+        guard let builder = listFeaturesWithRequestBuilder() else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -264,17 +276,12 @@ public struct FeatureAPI {
         }
     }
 
-    /**
-     - GET /api/v1/features
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - returns: RequestBuilder<[Feature]> 
-     */
-    public func listFeaturesWithRequestBuilder() -> RequestBuilder<[Feature]> {
+    internal func listFeaturesWithRequestBuilder() -> RequestBuilder<[Feature]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/features"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -284,13 +291,13 @@ public struct FeatureAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Feature]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Feature]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -304,7 +311,11 @@ public struct FeatureAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil) -> AnyPublisher<Feature, Error> {
         return Future<Feature, Error>.init { promise in
-            updateFeatureLifecycleWithRequestBuilder(featureId: featureId, lifecycle: lifecycle, mode: mode).execute(queue) { result -> Void in
+            guard let builder = self.updateFeatureLifecycleWithRequestBuilder(featureId: featureId, lifecycle: lifecycle, mode: mode) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -323,7 +334,11 @@ public struct FeatureAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil, completion: @escaping ((_ result: Swift.Result<Feature, Error>) -> Void)) {
-        updateFeatureLifecycleWithRequestBuilder(featureId: featureId, lifecycle: lifecycle, mode: mode).execute(queue) { result -> Void in
+        guard let builder = updateFeatureLifecycleWithRequestBuilder(featureId: featureId, lifecycle: lifecycle, mode: mode) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -333,18 +348,10 @@ public struct FeatureAPI {
         }
     }
 
-    /**
-     - POST /api/v1/features/{featureId}/{lifecycle}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter featureId: (path)  
-     - parameter lifecycle: (path)  
-     - parameter mode: (query)  (optional)
-     - returns: RequestBuilder<Feature> 
-     */
-    public func updateFeatureLifecycleWithRequestBuilder(featureId: String, lifecycle: String, mode: String? = nil) -> RequestBuilder<Feature> {
+    internal func updateFeatureLifecycleWithRequestBuilder(featureId: String, lifecycle: String, mode: String? = nil) -> RequestBuilder<Feature>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/features/{featureId}/{lifecycle}"
         let featureIdPreEscape = "\(APIHelper.mapValueToPathItem(featureId))"
         let featureIdPostEscape = featureIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -352,7 +359,7 @@ public struct FeatureAPI {
         let lifecyclePreEscape = "\(APIHelper.mapValueToPathItem(lifecycle))"
         let lifecyclePostEscape = lifecyclePreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{lifecycle}", with: lifecyclePostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -365,13 +372,13 @@ public struct FeatureAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Feature>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Feature>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

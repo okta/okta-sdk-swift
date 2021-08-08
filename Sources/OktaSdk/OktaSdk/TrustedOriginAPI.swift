@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct TrustedOriginAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class TrustedOriginAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -32,7 +30,11 @@ public struct TrustedOriginAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activateOrigin(trustedOriginId: String) -> AnyPublisher<TrustedOrigin, Error> {
         return Future<TrustedOrigin, Error>.init { promise in
-            activateOriginWithRequestBuilder(trustedOriginId: trustedOriginId).execute(queue) { result -> Void in
+            guard let builder = self.activateOriginWithRequestBuilder(trustedOriginId: trustedOriginId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -49,7 +51,11 @@ public struct TrustedOriginAPI {
      - parameter completion: completion handler to receive the result
      */
     func activateOrigin(trustedOriginId: String, completion: @escaping ((_ result: Swift.Result<TrustedOrigin, Error>) -> Void)) {
-        activateOriginWithRequestBuilder(trustedOriginId: trustedOriginId).execute(queue) { result -> Void in
+        guard let builder = activateOriginWithRequestBuilder(trustedOriginId: trustedOriginId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -59,21 +65,15 @@ public struct TrustedOriginAPI {
         }
     }
 
-    /**
-     - POST /api/v1/trustedOrigins/{trustedOriginId}/lifecycle/activate
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter trustedOriginId: (path)  
-     - returns: RequestBuilder<TrustedOrigin> 
-     */
-    public func activateOriginWithRequestBuilder(trustedOriginId: String) -> RequestBuilder<TrustedOrigin> {
+    internal func activateOriginWithRequestBuilder(trustedOriginId: String) -> RequestBuilder<TrustedOrigin>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/trustedOrigins/{trustedOriginId}/lifecycle/activate"
         let trustedOriginIdPreEscape = "\(APIHelper.mapValueToPathItem(trustedOriginId))"
         let trustedOriginIdPostEscape = trustedOriginIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{trustedOriginId}", with: trustedOriginIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -83,13 +83,13 @@ public struct TrustedOriginAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<TrustedOrigin>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<TrustedOrigin>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -101,7 +101,11 @@ public struct TrustedOriginAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createOrigin(trustedOrigin: TrustedOrigin) -> AnyPublisher<TrustedOrigin, Error> {
         return Future<TrustedOrigin, Error>.init { promise in
-            createOriginWithRequestBuilder(trustedOrigin: trustedOrigin).execute(queue) { result -> Void in
+            guard let builder = self.createOriginWithRequestBuilder(trustedOrigin: trustedOrigin) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -118,7 +122,11 @@ public struct TrustedOriginAPI {
      - parameter completion: completion handler to receive the result
      */
     func createOrigin(trustedOrigin: TrustedOrigin, completion: @escaping ((_ result: Swift.Result<TrustedOrigin, Error>) -> Void)) {
-        createOriginWithRequestBuilder(trustedOrigin: trustedOrigin).execute(queue) { result -> Void in
+        guard let builder = createOriginWithRequestBuilder(trustedOrigin: trustedOrigin) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -128,18 +136,12 @@ public struct TrustedOriginAPI {
         }
     }
 
-    /**
-     - POST /api/v1/trustedOrigins
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter trustedOrigin: (body)  
-     - returns: RequestBuilder<TrustedOrigin> 
-     */
-    public func createOriginWithRequestBuilder(trustedOrigin: TrustedOrigin) -> RequestBuilder<TrustedOrigin> {
+    internal func createOriginWithRequestBuilder(trustedOrigin: TrustedOrigin) -> RequestBuilder<TrustedOrigin>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/trustedOrigins"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: trustedOrigin)
 
         let urlComponents = URLComponents(string: URLString)
@@ -149,13 +151,13 @@ public struct TrustedOriginAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<TrustedOrigin>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<TrustedOrigin>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -167,7 +169,11 @@ public struct TrustedOriginAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivateOrigin(trustedOriginId: String) -> AnyPublisher<TrustedOrigin, Error> {
         return Future<TrustedOrigin, Error>.init { promise in
-            deactivateOriginWithRequestBuilder(trustedOriginId: trustedOriginId).execute(queue) { result -> Void in
+            guard let builder = self.deactivateOriginWithRequestBuilder(trustedOriginId: trustedOriginId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -184,7 +190,11 @@ public struct TrustedOriginAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivateOrigin(trustedOriginId: String, completion: @escaping ((_ result: Swift.Result<TrustedOrigin, Error>) -> Void)) {
-        deactivateOriginWithRequestBuilder(trustedOriginId: trustedOriginId).execute(queue) { result -> Void in
+        guard let builder = deactivateOriginWithRequestBuilder(trustedOriginId: trustedOriginId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -194,21 +204,15 @@ public struct TrustedOriginAPI {
         }
     }
 
-    /**
-     - POST /api/v1/trustedOrigins/{trustedOriginId}/lifecycle/deactivate
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter trustedOriginId: (path)  
-     - returns: RequestBuilder<TrustedOrigin> 
-     */
-    public func deactivateOriginWithRequestBuilder(trustedOriginId: String) -> RequestBuilder<TrustedOrigin> {
+    internal func deactivateOriginWithRequestBuilder(trustedOriginId: String) -> RequestBuilder<TrustedOrigin>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/trustedOrigins/{trustedOriginId}/lifecycle/deactivate"
         let trustedOriginIdPreEscape = "\(APIHelper.mapValueToPathItem(trustedOriginId))"
         let trustedOriginIdPostEscape = trustedOriginIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{trustedOriginId}", with: trustedOriginIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -218,13 +222,13 @@ public struct TrustedOriginAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<TrustedOrigin>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<TrustedOrigin>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -236,7 +240,11 @@ public struct TrustedOriginAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteOrigin(trustedOriginId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteOriginWithRequestBuilder(trustedOriginId: trustedOriginId).execute(queue) { result -> Void in
+            guard let builder = self.deleteOriginWithRequestBuilder(trustedOriginId: trustedOriginId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -253,7 +261,11 @@ public struct TrustedOriginAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteOrigin(trustedOriginId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteOriginWithRequestBuilder(trustedOriginId: trustedOriginId).execute(queue) { result -> Void in
+        guard let builder = deleteOriginWithRequestBuilder(trustedOriginId: trustedOriginId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -263,21 +275,15 @@ public struct TrustedOriginAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/trustedOrigins/{trustedOriginId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter trustedOriginId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteOriginWithRequestBuilder(trustedOriginId: String) -> RequestBuilder<Void> {
+    internal func deleteOriginWithRequestBuilder(trustedOriginId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/trustedOrigins/{trustedOriginId}"
         let trustedOriginIdPreEscape = "\(APIHelper.mapValueToPathItem(trustedOriginId))"
         let trustedOriginIdPostEscape = trustedOriginIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{trustedOriginId}", with: trustedOriginIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -287,13 +293,13 @@ public struct TrustedOriginAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -305,7 +311,11 @@ public struct TrustedOriginAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getOrigin(trustedOriginId: String) -> AnyPublisher<TrustedOrigin, Error> {
         return Future<TrustedOrigin, Error>.init { promise in
-            getOriginWithRequestBuilder(trustedOriginId: trustedOriginId).execute(queue) { result -> Void in
+            guard let builder = self.getOriginWithRequestBuilder(trustedOriginId: trustedOriginId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -322,7 +332,11 @@ public struct TrustedOriginAPI {
      - parameter completion: completion handler to receive the result
      */
     func getOrigin(trustedOriginId: String, completion: @escaping ((_ result: Swift.Result<TrustedOrigin, Error>) -> Void)) {
-        getOriginWithRequestBuilder(trustedOriginId: trustedOriginId).execute(queue) { result -> Void in
+        guard let builder = getOriginWithRequestBuilder(trustedOriginId: trustedOriginId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -332,21 +346,15 @@ public struct TrustedOriginAPI {
         }
     }
 
-    /**
-     - GET /api/v1/trustedOrigins/{trustedOriginId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter trustedOriginId: (path)  
-     - returns: RequestBuilder<TrustedOrigin> 
-     */
-    public func getOriginWithRequestBuilder(trustedOriginId: String) -> RequestBuilder<TrustedOrigin> {
+    internal func getOriginWithRequestBuilder(trustedOriginId: String) -> RequestBuilder<TrustedOrigin>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/trustedOrigins/{trustedOriginId}"
         let trustedOriginIdPreEscape = "\(APIHelper.mapValueToPathItem(trustedOriginId))"
         let trustedOriginIdPostEscape = trustedOriginIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{trustedOriginId}", with: trustedOriginIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -356,13 +364,13 @@ public struct TrustedOriginAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<TrustedOrigin>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<TrustedOrigin>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -377,7 +385,11 @@ public struct TrustedOriginAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[TrustedOrigin], Error> {
         return Future<[TrustedOrigin], Error>.init { promise in
-            listOriginsWithRequestBuilder(q: q, filter: filter, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listOriginsWithRequestBuilder(q: q, filter: filter, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -397,7 +409,11 @@ public struct TrustedOriginAPI {
      - parameter completion: completion handler to receive the result
      */
     func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[TrustedOrigin], Error>) -> Void)) {
-        listOriginsWithRequestBuilder(q: q, filter: filter, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listOriginsWithRequestBuilder(q: q, filter: filter, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -407,21 +423,12 @@ public struct TrustedOriginAPI {
         }
     }
 
-    /**
-     - GET /api/v1/trustedOrigins
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter q: (query)  (optional)
-     - parameter filter: (query)  (optional)
-     - parameter after: (query)  (optional)
-     - parameter limit: (query)  (optional, default to -1)
-     - returns: RequestBuilder<[TrustedOrigin]> 
-     */
-    public func listOriginsWithRequestBuilder(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[TrustedOrigin]> {
+    internal func listOriginsWithRequestBuilder(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[TrustedOrigin]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/trustedOrigins"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -437,13 +444,13 @@ public struct TrustedOriginAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[TrustedOrigin]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[TrustedOrigin]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -456,7 +463,11 @@ public struct TrustedOriginAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin) -> AnyPublisher<TrustedOrigin, Error> {
         return Future<TrustedOrigin, Error>.init { promise in
-            updateOriginWithRequestBuilder(trustedOriginId: trustedOriginId, trustedOrigin: trustedOrigin).execute(queue) { result -> Void in
+            guard let builder = self.updateOriginWithRequestBuilder(trustedOriginId: trustedOriginId, trustedOrigin: trustedOrigin) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -474,7 +485,11 @@ public struct TrustedOriginAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin, completion: @escaping ((_ result: Swift.Result<TrustedOrigin, Error>) -> Void)) {
-        updateOriginWithRequestBuilder(trustedOriginId: trustedOriginId, trustedOrigin: trustedOrigin).execute(queue) { result -> Void in
+        guard let builder = updateOriginWithRequestBuilder(trustedOriginId: trustedOriginId, trustedOrigin: trustedOrigin) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -484,22 +499,15 @@ public struct TrustedOriginAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/trustedOrigins/{trustedOriginId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter trustedOriginId: (path)  
-     - parameter trustedOrigin: (body)  
-     - returns: RequestBuilder<TrustedOrigin> 
-     */
-    public func updateOriginWithRequestBuilder(trustedOriginId: String, trustedOrigin: TrustedOrigin) -> RequestBuilder<TrustedOrigin> {
+    internal func updateOriginWithRequestBuilder(trustedOriginId: String, trustedOrigin: TrustedOrigin) -> RequestBuilder<TrustedOrigin>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/trustedOrigins/{trustedOriginId}"
         let trustedOriginIdPreEscape = "\(APIHelper.mapValueToPathItem(trustedOriginId))"
         let trustedOriginIdPostEscape = trustedOriginIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{trustedOriginId}", with: trustedOriginIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: trustedOrigin)
 
         let urlComponents = URLComponents(string: URLString)
@@ -509,13 +517,13 @@ public struct TrustedOriginAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<TrustedOrigin>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<TrustedOrigin>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

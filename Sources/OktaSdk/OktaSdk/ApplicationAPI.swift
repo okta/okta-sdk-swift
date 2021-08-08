@@ -16,8 +16,6 @@ extension OktaSdk.API {
 
 public class ApplicationAPI {
     internal weak var api: OktaSdkAPI?
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
 
     internal init(api: OktaSdkAPI) {
         self.api = api
@@ -33,7 +31,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activateApplication(appId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            activateApplicationWithRequestBuilder(appId: appId).execute(queue) { result -> Void in
+            guard let builder = self.activateApplicationWithRequestBuilder(appId: appId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -51,7 +53,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func activateApplication(appId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        activateApplicationWithRequestBuilder(appId: appId).execute(queue) { result -> Void in
+        guard let builder = activateApplicationWithRequestBuilder(appId: appId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -61,22 +67,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Activate Application
-     - POST /api/v1/apps/{appId}/lifecycle/activate
-     - Activates an inactive application.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    func activateApplicationWithRequestBuilder(appId: String) -> RequestBuilder<Void> {
+    internal func activateApplicationWithRequestBuilder(appId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/lifecycle/activate"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -86,13 +85,11 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
-        let requestBuilder2: RequestBuilder<Void>.Type = api?.requestBuilderFactory.getNonDecodableBuilder()
 
-
-        let requestBuilder: RequestBuilder<Void>.Type = client. OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
         return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
@@ -108,7 +105,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func assignUserToApplication(appId: String, appUser: AppUser) -> AnyPublisher<AppUser, Error> {
         return Future<AppUser, Error>.init { promise in
-            assignUserToApplicationWithRequestBuilder(appId: appId, appUser: appUser).execute(queue) { result -> Void in
+            guard let builder = self.assignUserToApplicationWithRequestBuilder(appId: appId, appUser: appUser) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -127,7 +128,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func assignUserToApplication(appId: String, appUser: AppUser, completion: @escaping ((_ result: Swift.Result<AppUser, Error>) -> Void)) {
-        assignUserToApplicationWithRequestBuilder(appId: appId, appUser: appUser).execute(queue) { result -> Void in
+        guard let builder = assignUserToApplicationWithRequestBuilder(appId: appId, appUser: appUser) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -137,23 +142,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Assign User to Application for SSO & Provisioning
-     - POST /api/v1/apps/{appId}/users
-     - Assigns an user to an application with [credentials](#application-user-credentials-object) and an app-specific [profile](#application-user-profile-object). Profile mappings defined for the application are first applied before applying any profile properties specified in the request.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter appUser: (body)  
-     - returns: RequestBuilder<AppUser> 
-     */
-    public func assignUserToApplicationWithRequestBuilder(appId: String, appUser: AppUser) -> RequestBuilder<AppUser> {
+    internal func assignUserToApplicationWithRequestBuilder(appId: String, appUser: AppUser) -> RequestBuilder<AppUser>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/users"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: appUser)
 
         let urlComponents = URLComponents(string: URLString)
@@ -163,13 +160,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<AppUser>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AppUser>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -184,7 +181,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func cloneApplicationKey(appId: String, keyId: String, targetAid: String) -> AnyPublisher<JsonWebKey, Error> {
         return Future<JsonWebKey, Error>.init { promise in
-            cloneApplicationKeyWithRequestBuilder(appId: appId, keyId: keyId, targetAid: targetAid).execute(queue) { result -> Void in
+            guard let builder = self.cloneApplicationKeyWithRequestBuilder(appId: appId, keyId: keyId, targetAid: targetAid) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -204,7 +205,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func cloneApplicationKey(appId: String, keyId: String, targetAid: String, completion: @escaping ((_ result: Swift.Result<JsonWebKey, Error>) -> Void)) {
-        cloneApplicationKeyWithRequestBuilder(appId: appId, keyId: keyId, targetAid: targetAid).execute(queue) { result -> Void in
+        guard let builder = cloneApplicationKeyWithRequestBuilder(appId: appId, keyId: keyId, targetAid: targetAid) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -214,19 +219,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Clone Application Key Credential
-     - POST /api/v1/apps/{appId}/credentials/keys/{keyId}/clone
-     - Clones a X.509 certificate for an application key credential from a source application to target application.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter keyId: (path)  
-     - parameter targetAid: (query) Unique key of the target Application 
-     - returns: RequestBuilder<JsonWebKey> 
-     */
-    public func cloneApplicationKeyWithRequestBuilder(appId: String, keyId: String, targetAid: String) -> RequestBuilder<JsonWebKey> {
+    internal func cloneApplicationKeyWithRequestBuilder(appId: String, keyId: String, targetAid: String) -> RequestBuilder<JsonWebKey>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/credentials/keys/{keyId}/clone"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -234,7 +230,7 @@ public class ApplicationAPI {
         let keyIdPreEscape = "\(APIHelper.mapValueToPathItem(keyId))"
         let keyIdPostEscape = keyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{keyId}", with: keyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -247,13 +243,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<JsonWebKey>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<JsonWebKey>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -268,7 +264,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) -> AnyPublisher<Application, Error> {
         return Future<Application, Error>.init { promise in
-            createApplicationWithRequestBuilder(application: application, activate: activate, oktaAccessGatewayAgent: oktaAccessGatewayAgent).execute(queue) { result -> Void in
+            guard let builder = self.createApplicationWithRequestBuilder(application: application, activate: activate, oktaAccessGatewayAgent: oktaAccessGatewayAgent) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -288,7 +288,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil, completion: @escaping ((_ result: Swift.Result<Application, Error>) -> Void)) {
-        createApplicationWithRequestBuilder(application: application, activate: activate, oktaAccessGatewayAgent: oktaAccessGatewayAgent).execute(queue) { result -> Void in
+        guard let builder = createApplicationWithRequestBuilder(application: application, activate: activate, oktaAccessGatewayAgent: oktaAccessGatewayAgent) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -298,21 +302,12 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Add Application
-     - POST /api/v1/apps
-     - Adds a new application to your Okta organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter application: (body)  
-     - parameter activate: (query) Executes activation lifecycle operation when creating the app (optional, default to true)
-     - parameter oktaAccessGatewayAgent: (header)  (optional)
-     - returns: RequestBuilder<Application> 
-     */
-    public func createApplicationWithRequestBuilder(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) -> RequestBuilder<Application> {
+    internal func createApplicationWithRequestBuilder(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) -> RequestBuilder<Application>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/apps"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: application)
 
         var urlComponents = URLComponents(string: URLString)
@@ -325,13 +320,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Application>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Application>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -346,7 +341,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) -> AnyPublisher<ApplicationGroupAssignment, Error> {
         return Future<ApplicationGroupAssignment, Error>.init { promise in
-            createApplicationGroupAssignmentWithRequestBuilder(appId: appId, groupId: groupId, applicationGroupAssignment: applicationGroupAssignment).execute(queue) { result -> Void in
+            guard let builder = self.createApplicationGroupAssignmentWithRequestBuilder(appId: appId, groupId: groupId, applicationGroupAssignment: applicationGroupAssignment) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -366,7 +365,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil, completion: @escaping ((_ result: Swift.Result<ApplicationGroupAssignment, Error>) -> Void)) {
-        createApplicationGroupAssignmentWithRequestBuilder(appId: appId, groupId: groupId, applicationGroupAssignment: applicationGroupAssignment).execute(queue) { result -> Void in
+        guard let builder = createApplicationGroupAssignmentWithRequestBuilder(appId: appId, groupId: groupId, applicationGroupAssignment: applicationGroupAssignment) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -376,19 +379,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Assign Group to Application
-     - PUT /api/v1/apps/{appId}/groups/{groupId}
-     - Assigns a group to an application
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter groupId: (path)  
-     - parameter applicationGroupAssignment: (body)  (optional)
-     - returns: RequestBuilder<ApplicationGroupAssignment> 
-     */
-    public func createApplicationGroupAssignmentWithRequestBuilder(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) -> RequestBuilder<ApplicationGroupAssignment> {
+    internal func createApplicationGroupAssignmentWithRequestBuilder(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) -> RequestBuilder<ApplicationGroupAssignment>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/groups/{groupId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -396,7 +390,7 @@ public class ApplicationAPI {
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{groupId}", with: groupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: applicationGroupAssignment)
 
         let urlComponents = URLComponents(string: URLString)
@@ -406,13 +400,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<ApplicationGroupAssignment>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<ApplicationGroupAssignment>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -425,7 +419,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivateApplication(appId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deactivateApplicationWithRequestBuilder(appId: appId).execute(queue) { result -> Void in
+            guard let builder = self.deactivateApplicationWithRequestBuilder(appId: appId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -443,7 +441,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivateApplication(appId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deactivateApplicationWithRequestBuilder(appId: appId).execute(queue) { result -> Void in
+        guard let builder = deactivateApplicationWithRequestBuilder(appId: appId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -453,22 +455,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Deactivate Application
-     - POST /api/v1/apps/{appId}/lifecycle/deactivate
-     - Deactivates an active application.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deactivateApplicationWithRequestBuilder(appId: String) -> RequestBuilder<Void> {
+    internal func deactivateApplicationWithRequestBuilder(appId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/lifecycle/deactivate"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -478,13 +473,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -497,7 +492,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteApplication(appId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteApplicationWithRequestBuilder(appId: appId).execute(queue) { result -> Void in
+            guard let builder = self.deleteApplicationWithRequestBuilder(appId: appId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -515,7 +514,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteApplication(appId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteApplicationWithRequestBuilder(appId: appId).execute(queue) { result -> Void in
+        guard let builder = deleteApplicationWithRequestBuilder(appId: appId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -525,22 +528,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Delete Application
-     - DELETE /api/v1/apps/{appId}
-     - Removes an inactive application.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteApplicationWithRequestBuilder(appId: String) -> RequestBuilder<Void> {
+    internal func deleteApplicationWithRequestBuilder(appId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -550,13 +546,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -570,7 +566,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteApplicationGroupAssignment(appId: String, groupId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteApplicationGroupAssignmentWithRequestBuilder(appId: appId, groupId: groupId).execute(queue) { result -> Void in
+            guard let builder = self.deleteApplicationGroupAssignmentWithRequestBuilder(appId: appId, groupId: groupId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -589,7 +589,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteApplicationGroupAssignment(appId: String, groupId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteApplicationGroupAssignmentWithRequestBuilder(appId: appId, groupId: groupId).execute(queue) { result -> Void in
+        guard let builder = deleteApplicationGroupAssignmentWithRequestBuilder(appId: appId, groupId: groupId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -599,18 +603,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Remove Group from Application
-     - DELETE /api/v1/apps/{appId}/groups/{groupId}
-     - Removes a group assignment from an application.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter groupId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteApplicationGroupAssignmentWithRequestBuilder(appId: String, groupId: String) -> RequestBuilder<Void> {
+    internal func deleteApplicationGroupAssignmentWithRequestBuilder(appId: String, groupId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/groups/{groupId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -618,7 +614,7 @@ public class ApplicationAPI {
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{groupId}", with: groupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -628,13 +624,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -649,7 +645,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteApplicationUserWithRequestBuilder(appId: appId, userId: userId, sendEmail: sendEmail).execute(queue) { result -> Void in
+            guard let builder = self.deleteApplicationUserWithRequestBuilder(appId: appId, userId: userId, sendEmail: sendEmail) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -669,7 +669,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteApplicationUserWithRequestBuilder(appId: appId, userId: userId, sendEmail: sendEmail).execute(queue) { result -> Void in
+        guard let builder = deleteApplicationUserWithRequestBuilder(appId: appId, userId: userId, sendEmail: sendEmail) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -679,19 +683,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Remove User from Application
-     - DELETE /api/v1/apps/{appId}/users/{userId}
-     - Removes an assignment for a user from an application.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter userId: (path)  
-     - parameter sendEmail: (query)  (optional, default to false)
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteApplicationUserWithRequestBuilder(appId: String, userId: String, sendEmail: Bool? = nil) -> RequestBuilder<Void> {
+    internal func deleteApplicationUserWithRequestBuilder(appId: String, userId: String, sendEmail: Bool? = nil) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/users/{userId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -699,7 +694,7 @@ public class ApplicationAPI {
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -712,13 +707,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -731,7 +726,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func generateApplicationKey(appId: String, validityYears: Int? = nil) -> AnyPublisher<JsonWebKey, Error> {
         return Future<JsonWebKey, Error>.init { promise in
-            generateApplicationKeyWithRequestBuilder(appId: appId, validityYears: validityYears).execute(queue) { result -> Void in
+            guard let builder = self.generateApplicationKeyWithRequestBuilder(appId: appId, validityYears: validityYears) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -749,7 +748,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func generateApplicationKey(appId: String, validityYears: Int? = nil, completion: @escaping ((_ result: Swift.Result<JsonWebKey, Error>) -> Void)) {
-        generateApplicationKeyWithRequestBuilder(appId: appId, validityYears: validityYears).execute(queue) { result -> Void in
+        guard let builder = generateApplicationKeyWithRequestBuilder(appId: appId, validityYears: validityYears) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -759,22 +762,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     - POST /api/v1/apps/{appId}/credentials/keys/generate
-     - Generates a new X.509 certificate for an application key credential
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter validityYears: (query)  (optional)
-     - returns: RequestBuilder<JsonWebKey> 
-     */
-    public func generateApplicationKeyWithRequestBuilder(appId: String, validityYears: Int? = nil) -> RequestBuilder<JsonWebKey> {
+    internal func generateApplicationKeyWithRequestBuilder(appId: String, validityYears: Int? = nil) -> RequestBuilder<JsonWebKey>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/credentials/keys/generate"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -787,13 +783,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<JsonWebKey>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<JsonWebKey>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -807,7 +803,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func generateCsrForApplication(appId: String, metadata: CsrMetadata) -> AnyPublisher<Csr, Error> {
         return Future<Csr, Error>.init { promise in
-            generateCsrForApplicationWithRequestBuilder(appId: appId, metadata: metadata).execute(queue) { result -> Void in
+            guard let builder = self.generateCsrForApplicationWithRequestBuilder(appId: appId, metadata: metadata) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -826,7 +826,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func generateCsrForApplication(appId: String, metadata: CsrMetadata, completion: @escaping ((_ result: Swift.Result<Csr, Error>) -> Void)) {
-        generateCsrForApplicationWithRequestBuilder(appId: appId, metadata: metadata).execute(queue) { result -> Void in
+        guard let builder = generateCsrForApplicationWithRequestBuilder(appId: appId, metadata: metadata) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -836,23 +840,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Generate Certificate Signing Request for Application
-     - POST /api/v1/apps/{appId}/credentials/csrs
-     - Generates a new key pair and returns the Certificate Signing Request for it.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter metadata: (body)  
-     - returns: RequestBuilder<Csr> 
-     */
-    public func generateCsrForApplicationWithRequestBuilder(appId: String, metadata: CsrMetadata) -> RequestBuilder<Csr> {
+    internal func generateCsrForApplicationWithRequestBuilder(appId: String, metadata: CsrMetadata) -> RequestBuilder<Csr>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/credentials/csrs"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: metadata)
 
         let urlComponents = URLComponents(string: URLString)
@@ -862,13 +858,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Csr>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Csr>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -882,7 +878,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getApplication(appId: String, expand: String? = nil) -> AnyPublisher<Application, Error> {
         return Future<Application, Error>.init { promise in
-            getApplicationWithRequestBuilder(appId: appId, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.getApplicationWithRequestBuilder(appId: appId, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -901,7 +901,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func getApplication(appId: String, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<Application, Error>) -> Void)) {
-        getApplicationWithRequestBuilder(appId: appId, expand: expand).execute(queue) { result -> Void in
+        guard let builder = getApplicationWithRequestBuilder(appId: appId, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -911,23 +915,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Get Application
-     - GET /api/v1/apps/{appId}
-     - Fetches an application from your Okta organization by `id`.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<Application> 
-     */
-    public func getApplicationWithRequestBuilder(appId: String, expand: String? = nil) -> RequestBuilder<Application> {
+    internal func getApplicationWithRequestBuilder(appId: String, expand: String? = nil) -> RequestBuilder<Application>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -940,13 +936,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Application>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Application>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -961,7 +957,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil) -> AnyPublisher<ApplicationGroupAssignment, Error> {
         return Future<ApplicationGroupAssignment, Error>.init { promise in
-            getApplicationGroupAssignmentWithRequestBuilder(appId: appId, groupId: groupId, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.getApplicationGroupAssignmentWithRequestBuilder(appId: appId, groupId: groupId, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -981,7 +981,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<ApplicationGroupAssignment, Error>) -> Void)) {
-        getApplicationGroupAssignmentWithRequestBuilder(appId: appId, groupId: groupId, expand: expand).execute(queue) { result -> Void in
+        guard let builder = getApplicationGroupAssignmentWithRequestBuilder(appId: appId, groupId: groupId, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -991,19 +995,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Get Assigned Group for Application
-     - GET /api/v1/apps/{appId}/groups/{groupId}
-     - Fetches an application group assignment
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter groupId: (path)  
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<ApplicationGroupAssignment> 
-     */
-    public func getApplicationGroupAssignmentWithRequestBuilder(appId: String, groupId: String, expand: String? = nil) -> RequestBuilder<ApplicationGroupAssignment> {
+    internal func getApplicationGroupAssignmentWithRequestBuilder(appId: String, groupId: String, expand: String? = nil) -> RequestBuilder<ApplicationGroupAssignment>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/groups/{groupId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1011,7 +1006,7 @@ public class ApplicationAPI {
         let groupIdPreEscape = "\(APIHelper.mapValueToPathItem(groupId))"
         let groupIdPostEscape = groupIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{groupId}", with: groupIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1024,13 +1019,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<ApplicationGroupAssignment>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<ApplicationGroupAssignment>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1044,7 +1039,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getApplicationKey(appId: String, keyId: String) -> AnyPublisher<JsonWebKey, Error> {
         return Future<JsonWebKey, Error>.init { promise in
-            getApplicationKeyWithRequestBuilder(appId: appId, keyId: keyId).execute(queue) { result -> Void in
+            guard let builder = self.getApplicationKeyWithRequestBuilder(appId: appId, keyId: keyId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1063,7 +1062,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func getApplicationKey(appId: String, keyId: String, completion: @escaping ((_ result: Swift.Result<JsonWebKey, Error>) -> Void)) {
-        getApplicationKeyWithRequestBuilder(appId: appId, keyId: keyId).execute(queue) { result -> Void in
+        guard let builder = getApplicationKeyWithRequestBuilder(appId: appId, keyId: keyId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1073,18 +1076,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Get Key Credential for Application
-     - GET /api/v1/apps/{appId}/credentials/keys/{keyId}
-     - Gets a specific application key credential by kid
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter keyId: (path)  
-     - returns: RequestBuilder<JsonWebKey> 
-     */
-    public func getApplicationKeyWithRequestBuilder(appId: String, keyId: String) -> RequestBuilder<JsonWebKey> {
+    internal func getApplicationKeyWithRequestBuilder(appId: String, keyId: String) -> RequestBuilder<JsonWebKey>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/credentials/keys/{keyId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1092,7 +1087,7 @@ public class ApplicationAPI {
         let keyIdPreEscape = "\(APIHelper.mapValueToPathItem(keyId))"
         let keyIdPostEscape = keyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{keyId}", with: keyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1102,13 +1097,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<JsonWebKey>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<JsonWebKey>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1123,7 +1118,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getApplicationUser(appId: String, userId: String, expand: String? = nil) -> AnyPublisher<AppUser, Error> {
         return Future<AppUser, Error>.init { promise in
-            getApplicationUserWithRequestBuilder(appId: appId, userId: userId, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.getApplicationUserWithRequestBuilder(appId: appId, userId: userId, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1143,7 +1142,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func getApplicationUser(appId: String, userId: String, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<AppUser, Error>) -> Void)) {
-        getApplicationUserWithRequestBuilder(appId: appId, userId: userId, expand: expand).execute(queue) { result -> Void in
+        guard let builder = getApplicationUserWithRequestBuilder(appId: appId, userId: userId, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1153,19 +1156,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Get Assigned User for Application
-     - GET /api/v1/apps/{appId}/users/{userId}
-     - Fetches a specific user assignment for application by `id`.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter userId: (path)  
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<AppUser> 
-     */
-    public func getApplicationUserWithRequestBuilder(appId: String, userId: String, expand: String? = nil) -> RequestBuilder<AppUser> {
+    internal func getApplicationUserWithRequestBuilder(appId: String, userId: String, expand: String? = nil) -> RequestBuilder<AppUser>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/users/{userId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1173,7 +1167,7 @@ public class ApplicationAPI {
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1186,13 +1180,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<AppUser>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AppUser>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1206,7 +1200,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getCsrForApplication(appId: String, csrId: String) -> AnyPublisher<Csr, Error> {
         return Future<Csr, Error>.init { promise in
-            getCsrForApplicationWithRequestBuilder(appId: appId, csrId: csrId).execute(queue) { result -> Void in
+            guard let builder = self.getCsrForApplicationWithRequestBuilder(appId: appId, csrId: csrId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1225,7 +1223,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func getCsrForApplication(appId: String, csrId: String, completion: @escaping ((_ result: Swift.Result<Csr, Error>) -> Void)) {
-        getCsrForApplicationWithRequestBuilder(appId: appId, csrId: csrId).execute(queue) { result -> Void in
+        guard let builder = getCsrForApplicationWithRequestBuilder(appId: appId, csrId: csrId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1235,18 +1237,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Get Certificate Signing Request
-     - GET /api/v1/apps/{appId}/credentials/csrs/{csrId}
-     - Fetches a certificate signing request for the app by `id`.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter csrId: (path)  
-     - returns: RequestBuilder<Csr> 
-     */
-    public func getCsrForApplicationWithRequestBuilder(appId: String, csrId: String) -> RequestBuilder<Csr> {
+    internal func getCsrForApplicationWithRequestBuilder(appId: String, csrId: String) -> RequestBuilder<Csr>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/credentials/csrs/{csrId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1254,7 +1248,7 @@ public class ApplicationAPI {
         let csrIdPreEscape = "\(APIHelper.mapValueToPathItem(csrId))"
         let csrIdPostEscape = csrIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{csrId}", with: csrIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1264,13 +1258,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Csr>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Csr>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1284,7 +1278,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil) -> AnyPublisher<OAuth2Token, Error> {
         return Future<OAuth2Token, Error>.init { promise in
-            getOAuth2TokenForApplicationWithRequestBuilder(appId: appId, tokenId: tokenId, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.getOAuth2TokenForApplicationWithRequestBuilder(appId: appId, tokenId: tokenId, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1303,7 +1301,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<OAuth2Token, Error>) -> Void)) {
-        getOAuth2TokenForApplicationWithRequestBuilder(appId: appId, tokenId: tokenId, expand: expand).execute(queue) { result -> Void in
+        guard let builder = getOAuth2TokenForApplicationWithRequestBuilder(appId: appId, tokenId: tokenId, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1313,18 +1315,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     - GET /api/v1/apps/{appId}/tokens/{tokenId}
-     - Gets a token for the specified application
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter tokenId: (path)  
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<OAuth2Token> 
-     */
-    public func getOAuth2TokenForApplicationWithRequestBuilder(appId: String, tokenId: String, expand: String? = nil) -> RequestBuilder<OAuth2Token> {
+    internal func getOAuth2TokenForApplicationWithRequestBuilder(appId: String, tokenId: String, expand: String? = nil) -> RequestBuilder<OAuth2Token>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/tokens/{tokenId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1332,7 +1326,7 @@ public class ApplicationAPI {
         let tokenIdPreEscape = "\(APIHelper.mapValueToPathItem(tokenId))"
         let tokenIdPostEscape = tokenIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{tokenId}", with: tokenIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1345,13 +1339,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<OAuth2Token>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<OAuth2Token>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1365,7 +1359,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil) -> AnyPublisher<OAuth2ScopeConsentGrant, Error> {
         return Future<OAuth2ScopeConsentGrant, Error>.init { promise in
-            getScopeConsentGrantWithRequestBuilder(appId: appId, grantId: grantId, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.getScopeConsentGrantWithRequestBuilder(appId: appId, grantId: grantId, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1384,7 +1382,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<OAuth2ScopeConsentGrant, Error>) -> Void)) {
-        getScopeConsentGrantWithRequestBuilder(appId: appId, grantId: grantId, expand: expand).execute(queue) { result -> Void in
+        guard let builder = getScopeConsentGrantWithRequestBuilder(appId: appId, grantId: grantId, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1394,18 +1396,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     - GET /api/v1/apps/{appId}/grants/{grantId}
-     - Fetches a single scope consent grant for the application
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter grantId: (path)  
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<OAuth2ScopeConsentGrant> 
-     */
-    public func getScopeConsentGrantWithRequestBuilder(appId: String, grantId: String, expand: String? = nil) -> RequestBuilder<OAuth2ScopeConsentGrant> {
+    internal func getScopeConsentGrantWithRequestBuilder(appId: String, grantId: String, expand: String? = nil) -> RequestBuilder<OAuth2ScopeConsentGrant>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/grants/{grantId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1413,7 +1407,7 @@ public class ApplicationAPI {
         let grantIdPreEscape = "\(APIHelper.mapValueToPathItem(grantId))"
         let grantIdPostEscape = grantIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{grantId}", with: grantIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1426,13 +1420,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<OAuth2ScopeConsentGrant>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<OAuth2ScopeConsentGrant>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1445,7 +1439,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) -> AnyPublisher<OAuth2ScopeConsentGrant, Error> {
         return Future<OAuth2ScopeConsentGrant, Error>.init { promise in
-            grantConsentToScopeWithRequestBuilder(appId: appId, oAuth2ScopeConsentGrant: oAuth2ScopeConsentGrant).execute(queue) { result -> Void in
+            guard let builder = self.grantConsentToScopeWithRequestBuilder(appId: appId, oAuth2ScopeConsentGrant: oAuth2ScopeConsentGrant) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1463,7 +1461,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant, completion: @escaping ((_ result: Swift.Result<OAuth2ScopeConsentGrant, Error>) -> Void)) {
-        grantConsentToScopeWithRequestBuilder(appId: appId, oAuth2ScopeConsentGrant: oAuth2ScopeConsentGrant).execute(queue) { result -> Void in
+        guard let builder = grantConsentToScopeWithRequestBuilder(appId: appId, oAuth2ScopeConsentGrant: oAuth2ScopeConsentGrant) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1473,22 +1475,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     - POST /api/v1/apps/{appId}/grants
-     - Grants consent for the application to request an OAuth 2.0 Okta scope
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter oAuth2ScopeConsentGrant: (body)  
-     - returns: RequestBuilder<OAuth2ScopeConsentGrant> 
-     */
-    public func grantConsentToScopeWithRequestBuilder(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) -> RequestBuilder<OAuth2ScopeConsentGrant> {
+    internal func grantConsentToScopeWithRequestBuilder(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) -> RequestBuilder<OAuth2ScopeConsentGrant>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/grants"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: oAuth2ScopeConsentGrant)
 
         let urlComponents = URLComponents(string: URLString)
@@ -1498,13 +1493,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<OAuth2ScopeConsentGrant>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<OAuth2ScopeConsentGrant>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1521,7 +1516,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) -> AnyPublisher<[ApplicationGroupAssignment], Error> {
         return Future<[ApplicationGroupAssignment], Error>.init { promise in
-            listApplicationGroupAssignmentsWithRequestBuilder(appId: appId, q: q, after: after, limit: limit, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.listApplicationGroupAssignmentsWithRequestBuilder(appId: appId, q: q, after: after, limit: limit, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1543,7 +1542,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<[ApplicationGroupAssignment], Error>) -> Void)) {
-        listApplicationGroupAssignmentsWithRequestBuilder(appId: appId, q: q, after: after, limit: limit, expand: expand).execute(queue) { result -> Void in
+        guard let builder = listApplicationGroupAssignmentsWithRequestBuilder(appId: appId, q: q, after: after, limit: limit, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1553,26 +1556,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     List Groups Assigned to Application
-     - GET /api/v1/apps/{appId}/groups
-     - Enumerates group assignments for an application.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter q: (query)  (optional)
-     - parameter after: (query) Specifies the pagination cursor for the next page of assignments (optional)
-     - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<[ApplicationGroupAssignment]> 
-     */
-    public func listApplicationGroupAssignmentsWithRequestBuilder(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) -> RequestBuilder<[ApplicationGroupAssignment]> {
+    internal func listApplicationGroupAssignmentsWithRequestBuilder(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) -> RequestBuilder<[ApplicationGroupAssignment]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/groups"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1588,13 +1580,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[ApplicationGroupAssignment]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[ApplicationGroupAssignment]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1607,7 +1599,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listApplicationKeys(appId: String) -> AnyPublisher<[JsonWebKey], Error> {
         return Future<[JsonWebKey], Error>.init { promise in
-            listApplicationKeysWithRequestBuilder(appId: appId).execute(queue) { result -> Void in
+            guard let builder = self.listApplicationKeysWithRequestBuilder(appId: appId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1625,7 +1621,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func listApplicationKeys(appId: String, completion: @escaping ((_ result: Swift.Result<[JsonWebKey], Error>) -> Void)) {
-        listApplicationKeysWithRequestBuilder(appId: appId).execute(queue) { result -> Void in
+        guard let builder = listApplicationKeysWithRequestBuilder(appId: appId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1635,22 +1635,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     List Key Credentials for Application
-     - GET /api/v1/apps/{appId}/credentials/keys
-     - Enumerates key credentials for an application
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - returns: RequestBuilder<[JsonWebKey]> 
-     */
-    public func listApplicationKeysWithRequestBuilder(appId: String) -> RequestBuilder<[JsonWebKey]> {
+    internal func listApplicationKeysWithRequestBuilder(appId: String) -> RequestBuilder<[JsonWebKey]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/credentials/keys"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1660,13 +1653,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[JsonWebKey]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[JsonWebKey]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1685,7 +1678,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) -> AnyPublisher<[AppUser], Error> {
         return Future<[AppUser], Error>.init { promise in
-            listApplicationUsersWithRequestBuilder(appId: appId, q: q, queryScope: queryScope, after: after, limit: limit, filter: filter, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.listApplicationUsersWithRequestBuilder(appId: appId, q: q, queryScope: queryScope, after: after, limit: limit, filter: filter, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1709,7 +1706,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<[AppUser], Error>) -> Void)) {
-        listApplicationUsersWithRequestBuilder(appId: appId, q: q, queryScope: queryScope, after: after, limit: limit, filter: filter, expand: expand).execute(queue) { result -> Void in
+        guard let builder = listApplicationUsersWithRequestBuilder(appId: appId, q: q, queryScope: queryScope, after: after, limit: limit, filter: filter, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1719,28 +1720,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     List Users Assigned to Application
-     - GET /api/v1/apps/{appId}/users
-     - Enumerates all assigned [application users](#application-user-model) for an application.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter q: (query)  (optional)
-     - parameter queryScope: (query)  (optional)
-     - parameter after: (query) specifies the pagination cursor for the next page of assignments (optional)
-     - parameter limit: (query) specifies the number of results for a page (optional, default to -1)
-     - parameter filter: (query)  (optional)
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<[AppUser]> 
-     */
-    public func listApplicationUsersWithRequestBuilder(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) -> RequestBuilder<[AppUser]> {
+    internal func listApplicationUsersWithRequestBuilder(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) -> RequestBuilder<[AppUser]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/users"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1758,13 +1746,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[AppUser]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[AppUser]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1782,7 +1770,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) -> AnyPublisher<[Application], Error> {
         return Future<[Application], Error>.init { promise in
-            listApplicationsWithRequestBuilder(q: q, after: after, limit: limit, filter: filter, expand: expand, includeNonDeleted: includeNonDeleted).execute(queue) { result -> Void in
+            guard let builder = self.listApplicationsWithRequestBuilder(q: q, after: after, limit: limit, filter: filter, expand: expand, includeNonDeleted: includeNonDeleted) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1805,7 +1797,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil, completion: @escaping ((_ result: Swift.Result<[Application], Error>) -> Void)) {
-        listApplicationsWithRequestBuilder(q: q, after: after, limit: limit, filter: filter, expand: expand, includeNonDeleted: includeNonDeleted).execute(queue) { result -> Void in
+        guard let builder = listApplicationsWithRequestBuilder(q: q, after: after, limit: limit, filter: filter, expand: expand, includeNonDeleted: includeNonDeleted) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1815,24 +1811,12 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     List Applications
-     - GET /api/v1/apps
-     - Enumerates apps added to your organization with pagination. A subset of apps can be returned that match a supported filter expression or query.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter q: (query)  (optional)
-     - parameter after: (query) Specifies the pagination cursor for the next page of apps (optional)
-     - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
-     - parameter filter: (query) Filters apps by status, user.id, group.id or credentials.signing.kid expression (optional)
-     - parameter expand: (query) Traverses users link relationship and optionally embeds Application User resource (optional)
-     - parameter includeNonDeleted: (query)  (optional, default to false)
-     - returns: RequestBuilder<[Application]> 
-     */
-    public func listApplicationsWithRequestBuilder(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) -> RequestBuilder<[Application]> {
+    internal func listApplicationsWithRequestBuilder(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) -> RequestBuilder<[Application]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/apps"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1850,13 +1834,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Application]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Application]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1869,7 +1853,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listCsrsForApplication(appId: String) -> AnyPublisher<[Csr], Error> {
         return Future<[Csr], Error>.init { promise in
-            listCsrsForApplicationWithRequestBuilder(appId: appId).execute(queue) { result -> Void in
+            guard let builder = self.listCsrsForApplicationWithRequestBuilder(appId: appId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1887,7 +1875,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func listCsrsForApplication(appId: String, completion: @escaping ((_ result: Swift.Result<[Csr], Error>) -> Void)) {
-        listCsrsForApplicationWithRequestBuilder(appId: appId).execute(queue) { result -> Void in
+        guard let builder = listCsrsForApplicationWithRequestBuilder(appId: appId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1897,22 +1889,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     List Certificate Signing Requests for Application
-     - GET /api/v1/apps/{appId}/credentials/csrs
-     - Enumerates Certificate Signing Requests for an application
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - returns: RequestBuilder<[Csr]> 
-     */
-    public func listCsrsForApplicationWithRequestBuilder(appId: String) -> RequestBuilder<[Csr]> {
+    internal func listCsrsForApplicationWithRequestBuilder(appId: String) -> RequestBuilder<[Csr]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/credentials/csrs"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1922,13 +1907,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Csr]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Csr]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1943,7 +1928,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[OAuth2Token], Error> {
         return Future<[OAuth2Token], Error>.init { promise in
-            listOAuth2TokensForApplicationWithRequestBuilder(appId: appId, expand: expand, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listOAuth2TokensForApplicationWithRequestBuilder(appId: appId, expand: expand, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1963,7 +1952,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[OAuth2Token], Error>) -> Void)) {
-        listOAuth2TokensForApplicationWithRequestBuilder(appId: appId, expand: expand, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listOAuth2TokensForApplicationWithRequestBuilder(appId: appId, expand: expand, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1973,24 +1966,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     - GET /api/v1/apps/{appId}/tokens
-     - Lists all tokens for the application
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter expand: (query)  (optional)
-     - parameter after: (query)  (optional)
-     - parameter limit: (query)  (optional, default to 20)
-     - returns: RequestBuilder<[OAuth2Token]> 
-     */
-    public func listOAuth2TokensForApplicationWithRequestBuilder(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[OAuth2Token]> {
+    internal func listOAuth2TokensForApplicationWithRequestBuilder(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[OAuth2Token]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/tokens"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -2005,13 +1989,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[OAuth2Token]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[OAuth2Token]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2024,7 +2008,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listScopeConsentGrants(appId: String, expand: String? = nil) -> AnyPublisher<[OAuth2ScopeConsentGrant], Error> {
         return Future<[OAuth2ScopeConsentGrant], Error>.init { promise in
-            listScopeConsentGrantsWithRequestBuilder(appId: appId, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.listScopeConsentGrantsWithRequestBuilder(appId: appId, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2042,7 +2030,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func listScopeConsentGrants(appId: String, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<[OAuth2ScopeConsentGrant], Error>) -> Void)) {
-        listScopeConsentGrantsWithRequestBuilder(appId: appId, expand: expand).execute(queue) { result -> Void in
+        guard let builder = listScopeConsentGrantsWithRequestBuilder(appId: appId, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2052,22 +2044,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     - GET /api/v1/apps/{appId}/grants
-     - Lists all scope consent grants for the application
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<[OAuth2ScopeConsentGrant]> 
-     */
-    public func listScopeConsentGrantsWithRequestBuilder(appId: String, expand: String? = nil) -> RequestBuilder<[OAuth2ScopeConsentGrant]> {
+    internal func listScopeConsentGrantsWithRequestBuilder(appId: String, expand: String? = nil) -> RequestBuilder<[OAuth2ScopeConsentGrant]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/grants"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -2080,13 +2065,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[OAuth2ScopeConsentGrant]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[OAuth2ScopeConsentGrant]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2100,7 +2085,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func publishCsrFromApplication(appId: String, csrId: String) -> AnyPublisher<JsonWebKey, Error> {
         return Future<JsonWebKey, Error>.init { promise in
-            publishCsrFromApplicationWithRequestBuilder(appId: appId, csrId: csrId).execute(queue) { result -> Void in
+            guard let builder = self.publishCsrFromApplicationWithRequestBuilder(appId: appId, csrId: csrId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2119,7 +2108,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func publishCsrFromApplication(appId: String, csrId: String, completion: @escaping ((_ result: Swift.Result<JsonWebKey, Error>) -> Void)) {
-        publishCsrFromApplicationWithRequestBuilder(appId: appId, csrId: csrId).execute(queue) { result -> Void in
+        guard let builder = publishCsrFromApplicationWithRequestBuilder(appId: appId, csrId: csrId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2129,18 +2122,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Publish Certificate Signing Request
-     - POST /api/v1/apps/{appId}/credentials/csrs/{csrId}/lifecycle/publish
-     - Updates a certificate signing request for the app with a signed X.509 certificate and adds it into the application key credentials
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter csrId: (path)  
-     - returns: RequestBuilder<JsonWebKey> 
-     */
-    public func publishCsrFromApplicationWithRequestBuilder(appId: String, csrId: String) -> RequestBuilder<JsonWebKey> {
+    internal func publishCsrFromApplicationWithRequestBuilder(appId: String, csrId: String) -> RequestBuilder<JsonWebKey>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/credentials/csrs/{csrId}/lifecycle/publish"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2148,7 +2133,7 @@ public class ApplicationAPI {
         let csrIdPreEscape = "\(APIHelper.mapValueToPathItem(csrId))"
         let csrIdPostEscape = csrIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{csrId}", with: csrIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2158,13 +2143,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<JsonWebKey>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<JsonWebKey>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2178,7 +2163,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func revokeCsrFromApplication(appId: String, csrId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            revokeCsrFromApplicationWithRequestBuilder(appId: appId, csrId: csrId).execute(queue) { result -> Void in
+            guard let builder = self.revokeCsrFromApplicationWithRequestBuilder(appId: appId, csrId: csrId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2197,7 +2186,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func revokeCsrFromApplication(appId: String, csrId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        revokeCsrFromApplicationWithRequestBuilder(appId: appId, csrId: csrId).execute(queue) { result -> Void in
+        guard let builder = revokeCsrFromApplicationWithRequestBuilder(appId: appId, csrId: csrId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2207,18 +2200,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Revoke Certificate Signing Request
-     - DELETE /api/v1/apps/{appId}/credentials/csrs/{csrId}
-     - Revokes a certificate signing request and deletes the key pair from the application.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter csrId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func revokeCsrFromApplicationWithRequestBuilder(appId: String, csrId: String) -> RequestBuilder<Void> {
+    internal func revokeCsrFromApplicationWithRequestBuilder(appId: String, csrId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/credentials/csrs/{csrId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2226,7 +2211,7 @@ public class ApplicationAPI {
         let csrIdPreEscape = "\(APIHelper.mapValueToPathItem(csrId))"
         let csrIdPostEscape = csrIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{csrId}", with: csrIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2236,13 +2221,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2255,7 +2240,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func revokeOAuth2TokenForApplication(appId: String, tokenId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            revokeOAuth2TokenForApplicationWithRequestBuilder(appId: appId, tokenId: tokenId).execute(queue) { result -> Void in
+            guard let builder = self.revokeOAuth2TokenForApplicationWithRequestBuilder(appId: appId, tokenId: tokenId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2273,7 +2262,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func revokeOAuth2TokenForApplication(appId: String, tokenId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        revokeOAuth2TokenForApplicationWithRequestBuilder(appId: appId, tokenId: tokenId).execute(queue) { result -> Void in
+        guard let builder = revokeOAuth2TokenForApplicationWithRequestBuilder(appId: appId, tokenId: tokenId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2283,17 +2276,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/apps/{appId}/tokens/{tokenId}
-     - Revokes the specified token for the specified application
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter tokenId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func revokeOAuth2TokenForApplicationWithRequestBuilder(appId: String, tokenId: String) -> RequestBuilder<Void> {
+    internal func revokeOAuth2TokenForApplicationWithRequestBuilder(appId: String, tokenId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/tokens/{tokenId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2301,7 +2287,7 @@ public class ApplicationAPI {
         let tokenIdPreEscape = "\(APIHelper.mapValueToPathItem(tokenId))"
         let tokenIdPostEscape = tokenIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{tokenId}", with: tokenIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2311,13 +2297,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2329,7 +2315,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func revokeOAuth2TokensForApplication(appId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            revokeOAuth2TokensForApplicationWithRequestBuilder(appId: appId).execute(queue) { result -> Void in
+            guard let builder = self.revokeOAuth2TokensForApplicationWithRequestBuilder(appId: appId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2346,7 +2336,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func revokeOAuth2TokensForApplication(appId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        revokeOAuth2TokensForApplicationWithRequestBuilder(appId: appId).execute(queue) { result -> Void in
+        guard let builder = revokeOAuth2TokensForApplicationWithRequestBuilder(appId: appId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2356,21 +2350,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/apps/{appId}/tokens
-     - Revokes all tokens for the specified application
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func revokeOAuth2TokensForApplicationWithRequestBuilder(appId: String) -> RequestBuilder<Void> {
+    internal func revokeOAuth2TokensForApplicationWithRequestBuilder(appId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/tokens"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2380,13 +2368,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2399,7 +2387,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func revokeScopeConsentGrant(appId: String, grantId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            revokeScopeConsentGrantWithRequestBuilder(appId: appId, grantId: grantId).execute(queue) { result -> Void in
+            guard let builder = self.revokeScopeConsentGrantWithRequestBuilder(appId: appId, grantId: grantId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2417,7 +2409,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func revokeScopeConsentGrant(appId: String, grantId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        revokeScopeConsentGrantWithRequestBuilder(appId: appId, grantId: grantId).execute(queue) { result -> Void in
+        guard let builder = revokeScopeConsentGrantWithRequestBuilder(appId: appId, grantId: grantId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2427,17 +2423,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/apps/{appId}/grants/{grantId}
-     - Revokes permission for the application to request the given scope
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter grantId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func revokeScopeConsentGrantWithRequestBuilder(appId: String, grantId: String) -> RequestBuilder<Void> {
+    internal func revokeScopeConsentGrantWithRequestBuilder(appId: String, grantId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/grants/{grantId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2445,7 +2434,7 @@ public class ApplicationAPI {
         let grantIdPreEscape = "\(APIHelper.mapValueToPathItem(grantId))"
         let grantIdPostEscape = grantIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{grantId}", with: grantIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2455,13 +2444,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2475,7 +2464,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateApplication(appId: String, application: Application) -> AnyPublisher<Application, Error> {
         return Future<Application, Error>.init { promise in
-            updateApplicationWithRequestBuilder(appId: appId, application: application).execute(queue) { result -> Void in
+            guard let builder = self.updateApplicationWithRequestBuilder(appId: appId, application: application) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2494,7 +2487,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateApplication(appId: String, application: Application, completion: @escaping ((_ result: Swift.Result<Application, Error>) -> Void)) {
-        updateApplicationWithRequestBuilder(appId: appId, application: application).execute(queue) { result -> Void in
+        guard let builder = updateApplicationWithRequestBuilder(appId: appId, application: application) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2504,23 +2501,15 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Update Application
-     - PUT /api/v1/apps/{appId}
-     - Updates an application in your organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter application: (body)  
-     - returns: RequestBuilder<Application> 
-     */
-    public func updateApplicationWithRequestBuilder(appId: String, application: Application) -> RequestBuilder<Application> {
+    internal func updateApplicationWithRequestBuilder(appId: String, application: Application) -> RequestBuilder<Application>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{appId}", with: appIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: application)
 
         let urlComponents = URLComponents(string: URLString)
@@ -2530,13 +2519,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Application>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Application>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2551,7 +2540,11 @@ public class ApplicationAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateApplicationUser(appId: String, userId: String, appUser: AppUser) -> AnyPublisher<AppUser, Error> {
         return Future<AppUser, Error>.init { promise in
-            updateApplicationUserWithRequestBuilder(appId: appId, userId: userId, appUser: appUser).execute(queue) { result -> Void in
+            guard let builder = self.updateApplicationUserWithRequestBuilder(appId: appId, userId: userId, appUser: appUser) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2571,7 +2564,11 @@ public class ApplicationAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateApplicationUser(appId: String, userId: String, appUser: AppUser, completion: @escaping ((_ result: Swift.Result<AppUser, Error>) -> Void)) {
-        updateApplicationUserWithRequestBuilder(appId: appId, userId: userId, appUser: appUser).execute(queue) { result -> Void in
+        guard let builder = updateApplicationUserWithRequestBuilder(appId: appId, userId: userId, appUser: appUser) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2581,19 +2578,10 @@ public class ApplicationAPI {
         }
     }
 
-    /**
-     Update Application Profile for Assigned User
-     - POST /api/v1/apps/{appId}/users/{userId}
-     - Updates a user's profile for an application
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter appId: (path)  
-     - parameter userId: (path)  
-     - parameter appUser: (body)  
-     - returns: RequestBuilder<AppUser> 
-     */
-    public func updateApplicationUserWithRequestBuilder(appId: String, userId: String, appUser: AppUser) -> RequestBuilder<AppUser> {
+    internal func updateApplicationUserWithRequestBuilder(appId: String, userId: String, appUser: AppUser) -> RequestBuilder<AppUser>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/apps/{appId}/users/{userId}"
         let appIdPreEscape = "\(APIHelper.mapValueToPathItem(appId))"
         let appIdPostEscape = appIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2601,7 +2589,7 @@ public class ApplicationAPI {
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: appUser)
 
         let urlComponents = URLComponents(string: URLString)
@@ -2611,13 +2599,13 @@ public class ApplicationAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<AppUser>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AppUser>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

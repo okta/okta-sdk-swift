@@ -44,7 +44,7 @@ class RequestBuilder<T> {
         }
     }
 
-    func execute(_ apiResponseQueue: DispatchQueue?, _ completion: @escaping (_ result: Swift.Result<Response<T>, Error>) -> Void) { }
+    func execute(_ completion: @escaping (_ result: Swift.Result<Response<T>, Error>) -> Void) { }
 
     func addHeader(name: String, value: String) -> Self {
         if !value.isEmpty {

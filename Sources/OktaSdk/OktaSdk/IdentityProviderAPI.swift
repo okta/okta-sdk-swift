@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct IdentityProviderAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class IdentityProviderAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -33,7 +31,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activateIdentityProvider(idpId: String) -> AnyPublisher<IdentityProvider, Error> {
         return Future<IdentityProvider, Error>.init { promise in
-            activateIdentityProviderWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+            guard let builder = self.activateIdentityProviderWithRequestBuilder(idpId: idpId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -51,7 +53,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func activateIdentityProvider(idpId: String, completion: @escaping ((_ result: Swift.Result<IdentityProvider, Error>) -> Void)) {
-        activateIdentityProviderWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+        guard let builder = activateIdentityProviderWithRequestBuilder(idpId: idpId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -61,22 +67,15 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Activate Identity Provider
-     - POST /api/v1/idps/{idpId}/lifecycle/activate
-     - Activates an inactive IdP.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - returns: RequestBuilder<IdentityProvider> 
-     */
-    public func activateIdentityProviderWithRequestBuilder(idpId: String) -> RequestBuilder<IdentityProvider> {
+    internal func activateIdentityProviderWithRequestBuilder(idpId: String) -> RequestBuilder<IdentityProvider>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/lifecycle/activate"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{idpId}", with: idpIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -86,13 +85,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<IdentityProvider>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<IdentityProvider>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -107,7 +106,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func cloneIdentityProviderKey(idpId: String, keyId: String, targetIdpId: String) -> AnyPublisher<JsonWebKey, Error> {
         return Future<JsonWebKey, Error>.init { promise in
-            cloneIdentityProviderKeyWithRequestBuilder(idpId: idpId, keyId: keyId, targetIdpId: targetIdpId).execute(queue) { result -> Void in
+            guard let builder = self.cloneIdentityProviderKeyWithRequestBuilder(idpId: idpId, keyId: keyId, targetIdpId: targetIdpId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -127,7 +130,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func cloneIdentityProviderKey(idpId: String, keyId: String, targetIdpId: String, completion: @escaping ((_ result: Swift.Result<JsonWebKey, Error>) -> Void)) {
-        cloneIdentityProviderKeyWithRequestBuilder(idpId: idpId, keyId: keyId, targetIdpId: targetIdpId).execute(queue) { result -> Void in
+        guard let builder = cloneIdentityProviderKeyWithRequestBuilder(idpId: idpId, keyId: keyId, targetIdpId: targetIdpId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -137,19 +144,10 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Clone Signing Key Credential for IdP
-     - POST /api/v1/idps/{idpId}/credentials/keys/{keyId}/clone
-     - Clones a X.509 certificate for an IdP signing key credential from a source IdP to target IdP
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - parameter keyId: (path)  
-     - parameter targetIdpId: (query)  
-     - returns: RequestBuilder<JsonWebKey> 
-     */
-    public func cloneIdentityProviderKeyWithRequestBuilder(idpId: String, keyId: String, targetIdpId: String) -> RequestBuilder<JsonWebKey> {
+    internal func cloneIdentityProviderKeyWithRequestBuilder(idpId: String, keyId: String, targetIdpId: String) -> RequestBuilder<JsonWebKey>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/credentials/keys/{keyId}/clone"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -157,7 +155,7 @@ public struct IdentityProviderAPI {
         let keyIdPreEscape = "\(APIHelper.mapValueToPathItem(keyId))"
         let keyIdPostEscape = keyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{keyId}", with: keyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -170,13 +168,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<JsonWebKey>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<JsonWebKey>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -189,7 +187,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createIdentityProvider(identityProvider: IdentityProvider) -> AnyPublisher<IdentityProvider, Error> {
         return Future<IdentityProvider, Error>.init { promise in
-            createIdentityProviderWithRequestBuilder(identityProvider: identityProvider).execute(queue) { result -> Void in
+            guard let builder = self.createIdentityProviderWithRequestBuilder(identityProvider: identityProvider) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -207,7 +209,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func createIdentityProvider(identityProvider: IdentityProvider, completion: @escaping ((_ result: Swift.Result<IdentityProvider, Error>) -> Void)) {
-        createIdentityProviderWithRequestBuilder(identityProvider: identityProvider).execute(queue) { result -> Void in
+        guard let builder = createIdentityProviderWithRequestBuilder(identityProvider: identityProvider) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -217,19 +223,12 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Add Identity Provider
-     - POST /api/v1/idps
-     - Adds a new IdP to your organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter identityProvider: (body)  
-     - returns: RequestBuilder<IdentityProvider> 
-     */
-    public func createIdentityProviderWithRequestBuilder(identityProvider: IdentityProvider) -> RequestBuilder<IdentityProvider> {
+    internal func createIdentityProviderWithRequestBuilder(identityProvider: IdentityProvider) -> RequestBuilder<IdentityProvider>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/idps"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: identityProvider)
 
         let urlComponents = URLComponents(string: URLString)
@@ -239,13 +238,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<IdentityProvider>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<IdentityProvider>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -258,7 +257,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createIdentityProviderKey(jsonWebKey: JsonWebKey) -> AnyPublisher<JsonWebKey, Error> {
         return Future<JsonWebKey, Error>.init { promise in
-            createIdentityProviderKeyWithRequestBuilder(jsonWebKey: jsonWebKey).execute(queue) { result -> Void in
+            guard let builder = self.createIdentityProviderKeyWithRequestBuilder(jsonWebKey: jsonWebKey) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -276,7 +279,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func createIdentityProviderKey(jsonWebKey: JsonWebKey, completion: @escaping ((_ result: Swift.Result<JsonWebKey, Error>) -> Void)) {
-        createIdentityProviderKeyWithRequestBuilder(jsonWebKey: jsonWebKey).execute(queue) { result -> Void in
+        guard let builder = createIdentityProviderKeyWithRequestBuilder(jsonWebKey: jsonWebKey) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -286,19 +293,12 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Add X.509 Certificate Public Key
-     - POST /api/v1/idps/credentials/keys
-     - Adds a new X.509 certificate credential to the IdP key store.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter jsonWebKey: (body)  
-     - returns: RequestBuilder<JsonWebKey> 
-     */
-    public func createIdentityProviderKeyWithRequestBuilder(jsonWebKey: JsonWebKey) -> RequestBuilder<JsonWebKey> {
+    internal func createIdentityProviderKeyWithRequestBuilder(jsonWebKey: JsonWebKey) -> RequestBuilder<JsonWebKey>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/idps/credentials/keys"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: jsonWebKey)
 
         let urlComponents = URLComponents(string: URLString)
@@ -308,13 +308,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<JsonWebKey>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<JsonWebKey>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -327,7 +327,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivateIdentityProvider(idpId: String) -> AnyPublisher<IdentityProvider, Error> {
         return Future<IdentityProvider, Error>.init { promise in
-            deactivateIdentityProviderWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+            guard let builder = self.deactivateIdentityProviderWithRequestBuilder(idpId: idpId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -345,7 +349,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivateIdentityProvider(idpId: String, completion: @escaping ((_ result: Swift.Result<IdentityProvider, Error>) -> Void)) {
-        deactivateIdentityProviderWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+        guard let builder = deactivateIdentityProviderWithRequestBuilder(idpId: idpId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -355,22 +363,15 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Deactivate Identity Provider
-     - POST /api/v1/idps/{idpId}/lifecycle/deactivate
-     - Deactivates an active IdP.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - returns: RequestBuilder<IdentityProvider> 
-     */
-    public func deactivateIdentityProviderWithRequestBuilder(idpId: String) -> RequestBuilder<IdentityProvider> {
+    internal func deactivateIdentityProviderWithRequestBuilder(idpId: String) -> RequestBuilder<IdentityProvider>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/lifecycle/deactivate"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{idpId}", with: idpIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -380,13 +381,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<IdentityProvider>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<IdentityProvider>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -399,7 +400,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteIdentityProvider(idpId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteIdentityProviderWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+            guard let builder = self.deleteIdentityProviderWithRequestBuilder(idpId: idpId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -417,7 +422,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteIdentityProvider(idpId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteIdentityProviderWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+        guard let builder = deleteIdentityProviderWithRequestBuilder(idpId: idpId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -427,22 +436,15 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Delete Identity Provider
-     - DELETE /api/v1/idps/{idpId}
-     - Removes an IdP from your organization.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteIdentityProviderWithRequestBuilder(idpId: String) -> RequestBuilder<Void> {
+    internal func deleteIdentityProviderWithRequestBuilder(idpId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{idpId}", with: idpIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -452,13 +454,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -471,7 +473,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteIdentityProviderKey(keyId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteIdentityProviderKeyWithRequestBuilder(keyId: keyId).execute(queue) { result -> Void in
+            guard let builder = self.deleteIdentityProviderKeyWithRequestBuilder(keyId: keyId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -489,7 +495,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteIdentityProviderKey(keyId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteIdentityProviderKeyWithRequestBuilder(keyId: keyId).execute(queue) { result -> Void in
+        guard let builder = deleteIdentityProviderKeyWithRequestBuilder(keyId: keyId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -499,22 +509,15 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Delete Key
-     - DELETE /api/v1/idps/credentials/keys/{keyId}
-     - Deletes a specific IdP Key Credential by `kid` if it is not currently being used by an Active or Inactive IdP.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter keyId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteIdentityProviderKeyWithRequestBuilder(keyId: String) -> RequestBuilder<Void> {
+    internal func deleteIdentityProviderKeyWithRequestBuilder(keyId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/credentials/keys/{keyId}"
         let keyIdPreEscape = "\(APIHelper.mapValueToPathItem(keyId))"
         let keyIdPostEscape = keyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{keyId}", with: keyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -524,13 +527,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -544,7 +547,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func generateCsrForIdentityProvider(idpId: String, metadata: CsrMetadata) -> AnyPublisher<Csr, Error> {
         return Future<Csr, Error>.init { promise in
-            generateCsrForIdentityProviderWithRequestBuilder(idpId: idpId, metadata: metadata).execute(queue) { result -> Void in
+            guard let builder = self.generateCsrForIdentityProviderWithRequestBuilder(idpId: idpId, metadata: metadata) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -563,7 +570,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func generateCsrForIdentityProvider(idpId: String, metadata: CsrMetadata, completion: @escaping ((_ result: Swift.Result<Csr, Error>) -> Void)) {
-        generateCsrForIdentityProviderWithRequestBuilder(idpId: idpId, metadata: metadata).execute(queue) { result -> Void in
+        guard let builder = generateCsrForIdentityProviderWithRequestBuilder(idpId: idpId, metadata: metadata) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -573,23 +584,15 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Generate Certificate Signing Request for IdP
-     - POST /api/v1/idps/{idpId}/credentials/csrs
-     - Generates a new key pair and returns a Certificate Signing Request for it.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - parameter metadata: (body)  
-     - returns: RequestBuilder<Csr> 
-     */
-    public func generateCsrForIdentityProviderWithRequestBuilder(idpId: String, metadata: CsrMetadata) -> RequestBuilder<Csr> {
+    internal func generateCsrForIdentityProviderWithRequestBuilder(idpId: String, metadata: CsrMetadata) -> RequestBuilder<Csr>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/credentials/csrs"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{idpId}", with: idpIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: metadata)
 
         let urlComponents = URLComponents(string: URLString)
@@ -599,13 +602,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Csr>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Csr>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -619,7 +622,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func generateIdentityProviderSigningKey(idpId: String, validityYears: Int) -> AnyPublisher<JsonWebKey, Error> {
         return Future<JsonWebKey, Error>.init { promise in
-            generateIdentityProviderSigningKeyWithRequestBuilder(idpId: idpId, validityYears: validityYears).execute(queue) { result -> Void in
+            guard let builder = self.generateIdentityProviderSigningKeyWithRequestBuilder(idpId: idpId, validityYears: validityYears) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -638,7 +645,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func generateIdentityProviderSigningKey(idpId: String, validityYears: Int, completion: @escaping ((_ result: Swift.Result<JsonWebKey, Error>) -> Void)) {
-        generateIdentityProviderSigningKeyWithRequestBuilder(idpId: idpId, validityYears: validityYears).execute(queue) { result -> Void in
+        guard let builder = generateIdentityProviderSigningKeyWithRequestBuilder(idpId: idpId, validityYears: validityYears) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -648,23 +659,15 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Generate New IdP Signing Key Credential
-     - POST /api/v1/idps/{idpId}/credentials/keys/generate
-     - Generates a new X.509 certificate for an IdP signing key credential to be used for signing assertions sent to the IdP
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - parameter validityYears: (query) expiry of the IdP Key Credential 
-     - returns: RequestBuilder<JsonWebKey> 
-     */
-    public func generateIdentityProviderSigningKeyWithRequestBuilder(idpId: String, validityYears: Int) -> RequestBuilder<JsonWebKey> {
+    internal func generateIdentityProviderSigningKeyWithRequestBuilder(idpId: String, validityYears: Int) -> RequestBuilder<JsonWebKey>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/credentials/keys/generate"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{idpId}", with: idpIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -677,13 +680,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<JsonWebKey>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<JsonWebKey>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -696,7 +699,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getCsrForIdentityProvider(idpId: String, csrId: String) -> AnyPublisher<Csr, Error> {
         return Future<Csr, Error>.init { promise in
-            getCsrForIdentityProviderWithRequestBuilder(idpId: idpId, csrId: csrId).execute(queue) { result -> Void in
+            guard let builder = self.getCsrForIdentityProviderWithRequestBuilder(idpId: idpId, csrId: csrId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -714,7 +721,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func getCsrForIdentityProvider(idpId: String, csrId: String, completion: @escaping ((_ result: Swift.Result<Csr, Error>) -> Void)) {
-        getCsrForIdentityProviderWithRequestBuilder(idpId: idpId, csrId: csrId).execute(queue) { result -> Void in
+        guard let builder = getCsrForIdentityProviderWithRequestBuilder(idpId: idpId, csrId: csrId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -724,17 +735,10 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     - GET /api/v1/idps/{idpId}/credentials/csrs/{csrId}
-     - Gets a specific Certificate Signing Request model by id
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - parameter csrId: (path)  
-     - returns: RequestBuilder<Csr> 
-     */
-    public func getCsrForIdentityProviderWithRequestBuilder(idpId: String, csrId: String) -> RequestBuilder<Csr> {
+    internal func getCsrForIdentityProviderWithRequestBuilder(idpId: String, csrId: String) -> RequestBuilder<Csr>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/credentials/csrs/{csrId}"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -742,7 +746,7 @@ public struct IdentityProviderAPI {
         let csrIdPreEscape = "\(APIHelper.mapValueToPathItem(csrId))"
         let csrIdPostEscape = csrIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{csrId}", with: csrIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -752,13 +756,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Csr>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<Csr>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -771,7 +775,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getIdentityProvider(idpId: String) -> AnyPublisher<IdentityProvider, Error> {
         return Future<IdentityProvider, Error>.init { promise in
-            getIdentityProviderWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+            guard let builder = self.getIdentityProviderWithRequestBuilder(idpId: idpId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -789,7 +797,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func getIdentityProvider(idpId: String, completion: @escaping ((_ result: Swift.Result<IdentityProvider, Error>) -> Void)) {
-        getIdentityProviderWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+        guard let builder = getIdentityProviderWithRequestBuilder(idpId: idpId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -799,22 +811,15 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Get Identity Provider
-     - GET /api/v1/idps/{idpId}
-     - Fetches an IdP by `id`.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - returns: RequestBuilder<IdentityProvider> 
-     */
-    public func getIdentityProviderWithRequestBuilder(idpId: String) -> RequestBuilder<IdentityProvider> {
+    internal func getIdentityProviderWithRequestBuilder(idpId: String) -> RequestBuilder<IdentityProvider>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{idpId}", with: idpIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -824,13 +829,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<IdentityProvider>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<IdentityProvider>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -843,7 +848,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getIdentityProviderApplicationUser(idpId: String, userId: String) -> AnyPublisher<IdentityProviderApplicationUser, Error> {
         return Future<IdentityProviderApplicationUser, Error>.init { promise in
-            getIdentityProviderApplicationUserWithRequestBuilder(idpId: idpId, userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.getIdentityProviderApplicationUserWithRequestBuilder(idpId: idpId, userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -861,7 +870,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func getIdentityProviderApplicationUser(idpId: String, userId: String, completion: @escaping ((_ result: Swift.Result<IdentityProviderApplicationUser, Error>) -> Void)) {
-        getIdentityProviderApplicationUserWithRequestBuilder(idpId: idpId, userId: userId).execute(queue) { result -> Void in
+        guard let builder = getIdentityProviderApplicationUserWithRequestBuilder(idpId: idpId, userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -871,17 +884,10 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     - GET /api/v1/idps/{idpId}/users/{userId}
-     - Fetches a linked IdP user by ID
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - parameter userId: (path)  
-     - returns: RequestBuilder<IdentityProviderApplicationUser> 
-     */
-    public func getIdentityProviderApplicationUserWithRequestBuilder(idpId: String, userId: String) -> RequestBuilder<IdentityProviderApplicationUser> {
+    internal func getIdentityProviderApplicationUserWithRequestBuilder(idpId: String, userId: String) -> RequestBuilder<IdentityProviderApplicationUser>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/users/{userId}"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -889,7 +895,7 @@ public struct IdentityProviderAPI {
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -899,13 +905,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<IdentityProviderApplicationUser>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<IdentityProviderApplicationUser>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -918,7 +924,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getIdentityProviderKey(keyId: String) -> AnyPublisher<JsonWebKey, Error> {
         return Future<JsonWebKey, Error>.init { promise in
-            getIdentityProviderKeyWithRequestBuilder(keyId: keyId).execute(queue) { result -> Void in
+            guard let builder = self.getIdentityProviderKeyWithRequestBuilder(keyId: keyId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -936,7 +946,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func getIdentityProviderKey(keyId: String, completion: @escaping ((_ result: Swift.Result<JsonWebKey, Error>) -> Void)) {
-        getIdentityProviderKeyWithRequestBuilder(keyId: keyId).execute(queue) { result -> Void in
+        guard let builder = getIdentityProviderKeyWithRequestBuilder(keyId: keyId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -946,22 +960,15 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Get Key
-     - GET /api/v1/idps/credentials/keys/{keyId}
-     - Gets a specific IdP Key Credential by `kid`
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter keyId: (path)  
-     - returns: RequestBuilder<JsonWebKey> 
-     */
-    public func getIdentityProviderKeyWithRequestBuilder(keyId: String) -> RequestBuilder<JsonWebKey> {
+    internal func getIdentityProviderKeyWithRequestBuilder(keyId: String) -> RequestBuilder<JsonWebKey>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/credentials/keys/{keyId}"
         let keyIdPreEscape = "\(APIHelper.mapValueToPathItem(keyId))"
         let keyIdPostEscape = keyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{keyId}", with: keyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -971,13 +978,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<JsonWebKey>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<JsonWebKey>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -991,7 +998,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getIdentityProviderSigningKey(idpId: String, keyId: String) -> AnyPublisher<JsonWebKey, Error> {
         return Future<JsonWebKey, Error>.init { promise in
-            getIdentityProviderSigningKeyWithRequestBuilder(idpId: idpId, keyId: keyId).execute(queue) { result -> Void in
+            guard let builder = self.getIdentityProviderSigningKeyWithRequestBuilder(idpId: idpId, keyId: keyId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1010,7 +1021,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func getIdentityProviderSigningKey(idpId: String, keyId: String, completion: @escaping ((_ result: Swift.Result<JsonWebKey, Error>) -> Void)) {
-        getIdentityProviderSigningKeyWithRequestBuilder(idpId: idpId, keyId: keyId).execute(queue) { result -> Void in
+        guard let builder = getIdentityProviderSigningKeyWithRequestBuilder(idpId: idpId, keyId: keyId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1020,18 +1035,10 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Get Signing Key Credential for IdP
-     - GET /api/v1/idps/{idpId}/credentials/keys/{keyId}
-     - Gets a specific IdP Key Credential by `kid`
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - parameter keyId: (path)  
-     - returns: RequestBuilder<JsonWebKey> 
-     */
-    public func getIdentityProviderSigningKeyWithRequestBuilder(idpId: String, keyId: String) -> RequestBuilder<JsonWebKey> {
+    internal func getIdentityProviderSigningKeyWithRequestBuilder(idpId: String, keyId: String) -> RequestBuilder<JsonWebKey>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/credentials/keys/{keyId}"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1039,7 +1046,7 @@ public struct IdentityProviderAPI {
         let keyIdPreEscape = "\(APIHelper.mapValueToPathItem(keyId))"
         let keyIdPostEscape = keyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{keyId}", with: keyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1049,13 +1056,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<JsonWebKey>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<JsonWebKey>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1070,7 +1077,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func linkUserToIdentityProvider(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest) -> AnyPublisher<IdentityProviderApplicationUser, Error> {
         return Future<IdentityProviderApplicationUser, Error>.init { promise in
-            linkUserToIdentityProviderWithRequestBuilder(idpId: idpId, userId: userId, userIdentityProviderLinkRequest: userIdentityProviderLinkRequest).execute(queue) { result -> Void in
+            guard let builder = self.linkUserToIdentityProviderWithRequestBuilder(idpId: idpId, userId: userId, userIdentityProviderLinkRequest: userIdentityProviderLinkRequest) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1090,7 +1101,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func linkUserToIdentityProvider(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest, completion: @escaping ((_ result: Swift.Result<IdentityProviderApplicationUser, Error>) -> Void)) {
-        linkUserToIdentityProviderWithRequestBuilder(idpId: idpId, userId: userId, userIdentityProviderLinkRequest: userIdentityProviderLinkRequest).execute(queue) { result -> Void in
+        guard let builder = linkUserToIdentityProviderWithRequestBuilder(idpId: idpId, userId: userId, userIdentityProviderLinkRequest: userIdentityProviderLinkRequest) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1100,19 +1115,10 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Link a user to a Social IdP without a transaction
-     - POST /api/v1/idps/{idpId}/users/{userId}
-     - Links an Okta user to an existing Social Identity Provider. This does not support the SAML2 Identity Provider Type
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - parameter userId: (path)  
-     - parameter userIdentityProviderLinkRequest: (body)  
-     - returns: RequestBuilder<IdentityProviderApplicationUser> 
-     */
-    public func linkUserToIdentityProviderWithRequestBuilder(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest) -> RequestBuilder<IdentityProviderApplicationUser> {
+    internal func linkUserToIdentityProviderWithRequestBuilder(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest) -> RequestBuilder<IdentityProviderApplicationUser>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/users/{userId}"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1120,7 +1126,7 @@ public struct IdentityProviderAPI {
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: userIdentityProviderLinkRequest)
 
         let urlComponents = URLComponents(string: URLString)
@@ -1130,13 +1136,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<IdentityProviderApplicationUser>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<IdentityProviderApplicationUser>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1149,7 +1155,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listCsrsForIdentityProvider(idpId: String) -> AnyPublisher<[Csr], Error> {
         return Future<[Csr], Error>.init { promise in
-            listCsrsForIdentityProviderWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+            guard let builder = self.listCsrsForIdentityProviderWithRequestBuilder(idpId: idpId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1167,7 +1177,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func listCsrsForIdentityProvider(idpId: String, completion: @escaping ((_ result: Swift.Result<[Csr], Error>) -> Void)) {
-        listCsrsForIdentityProviderWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+        guard let builder = listCsrsForIdentityProviderWithRequestBuilder(idpId: idpId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1177,22 +1191,15 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     List Certificate Signing Requests for IdP
-     - GET /api/v1/idps/{idpId}/credentials/csrs
-     - Enumerates Certificate Signing Requests for an IdP
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - returns: RequestBuilder<[Csr]> 
-     */
-    public func listCsrsForIdentityProviderWithRequestBuilder(idpId: String) -> RequestBuilder<[Csr]> {
+    internal func listCsrsForIdentityProviderWithRequestBuilder(idpId: String) -> RequestBuilder<[Csr]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/credentials/csrs"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{idpId}", with: idpIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1202,13 +1209,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[Csr]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[Csr]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1221,7 +1228,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listIdentityProviderApplicationUsers(idpId: String) -> AnyPublisher<[IdentityProviderApplicationUser], Error> {
         return Future<[IdentityProviderApplicationUser], Error>.init { promise in
-            listIdentityProviderApplicationUsersWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+            guard let builder = self.listIdentityProviderApplicationUsersWithRequestBuilder(idpId: idpId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1239,7 +1250,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func listIdentityProviderApplicationUsers(idpId: String, completion: @escaping ((_ result: Swift.Result<[IdentityProviderApplicationUser], Error>) -> Void)) {
-        listIdentityProviderApplicationUsersWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+        guard let builder = listIdentityProviderApplicationUsersWithRequestBuilder(idpId: idpId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1249,22 +1264,15 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Find Users
-     - GET /api/v1/idps/{idpId}/users
-     - Find all the users linked to an identity provider
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - returns: RequestBuilder<[IdentityProviderApplicationUser]> 
-     */
-    public func listIdentityProviderApplicationUsersWithRequestBuilder(idpId: String) -> RequestBuilder<[IdentityProviderApplicationUser]> {
+    internal func listIdentityProviderApplicationUsersWithRequestBuilder(idpId: String) -> RequestBuilder<[IdentityProviderApplicationUser]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/users"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{idpId}", with: idpIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1274,13 +1282,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[IdentityProviderApplicationUser]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[IdentityProviderApplicationUser]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1294,7 +1302,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listIdentityProviderKeys(after: String? = nil, limit: Int? = nil) -> AnyPublisher<[JsonWebKey], Error> {
         return Future<[JsonWebKey], Error>.init { promise in
-            listIdentityProviderKeysWithRequestBuilder(after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listIdentityProviderKeysWithRequestBuilder(after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1313,7 +1325,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func listIdentityProviderKeys(after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[JsonWebKey], Error>) -> Void)) {
-        listIdentityProviderKeysWithRequestBuilder(after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listIdentityProviderKeysWithRequestBuilder(after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1323,20 +1339,12 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     List Keys
-     - GET /api/v1/idps/credentials/keys
-     - Enumerates IdP key credentials.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter after: (query) Specifies the pagination cursor for the next page of keys (optional)
-     - parameter limit: (query) Specifies the number of key results in a page (optional, default to 20)
-     - returns: RequestBuilder<[JsonWebKey]> 
-     */
-    public func listIdentityProviderKeysWithRequestBuilder(after: String? = nil, limit: Int? = nil) -> RequestBuilder<[JsonWebKey]> {
+    internal func listIdentityProviderKeysWithRequestBuilder(after: String? = nil, limit: Int? = nil) -> RequestBuilder<[JsonWebKey]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/idps/credentials/keys"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1350,13 +1358,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[JsonWebKey]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[JsonWebKey]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1369,7 +1377,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listIdentityProviderSigningKeys(idpId: String) -> AnyPublisher<[JsonWebKey], Error> {
         return Future<[JsonWebKey], Error>.init { promise in
-            listIdentityProviderSigningKeysWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+            guard let builder = self.listIdentityProviderSigningKeysWithRequestBuilder(idpId: idpId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1387,7 +1399,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func listIdentityProviderSigningKeys(idpId: String, completion: @escaping ((_ result: Swift.Result<[JsonWebKey], Error>) -> Void)) {
-        listIdentityProviderSigningKeysWithRequestBuilder(idpId: idpId).execute(queue) { result -> Void in
+        guard let builder = listIdentityProviderSigningKeysWithRequestBuilder(idpId: idpId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1397,22 +1413,15 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     List Signing Key Credentials for IdP
-     - GET /api/v1/idps/{idpId}/credentials/keys
-     - Enumerates signing key credentials for an IdP
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - returns: RequestBuilder<[JsonWebKey]> 
-     */
-    public func listIdentityProviderSigningKeysWithRequestBuilder(idpId: String) -> RequestBuilder<[JsonWebKey]> {
+    internal func listIdentityProviderSigningKeysWithRequestBuilder(idpId: String) -> RequestBuilder<[JsonWebKey]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/credentials/keys"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{idpId}", with: idpIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1422,13 +1431,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[JsonWebKey]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[JsonWebKey]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1444,7 +1453,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listIdentityProviders(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil) -> AnyPublisher<[IdentityProvider], Error> {
         return Future<[IdentityProvider], Error>.init { promise in
-            listIdentityProvidersWithRequestBuilder(q: q, after: after, limit: limit, type: type).execute(queue) { result -> Void in
+            guard let builder = self.listIdentityProvidersWithRequestBuilder(q: q, after: after, limit: limit, type: type) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1465,7 +1478,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func listIdentityProviders(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil, completion: @escaping ((_ result: Swift.Result<[IdentityProvider], Error>) -> Void)) {
-        listIdentityProvidersWithRequestBuilder(q: q, after: after, limit: limit, type: type).execute(queue) { result -> Void in
+        guard let builder = listIdentityProvidersWithRequestBuilder(q: q, after: after, limit: limit, type: type) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1475,22 +1492,12 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     List Identity Providers
-     - GET /api/v1/idps
-     - Enumerates IdPs in your organization with pagination. A subset of IdPs can be returned that match a supported filter expression or query.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter q: (query) Searches the name property of IdPs for matching value (optional)
-     - parameter after: (query) Specifies the pagination cursor for the next page of IdPs (optional)
-     - parameter limit: (query) Specifies the number of IdP results in a page (optional, default to 20)
-     - parameter type: (query) Filters IdPs by type (optional)
-     - returns: RequestBuilder<[IdentityProvider]> 
-     */
-    public func listIdentityProvidersWithRequestBuilder(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil) -> RequestBuilder<[IdentityProvider]> {
+    internal func listIdentityProvidersWithRequestBuilder(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil) -> RequestBuilder<[IdentityProvider]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/idps"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1506,13 +1513,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[IdentityProvider]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[IdentityProvider]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1526,7 +1533,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listSocialAuthTokens(idpId: String, userId: String) -> AnyPublisher<[SocialAuthToken], Error> {
         return Future<[SocialAuthToken], Error>.init { promise in
-            listSocialAuthTokensWithRequestBuilder(idpId: idpId, userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.listSocialAuthTokensWithRequestBuilder(idpId: idpId, userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1545,7 +1556,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func listSocialAuthTokens(idpId: String, userId: String, completion: @escaping ((_ result: Swift.Result<[SocialAuthToken], Error>) -> Void)) {
-        listSocialAuthTokensWithRequestBuilder(idpId: idpId, userId: userId).execute(queue) { result -> Void in
+        guard let builder = listSocialAuthTokensWithRequestBuilder(idpId: idpId, userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1555,18 +1570,10 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Social Authentication Token Operation
-     - GET /api/v1/idps/{idpId}/users/{userId}/credentials/tokens
-     - Fetches the tokens minted by the Social Authentication Provider when the user authenticates with Okta via Social Auth.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - parameter userId: (path)  
-     - returns: RequestBuilder<[SocialAuthToken]> 
-     */
-    public func listSocialAuthTokensWithRequestBuilder(idpId: String, userId: String) -> RequestBuilder<[SocialAuthToken]> {
+    internal func listSocialAuthTokensWithRequestBuilder(idpId: String, userId: String) -> RequestBuilder<[SocialAuthToken]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/users/{userId}/credentials/tokens"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1574,7 +1581,7 @@ public struct IdentityProviderAPI {
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1584,13 +1591,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[SocialAuthToken]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[SocialAuthToken]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1603,7 +1610,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func publishCsrForIdentityProvider(idpId: String, csrId: String) -> AnyPublisher<JsonWebKey, Error> {
         return Future<JsonWebKey, Error>.init { promise in
-            publishCsrForIdentityProviderWithRequestBuilder(idpId: idpId, csrId: csrId).execute(queue) { result -> Void in
+            guard let builder = self.publishCsrForIdentityProviderWithRequestBuilder(idpId: idpId, csrId: csrId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1621,7 +1632,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func publishCsrForIdentityProvider(idpId: String, csrId: String, completion: @escaping ((_ result: Swift.Result<JsonWebKey, Error>) -> Void)) {
-        publishCsrForIdentityProviderWithRequestBuilder(idpId: idpId, csrId: csrId).execute(queue) { result -> Void in
+        guard let builder = publishCsrForIdentityProviderWithRequestBuilder(idpId: idpId, csrId: csrId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1631,17 +1646,10 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     - POST /api/v1/idps/{idpId}/credentials/csrs/{csrId}/lifecycle/publish
-     - Update the Certificate Signing Request with a signed X.509 certificate and add it into the signing key credentials for the IdP.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - parameter csrId: (path)  
-     - returns: RequestBuilder<JsonWebKey> 
-     */
-    public func publishCsrForIdentityProviderWithRequestBuilder(idpId: String, csrId: String) -> RequestBuilder<JsonWebKey> {
+    internal func publishCsrForIdentityProviderWithRequestBuilder(idpId: String, csrId: String) -> RequestBuilder<JsonWebKey>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/credentials/csrs/{csrId}/lifecycle/publish"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1649,7 +1657,7 @@ public struct IdentityProviderAPI {
         let csrIdPreEscape = "\(APIHelper.mapValueToPathItem(csrId))"
         let csrIdPostEscape = csrIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{csrId}", with: csrIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1659,13 +1667,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<JsonWebKey>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<JsonWebKey>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1678,7 +1686,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func revokeCsrForIdentityProvider(idpId: String, csrId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            revokeCsrForIdentityProviderWithRequestBuilder(idpId: idpId, csrId: csrId).execute(queue) { result -> Void in
+            guard let builder = self.revokeCsrForIdentityProviderWithRequestBuilder(idpId: idpId, csrId: csrId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -1696,7 +1708,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func revokeCsrForIdentityProvider(idpId: String, csrId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        revokeCsrForIdentityProviderWithRequestBuilder(idpId: idpId, csrId: csrId).execute(queue) { result -> Void in
+        guard let builder = revokeCsrForIdentityProviderWithRequestBuilder(idpId: idpId, csrId: csrId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -1706,17 +1722,10 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/idps/{idpId}/credentials/csrs/{csrId}
-     - Revoke a Certificate Signing Request and delete the key pair from the IdP
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - parameter csrId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func revokeCsrForIdentityProviderWithRequestBuilder(idpId: String, csrId: String) -> RequestBuilder<Void> {
+    internal func revokeCsrForIdentityProviderWithRequestBuilder(idpId: String, csrId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/credentials/csrs/{csrId}"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1724,7 +1733,7 @@ public struct IdentityProviderAPI {
         let csrIdPreEscape = "\(APIHelper.mapValueToPathItem(csrId))"
         let csrIdPostEscape = csrIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{csrId}", with: csrIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1734,13 +1743,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1754,7 +1763,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func unlinkUserFromIdentityProvider(idpId: String, userId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            unlinkUserFromIdentityProviderWithRequestBuilder(idpId: idpId, userId: userId).execute(queue) { result -> Void in
+            guard let builder = self.unlinkUserFromIdentityProviderWithRequestBuilder(idpId: idpId, userId: userId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -1773,7 +1786,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func unlinkUserFromIdentityProvider(idpId: String, userId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        unlinkUserFromIdentityProviderWithRequestBuilder(idpId: idpId, userId: userId).execute(queue) { result -> Void in
+        guard let builder = unlinkUserFromIdentityProviderWithRequestBuilder(idpId: idpId, userId: userId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -1783,18 +1800,10 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Unlink User from IdP
-     - DELETE /api/v1/idps/{idpId}/users/{userId}
-     - Removes the link between the Okta user and the IdP user.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - parameter userId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func unlinkUserFromIdentityProviderWithRequestBuilder(idpId: String, userId: String) -> RequestBuilder<Void> {
+    internal func unlinkUserFromIdentityProviderWithRequestBuilder(idpId: String, userId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}/users/{userId}"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1802,7 +1811,7 @@ public struct IdentityProviderAPI {
         let userIdPreEscape = "\(APIHelper.mapValueToPathItem(userId))"
         let userIdPostEscape = userIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{userId}", with: userIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1812,13 +1821,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1832,7 +1841,11 @@ public struct IdentityProviderAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateIdentityProvider(idpId: String, identityProvider: IdentityProvider) -> AnyPublisher<IdentityProvider, Error> {
         return Future<IdentityProvider, Error>.init { promise in
-            updateIdentityProviderWithRequestBuilder(idpId: idpId, identityProvider: identityProvider).execute(queue) { result -> Void in
+            guard let builder = self.updateIdentityProviderWithRequestBuilder(idpId: idpId, identityProvider: identityProvider) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1851,7 +1864,11 @@ public struct IdentityProviderAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateIdentityProvider(idpId: String, identityProvider: IdentityProvider, completion: @escaping ((_ result: Swift.Result<IdentityProvider, Error>) -> Void)) {
-        updateIdentityProviderWithRequestBuilder(idpId: idpId, identityProvider: identityProvider).execute(queue) { result -> Void in
+        guard let builder = updateIdentityProviderWithRequestBuilder(idpId: idpId, identityProvider: identityProvider) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1861,23 +1878,15 @@ public struct IdentityProviderAPI {
         }
     }
 
-    /**
-     Update Identity Provider
-     - PUT /api/v1/idps/{idpId}
-     - Updates the configuration for an IdP.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter idpId: (path)  
-     - parameter identityProvider: (body)  
-     - returns: RequestBuilder<IdentityProvider> 
-     */
-    public func updateIdentityProviderWithRequestBuilder(idpId: String, identityProvider: IdentityProvider) -> RequestBuilder<IdentityProvider> {
+    internal func updateIdentityProviderWithRequestBuilder(idpId: String, identityProvider: IdentityProvider) -> RequestBuilder<IdentityProvider>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/idps/{idpId}"
         let idpIdPreEscape = "\(APIHelper.mapValueToPathItem(idpId))"
         let idpIdPostEscape = idpIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{idpId}", with: idpIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: identityProvider)
 
         let urlComponents = URLComponents(string: URLString)
@@ -1887,13 +1896,13 @@ public struct IdentityProviderAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<IdentityProvider>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<IdentityProvider>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

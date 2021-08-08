@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct LogAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class LogAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -39,7 +37,11 @@ public struct LogAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getLogs(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil) -> AnyPublisher<[LogEvent], Error> {
         return Future<[LogEvent], Error>.init { promise in
-            getLogsWithRequestBuilder(since: since, until: until, filter: filter, q: q, limit: limit, sortOrder: sortOrder, after: after).execute(queue) { result -> Void in
+            guard let builder = self.getLogsWithRequestBuilder(since: since, until: until, filter: filter, q: q, limit: limit, sortOrder: sortOrder, after: after) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -63,7 +65,11 @@ public struct LogAPI {
      - parameter completion: completion handler to receive the result
      */
     func getLogs(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil, completion: @escaping ((_ result: Swift.Result<[LogEvent], Error>) -> Void)) {
-        getLogsWithRequestBuilder(since: since, until: until, filter: filter, q: q, limit: limit, sortOrder: sortOrder, after: after).execute(queue) { result -> Void in
+        guard let builder = getLogsWithRequestBuilder(since: since, until: until, filter: filter, q: q, limit: limit, sortOrder: sortOrder, after: after) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -73,25 +79,12 @@ public struct LogAPI {
         }
     }
 
-    /**
-     Fetch a list of events from your Okta organization system log.
-     - GET /api/v1/logs
-     - The Okta System Log API provides read access to your organization’s system log. This API provides more functionality than the Events API
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter since: (query)  (optional)
-     - parameter until: (query)  (optional)
-     - parameter filter: (query)  (optional)
-     - parameter q: (query)  (optional)
-     - parameter limit: (query)  (optional, default to 100)
-     - parameter sortOrder: (query)  (optional, default to "ASCENDING")
-     - parameter after: (query)  (optional)
-     - returns: RequestBuilder<[LogEvent]> 
-     */
-    public func getLogsWithRequestBuilder(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil) -> RequestBuilder<[LogEvent]> {
+    internal func getLogsWithRequestBuilder(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil) -> RequestBuilder<[LogEvent]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/logs"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -110,13 +103,13 @@ public struct LogAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[LogEvent]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[LogEvent]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

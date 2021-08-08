@@ -23,6 +23,7 @@ public enum DownloadException: Error {
 }
 
 public enum DecodableRequestBuilderError: Error {
+    case nilAPI
     case emptyDataResponse
     case nilHTTPResponse
     case unsuccessfulHTTPStatusCode

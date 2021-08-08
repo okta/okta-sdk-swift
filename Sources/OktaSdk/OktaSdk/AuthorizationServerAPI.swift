@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct AuthorizationServerAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class AuthorizationServerAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -32,7 +30,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activateAuthorizationServer(authServerId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            activateAuthorizationServerWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+            guard let builder = self.activateAuthorizationServerWithRequestBuilder(authServerId: authServerId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -49,7 +51,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func activateAuthorizationServer(authServerId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        activateAuthorizationServerWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+        guard let builder = activateAuthorizationServerWithRequestBuilder(authServerId: authServerId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -59,21 +65,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - POST /api/v1/authorizationServers/{authServerId}/lifecycle/activate
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func activateAuthorizationServerWithRequestBuilder(authServerId: String) -> RequestBuilder<Void> {
+    internal func activateAuthorizationServerWithRequestBuilder(authServerId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/lifecycle/activate"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -83,13 +83,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -102,7 +102,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activateAuthorizationServerPolicy(authServerId: String, policyId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            activateAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId).execute(queue) { result -> Void in
+            guard let builder = self.activateAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -120,7 +124,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func activateAuthorizationServerPolicy(authServerId: String, policyId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        activateAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId).execute(queue) { result -> Void in
+        guard let builder = activateAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -130,17 +138,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - POST /api/v1/authorizationServers/{authServerId}/policies/{policyId}/lifecycle/activate
-     - Activate Authorization Server Policy
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter policyId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func activateAuthorizationServerPolicyWithRequestBuilder(authServerId: String, policyId: String) -> RequestBuilder<Void> {
+    internal func activateAuthorizationServerPolicyWithRequestBuilder(authServerId: String, policyId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/lifecycle/activate"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -148,7 +149,7 @@ public struct AuthorizationServerAPI {
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{policyId}", with: policyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -158,13 +159,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -178,7 +179,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func activateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            activateAuthorizationServerPolicyRuleWithRequestBuilder(authServerId: authServerId, policyId: policyId, ruleId: ruleId).execute(queue) { result -> Void in
+            guard let builder = self.activateAuthorizationServerPolicyRuleWithRequestBuilder(authServerId: authServerId, policyId: policyId, ruleId: ruleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -197,7 +202,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func activateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        activateAuthorizationServerPolicyRuleWithRequestBuilder(authServerId: authServerId, policyId: policyId, ruleId: ruleId).execute(queue) { result -> Void in
+        guard let builder = activateAuthorizationServerPolicyRuleWithRequestBuilder(authServerId: authServerId, policyId: policyId, ruleId: ruleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -207,18 +216,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - POST /api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}/lifecycle/activate
-     - Activate Authorization Server Policy Rule
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter policyId: (path)  
-     - parameter ruleId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func activateAuthorizationServerPolicyRuleWithRequestBuilder(authServerId: String, policyId: String, ruleId: String) -> RequestBuilder<Void> {
+    internal func activateAuthorizationServerPolicyRuleWithRequestBuilder(authServerId: String, policyId: String, ruleId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}/lifecycle/activate"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -229,7 +230,7 @@ public struct AuthorizationServerAPI {
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -239,13 +240,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -257,7 +258,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createAuthorizationServer(authorizationServer: AuthorizationServer) -> AnyPublisher<AuthorizationServer, Error> {
         return Future<AuthorizationServer, Error>.init { promise in
-            createAuthorizationServerWithRequestBuilder(authorizationServer: authorizationServer).execute(queue) { result -> Void in
+            guard let builder = self.createAuthorizationServerWithRequestBuilder(authorizationServer: authorizationServer) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -274,7 +279,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func createAuthorizationServer(authorizationServer: AuthorizationServer, completion: @escaping ((_ result: Swift.Result<AuthorizationServer, Error>) -> Void)) {
-        createAuthorizationServerWithRequestBuilder(authorizationServer: authorizationServer).execute(queue) { result -> Void in
+        guard let builder = createAuthorizationServerWithRequestBuilder(authorizationServer: authorizationServer) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -284,18 +293,12 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - POST /api/v1/authorizationServers
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authorizationServer: (body)  
-     - returns: RequestBuilder<AuthorizationServer> 
-     */
-    public func createAuthorizationServerWithRequestBuilder(authorizationServer: AuthorizationServer) -> RequestBuilder<AuthorizationServer> {
+    internal func createAuthorizationServerWithRequestBuilder(authorizationServer: AuthorizationServer) -> RequestBuilder<AuthorizationServer>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/authorizationServers"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: authorizationServer)
 
         let urlComponents = URLComponents(string: URLString)
@@ -305,13 +308,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<AuthorizationServer>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AuthorizationServer>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -324,7 +327,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createAuthorizationServerPolicy(authServerId: String, policy: AuthorizationServerPolicy) -> AnyPublisher<AuthorizationServerPolicy, Error> {
         return Future<AuthorizationServerPolicy, Error>.init { promise in
-            createAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policy: policy).execute(queue) { result -> Void in
+            guard let builder = self.createAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policy: policy) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -342,7 +349,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func createAuthorizationServerPolicy(authServerId: String, policy: AuthorizationServerPolicy, completion: @escaping ((_ result: Swift.Result<AuthorizationServerPolicy, Error>) -> Void)) {
-        createAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policy: policy).execute(queue) { result -> Void in
+        guard let builder = createAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policy: policy) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -352,22 +363,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - POST /api/v1/authorizationServers/{authServerId}/policies
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter policy: (body)  
-     - returns: RequestBuilder<AuthorizationServerPolicy> 
-     */
-    public func createAuthorizationServerPolicyWithRequestBuilder(authServerId: String, policy: AuthorizationServerPolicy) -> RequestBuilder<AuthorizationServerPolicy> {
+    internal func createAuthorizationServerPolicyWithRequestBuilder(authServerId: String, policy: AuthorizationServerPolicy) -> RequestBuilder<AuthorizationServerPolicy>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: policy)
 
         let urlComponents = URLComponents(string: URLString)
@@ -377,13 +381,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<AuthorizationServerPolicy>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AuthorizationServerPolicy>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -397,7 +401,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createAuthorizationServerPolicyRule(policyId: String, authServerId: String, policyRule: AuthorizationServerPolicyRule) -> AnyPublisher<AuthorizationServerPolicyRule, Error> {
         return Future<AuthorizationServerPolicyRule, Error>.init { promise in
-            createAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, policyRule: policyRule).execute(queue) { result -> Void in
+            guard let builder = self.createAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, policyRule: policyRule) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -416,7 +424,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func createAuthorizationServerPolicyRule(policyId: String, authServerId: String, policyRule: AuthorizationServerPolicyRule, completion: @escaping ((_ result: Swift.Result<AuthorizationServerPolicyRule, Error>) -> Void)) {
-        createAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, policyRule: policyRule).execute(queue) { result -> Void in
+        guard let builder = createAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, policyRule: policyRule) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -426,18 +438,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - POST /api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules
-     - Creates a policy rule for the specified Custom Authorization Server and Policy.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter authServerId: (path)  
-     - parameter policyRule: (body)  
-     - returns: RequestBuilder<AuthorizationServerPolicyRule> 
-     */
-    public func createAuthorizationServerPolicyRuleWithRequestBuilder(policyId: String, authServerId: String, policyRule: AuthorizationServerPolicyRule) -> RequestBuilder<AuthorizationServerPolicyRule> {
+    internal func createAuthorizationServerPolicyRuleWithRequestBuilder(policyId: String, authServerId: String, policyRule: AuthorizationServerPolicyRule) -> RequestBuilder<AuthorizationServerPolicyRule>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -445,7 +449,7 @@ public struct AuthorizationServerAPI {
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: policyRule)
 
         let urlComponents = URLComponents(string: URLString)
@@ -455,13 +459,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<AuthorizationServerPolicyRule>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AuthorizationServerPolicyRule>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -474,7 +478,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createOAuth2Claim(authServerId: String, oAuth2Claim: OAuth2Claim) -> AnyPublisher<OAuth2Claim, Error> {
         return Future<OAuth2Claim, Error>.init { promise in
-            createOAuth2ClaimWithRequestBuilder(authServerId: authServerId, oAuth2Claim: oAuth2Claim).execute(queue) { result -> Void in
+            guard let builder = self.createOAuth2ClaimWithRequestBuilder(authServerId: authServerId, oAuth2Claim: oAuth2Claim) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -492,7 +500,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func createOAuth2Claim(authServerId: String, oAuth2Claim: OAuth2Claim, completion: @escaping ((_ result: Swift.Result<OAuth2Claim, Error>) -> Void)) {
-        createOAuth2ClaimWithRequestBuilder(authServerId: authServerId, oAuth2Claim: oAuth2Claim).execute(queue) { result -> Void in
+        guard let builder = createOAuth2ClaimWithRequestBuilder(authServerId: authServerId, oAuth2Claim: oAuth2Claim) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -502,22 +514,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - POST /api/v1/authorizationServers/{authServerId}/claims
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter oAuth2Claim: (body)  
-     - returns: RequestBuilder<OAuth2Claim> 
-     */
-    public func createOAuth2ClaimWithRequestBuilder(authServerId: String, oAuth2Claim: OAuth2Claim) -> RequestBuilder<OAuth2Claim> {
+    internal func createOAuth2ClaimWithRequestBuilder(authServerId: String, oAuth2Claim: OAuth2Claim) -> RequestBuilder<OAuth2Claim>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/claims"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: oAuth2Claim)
 
         let urlComponents = URLComponents(string: URLString)
@@ -527,13 +532,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<OAuth2Claim>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<OAuth2Claim>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -546,7 +551,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func createOAuth2Scope(authServerId: String, oAuth2Scope: OAuth2Scope) -> AnyPublisher<OAuth2Scope, Error> {
         return Future<OAuth2Scope, Error>.init { promise in
-            createOAuth2ScopeWithRequestBuilder(authServerId: authServerId, oAuth2Scope: oAuth2Scope).execute(queue) { result -> Void in
+            guard let builder = self.createOAuth2ScopeWithRequestBuilder(authServerId: authServerId, oAuth2Scope: oAuth2Scope) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -564,7 +573,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func createOAuth2Scope(authServerId: String, oAuth2Scope: OAuth2Scope, completion: @escaping ((_ result: Swift.Result<OAuth2Scope, Error>) -> Void)) {
-        createOAuth2ScopeWithRequestBuilder(authServerId: authServerId, oAuth2Scope: oAuth2Scope).execute(queue) { result -> Void in
+        guard let builder = createOAuth2ScopeWithRequestBuilder(authServerId: authServerId, oAuth2Scope: oAuth2Scope) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -574,22 +587,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - POST /api/v1/authorizationServers/{authServerId}/scopes
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter oAuth2Scope: (body)  
-     - returns: RequestBuilder<OAuth2Scope> 
-     */
-    public func createOAuth2ScopeWithRequestBuilder(authServerId: String, oAuth2Scope: OAuth2Scope) -> RequestBuilder<OAuth2Scope> {
+    internal func createOAuth2ScopeWithRequestBuilder(authServerId: String, oAuth2Scope: OAuth2Scope) -> RequestBuilder<OAuth2Scope>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/scopes"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: oAuth2Scope)
 
         let urlComponents = URLComponents(string: URLString)
@@ -599,13 +605,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<OAuth2Scope>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<OAuth2Scope>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -617,7 +623,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivateAuthorizationServer(authServerId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deactivateAuthorizationServerWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+            guard let builder = self.deactivateAuthorizationServerWithRequestBuilder(authServerId: authServerId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -634,7 +644,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivateAuthorizationServer(authServerId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deactivateAuthorizationServerWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+        guard let builder = deactivateAuthorizationServerWithRequestBuilder(authServerId: authServerId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -644,21 +658,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - POST /api/v1/authorizationServers/{authServerId}/lifecycle/deactivate
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deactivateAuthorizationServerWithRequestBuilder(authServerId: String) -> RequestBuilder<Void> {
+    internal func deactivateAuthorizationServerWithRequestBuilder(authServerId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/lifecycle/deactivate"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -668,13 +676,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -687,7 +695,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivateAuthorizationServerPolicy(authServerId: String, policyId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deactivateAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId).execute(queue) { result -> Void in
+            guard let builder = self.deactivateAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -705,7 +717,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivateAuthorizationServerPolicy(authServerId: String, policyId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deactivateAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId).execute(queue) { result -> Void in
+        guard let builder = deactivateAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -715,17 +731,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - POST /api/v1/authorizationServers/{authServerId}/policies/{policyId}/lifecycle/deactivate
-     - Deactivate Authorization Server Policy
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter policyId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deactivateAuthorizationServerPolicyWithRequestBuilder(authServerId: String, policyId: String) -> RequestBuilder<Void> {
+    internal func deactivateAuthorizationServerPolicyWithRequestBuilder(authServerId: String, policyId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/lifecycle/deactivate"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -733,7 +742,7 @@ public struct AuthorizationServerAPI {
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{policyId}", with: policyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -743,13 +752,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -763,7 +772,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deactivateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deactivateAuthorizationServerPolicyRuleWithRequestBuilder(authServerId: authServerId, policyId: policyId, ruleId: ruleId).execute(queue) { result -> Void in
+            guard let builder = self.deactivateAuthorizationServerPolicyRuleWithRequestBuilder(authServerId: authServerId, policyId: policyId, ruleId: ruleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -782,7 +795,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func deactivateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deactivateAuthorizationServerPolicyRuleWithRequestBuilder(authServerId: authServerId, policyId: policyId, ruleId: ruleId).execute(queue) { result -> Void in
+        guard let builder = deactivateAuthorizationServerPolicyRuleWithRequestBuilder(authServerId: authServerId, policyId: policyId, ruleId: ruleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -792,18 +809,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - POST /api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}/lifecycle/deactivate
-     - Deactivate Authorization Server Policy Rule
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter policyId: (path)  
-     - parameter ruleId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deactivateAuthorizationServerPolicyRuleWithRequestBuilder(authServerId: String, policyId: String, ruleId: String) -> RequestBuilder<Void> {
+    internal func deactivateAuthorizationServerPolicyRuleWithRequestBuilder(authServerId: String, policyId: String, ruleId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}/lifecycle/deactivate"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -814,7 +823,7 @@ public struct AuthorizationServerAPI {
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -824,13 +833,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -842,7 +851,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteAuthorizationServer(authServerId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteAuthorizationServerWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+            guard let builder = self.deleteAuthorizationServerWithRequestBuilder(authServerId: authServerId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -859,7 +872,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteAuthorizationServer(authServerId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteAuthorizationServerWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+        guard let builder = deleteAuthorizationServerWithRequestBuilder(authServerId: authServerId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -869,21 +886,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/authorizationServers/{authServerId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteAuthorizationServerWithRequestBuilder(authServerId: String) -> RequestBuilder<Void> {
+    internal func deleteAuthorizationServerWithRequestBuilder(authServerId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -893,13 +904,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -912,7 +923,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteAuthorizationServerPolicy(authServerId: String, policyId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId).execute(queue) { result -> Void in
+            guard let builder = self.deleteAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -930,7 +945,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteAuthorizationServerPolicy(authServerId: String, policyId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId).execute(queue) { result -> Void in
+        guard let builder = deleteAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -940,17 +959,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/authorizationServers/{authServerId}/policies/{policyId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter policyId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteAuthorizationServerPolicyWithRequestBuilder(authServerId: String, policyId: String) -> RequestBuilder<Void> {
+    internal func deleteAuthorizationServerPolicyWithRequestBuilder(authServerId: String, policyId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies/{policyId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -958,7 +970,7 @@ public struct AuthorizationServerAPI {
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{policyId}", with: policyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -968,13 +980,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -988,7 +1000,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, ruleId: ruleId).execute(queue) { result -> Void in
+            guard let builder = self.deleteAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, ruleId: ruleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -1007,7 +1023,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, ruleId: ruleId).execute(queue) { result -> Void in
+        guard let builder = deleteAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, ruleId: ruleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -1017,18 +1037,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}
-     - Deletes a Policy Rule defined in the specified Custom Authorization Server and Policy.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter authServerId: (path)  
-     - parameter ruleId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteAuthorizationServerPolicyRuleWithRequestBuilder(policyId: String, authServerId: String, ruleId: String) -> RequestBuilder<Void> {
+    internal func deleteAuthorizationServerPolicyRuleWithRequestBuilder(policyId: String, authServerId: String, ruleId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1039,7 +1051,7 @@ public struct AuthorizationServerAPI {
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1049,13 +1061,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1068,7 +1080,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteOAuth2Claim(authServerId: String, claimId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteOAuth2ClaimWithRequestBuilder(authServerId: authServerId, claimId: claimId).execute(queue) { result -> Void in
+            guard let builder = self.deleteOAuth2ClaimWithRequestBuilder(authServerId: authServerId, claimId: claimId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -1086,7 +1102,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteOAuth2Claim(authServerId: String, claimId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteOAuth2ClaimWithRequestBuilder(authServerId: authServerId, claimId: claimId).execute(queue) { result -> Void in
+        guard let builder = deleteOAuth2ClaimWithRequestBuilder(authServerId: authServerId, claimId: claimId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -1096,17 +1116,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/authorizationServers/{authServerId}/claims/{claimId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter claimId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteOAuth2ClaimWithRequestBuilder(authServerId: String, claimId: String) -> RequestBuilder<Void> {
+    internal func deleteOAuth2ClaimWithRequestBuilder(authServerId: String, claimId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/claims/{claimId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1114,7 +1127,7 @@ public struct AuthorizationServerAPI {
         let claimIdPreEscape = "\(APIHelper.mapValueToPathItem(claimId))"
         let claimIdPostEscape = claimIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{claimId}", with: claimIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1124,13 +1137,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1143,7 +1156,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteOAuth2Scope(authServerId: String, scopeId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteOAuth2ScopeWithRequestBuilder(authServerId: authServerId, scopeId: scopeId).execute(queue) { result -> Void in
+            guard let builder = self.deleteOAuth2ScopeWithRequestBuilder(authServerId: authServerId, scopeId: scopeId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -1161,7 +1178,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteOAuth2Scope(authServerId: String, scopeId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteOAuth2ScopeWithRequestBuilder(authServerId: authServerId, scopeId: scopeId).execute(queue) { result -> Void in
+        guard let builder = deleteOAuth2ScopeWithRequestBuilder(authServerId: authServerId, scopeId: scopeId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -1171,17 +1192,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/authorizationServers/{authServerId}/scopes/{scopeId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter scopeId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteOAuth2ScopeWithRequestBuilder(authServerId: String, scopeId: String) -> RequestBuilder<Void> {
+    internal func deleteOAuth2ScopeWithRequestBuilder(authServerId: String, scopeId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/scopes/{scopeId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1189,7 +1203,7 @@ public struct AuthorizationServerAPI {
         let scopeIdPreEscape = "\(APIHelper.mapValueToPathItem(scopeId))"
         let scopeIdPostEscape = scopeIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{scopeId}", with: scopeIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1199,13 +1213,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1217,7 +1231,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getAuthorizationServer(authServerId: String) -> AnyPublisher<AuthorizationServer, Error> {
         return Future<AuthorizationServer, Error>.init { promise in
-            getAuthorizationServerWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+            guard let builder = self.getAuthorizationServerWithRequestBuilder(authServerId: authServerId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1234,7 +1252,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func getAuthorizationServer(authServerId: String, completion: @escaping ((_ result: Swift.Result<AuthorizationServer, Error>) -> Void)) {
-        getAuthorizationServerWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+        guard let builder = getAuthorizationServerWithRequestBuilder(authServerId: authServerId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1244,21 +1266,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - returns: RequestBuilder<AuthorizationServer> 
-     */
-    public func getAuthorizationServerWithRequestBuilder(authServerId: String) -> RequestBuilder<AuthorizationServer> {
+    internal func getAuthorizationServerWithRequestBuilder(authServerId: String) -> RequestBuilder<AuthorizationServer>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1268,13 +1284,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<AuthorizationServer>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AuthorizationServer>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1287,7 +1303,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getAuthorizationServerPolicy(authServerId: String, policyId: String) -> AnyPublisher<AuthorizationServerPolicy, Error> {
         return Future<AuthorizationServerPolicy, Error>.init { promise in
-            getAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId).execute(queue) { result -> Void in
+            guard let builder = self.getAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1305,7 +1325,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func getAuthorizationServerPolicy(authServerId: String, policyId: String, completion: @escaping ((_ result: Swift.Result<AuthorizationServerPolicy, Error>) -> Void)) {
-        getAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId).execute(queue) { result -> Void in
+        guard let builder = getAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1315,17 +1339,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}/policies/{policyId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter policyId: (path)  
-     - returns: RequestBuilder<AuthorizationServerPolicy> 
-     */
-    public func getAuthorizationServerPolicyWithRequestBuilder(authServerId: String, policyId: String) -> RequestBuilder<AuthorizationServerPolicy> {
+    internal func getAuthorizationServerPolicyWithRequestBuilder(authServerId: String, policyId: String) -> RequestBuilder<AuthorizationServerPolicy>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies/{policyId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1333,7 +1350,7 @@ public struct AuthorizationServerAPI {
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{policyId}", with: policyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1343,13 +1360,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<AuthorizationServerPolicy>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AuthorizationServerPolicy>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1363,7 +1380,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String) -> AnyPublisher<AuthorizationServerPolicyRule, Error> {
         return Future<AuthorizationServerPolicyRule, Error>.init { promise in
-            getAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, ruleId: ruleId).execute(queue) { result -> Void in
+            guard let builder = self.getAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, ruleId: ruleId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1382,7 +1403,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func getAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String, completion: @escaping ((_ result: Swift.Result<AuthorizationServerPolicyRule, Error>) -> Void)) {
-        getAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, ruleId: ruleId).execute(queue) { result -> Void in
+        guard let builder = getAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, ruleId: ruleId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1392,18 +1417,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}
-     - Returns a Policy Rule by ID that is defined in the specified Custom Authorization Server and Policy.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter authServerId: (path)  
-     - parameter ruleId: (path)  
-     - returns: RequestBuilder<AuthorizationServerPolicyRule> 
-     */
-    public func getAuthorizationServerPolicyRuleWithRequestBuilder(policyId: String, authServerId: String, ruleId: String) -> RequestBuilder<AuthorizationServerPolicyRule> {
+    internal func getAuthorizationServerPolicyRuleWithRequestBuilder(policyId: String, authServerId: String, ruleId: String) -> RequestBuilder<AuthorizationServerPolicyRule>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1414,7 +1431,7 @@ public struct AuthorizationServerAPI {
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1424,13 +1441,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<AuthorizationServerPolicyRule>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AuthorizationServerPolicyRule>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1443,7 +1460,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getOAuth2Claim(authServerId: String, claimId: String) -> AnyPublisher<OAuth2Claim, Error> {
         return Future<OAuth2Claim, Error>.init { promise in
-            getOAuth2ClaimWithRequestBuilder(authServerId: authServerId, claimId: claimId).execute(queue) { result -> Void in
+            guard let builder = self.getOAuth2ClaimWithRequestBuilder(authServerId: authServerId, claimId: claimId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1461,7 +1482,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func getOAuth2Claim(authServerId: String, claimId: String, completion: @escaping ((_ result: Swift.Result<OAuth2Claim, Error>) -> Void)) {
-        getOAuth2ClaimWithRequestBuilder(authServerId: authServerId, claimId: claimId).execute(queue) { result -> Void in
+        guard let builder = getOAuth2ClaimWithRequestBuilder(authServerId: authServerId, claimId: claimId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1471,17 +1496,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}/claims/{claimId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter claimId: (path)  
-     - returns: RequestBuilder<OAuth2Claim> 
-     */
-    public func getOAuth2ClaimWithRequestBuilder(authServerId: String, claimId: String) -> RequestBuilder<OAuth2Claim> {
+    internal func getOAuth2ClaimWithRequestBuilder(authServerId: String, claimId: String) -> RequestBuilder<OAuth2Claim>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/claims/{claimId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1489,7 +1507,7 @@ public struct AuthorizationServerAPI {
         let claimIdPreEscape = "\(APIHelper.mapValueToPathItem(claimId))"
         let claimIdPostEscape = claimIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{claimId}", with: claimIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1499,13 +1517,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<OAuth2Claim>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<OAuth2Claim>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1518,7 +1536,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getOAuth2Scope(authServerId: String, scopeId: String) -> AnyPublisher<OAuth2Scope, Error> {
         return Future<OAuth2Scope, Error>.init { promise in
-            getOAuth2ScopeWithRequestBuilder(authServerId: authServerId, scopeId: scopeId).execute(queue) { result -> Void in
+            guard let builder = self.getOAuth2ScopeWithRequestBuilder(authServerId: authServerId, scopeId: scopeId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1536,7 +1558,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func getOAuth2Scope(authServerId: String, scopeId: String, completion: @escaping ((_ result: Swift.Result<OAuth2Scope, Error>) -> Void)) {
-        getOAuth2ScopeWithRequestBuilder(authServerId: authServerId, scopeId: scopeId).execute(queue) { result -> Void in
+        guard let builder = getOAuth2ScopeWithRequestBuilder(authServerId: authServerId, scopeId: scopeId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1546,17 +1572,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}/scopes/{scopeId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter scopeId: (path)  
-     - returns: RequestBuilder<OAuth2Scope> 
-     */
-    public func getOAuth2ScopeWithRequestBuilder(authServerId: String, scopeId: String) -> RequestBuilder<OAuth2Scope> {
+    internal func getOAuth2ScopeWithRequestBuilder(authServerId: String, scopeId: String) -> RequestBuilder<OAuth2Scope>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/scopes/{scopeId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1564,7 +1583,7 @@ public struct AuthorizationServerAPI {
         let scopeIdPreEscape = "\(APIHelper.mapValueToPathItem(scopeId))"
         let scopeIdPostEscape = scopeIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{scopeId}", with: scopeIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1574,13 +1593,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<OAuth2Scope>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<OAuth2Scope>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1595,7 +1614,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String, expand: String? = nil) -> AnyPublisher<OAuth2RefreshToken, Error> {
         return Future<OAuth2RefreshToken, Error>.init { promise in
-            getRefreshTokenForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId, tokenId: tokenId, expand: expand).execute(queue) { result -> Void in
+            guard let builder = self.getRefreshTokenForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId, tokenId: tokenId, expand: expand) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1615,7 +1638,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func getRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String, expand: String? = nil, completion: @escaping ((_ result: Swift.Result<OAuth2RefreshToken, Error>) -> Void)) {
-        getRefreshTokenForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId, tokenId: tokenId, expand: expand).execute(queue) { result -> Void in
+        guard let builder = getRefreshTokenForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId, tokenId: tokenId, expand: expand) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1625,19 +1652,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens/{tokenId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter clientId: (path)  
-     - parameter tokenId: (path)  
-     - parameter expand: (query)  (optional)
-     - returns: RequestBuilder<OAuth2RefreshToken> 
-     */
-    public func getRefreshTokenForAuthorizationServerAndClientWithRequestBuilder(authServerId: String, clientId: String, tokenId: String, expand: String? = nil) -> RequestBuilder<OAuth2RefreshToken> {
+    internal func getRefreshTokenForAuthorizationServerAndClientWithRequestBuilder(authServerId: String, clientId: String, tokenId: String, expand: String? = nil) -> RequestBuilder<OAuth2RefreshToken>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens/{tokenId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1648,7 +1666,7 @@ public struct AuthorizationServerAPI {
         let tokenIdPreEscape = "\(APIHelper.mapValueToPathItem(tokenId))"
         let tokenIdPostEscape = tokenIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{tokenId}", with: tokenIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1661,13 +1679,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<OAuth2RefreshToken>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<OAuth2RefreshToken>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1679,7 +1697,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listAuthorizationServerKeys(authServerId: String) -> AnyPublisher<[JsonWebKey], Error> {
         return Future<[JsonWebKey], Error>.init { promise in
-            listAuthorizationServerKeysWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+            guard let builder = self.listAuthorizationServerKeysWithRequestBuilder(authServerId: authServerId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1696,7 +1718,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func listAuthorizationServerKeys(authServerId: String, completion: @escaping ((_ result: Swift.Result<[JsonWebKey], Error>) -> Void)) {
-        listAuthorizationServerKeysWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+        guard let builder = listAuthorizationServerKeysWithRequestBuilder(authServerId: authServerId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1706,21 +1732,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}/credentials/keys
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - returns: RequestBuilder<[JsonWebKey]> 
-     */
-    public func listAuthorizationServerKeysWithRequestBuilder(authServerId: String) -> RequestBuilder<[JsonWebKey]> {
+    internal func listAuthorizationServerKeysWithRequestBuilder(authServerId: String) -> RequestBuilder<[JsonWebKey]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/credentials/keys"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1730,13 +1750,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[JsonWebKey]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[JsonWebKey]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1748,7 +1768,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listAuthorizationServerPolicies(authServerId: String) -> AnyPublisher<[AuthorizationServerPolicy], Error> {
         return Future<[AuthorizationServerPolicy], Error>.init { promise in
-            listAuthorizationServerPoliciesWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+            guard let builder = self.listAuthorizationServerPoliciesWithRequestBuilder(authServerId: authServerId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1765,7 +1789,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func listAuthorizationServerPolicies(authServerId: String, completion: @escaping ((_ result: Swift.Result<[AuthorizationServerPolicy], Error>) -> Void)) {
-        listAuthorizationServerPoliciesWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+        guard let builder = listAuthorizationServerPoliciesWithRequestBuilder(authServerId: authServerId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1775,21 +1803,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}/policies
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - returns: RequestBuilder<[AuthorizationServerPolicy]> 
-     */
-    public func listAuthorizationServerPoliciesWithRequestBuilder(authServerId: String) -> RequestBuilder<[AuthorizationServerPolicy]> {
+    internal func listAuthorizationServerPoliciesWithRequestBuilder(authServerId: String) -> RequestBuilder<[AuthorizationServerPolicy]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1799,13 +1821,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[AuthorizationServerPolicy]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[AuthorizationServerPolicy]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1818,7 +1840,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listAuthorizationServerPolicyRules(policyId: String, authServerId: String) -> AnyPublisher<[AuthorizationServerPolicyRule], Error> {
         return Future<[AuthorizationServerPolicyRule], Error>.init { promise in
-            listAuthorizationServerPolicyRulesWithRequestBuilder(policyId: policyId, authServerId: authServerId).execute(queue) { result -> Void in
+            guard let builder = self.listAuthorizationServerPolicyRulesWithRequestBuilder(policyId: policyId, authServerId: authServerId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1836,7 +1862,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func listAuthorizationServerPolicyRules(policyId: String, authServerId: String, completion: @escaping ((_ result: Swift.Result<[AuthorizationServerPolicyRule], Error>) -> Void)) {
-        listAuthorizationServerPolicyRulesWithRequestBuilder(policyId: policyId, authServerId: authServerId).execute(queue) { result -> Void in
+        guard let builder = listAuthorizationServerPolicyRulesWithRequestBuilder(policyId: policyId, authServerId: authServerId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1846,17 +1876,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules
-     - Enumerates all policy rules for the specified Custom Authorization Server and Policy.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter authServerId: (path)  
-     - returns: RequestBuilder<[AuthorizationServerPolicyRule]> 
-     */
-    public func listAuthorizationServerPolicyRulesWithRequestBuilder(policyId: String, authServerId: String) -> RequestBuilder<[AuthorizationServerPolicyRule]> {
+    internal func listAuthorizationServerPolicyRulesWithRequestBuilder(policyId: String, authServerId: String) -> RequestBuilder<[AuthorizationServerPolicyRule]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -1864,7 +1887,7 @@ public struct AuthorizationServerAPI {
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -1874,13 +1897,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[AuthorizationServerPolicyRule]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[AuthorizationServerPolicyRule]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1894,7 +1917,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listAuthorizationServers(q: String? = nil, limit: String? = nil, after: String? = nil) -> AnyPublisher<[AuthorizationServer], Error> {
         return Future<[AuthorizationServer], Error>.init { promise in
-            listAuthorizationServersWithRequestBuilder(q: q, limit: limit, after: after).execute(queue) { result -> Void in
+            guard let builder = self.listAuthorizationServersWithRequestBuilder(q: q, limit: limit, after: after) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1913,7 +1940,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func listAuthorizationServers(q: String? = nil, limit: String? = nil, after: String? = nil, completion: @escaping ((_ result: Swift.Result<[AuthorizationServer], Error>) -> Void)) {
-        listAuthorizationServersWithRequestBuilder(q: q, limit: limit, after: after).execute(queue) { result -> Void in
+        guard let builder = listAuthorizationServersWithRequestBuilder(q: q, limit: limit, after: after) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1923,20 +1954,12 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter q: (query)  (optional)
-     - parameter limit: (query)  (optional)
-     - parameter after: (query)  (optional)
-     - returns: RequestBuilder<[AuthorizationServer]> 
-     */
-    public func listAuthorizationServersWithRequestBuilder(q: String? = nil, limit: String? = nil, after: String? = nil) -> RequestBuilder<[AuthorizationServer]> {
+    internal func listAuthorizationServersWithRequestBuilder(q: String? = nil, limit: String? = nil, after: String? = nil) -> RequestBuilder<[AuthorizationServer]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/authorizationServers"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -1951,13 +1974,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[AuthorizationServer]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[AuthorizationServer]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -1969,7 +1992,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listOAuth2Claims(authServerId: String) -> AnyPublisher<[OAuth2Claim], Error> {
         return Future<[OAuth2Claim], Error>.init { promise in
-            listOAuth2ClaimsWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+            guard let builder = self.listOAuth2ClaimsWithRequestBuilder(authServerId: authServerId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -1986,7 +2013,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func listOAuth2Claims(authServerId: String, completion: @escaping ((_ result: Swift.Result<[OAuth2Claim], Error>) -> Void)) {
-        listOAuth2ClaimsWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+        guard let builder = listOAuth2ClaimsWithRequestBuilder(authServerId: authServerId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -1996,21 +2027,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}/claims
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - returns: RequestBuilder<[OAuth2Claim]> 
-     */
-    public func listOAuth2ClaimsWithRequestBuilder(authServerId: String) -> RequestBuilder<[OAuth2Claim]> {
+    internal func listOAuth2ClaimsWithRequestBuilder(authServerId: String) -> RequestBuilder<[OAuth2Claim]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/claims"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2020,13 +2045,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[OAuth2Claim]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[OAuth2Claim]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2038,7 +2063,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listOAuth2ClientsForAuthorizationServer(authServerId: String) -> AnyPublisher<[OAuth2Client], Error> {
         return Future<[OAuth2Client], Error>.init { promise in
-            listOAuth2ClientsForAuthorizationServerWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+            guard let builder = self.listOAuth2ClientsForAuthorizationServerWithRequestBuilder(authServerId: authServerId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2055,7 +2084,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func listOAuth2ClientsForAuthorizationServer(authServerId: String, completion: @escaping ((_ result: Swift.Result<[OAuth2Client], Error>) -> Void)) {
-        listOAuth2ClientsForAuthorizationServerWithRequestBuilder(authServerId: authServerId).execute(queue) { result -> Void in
+        guard let builder = listOAuth2ClientsForAuthorizationServerWithRequestBuilder(authServerId: authServerId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2065,21 +2098,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}/clients
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - returns: RequestBuilder<[OAuth2Client]> 
-     */
-    public func listOAuth2ClientsForAuthorizationServerWithRequestBuilder(authServerId: String) -> RequestBuilder<[OAuth2Client]> {
+    internal func listOAuth2ClientsForAuthorizationServerWithRequestBuilder(authServerId: String) -> RequestBuilder<[OAuth2Client]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/clients"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2089,13 +2116,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[OAuth2Client]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[OAuth2Client]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2111,7 +2138,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listOAuth2Scopes(authServerId: String, q: String? = nil, filter: String? = nil, cursor: String? = nil, limit: Int? = nil) -> AnyPublisher<[OAuth2Scope], Error> {
         return Future<[OAuth2Scope], Error>.init { promise in
-            listOAuth2ScopesWithRequestBuilder(authServerId: authServerId, q: q, filter: filter, cursor: cursor, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listOAuth2ScopesWithRequestBuilder(authServerId: authServerId, q: q, filter: filter, cursor: cursor, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2132,7 +2163,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func listOAuth2Scopes(authServerId: String, q: String? = nil, filter: String? = nil, cursor: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[OAuth2Scope], Error>) -> Void)) {
-        listOAuth2ScopesWithRequestBuilder(authServerId: authServerId, q: q, filter: filter, cursor: cursor, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listOAuth2ScopesWithRequestBuilder(authServerId: authServerId, q: q, filter: filter, cursor: cursor, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2142,25 +2177,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}/scopes
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter q: (query)  (optional)
-     - parameter filter: (query)  (optional)
-     - parameter cursor: (query)  (optional)
-     - parameter limit: (query)  (optional, default to -1)
-     - returns: RequestBuilder<[OAuth2Scope]> 
-     */
-    public func listOAuth2ScopesWithRequestBuilder(authServerId: String, q: String? = nil, filter: String? = nil, cursor: String? = nil, limit: Int? = nil) -> RequestBuilder<[OAuth2Scope]> {
+    internal func listOAuth2ScopesWithRequestBuilder(authServerId: String, q: String? = nil, filter: String? = nil, cursor: String? = nil, limit: Int? = nil) -> RequestBuilder<[OAuth2Scope]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/scopes"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -2176,13 +2201,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[OAuth2Scope]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[OAuth2Scope]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2198,7 +2223,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> AnyPublisher<[OAuth2RefreshToken], Error> {
         return Future<[OAuth2RefreshToken], Error>.init { promise in
-            listRefreshTokensForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId, expand: expand, after: after, limit: limit).execute(queue) { result -> Void in
+            guard let builder = self.listRefreshTokensForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId, expand: expand, after: after, limit: limit) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2219,7 +2248,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func listRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping ((_ result: Swift.Result<[OAuth2RefreshToken], Error>) -> Void)) {
-        listRefreshTokensForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId, expand: expand, after: after, limit: limit).execute(queue) { result -> Void in
+        guard let builder = listRefreshTokensForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId, expand: expand, after: after, limit: limit) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2229,20 +2262,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - GET /api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter clientId: (path)  
-     - parameter expand: (query)  (optional)
-     - parameter after: (query)  (optional)
-     - parameter limit: (query)  (optional, default to -1)
-     - returns: RequestBuilder<[OAuth2RefreshToken]> 
-     */
-    public func listRefreshTokensForAuthorizationServerAndClientWithRequestBuilder(authServerId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[OAuth2RefreshToken]> {
+    internal func listRefreshTokensForAuthorizationServerAndClientWithRequestBuilder(authServerId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) -> RequestBuilder<[OAuth2RefreshToken]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2250,7 +2273,7 @@ public struct AuthorizationServerAPI {
         let clientIdPreEscape = "\(APIHelper.mapValueToPathItem(clientId))"
         let clientIdPostEscape = clientIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{clientId}", with: clientIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         var urlComponents = URLComponents(string: URLString)
@@ -2265,13 +2288,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[OAuth2RefreshToken]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[OAuth2RefreshToken]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2285,7 +2308,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func revokeRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            revokeRefreshTokenForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId, tokenId: tokenId).execute(queue) { result -> Void in
+            guard let builder = self.revokeRefreshTokenForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId, tokenId: tokenId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2304,7 +2331,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func revokeRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        revokeRefreshTokenForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId, tokenId: tokenId).execute(queue) { result -> Void in
+        guard let builder = revokeRefreshTokenForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId, tokenId: tokenId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2314,18 +2345,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens/{tokenId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter clientId: (path)  
-     - parameter tokenId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func revokeRefreshTokenForAuthorizationServerAndClientWithRequestBuilder(authServerId: String, clientId: String, tokenId: String) -> RequestBuilder<Void> {
+    internal func revokeRefreshTokenForAuthorizationServerAndClientWithRequestBuilder(authServerId: String, clientId: String, tokenId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens/{tokenId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2336,7 +2359,7 @@ public struct AuthorizationServerAPI {
         let tokenIdPreEscape = "\(APIHelper.mapValueToPathItem(tokenId))"
         let tokenIdPostEscape = tokenIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{tokenId}", with: tokenIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2346,13 +2369,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2365,7 +2388,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func revokeRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            revokeRefreshTokensForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId).execute(queue) { result -> Void in
+            guard let builder = self.revokeRefreshTokensForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -2383,7 +2410,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func revokeRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        revokeRefreshTokensForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId).execute(queue) { result -> Void in
+        guard let builder = revokeRefreshTokensForAuthorizationServerAndClientWithRequestBuilder(authServerId: authServerId, clientId: clientId) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -2393,17 +2424,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter clientId: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func revokeRefreshTokensForAuthorizationServerAndClientWithRequestBuilder(authServerId: String, clientId: String) -> RequestBuilder<Void> {
+    internal func revokeRefreshTokensForAuthorizationServerAndClientWithRequestBuilder(authServerId: String, clientId: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2411,7 +2435,7 @@ public struct AuthorizationServerAPI {
         let clientIdPreEscape = "\(APIHelper.mapValueToPathItem(clientId))"
         let clientIdPostEscape = clientIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{clientId}", with: clientIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -2421,13 +2445,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2440,7 +2464,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func rotateAuthorizationServerKeys(authServerId: String, use: JwkUse) -> AnyPublisher<[JsonWebKey], Error> {
         return Future<[JsonWebKey], Error>.init { promise in
-            rotateAuthorizationServerKeysWithRequestBuilder(authServerId: authServerId, use: use).execute(queue) { result -> Void in
+            guard let builder = self.rotateAuthorizationServerKeysWithRequestBuilder(authServerId: authServerId, use: use) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2458,7 +2486,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func rotateAuthorizationServerKeys(authServerId: String, use: JwkUse, completion: @escaping ((_ result: Swift.Result<[JsonWebKey], Error>) -> Void)) {
-        rotateAuthorizationServerKeysWithRequestBuilder(authServerId: authServerId, use: use).execute(queue) { result -> Void in
+        guard let builder = rotateAuthorizationServerKeysWithRequestBuilder(authServerId: authServerId, use: use) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2468,22 +2500,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - POST /api/v1/authorizationServers/{authServerId}/credentials/lifecycle/keyRotate
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter use: (body)  
-     - returns: RequestBuilder<[JsonWebKey]> 
-     */
-    public func rotateAuthorizationServerKeysWithRequestBuilder(authServerId: String, use: JwkUse) -> RequestBuilder<[JsonWebKey]> {
+    internal func rotateAuthorizationServerKeysWithRequestBuilder(authServerId: String, use: JwkUse) -> RequestBuilder<[JsonWebKey]>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/credentials/lifecycle/keyRotate"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: use)
 
         let urlComponents = URLComponents(string: URLString)
@@ -2493,13 +2518,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[JsonWebKey]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[JsonWebKey]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2512,7 +2537,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateAuthorizationServer(authServerId: String, authorizationServer: AuthorizationServer) -> AnyPublisher<AuthorizationServer, Error> {
         return Future<AuthorizationServer, Error>.init { promise in
-            updateAuthorizationServerWithRequestBuilder(authServerId: authServerId, authorizationServer: authorizationServer).execute(queue) { result -> Void in
+            guard let builder = self.updateAuthorizationServerWithRequestBuilder(authServerId: authServerId, authorizationServer: authorizationServer) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2530,7 +2559,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateAuthorizationServer(authServerId: String, authorizationServer: AuthorizationServer, completion: @escaping ((_ result: Swift.Result<AuthorizationServer, Error>) -> Void)) {
-        updateAuthorizationServerWithRequestBuilder(authServerId: authServerId, authorizationServer: authorizationServer).execute(queue) { result -> Void in
+        guard let builder = updateAuthorizationServerWithRequestBuilder(authServerId: authServerId, authorizationServer: authorizationServer) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2540,22 +2573,15 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/authorizationServers/{authServerId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter authorizationServer: (body)  
-     - returns: RequestBuilder<AuthorizationServer> 
-     */
-    public func updateAuthorizationServerWithRequestBuilder(authServerId: String, authorizationServer: AuthorizationServer) -> RequestBuilder<AuthorizationServer> {
+    internal func updateAuthorizationServerWithRequestBuilder(authServerId: String, authorizationServer: AuthorizationServer) -> RequestBuilder<AuthorizationServer>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{authServerId}", with: authServerIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: authorizationServer)
 
         let urlComponents = URLComponents(string: URLString)
@@ -2565,13 +2591,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<AuthorizationServer>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AuthorizationServer>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2585,7 +2611,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateAuthorizationServerPolicy(authServerId: String, policyId: String, policy: AuthorizationServerPolicy) -> AnyPublisher<AuthorizationServerPolicy, Error> {
         return Future<AuthorizationServerPolicy, Error>.init { promise in
-            updateAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId, policy: policy).execute(queue) { result -> Void in
+            guard let builder = self.updateAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId, policy: policy) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2604,7 +2634,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateAuthorizationServerPolicy(authServerId: String, policyId: String, policy: AuthorizationServerPolicy, completion: @escaping ((_ result: Swift.Result<AuthorizationServerPolicy, Error>) -> Void)) {
-        updateAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId, policy: policy).execute(queue) { result -> Void in
+        guard let builder = updateAuthorizationServerPolicyWithRequestBuilder(authServerId: authServerId, policyId: policyId, policy: policy) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2614,18 +2648,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/authorizationServers/{authServerId}/policies/{policyId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter policyId: (path)  
-     - parameter policy: (body)  
-     - returns: RequestBuilder<AuthorizationServerPolicy> 
-     */
-    public func updateAuthorizationServerPolicyWithRequestBuilder(authServerId: String, policyId: String, policy: AuthorizationServerPolicy) -> RequestBuilder<AuthorizationServerPolicy> {
+    internal func updateAuthorizationServerPolicyWithRequestBuilder(authServerId: String, policyId: String, policy: AuthorizationServerPolicy) -> RequestBuilder<AuthorizationServerPolicy>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies/{policyId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2633,7 +2659,7 @@ public struct AuthorizationServerAPI {
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{policyId}", with: policyIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: policy)
 
         let urlComponents = URLComponents(string: URLString)
@@ -2643,13 +2669,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<AuthorizationServerPolicy>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AuthorizationServerPolicy>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2664,7 +2690,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String, policyRule: AuthorizationServerPolicyRule) -> AnyPublisher<AuthorizationServerPolicyRule, Error> {
         return Future<AuthorizationServerPolicyRule, Error>.init { promise in
-            updateAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, ruleId: ruleId, policyRule: policyRule).execute(queue) { result -> Void in
+            guard let builder = self.updateAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, ruleId: ruleId, policyRule: policyRule) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2684,7 +2714,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String, policyRule: AuthorizationServerPolicyRule, completion: @escaping ((_ result: Swift.Result<AuthorizationServerPolicyRule, Error>) -> Void)) {
-        updateAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, ruleId: ruleId, policyRule: policyRule).execute(queue) { result -> Void in
+        guard let builder = updateAuthorizationServerPolicyRuleWithRequestBuilder(policyId: policyId, authServerId: authServerId, ruleId: ruleId, policyRule: policyRule) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2694,19 +2728,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}
-     - Updates the configuration of the Policy Rule defined in the specified Custom Authorization Server and Policy.
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter policyId: (path)  
-     - parameter authServerId: (path)  
-     - parameter ruleId: (path)  
-     - parameter policyRule: (body)  
-     - returns: RequestBuilder<AuthorizationServerPolicyRule> 
-     */
-    public func updateAuthorizationServerPolicyRuleWithRequestBuilder(policyId: String, authServerId: String, ruleId: String, policyRule: AuthorizationServerPolicyRule) -> RequestBuilder<AuthorizationServerPolicyRule> {
+    internal func updateAuthorizationServerPolicyRuleWithRequestBuilder(policyId: String, authServerId: String, ruleId: String, policyRule: AuthorizationServerPolicyRule) -> RequestBuilder<AuthorizationServerPolicyRule>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}"
         let policyIdPreEscape = "\(APIHelper.mapValueToPathItem(policyId))"
         let policyIdPostEscape = policyIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2717,7 +2742,7 @@ public struct AuthorizationServerAPI {
         let ruleIdPreEscape = "\(APIHelper.mapValueToPathItem(ruleId))"
         let ruleIdPostEscape = ruleIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{ruleId}", with: ruleIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: policyRule)
 
         let urlComponents = URLComponents(string: URLString)
@@ -2727,13 +2752,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<AuthorizationServerPolicyRule>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<AuthorizationServerPolicyRule>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2747,7 +2772,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateOAuth2Claim(authServerId: String, claimId: String, oAuth2Claim: OAuth2Claim) -> AnyPublisher<OAuth2Claim, Error> {
         return Future<OAuth2Claim, Error>.init { promise in
-            updateOAuth2ClaimWithRequestBuilder(authServerId: authServerId, claimId: claimId, oAuth2Claim: oAuth2Claim).execute(queue) { result -> Void in
+            guard let builder = self.updateOAuth2ClaimWithRequestBuilder(authServerId: authServerId, claimId: claimId, oAuth2Claim: oAuth2Claim) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2766,7 +2795,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateOAuth2Claim(authServerId: String, claimId: String, oAuth2Claim: OAuth2Claim, completion: @escaping ((_ result: Swift.Result<OAuth2Claim, Error>) -> Void)) {
-        updateOAuth2ClaimWithRequestBuilder(authServerId: authServerId, claimId: claimId, oAuth2Claim: oAuth2Claim).execute(queue) { result -> Void in
+        guard let builder = updateOAuth2ClaimWithRequestBuilder(authServerId: authServerId, claimId: claimId, oAuth2Claim: oAuth2Claim) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2776,18 +2809,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/authorizationServers/{authServerId}/claims/{claimId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter claimId: (path)  
-     - parameter oAuth2Claim: (body)  
-     - returns: RequestBuilder<OAuth2Claim> 
-     */
-    public func updateOAuth2ClaimWithRequestBuilder(authServerId: String, claimId: String, oAuth2Claim: OAuth2Claim) -> RequestBuilder<OAuth2Claim> {
+    internal func updateOAuth2ClaimWithRequestBuilder(authServerId: String, claimId: String, oAuth2Claim: OAuth2Claim) -> RequestBuilder<OAuth2Claim>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/claims/{claimId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2795,7 +2820,7 @@ public struct AuthorizationServerAPI {
         let claimIdPreEscape = "\(APIHelper.mapValueToPathItem(claimId))"
         let claimIdPostEscape = claimIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{claimId}", with: claimIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: oAuth2Claim)
 
         let urlComponents = URLComponents(string: URLString)
@@ -2805,13 +2830,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<OAuth2Claim>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<OAuth2Claim>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -2825,7 +2850,11 @@ public struct AuthorizationServerAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func updateOAuth2Scope(authServerId: String, scopeId: String, oAuth2Scope: OAuth2Scope) -> AnyPublisher<OAuth2Scope, Error> {
         return Future<OAuth2Scope, Error>.init { promise in
-            updateOAuth2ScopeWithRequestBuilder(authServerId: authServerId, scopeId: scopeId, oAuth2Scope: oAuth2Scope).execute(queue) { result -> Void in
+            guard let builder = self.updateOAuth2ScopeWithRequestBuilder(authServerId: authServerId, scopeId: scopeId, oAuth2Scope: oAuth2Scope) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -2844,7 +2873,11 @@ public struct AuthorizationServerAPI {
      - parameter completion: completion handler to receive the result
      */
     func updateOAuth2Scope(authServerId: String, scopeId: String, oAuth2Scope: OAuth2Scope, completion: @escaping ((_ result: Swift.Result<OAuth2Scope, Error>) -> Void)) {
-        updateOAuth2ScopeWithRequestBuilder(authServerId: authServerId, scopeId: scopeId, oAuth2Scope: oAuth2Scope).execute(queue) { result -> Void in
+        guard let builder = updateOAuth2ScopeWithRequestBuilder(authServerId: authServerId, scopeId: scopeId, oAuth2Scope: oAuth2Scope) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -2854,18 +2887,10 @@ public struct AuthorizationServerAPI {
         }
     }
 
-    /**
-     - PUT /api/v1/authorizationServers/{authServerId}/scopes/{scopeId}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter authServerId: (path)  
-     - parameter scopeId: (path)  
-     - parameter oAuth2Scope: (body)  
-     - returns: RequestBuilder<OAuth2Scope> 
-     */
-    public func updateOAuth2ScopeWithRequestBuilder(authServerId: String, scopeId: String, oAuth2Scope: OAuth2Scope) -> RequestBuilder<OAuth2Scope> {
+    internal func updateOAuth2ScopeWithRequestBuilder(authServerId: String, scopeId: String, oAuth2Scope: OAuth2Scope) -> RequestBuilder<OAuth2Scope>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/authorizationServers/{authServerId}/scopes/{scopeId}"
         let authServerIdPreEscape = "\(APIHelper.mapValueToPathItem(authServerId))"
         let authServerIdPostEscape = authServerIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -2873,7 +2898,7 @@ public struct AuthorizationServerAPI {
         let scopeIdPreEscape = "\(APIHelper.mapValueToPathItem(scopeId))"
         let scopeIdPostEscape = scopeIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{scopeId}", with: scopeIdPostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: oAuth2Scope)
 
         let urlComponents = URLComponents(string: URLString)
@@ -2883,13 +2908,13 @@ public struct AuthorizationServerAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<OAuth2Scope>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<OAuth2Scope>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "PUT", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }

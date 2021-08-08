@@ -7,12 +7,12 @@
 
 import Foundation
 
-public struct OktaClient {
+public class OktaClient {
     public let configuration: Configuration
     public let queue: DispatchQueue
     private var urlSessionStore = SynchronizedDictionary<String, URLSession>()
 
-    public lazy var application: OktaSdk.API.ApplicationAPI = { .init(configuration: configuration, queue: queue) }()
+    public lazy var application: OktaSdk.API.ApplicationAPI = { .init(api: self) }()
     
     public init(configuration: OktaClient.Configuration, queue: DispatchQueue = .main) {
         self.configuration = configuration

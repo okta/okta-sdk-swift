@@ -14,13 +14,11 @@ import AnyCodable
 extension OktaSdk.API {
 
 
-public struct LinkedObjectAPI {
-    internal let configuration: OktaClient.Configuration
-    internal let queue: DispatchQueue
+public class LinkedObjectAPI {
+    internal weak var api: OktaSdkAPI?
 
-    internal init(configuration: OktaClient.Configuration, queue: DispatchQueue) {
-        self.configuration = configuration
-        self.queue = queue
+    internal init(api: OktaSdkAPI) {
+        self.api = api
     }
 
     /**
@@ -32,7 +30,11 @@ public struct LinkedObjectAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func addLinkedObjectDefinition(linkedObject: LinkedObject) -> AnyPublisher<LinkedObject, Error> {
         return Future<LinkedObject, Error>.init { promise in
-            addLinkedObjectDefinitionWithRequestBuilder(linkedObject: linkedObject).execute(queue) { result -> Void in
+            guard let builder = self.addLinkedObjectDefinitionWithRequestBuilder(linkedObject: linkedObject) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -49,7 +51,11 @@ public struct LinkedObjectAPI {
      - parameter completion: completion handler to receive the result
      */
     func addLinkedObjectDefinition(linkedObject: LinkedObject, completion: @escaping ((_ result: Swift.Result<LinkedObject, Error>) -> Void)) {
-        addLinkedObjectDefinitionWithRequestBuilder(linkedObject: linkedObject).execute(queue) { result -> Void in
+        guard let builder = addLinkedObjectDefinitionWithRequestBuilder(linkedObject: linkedObject) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -59,18 +65,12 @@ public struct LinkedObjectAPI {
         }
     }
 
-    /**
-     - POST /api/v1/meta/schemas/user/linkedObjects
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter linkedObject: (body)  
-     - returns: RequestBuilder<LinkedObject> 
-     */
-    public func addLinkedObjectDefinitionWithRequestBuilder(linkedObject: LinkedObject) -> RequestBuilder<LinkedObject> {
+    internal func addLinkedObjectDefinitionWithRequestBuilder(linkedObject: LinkedObject) -> RequestBuilder<LinkedObject>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/meta/schemas/user/linkedObjects"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: linkedObject)
 
         let urlComponents = URLComponents(string: URLString)
@@ -80,13 +80,13 @@ public struct LinkedObjectAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<LinkedObject>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<LinkedObject>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "POST", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -98,7 +98,11 @@ public struct LinkedObjectAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func deleteLinkedObjectDefinition(linkedObjectName: String) -> AnyPublisher<Void, Error> {
         return Future<Void, Error>.init { promise in
-            deleteLinkedObjectDefinitionWithRequestBuilder(linkedObjectName: linkedObjectName).execute(queue) { result -> Void in
+            guard let builder = self.deleteLinkedObjectDefinitionWithRequestBuilder(linkedObjectName: linkedObjectName) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case .success:
                     promise(.success(()))
@@ -115,7 +119,11 @@ public struct LinkedObjectAPI {
      - parameter completion: completion handler to receive the result
      */
     func deleteLinkedObjectDefinition(linkedObjectName: String, completion: @escaping ((_ result: Swift.Result<Void, Error>) -> Void)) {
-        deleteLinkedObjectDefinitionWithRequestBuilder(linkedObjectName: linkedObjectName).execute(queue) { result -> Void in
+        guard let builder = deleteLinkedObjectDefinitionWithRequestBuilder(linkedObjectName: linkedObjectName) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case .success:
                 completion(.success(()))
@@ -125,21 +133,15 @@ public struct LinkedObjectAPI {
         }
     }
 
-    /**
-     - DELETE /api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter linkedObjectName: (path)  
-     - returns: RequestBuilder<Void> 
-     */
-    public func deleteLinkedObjectDefinitionWithRequestBuilder(linkedObjectName: String) -> RequestBuilder<Void> {
+    internal func deleteLinkedObjectDefinitionWithRequestBuilder(linkedObjectName: String) -> RequestBuilder<Void>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}"
         let linkedObjectNamePreEscape = "\(APIHelper.mapValueToPathItem(linkedObjectName))"
         let linkedObjectNamePostEscape = linkedObjectNamePreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{linkedObjectName}", with: linkedObjectNamePostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -149,13 +151,13 @@ public struct LinkedObjectAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<Void>.Type = OktaSdkAPI.requestBuilderFactory.getNonDecodableBuilder()
+        let requestBuilder: RequestBuilder<Void>.Type = api.requestBuilderFactory.getNonDecodableBuilder()
 
-        return requestBuilder.init(method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "DELETE", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -167,7 +169,11 @@ public struct LinkedObjectAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func getLinkedObjectDefinition(linkedObjectName: String) -> AnyPublisher<LinkedObject, Error> {
         return Future<LinkedObject, Error>.init { promise in
-            getLinkedObjectDefinitionWithRequestBuilder(linkedObjectName: linkedObjectName).execute(queue) { result -> Void in
+            guard let builder = self.getLinkedObjectDefinitionWithRequestBuilder(linkedObjectName: linkedObjectName) else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -184,7 +190,11 @@ public struct LinkedObjectAPI {
      - parameter completion: completion handler to receive the result
      */
     func getLinkedObjectDefinition(linkedObjectName: String, completion: @escaping ((_ result: Swift.Result<LinkedObject, Error>) -> Void)) {
-        getLinkedObjectDefinitionWithRequestBuilder(linkedObjectName: linkedObjectName).execute(queue) { result -> Void in
+        guard let builder = getLinkedObjectDefinitionWithRequestBuilder(linkedObjectName: linkedObjectName) else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -194,21 +204,15 @@ public struct LinkedObjectAPI {
         }
     }
 
-    /**
-     - GET /api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - parameter linkedObjectName: (path)  
-     - returns: RequestBuilder<LinkedObject> 
-     */
-    public func getLinkedObjectDefinitionWithRequestBuilder(linkedObjectName: String) -> RequestBuilder<LinkedObject> {
+    internal func getLinkedObjectDefinitionWithRequestBuilder(linkedObjectName: String) -> RequestBuilder<LinkedObject>? {
+        guard let api = api else {
+            return nil
+        }
         var path = "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}"
         let linkedObjectNamePreEscape = "\(APIHelper.mapValueToPathItem(linkedObjectName))"
         let linkedObjectNamePostEscape = linkedObjectNamePreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
         path = path.replacingOccurrences(of: "{linkedObjectName}", with: linkedObjectNamePostEscape, options: .literal, range: nil)
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -218,13 +222,13 @@ public struct LinkedObjectAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<LinkedObject>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<LinkedObject>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
     /**
@@ -235,7 +239,11 @@ public struct LinkedObjectAPI {
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func listLinkedObjectDefinitions() -> AnyPublisher<[LinkedObject], Error> {
         return Future<[LinkedObject], Error>.init { promise in
-            listLinkedObjectDefinitionsWithRequestBuilder().execute(queue) { result -> Void in
+            guard let builder = self.listLinkedObjectDefinitionsWithRequestBuilder() else {
+                promise(.failure(DecodableRequestBuilderError.nilAPI))
+                return
+            }
+            builder.execute { result -> Void in
                 switch result {
                 case let .success(response):
                     promise(.success(response.body!))
@@ -251,7 +259,11 @@ public struct LinkedObjectAPI {
      - parameter completion: completion handler to receive the result
      */
     func listLinkedObjectDefinitions(completion: @escaping ((_ result: Swift.Result<[LinkedObject], Error>) -> Void)) {
-        listLinkedObjectDefinitionsWithRequestBuilder().execute(queue) { result -> Void in
+        guard let builder = listLinkedObjectDefinitionsWithRequestBuilder() else {
+            completion(.failure(DecodableRequestBuilderError.nilAPI))
+            return
+        }
+        builder.execute { result -> Void in
             switch result {
             case let .success(response):
                 completion(.success(response.body!))
@@ -261,17 +273,12 @@ public struct LinkedObjectAPI {
         }
     }
 
-    /**
-     - GET /api/v1/meta/schemas/user/linkedObjects
-     - Success
-     - API Key:
-       - type: apiKey Authorization 
-       - name: api_token
-     - returns: RequestBuilder<[LinkedObject]> 
-     */
-    public func listLinkedObjectDefinitionsWithRequestBuilder() -> RequestBuilder<[LinkedObject]> {
+    internal func listLinkedObjectDefinitionsWithRequestBuilder() -> RequestBuilder<[LinkedObject]>? {
+        guard let api = api else {
+            return nil
+        }
         let path = "/api/v1/meta/schemas/user/linkedObjects"
-        let URLString = configuration.basePath + path
+        let URLString = api.basePath + path
         let parameters: [String: Any]? = nil
 
         let urlComponents = URLComponents(string: URLString)
@@ -281,13 +288,13 @@ public struct LinkedObjectAPI {
         ]
 
         var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(configuration.customHeaders) { lhs, rhs in
+        headerParameters.merge(api.customHeaders) { lhs, rhs in
             return lhs
         }
 
-        let requestBuilder: RequestBuilder<[LinkedObject]>.Type = OktaSdkAPI.requestBuilderFactory.getBuilder()
+        let requestBuilder: RequestBuilder<[LinkedObject]>.Type = api.requestBuilderFactory.getBuilder()
 
-        return requestBuilder.init(method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
+        return requestBuilder.init(api: api, method: "GET", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
     }
 
 }
