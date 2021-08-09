@@ -34,6 +34,7 @@ class ApplicationsClientTests: XCTestCase {
             XCTAssertNil(error)
         }
     }
+    
     /*
     let sendable = ClientSendableMock()
     let configuration = OktaClient.Configuration(apiKey: "apiKey", domain: "example.com")

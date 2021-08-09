@@ -13,6 +13,27 @@ public class OktaClient {
     private var urlSessionStore = SynchronizedDictionary<String, URLSession>()
 
     public lazy var application: OktaSdk.API.ApplicationAPI = { .init(api: self) }()
+    public lazy var authorizationServer: OktaSdk.API.AuthorizationServerAPI = { .init(api: self) }()
+    public lazy var captcha: OktaSdk.API.CAPTCHAAPI = { .init(api: self) }()
+    public lazy var domain: OktaSdk.API.DomainAPI = { .init(api: self) }()
+    public lazy var eventHook: OktaSdk.API.EventHookAPI = { .init(api: self) }()
+    public lazy var feature: OktaSdk.API.FeatureAPI = { .init(api: self) }()
+    public lazy var group: OktaSdk.API.GroupAPI = { .init(api: self) }()
+    public lazy var identityProvider: OktaSdk.API.IdentityProviderAPI = { .init(api: self) }()
+    public lazy var inlineHook: OktaSdk.API.InlineHookAPI = { .init(api: self) }()
+    public lazy var linkedObject: OktaSdk.API.LinkedObjectAPI = { .init(api: self) }()
+    public lazy var log: OktaSdk.API.LogAPI = { .init(api: self) }()
+    public lazy var networkZone: OktaSdk.API.NetworkZoneAPI = { .init(api: self) }()
+    public lazy var policy: OktaSdk.API.PolicyAPI = { .init(api: self) }()
+    public lazy var profileMapping: OktaSdk.API.ProfileMappingAPI = { .init(api: self) }()
+    public lazy var session: OktaSdk.API.SessionAPI = { .init(api: self) }()
+    public lazy var template: OktaSdk.API.TemplateAPI = { .init(api: self) }()
+    public lazy var threadInsight: OktaSdk.API.ThreatInsightAPI = { .init(api: self) }()
+    public lazy var trustedOrigin: OktaSdk.API.TrustedOriginAPI = { .init(api: self) }()
+    public lazy var user: OktaSdk.API.UserAPI = { .init(api: self) }()
+    public lazy var userFactor: OktaSdk.API.UserFactorAPI = { .init(api: self) }()
+    public lazy var userSchema: OktaSdk.API.UserSchemaAPI = { .init(api: self) }()
+    public lazy var userType: OktaSdk.API.UserTypeAPI = { .init(api: self) }()
     
     public init(configuration: OktaClient.Configuration, queue: DispatchQueue = .main) {
         self.configuration = configuration
