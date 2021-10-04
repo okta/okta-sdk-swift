@@ -9,4 +9,3 @@ build:
 		--input-spec management.yaml \
 		--template-dir openapi-template \
 		--output .
-

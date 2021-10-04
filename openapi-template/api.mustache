@@ -5,23 +5,19 @@
 // https://openapi-generator.tech
 //
 
-import Foundation{{#useCombine}}
-#if canImport(Combine)
-import Combine
-#endif{{/useCombine}}{{#swiftUseApiNamespace}}
+import Foundation
 import AnyCodable
 
-extension {{projectName}}.API {
-{{/swiftUseApiNamespace}}
+#if canImport(Combine)
+import Combine
+#endif
 
+public extension OktaClient {
 {{#description}}
-/** {{description}} */{{/description}}
-{{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} class {{classname}} {
-    internal weak var api: OktaSdkAPI?
-
-    internal init(api: OktaSdkAPI) {
-        self.api = api
-    }
+    /** {{description}} */{{/description}}
+    struct {{classname}}: OktaClientAPI {
+        internal let baseURL: URL
+        internal let session: URLSession
 
 {{#operation}}
     {{#allParams}}
@@ -39,167 +35,72 @@ extension {{projectName}}.API {
 
     {{/isEnum}}
     {{/allParams}}
-{{^usePromiseKit}}
-{{^useRxSwift}}
-{{^useResult}}
-{{^useCombine}}
-    /**
-     {{#summary}}
-     {{{summary}}}
-     {{/summary}}{{#allParams}}
-     - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{description}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
-     - parameter completion: completion handler to receive the data and the error objects
-     */
-    {{#isDeprecated}}
-    @available(*, deprecated, message: "This operation is deprecated.")
-    {{/isDeprecated}}
-    {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} func {{operationId}}({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}{{#hasParams}}, {{/hasParams}}completion: @escaping ((_ data: {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}?, _ error: Error?) -> Void)) {
-        neigh
-        guard let builder = {{operationId}}WithRequestBuilder({{#allParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) else {
+
+        internal func {{operationId}}URLRequest({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}) throws -> URLRequest {
+            try request(to: "{{{path}}}"{{#hasPathParams}}.expanded(using: [
+            {{#pathParams}}
+                "{{paramName}}": {{paramName}}{{^-last}}, {{/-last}}
+            {{/pathParams}}
+            ]){{/hasPathParams}}, method: "{{httpMethod}}"{{#hasQueryParams}}, query: [
+                {{#queryParams}}
+                "{{paramName}}": {{paramName}}{{^-last}}, {{/-last}}
+                {{/queryParams}}
+            ]{{/hasQueryParams}}{{#hasHeaderParams}}, headers: [
+                {{#headerParams}}
+                "{{paramName}}": {{paramName}}?.stringValue{{^-last}}, {{/-last}}
+                {{/headerParams}}
+            ]{{/hasHeaderParams}}{{#bodyParam}}, body: {{paramName}}{{/bodyParam}})
         }
-        builder.execute { result -> Void in
-            switch result {
-            {{#returnType}}
-            case let .success(response):
-                completion(response.body, nil)
-            {{/returnType}}
-            {{^returnType}}
-            case .success:
-                completion((), nil)
-            {{/returnType}}
-            case let .failure(error):
-                completion(nil, error)
-            }
-        }
-    }
-{{/useCombine}}
-{{/useResult}}
-{{/useRxSwift}}
-{{/usePromiseKit}}
-{{#useCombine}}
-    /**
-     {{#summary}}
-     {{{summary}}}
-     {{/summary}}{{#allParams}}
-     - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{description}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
-     - returns: AnyPublisher<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}, Error>
-     */
-    #if canImport(Combine)
-    {{#isDeprecated}}
-    @available(*, deprecated, message: "This operation is deprecated.")
-    {{/isDeprecated}}
-    @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} func {{operationId}}({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}) -> AnyPublisher<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}, Error> {
-        return Future<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}, Error>.init { promise in
-            guard let builder = self.{{operationId}}WithRequestBuilder({{#allParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) else {
-                promise(.failure(DecodableRequestBuilderError.nilAPI))
-                return
-            }
-            builder.execute { result -> Void in
-                switch result {
-                {{#returnType}}
-                case let .success(response):
-                    promise(.success(response.body!))
-                {{/returnType}}
-                {{^returnType}}
-                case .success:
-                    promise(.success(()))
-                {{/returnType}}
-                case let .failure(error):
-                    promise(.failure(error))
-                }
-            }
-        }.eraseToAnyPublisher()
-    }
-    #endif
-{{/useCombine}}
-{{#useResult}}
-    /**
-     {{#summary}}
-     {{{summary}}}
-     {{/summary}}{{#allParams}}
-     - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{description}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
-     - parameter completion: completion handler to receive the result
-     */
-    {{#isDeprecated}}
-    @available(*, deprecated, message: "This operation is deprecated.")
-    {{/isDeprecated}}
-    func {{operationId}}({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}{{#hasParams}}, {{/hasParams}}completion: @escaping ((_ result: Swift.Result<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}, Error>) -> Void)) {
-        guard let builder = {{operationId}}WithRequestBuilder({{#allParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) else {
-            completion(.failure(DecodableRequestBuilderError.nilAPI))
-            return
-        }
-        builder.execute { result -> Void in
-            switch result {
-            {{#returnType}}
-            case let .success(response):
-                completion(.success(response.body!))
-            {{/returnType}}
-            {{^returnType}}
-            case .success:
-                completion(.success(()))
-            {{/returnType}}
-            case let .failure(error):
+
+        /**
+         {{#summary}}
+         {{{summary}}}
+         {{/summary}}{{#allParams}}
+         - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{description}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
+         - parameter completion: completion handler to receive the data and the error objects
+         */
+        {{#isDeprecated}}
+        @available(*, deprecated, message: "This operation is deprecated.")
+        {{/isDeprecated}}
+        func {{operationId}}({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}{{#hasParams}}, {{/hasParams}}completion: @escaping (Result<OktaResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Empty{{/returnType}}>, Error>) -> Void) {
+            do {
+                send(try {{operationId}}URLRequest({{#allParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}), completion: completion)
+            } catch {
                 completion(.failure(error))
             }
         }
-    }
-{{/useResult}}
 
-    internal func {{operationId}}WithRequestBuilder({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}) -> RequestBuilder<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}>? {
-        guard let api = api else {
-            return nil
-        }
-        {{^pathParams}}let{{/pathParams}}{{#pathParams}}{{#-first}}var{{/-first}}{{/pathParams}} path = "{{{path}}}"{{#pathParams}}
-        let {{paramName}}PreEscape = "\({{#isEnum}}{{paramName}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}.rawValue{{/isContainer}}{{/isEnum}}{{^isEnum}}APIHelper.mapValueToPathItem({{paramName}}){{/isEnum}})"
-        let {{paramName}}PostEscape = {{paramName}}PreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
-        path = path.replacingOccurrences(of: "{{=<% %>=}}{<%baseName%>}<%={{ }}=%>", with: {{paramName}}PostEscape, options: .literal, range: nil){{/pathParams}}
-        let URLString = api.basePath + path
-        {{#bodyParam}}
-        let parameters = JSONEncodingHelper.encodingParameters(forEncodableObject: {{paramName}})
-        {{/bodyParam}}
-        {{^bodyParam}}
-            {{#hasFormParams}}
-        let formParams: [String: Any?] = [
-                {{#formParams}}
-            {{> _param}},
-                {{/formParams}}
-        ]
-
-        let nonNullParameters = APIHelper.rejectNil(formParams)
-        let parameters = APIHelper.convertBoolToString(nonNullParameters)
-            {{/hasFormParams}}
-            {{^hasFormParams}}
-        let parameters: [String: Any]? = nil
-            {{/hasFormParams}}
-{{/bodyParam}}{{#hasQueryParams}}
-        var urlComponents = URLComponents(string: URLString)
-        urlComponents?.queryItems = APIHelper.mapValuesToQueryItems([{{^queryParams}}:{{/queryParams}}
-            {{#queryParams}}
-            {{> _param}},
-            {{/queryParams}}
-        ]){{/hasQueryParams}}{{^hasQueryParams}}
-        let urlComponents = URLComponents(string: URLString){{/hasQueryParams}}
-
-        let nillableHeaders: [String: Any?] = [{{^headerParams}}{{^hasFormParams}}
-            :{{/hasFormParams}}{{/headerParams}}{{#hasFormParams}}
-            "Content-Type": {{^consumes}}"multipart/form-data"{{/consumes}}{{#consumes.0}}"{{{mediaType}}}"{{/consumes.0}},{{/hasFormParams}}{{#headerParams}}
-            {{> _param}},{{/headerParams}}
-        ]
-
-        var headerParameters = APIHelper.rejectNilHeaders(nillableHeaders)
-        headerParameters.merge(api.customHeaders) { lhs, rhs in
-            return lhs
+        /**
+         {{#summary}}
+         {{{summary}}}
+         {{/summary}}{{#allParams}}
+         - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{description}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
+         */
+        {{#isDeprecated}}
+        @available(*, deprecated, message: "This operation is deprecated.")
+        {{/isDeprecated}}
+        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        func {{operationId}}Async({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}) async throws -> OktaResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Empty{{/returnType}}> {
+            try await send(try {{operationId}}URLRequest({{#allParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}))
         }
 
-        let requestBuilder: RequestBuilder<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}>.Type = api.requestBuilderFactory.{{#returnType}}getBuilder(){{/returnType}}{{^returnType}}getNonDecodableBuilder(){{/returnType}}
-
-        return requestBuilder.init(api: api, method: "{{httpMethod}}", URLString: (urlComponents?.string ?? URLString), parameters: parameters, headers: headerParameters)
-    }
+        #if canImport(Combine)
+        /**
+         {{#summary}}
+         {{{summary}}}
+         {{/summary}}{{#allParams}}
+         - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{description}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
+         */
+        {{#isDeprecated}}
+        @available(*, deprecated, message: "This operation is deprecated.")
+        {{/isDeprecated}}
+        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
+        func {{operationId}}({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}) throws -> AnyPublisher<OktaResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Empty{{/returnType}}>, Error> {
+            publish(try {{operationId}}URLRequest({{#allParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}))
+        }
+        #endif
 
 {{/operation}}
+    }
 }
-{{#swiftUseApiNamespace}}
-}
-{{/swiftUseApiNamespace}}
 {{/operations}}

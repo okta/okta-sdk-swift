@@ -14,24 +14,54 @@ class UserClientTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         
-        client = OktaClient(configuration: .init(apiKey: "009jqHMFIpoMJOkvS1KYVWUr1Q4XGw7EwKJtYVSPiI",
-                                                 domain: "ios-idx-sdk.okta.com"),
-                            queue: .global())
+        client = OktaClient(configuration: .init(apiKey: "TestAPIKey",
+                                                 domain: "example-domain.okta.com"))
     }
     
     func testUserList() throws {
-        let listExpectation = expectation(description: "List Users")
-        client.user.listUsers { result in
-            switch result {
-            case .success(let response):
-                print(response)
-            case .failure(let error):
-                XCTFail(error.localizedDescription)
+        let request = try client.user.listUsersURLRequest()
+        XCTAssertEqual(request.url?.absoluteString, "https://example-domain.okta.com/api/v1/users?")
+        XCTAssertEqual(request.httpMethod, "GET")
+    }
+    
+    func testCreateUser() throws {
+        let request = try client.user.createUserURLRequest(
+            createUserRequest: CreateUserRequest(
+                credentials: .init(password: .init(hash: nil,
+                                                   hook: nil,
+                                                   value: "TestPassword"),
+                                   recoveryQuestion: .init(answer: "Okta",
+                                                           question: "What's your favorite CIAM provider?")),
+                profile: .init(displayName: "Arthur Dent",
+                               email: "arthur@example.com",
+                               firstName: "Arthur",
+                               lastName: "Dent",
+                               login: "arthur@example.com")),
+            activate: true,
+            nextLogin: .changepassword)
+        XCTAssertEqual(request.url?.absoluteString, "https://example-domain.okta.com/api/v1/users?activate=true&nextLogin=changePassword")
+        XCTAssertEqual(request.httpMethod, "POST")
+        
+        let body = String(data: request.httpBody!, encoding: .utf8)
+        XCTAssertEqual(body, """
+        {
+          "profile" : {
+            "email" : "arthur@example.com",
+            "firstName" : "Arthur",
+            "lastName" : "Dent",
+            "displayName" : "Arthur Dent",
+            "login" : "arthur@example.com"
+          },
+          "credentials" : {
+            "recovery_question" : {
+              "answer" : "Okta",
+              "question" : "What's your favorite CIAM provider?"
+            },
+            "password" : {
+              "value" : "TestPassword"
             }
-            listExpectation.fulfill()
+          }
         }
-        waitForExpectations(timeout: 60.0) { error in
-            XCTAssertNil(error)
-        }
+        """)
     }
 }

@@ -1,4 +1,4 @@
-{{^objcCompatible}}{{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} {{#useClasses}}final class{{/useClasses}}{{^useClasses}}struct{{/useClasses}} {{classname}}: Codable, Hashable {
+{{^objcCompatible}}{{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} {{#useClasses}}final class{{/useClasses}}{{^useClasses}}struct{{/useClasses}} {{classname}}: Codable/*, Hashable*/ {
 {{/objcCompatible}}{{#objcCompatible}}@objc {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} class {{classname}}: NSObject, Codable {
 {{/objcCompatible}}
 
@@ -96,11 +96,13 @@
         {{#additionalPropertiesType}}{{#hasVars}}&& {{/hasVars}}lhs.additionalProperties == rhs.additionalProperties{{/additionalPropertiesType}}
     }
 
+    /*
     {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} func hash(into hasher: inout Hasher) {
         {{#allVars}}
         hasher.combine({{{name}}}{{^required}}?{{/required}}.hashValue)
         {{/allVars}}
         {{#additionalPropertiesType}}hasher.combine(additionalProperties.hashValue){{/additionalPropertiesType}}
     }
+    */
 {{/useClasses}}{{/objcCompatible}}
 }
