@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserSchema: Codable/*, Hashable*/ {
+public struct UserSchema: Codable, Hashable {
 
     public var id: String?
     public var schema: String?

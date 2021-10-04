@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordCredentialHook: Codable/*, Hashable*/ {
+public struct PasswordCredentialHook: Codable, Hashable {
 
     public var type: String?
 

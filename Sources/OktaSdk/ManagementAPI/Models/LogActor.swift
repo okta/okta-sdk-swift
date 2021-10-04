@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct LogActor: Codable/*, Hashable*/ {
+public struct LogActor: Codable, Hashable {
 
     public var alternateId: String?
     public var detail: [String: AnyCodable]?

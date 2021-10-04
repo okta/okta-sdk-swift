@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordDictionaryCommon: Codable/*, Hashable*/ {
+public struct PasswordDictionaryCommon: Codable, Hashable {
 
     public var exclude: Bool? = false
 

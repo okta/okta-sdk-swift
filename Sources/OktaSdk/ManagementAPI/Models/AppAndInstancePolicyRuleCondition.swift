@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct AppAndInstancePolicyRuleCondition: Codable/*, Hashable*/ {
+public struct AppAndInstancePolicyRuleCondition: Codable, Hashable {
 
     public var exclude: [AppAndInstanceConditionEvaluatorAppOrInstance]?
     public var include: [AppAndInstanceConditionEvaluatorAppOrInstance]?

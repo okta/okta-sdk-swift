@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct AuthenticatorSettings: Codable/*, Hashable*/ {
+public struct AuthenticatorSettings: Codable, Hashable {
 
     public var allowedFor: AllowedForEnum?
     public var tokenLifetimeInMinutes: Int?

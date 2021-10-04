@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ApplicationCredentialsUsernameTemplate: Codable/*, Hashable*/ {
+public struct ApplicationCredentialsUsernameTemplate: Codable, Hashable {
 
     public var suffix: String?
     public var template: String?

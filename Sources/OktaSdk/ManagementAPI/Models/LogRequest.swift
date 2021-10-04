@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct LogRequest: Codable/*, Hashable*/ {
+public struct LogRequest: Codable, Hashable {
 
     public var ipChain: [LogIpAddress]?
 

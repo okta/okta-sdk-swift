@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordPolicyRecoveryQuestionComplexity: Codable/*, Hashable*/ {
+public struct PasswordPolicyRecoveryQuestionComplexity: Codable, Hashable {
 
     public var minLength: Int?
 

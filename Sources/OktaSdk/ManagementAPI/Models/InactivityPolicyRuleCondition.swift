@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct InactivityPolicyRuleCondition: Codable/*, Hashable*/ {
+public struct InactivityPolicyRuleCondition: Codable, Hashable {
 
     public var number: Int?
     public var unit: String?

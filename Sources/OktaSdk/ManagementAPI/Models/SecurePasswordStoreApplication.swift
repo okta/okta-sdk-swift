@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SecurePasswordStoreApplication: Codable/*, Hashable*/ {
+public struct SecurePasswordStoreApplication: Codable, Hashable {
 
     public var credentials: SchemeApplicationCredentials?
     public var name: String? = "template_sps"

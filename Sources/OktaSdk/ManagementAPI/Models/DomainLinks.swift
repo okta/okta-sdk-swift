@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct DomainLinks: Codable/*, Hashable*/ {
+public struct DomainLinks: Codable, Hashable {
 
     public var certificate: AnyCodable?
     public var _self: AnyCodable?

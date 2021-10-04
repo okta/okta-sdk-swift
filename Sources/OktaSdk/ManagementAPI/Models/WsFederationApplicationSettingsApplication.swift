@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct WsFederationApplicationSettingsApplication: Codable/*, Hashable*/ {
+public struct WsFederationApplicationSettingsApplication: Codable, Hashable {
 
     public var attributeStatements: String?
     public var audienceRestriction: String?

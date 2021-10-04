@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct BrowserPluginApplication: Codable/*, Hashable*/ {
+public struct BrowserPluginApplication: Codable, Hashable {
 
     public var credentials: SchemeApplicationCredentials?
 

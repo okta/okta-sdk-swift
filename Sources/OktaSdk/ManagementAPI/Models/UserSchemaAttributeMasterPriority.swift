@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserSchemaAttributeMasterPriority: Codable/*, Hashable*/ {
+public struct UserSchemaAttributeMasterPriority: Codable, Hashable {
 
     public var type: String?
     public var value: String?

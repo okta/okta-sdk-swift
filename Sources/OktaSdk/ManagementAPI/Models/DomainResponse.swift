@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct DomainResponse: Codable/*, Hashable*/ {
+public struct DomainResponse: Codable, Hashable {
 
     public enum CertificateSourceType: String, Codable, CaseIterable {
         case manual = "MANUAL"

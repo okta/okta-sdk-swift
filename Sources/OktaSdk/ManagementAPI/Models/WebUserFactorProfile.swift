@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct WebUserFactorProfile: Codable/*, Hashable*/ {
+public struct WebUserFactorProfile: Codable, Hashable {
 
     public var credentialId: String?
 

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PlatformConditionEvaluatorPlatform: Codable/*, Hashable*/ {
+public struct PlatformConditionEvaluatorPlatform: Codable, Hashable {
 
     public enum ModelType: String, Codable, CaseIterable {
         case desktop = "DESKTOP"

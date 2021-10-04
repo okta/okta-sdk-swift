@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct AutoLoginApplicationSettings: Codable/*, Hashable*/ {
+public struct AutoLoginApplicationSettings: Codable, Hashable {
 
     public var signOn: AutoLoginApplicationSettingsSignOn?
 

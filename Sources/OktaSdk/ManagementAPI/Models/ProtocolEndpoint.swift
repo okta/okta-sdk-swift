@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ProtocolEndpoint: Codable/*, Hashable*/ {
+public struct ProtocolEndpoint: Codable, Hashable {
 
     public enum Binding: String, Codable, CaseIterable {
         case post = "HTTP-POST"

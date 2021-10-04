@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ClientPolicyCondition: Codable/*, Hashable*/ {
+public struct ClientPolicyCondition: Codable, Hashable {
 
     public var include: [String]?
 

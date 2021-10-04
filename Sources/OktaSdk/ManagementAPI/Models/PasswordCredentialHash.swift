@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordCredentialHash: Codable/*, Hashable*/ {
+public struct PasswordCredentialHash: Codable, Hashable {
 
     public var algorithm: PasswordCredentialHashAlgorithm?
     public var salt: String?

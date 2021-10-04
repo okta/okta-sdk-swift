@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct Authenticator: Codable/*, Hashable*/ {
+public struct Authenticator: Codable, Hashable {
 
     public var links: [String: AnyCodable]?
     public var created: Date?

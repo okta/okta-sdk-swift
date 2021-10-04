@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SignOnInlineHook: Codable/*, Hashable*/ {
+public struct SignOnInlineHook: Codable, Hashable {
 
     public var id: String?
 

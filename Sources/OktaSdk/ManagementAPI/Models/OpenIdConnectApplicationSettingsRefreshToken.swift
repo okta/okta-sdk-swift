@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OpenIdConnectApplicationSettingsRefreshToken: Codable/*, Hashable*/ {
+public struct OpenIdConnectApplicationSettingsRefreshToken: Codable, Hashable {
 
     public var leeway: Int?
     public var rotationType: OpenIdConnectRefreshTokenRotationType?

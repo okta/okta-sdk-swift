@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct EventHookChannelConfigHeader: Codable/*, Hashable*/ {
+public struct EventHookChannelConfigHeader: Codable, Hashable {
 
     public var key: String?
     public var value: String?

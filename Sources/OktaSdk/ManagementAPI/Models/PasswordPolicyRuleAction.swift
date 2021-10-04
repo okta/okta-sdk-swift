@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordPolicyRuleAction: Codable/*, Hashable*/ {
+public struct PasswordPolicyRuleAction: Codable, Hashable {
 
     public enum Access: String, Codable, CaseIterable {
         case allow = "ALLOW"

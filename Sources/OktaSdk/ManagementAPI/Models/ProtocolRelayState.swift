@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ProtocolRelayState: Codable/*, Hashable*/ {
+public struct ProtocolRelayState: Codable, Hashable {
 
     public var format: ProtocolRelayStateFormat?
 

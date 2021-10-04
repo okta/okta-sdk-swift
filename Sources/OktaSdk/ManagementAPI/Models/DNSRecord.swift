@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct DNSRecord: Codable/*, Hashable*/ {
+public struct DNSRecord: Codable, Hashable {
 
     public var expiration: String?
     public var fqdn: String?

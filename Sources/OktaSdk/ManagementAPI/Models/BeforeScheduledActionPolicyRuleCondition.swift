@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct BeforeScheduledActionPolicyRuleCondition: Codable/*, Hashable*/ {
+public struct BeforeScheduledActionPolicyRuleCondition: Codable, Hashable {
 
     public var duration: Duration?
     public var lifecycleAction: ScheduledUserLifecycleAction?

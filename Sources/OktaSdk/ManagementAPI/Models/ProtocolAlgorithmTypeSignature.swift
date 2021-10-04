@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ProtocolAlgorithmTypeSignature: Codable/*, Hashable*/ {
+public struct ProtocolAlgorithmTypeSignature: Codable, Hashable {
 
     public enum Scope: String, Codable, CaseIterable {
         case response = "RESPONSE"

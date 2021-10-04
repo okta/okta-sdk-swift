@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserSchemaPropertiesProfileItem: Codable/*, Hashable*/ {
+public struct UserSchemaPropertiesProfileItem: Codable, Hashable {
 
     public var ref: String?
 

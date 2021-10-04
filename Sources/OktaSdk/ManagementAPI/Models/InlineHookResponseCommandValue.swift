@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct InlineHookResponseCommandValue: Codable/*, Hashable*/ {
+public struct InlineHookResponseCommandValue: Codable, Hashable {
 
     public var op: String?
     public var path: String?

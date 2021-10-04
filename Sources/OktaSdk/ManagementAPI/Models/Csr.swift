@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct Csr: Codable/*, Hashable*/ {
+public struct Csr: Codable, Hashable {
 
     public var created: Date?
     public var csr: String?

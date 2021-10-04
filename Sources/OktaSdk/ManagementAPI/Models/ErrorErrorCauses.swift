@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ErrorErrorCauses: Codable/*, Hashable*/ {
+public struct ErrorErrorCauses: Codable, Hashable {
 
     public var errorSummary: String?
 

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct AutoLoginApplicationSettingsSignOn: Codable/*, Hashable*/ {
+public struct AutoLoginApplicationSettingsSignOn: Codable, Hashable {
 
     public var loginUrl: String?
     public var redirectUrl: String?

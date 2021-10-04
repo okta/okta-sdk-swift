@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct BookmarkApplication: Codable/*, Hashable*/ {
+public struct BookmarkApplication: Codable, Hashable {
 
     public var name: String? = "bookmark"
     public var settings: BookmarkApplicationSettings?

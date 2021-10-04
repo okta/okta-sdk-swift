@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct AppLink: Codable/*, Hashable*/ {
+public struct AppLink: Codable, Hashable {
 
     public var appAssignmentId: String?
     public var appInstanceId: String?

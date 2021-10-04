@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ProfileMappingSource: Codable/*, Hashable*/ {
+public struct ProfileMappingSource: Codable, Hashable {
 
     public var links: [String: AnyCodable]?
     public var id: String?

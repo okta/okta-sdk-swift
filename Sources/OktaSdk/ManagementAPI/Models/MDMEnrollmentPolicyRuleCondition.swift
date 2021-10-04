@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct MDMEnrollmentPolicyRuleCondition: Codable/*, Hashable*/ {
+public struct MDMEnrollmentPolicyRuleCondition: Codable, Hashable {
 
     public enum Enrollment: String, Codable, CaseIterable {
         case omm = "OMM"

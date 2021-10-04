@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct CustomHotpUserFactorProfile: Codable/*, Hashable*/ {
+public struct CustomHotpUserFactorProfile: Codable, Hashable {
 
     public var sharedSecret: String?
 

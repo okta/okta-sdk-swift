@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OAuth2ScopesMediationPolicyRuleCondition: Codable/*, Hashable*/ {
+public struct OAuth2ScopesMediationPolicyRuleCondition: Codable, Hashable {
 
     public var include: [String]?
 

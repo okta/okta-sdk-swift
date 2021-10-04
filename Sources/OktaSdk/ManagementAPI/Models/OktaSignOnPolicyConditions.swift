@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OktaSignOnPolicyConditions: Codable/*, Hashable*/ {
+public struct OktaSignOnPolicyConditions: Codable, Hashable {
 
     public var people: PolicyPeopleCondition?
 

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ApplicationSettings: Codable/*, Hashable*/ {
+public struct ApplicationSettings: Codable, Hashable {
 
     public var app: AnyCodable?
     public var implicitAssignment: Bool?

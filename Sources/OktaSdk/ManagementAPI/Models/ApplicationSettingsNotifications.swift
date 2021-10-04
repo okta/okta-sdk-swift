@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ApplicationSettingsNotifications: Codable/*, Hashable*/ {
+public struct ApplicationSettingsNotifications: Codable, Hashable {
 
     public var vpn: ApplicationSettingsNotificationsVpn?
 

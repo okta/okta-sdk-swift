@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OAuth2Actor: Codable/*, Hashable*/ {
+public struct OAuth2Actor: Codable, Hashable {
 
     public var id: String?
     public var type: String?

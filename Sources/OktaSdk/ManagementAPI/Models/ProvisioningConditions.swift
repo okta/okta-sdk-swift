@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ProvisioningConditions: Codable/*, Hashable*/ {
+public struct ProvisioningConditions: Codable, Hashable {
 
     public var deprovisioned: ProvisioningDeprovisionedCondition?
     public var suspended: ProvisioningSuspendedCondition?

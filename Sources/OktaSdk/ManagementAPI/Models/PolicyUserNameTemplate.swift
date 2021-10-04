@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PolicyUserNameTemplate: Codable/*, Hashable*/ {
+public struct PolicyUserNameTemplate: Codable, Hashable {
 
     public var template: String?
 

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ProtocolAlgorithmType: Codable/*, Hashable*/ {
+public struct ProtocolAlgorithmType: Codable, Hashable {
 
     public var signature: ProtocolAlgorithmTypeSignature?
 

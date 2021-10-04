@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserLifecycleAttributePolicyRuleCondition: Codable/*, Hashable*/ {
+public struct UserLifecycleAttributePolicyRuleCondition: Codable, Hashable {
 
     public var attributeName: String?
     public var matchingValue: String?

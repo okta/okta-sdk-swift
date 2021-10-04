@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct AuthorizationServer: Codable/*, Hashable*/ {
+public struct AuthorizationServer: Codable, Hashable {
 
     public enum IssuerMode: String, Codable, CaseIterable {
         case orgUrl = "ORG_URL"

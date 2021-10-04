@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ModelError: Codable/*, Hashable*/ {
+public struct ModelError: Codable, Hashable {
 
     /** An Okta code for this type of error */
     public var errorCode: String?

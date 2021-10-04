@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct IdentityProviderPolicy: Codable/*, Hashable*/ {
+public struct IdentityProviderPolicy: Codable, Hashable {
 
     public var accountLink: PolicyAccountLink?
     public var maxClockSkew: Int?

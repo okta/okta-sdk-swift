@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct AssignRoleRequest: Codable/*, Hashable*/ {
+public struct AssignRoleRequest: Codable, Hashable {
 
     public var type: RoleType?
 

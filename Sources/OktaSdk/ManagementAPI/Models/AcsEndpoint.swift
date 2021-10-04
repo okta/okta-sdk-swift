@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct AcsEndpoint: Codable/*, Hashable*/ {
+public struct AcsEndpoint: Codable, Hashable {
 
     public var url: String?
     public var index: Int?

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct GroupSchemaDefinitions: Codable/*, Hashable*/ {
+public struct GroupSchemaDefinitions: Codable, Hashable {
 
     public var base: GroupSchemaBase?
     public var custom: GroupSchemaCustom?

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct TempPassword: Codable/*, Hashable*/ {
+public struct TempPassword: Codable, Hashable {
 
     public var tempPassword: String?
 

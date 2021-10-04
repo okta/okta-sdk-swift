@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ApplicationLicensing: Codable/*, Hashable*/ {
+public struct ApplicationLicensing: Codable, Hashable {
 
     public var seatCount: Int?
 

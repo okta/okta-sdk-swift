@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct WsFederationApplication: Codable/*, Hashable*/ {
+public struct WsFederationApplication: Codable, Hashable {
 
     public var name: String? = "template_wsfed"
     public var settings: WsFederationApplicationSettings?

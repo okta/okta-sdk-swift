@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordPolicyDelegationSettingsOptions: Codable/*, Hashable*/ {
+public struct PasswordPolicyDelegationSettingsOptions: Codable, Hashable {
 
     public var skipUnlock: Bool?
 

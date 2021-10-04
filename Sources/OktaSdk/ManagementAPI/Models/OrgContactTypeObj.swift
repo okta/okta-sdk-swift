@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OrgContactTypeObj: Codable/*, Hashable*/ {
+public struct OrgContactTypeObj: Codable, Hashable {
 
     public var links: [String: AnyCodable]?
     public var contactType: OrgContactType?

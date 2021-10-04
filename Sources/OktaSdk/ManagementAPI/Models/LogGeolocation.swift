@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct LogGeolocation: Codable/*, Hashable*/ {
+public struct LogGeolocation: Codable, Hashable {
 
     public var lat: Double?
     public var lon: Double?

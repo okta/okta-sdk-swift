@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct InlineHookChannel: Codable/*, Hashable*/ {
+public struct InlineHookChannel: Codable, Hashable {
 
     public enum ModelType: String, Codable, CaseIterable {
         case http = "HTTP"

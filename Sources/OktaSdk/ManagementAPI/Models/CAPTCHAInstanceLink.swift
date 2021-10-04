@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct CAPTCHAInstanceLink: Codable/*, Hashable*/ {
+public struct CAPTCHAInstanceLink: Codable, Hashable {
 
     public var _self: HrefObject?
 

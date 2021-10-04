@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ProtocolSettings: Codable/*, Hashable*/ {
+public struct ProtocolSettings: Codable, Hashable {
 
     public var nameFormat: String?
 

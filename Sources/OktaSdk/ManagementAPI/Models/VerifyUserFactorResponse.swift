@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct VerifyUserFactorResponse: Codable/*, Hashable*/ {
+public struct VerifyUserFactorResponse: Codable, Hashable {
 
     public enum FactorResult: String, Codable, CaseIterable {
         case success = "SUCCESS"

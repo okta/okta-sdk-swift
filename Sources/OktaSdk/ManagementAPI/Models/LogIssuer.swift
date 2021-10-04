@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct LogIssuer: Codable/*, Hashable*/ {
+public struct LogIssuer: Codable, Hashable {
 
     public var id: String?
     public var type: String?

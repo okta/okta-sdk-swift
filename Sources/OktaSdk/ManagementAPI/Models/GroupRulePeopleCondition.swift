@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct GroupRulePeopleCondition: Codable/*, Hashable*/ {
+public struct GroupRulePeopleCondition: Codable, Hashable {
 
     public var groups: GroupRuleGroupCondition?
     public var users: GroupRuleUserCondition?

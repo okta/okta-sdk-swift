@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct GroupRuleExpression: Codable/*, Hashable*/ {
+public struct GroupRuleExpression: Codable, Hashable {
 
     public var type: String?
     public var value: String?

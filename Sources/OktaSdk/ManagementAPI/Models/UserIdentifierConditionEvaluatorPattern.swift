@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserIdentifierConditionEvaluatorPattern: Codable/*, Hashable*/ {
+public struct UserIdentifierConditionEvaluatorPattern: Codable, Hashable {
 
     public enum MatchType: String, Codable, CaseIterable {
         case suffix = "SUFFIX"

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SchemeApplicationCredentials: Codable/*, Hashable*/ {
+public struct SchemeApplicationCredentials: Codable, Hashable {
 
     public var password: PasswordCredential?
     public var revealPassword: Bool?

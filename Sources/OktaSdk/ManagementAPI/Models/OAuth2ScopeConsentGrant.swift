@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OAuth2ScopeConsentGrant: Codable/*, Hashable*/ {
+public struct OAuth2ScopeConsentGrant: Codable, Hashable {
 
     public var embedded: [String: AnyCodable]?
     public var links: [String: AnyCodable]?

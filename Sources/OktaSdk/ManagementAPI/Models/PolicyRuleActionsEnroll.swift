@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PolicyRuleActionsEnroll: Codable/*, Hashable*/ {
+public struct PolicyRuleActionsEnroll: Codable, Hashable {
 
     public var _self: PolicyRuleActionsEnrollSelf?
 

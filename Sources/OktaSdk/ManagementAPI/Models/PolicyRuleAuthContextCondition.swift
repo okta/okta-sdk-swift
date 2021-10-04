@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PolicyRuleAuthContextCondition: Codable/*, Hashable*/ {
+public struct PolicyRuleAuthContextCondition: Codable, Hashable {
 
     public enum AuthType: String, Codable, CaseIterable {
         case any = "ANY"

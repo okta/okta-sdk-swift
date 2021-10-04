@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordPolicyPasswordSettingsAge: Codable/*, Hashable*/ {
+public struct PasswordPolicyPasswordSettingsAge: Codable, Hashable {
 
     public var expireWarnDays: Int?
     public var historyCount: Int?

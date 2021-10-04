@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PolicySubject: Codable/*, Hashable*/ {
+public struct PolicySubject: Codable, Hashable {
 
     public var filter: String?
     public var format: [String]?

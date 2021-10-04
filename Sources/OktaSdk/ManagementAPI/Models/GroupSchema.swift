@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct GroupSchema: Codable/*, Hashable*/ {
+public struct GroupSchema: Codable, Hashable {
 
     public var schema: String?
     public var links: [String: AnyCodable]?

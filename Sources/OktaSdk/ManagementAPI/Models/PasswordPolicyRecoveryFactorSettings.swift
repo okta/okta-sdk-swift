@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordPolicyRecoveryFactorSettings: Codable/*, Hashable*/ {
+public struct PasswordPolicyRecoveryFactorSettings: Codable, Hashable {
 
     public enum Status: String, Codable, CaseIterable {
         case active = "ACTIVE"

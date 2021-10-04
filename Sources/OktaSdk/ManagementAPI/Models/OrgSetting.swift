@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OrgSetting: Codable/*, Hashable*/ {
+public struct OrgSetting: Codable, Hashable {
 
     public var links: [String: AnyCodable]?
     public var address1: String?

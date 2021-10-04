@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserSchemaBaseProperties: Codable/*, Hashable*/ {
+public struct UserSchemaBaseProperties: Codable, Hashable {
 
     public var login: UserSchemaAttribute?
     public var firstName: UserSchemaAttribute?

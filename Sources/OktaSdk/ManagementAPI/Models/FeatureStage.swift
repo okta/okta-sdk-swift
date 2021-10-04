@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct FeatureStage: Codable/*, Hashable*/ {
+public struct FeatureStage: Codable, Hashable {
 
     public var state: FeatureStageState?
     public var value: FeatureStageValue?

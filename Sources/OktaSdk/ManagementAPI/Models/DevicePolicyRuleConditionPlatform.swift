@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct DevicePolicyRuleConditionPlatform: Codable/*, Hashable*/ {
+public struct DevicePolicyRuleConditionPlatform: Codable, Hashable {
 
     public enum SupportedMDMFrameworks: String, Codable, CaseIterable {
         case afw = "AFW"

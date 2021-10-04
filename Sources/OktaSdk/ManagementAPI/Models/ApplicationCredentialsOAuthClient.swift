@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ApplicationCredentialsOAuthClient: Codable/*, Hashable*/ {
+public struct ApplicationCredentialsOAuthClient: Codable, Hashable {
 
     public var autoKeyRotation: Bool?
     public var clientId: String?

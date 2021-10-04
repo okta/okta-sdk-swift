@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct JsonWebKey: Codable/*, Hashable*/ {
+public struct JsonWebKey: Codable, Hashable {
 
     public var links: [String: AnyCodable]?
     public var alg: String?

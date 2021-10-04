@@ -25,7 +25,6 @@ let package = Package(
             path: "Sources/OktaSdk/"
         ),
         .testTarget(name: "OktaSdkTests",
-                    dependencies: ["OktaSdk"],
-                    exclude: ["Info.plist"])
+                    dependencies: ["OktaSdk"])
     ]
 )

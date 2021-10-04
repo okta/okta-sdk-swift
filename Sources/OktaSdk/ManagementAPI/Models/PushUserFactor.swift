@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PushUserFactor: Codable/*, Hashable*/ {
+public struct PushUserFactor: Codable, Hashable {
 
     public var expiresAt: Date?
     public var factorResult: FactorResultType?

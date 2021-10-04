@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct GroupProfile: Codable/*, Hashable*/ {
+public struct GroupProfile: Codable, Hashable {
 
     public var description: String?
     public var name: String?

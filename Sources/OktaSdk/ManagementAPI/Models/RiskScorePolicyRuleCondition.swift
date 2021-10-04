@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct RiskScorePolicyRuleCondition: Codable/*, Hashable*/ {
+public struct RiskScorePolicyRuleCondition: Codable, Hashable {
 
     public var level: String?
 

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct GroupRuleGroupCondition: Codable/*, Hashable*/ {
+public struct GroupRuleGroupCondition: Codable, Hashable {
 
     public var exclude: [String]?
     public var include: [String]?

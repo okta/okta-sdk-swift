@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OAuthApplicationCredentials: Codable/*, Hashable*/ {
+public struct OAuthApplicationCredentials: Codable, Hashable {
 
     public var oauthClient: ApplicationCredentialsOAuthClient?
 

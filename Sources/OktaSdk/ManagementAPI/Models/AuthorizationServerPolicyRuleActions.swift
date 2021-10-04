@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct AuthorizationServerPolicyRuleActions: Codable/*, Hashable*/ {
+public struct AuthorizationServerPolicyRuleActions: Codable, Hashable {
 
     public var token: TokenAuthorizationServerPolicyRuleAction?
 

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SamlAttributeStatement: Codable/*, Hashable*/ {
+public struct SamlAttributeStatement: Codable, Hashable {
 
     public var name: String?
     public var namespace: String?

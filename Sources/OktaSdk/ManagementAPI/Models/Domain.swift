@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct Domain: Codable/*, Hashable*/ {
+public struct Domain: Codable, Hashable {
 
     public var certificateSourceType: DomainCertificateSourceType?
     public var dnsRecords: [DNSRecord]?

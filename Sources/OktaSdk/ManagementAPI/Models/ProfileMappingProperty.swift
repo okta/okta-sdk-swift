@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ProfileMappingProperty: Codable/*, Hashable*/ {
+public struct ProfileMappingProperty: Codable, Hashable {
 
     public var expression: String?
     public var pushStatus: ProfileMappingPropertyPushStatus?

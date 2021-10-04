@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordPolicyRule: Codable/*, Hashable*/ {
+public struct PasswordPolicyRule: Codable, Hashable {
 
     public var actions: PasswordPolicyRuleActions?
     public var conditions: PasswordPolicyRuleConditions?

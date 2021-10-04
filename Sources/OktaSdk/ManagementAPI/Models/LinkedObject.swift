@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct LinkedObject: Codable/*, Hashable*/ {
+public struct LinkedObject: Codable, Hashable {
 
     public var links: [String: AnyCodable]?
     public var associated: LinkedObjectDetails?

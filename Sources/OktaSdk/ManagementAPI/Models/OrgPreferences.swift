@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OrgPreferences: Codable/*, Hashable*/ {
+public struct OrgPreferences: Codable, Hashable {
 
     public var links: [String: AnyCodable]?
     public var showEndUserFooter: Bool?

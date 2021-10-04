@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OrgOktaCommunicationSetting: Codable/*, Hashable*/ {
+public struct OrgOktaCommunicationSetting: Codable, Hashable {
 
     public var links: [String: AnyCodable]?
     public var optOutEmailUsers: Bool?

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct HrefObjectHints: Codable/*, Hashable*/ {
+public struct HrefObjectHints: Codable, Hashable {
 
     public enum Allow: String, Codable, CaseIterable {
         case _get = "GET"

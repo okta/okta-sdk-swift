@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct CsrMetadataSubject: Codable/*, Hashable*/ {
+public struct CsrMetadataSubject: Codable, Hashable {
 
     public var commonName: String?
     public var countryName: String?

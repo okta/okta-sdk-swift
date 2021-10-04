@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SamlApplicationSettingsSignOn: Codable/*, Hashable*/ {
+public struct SamlApplicationSettingsSignOn: Codable, Hashable {
 
     public var allowMultipleAcsEndpoints: Bool?
     public var acsEndpoints: [AcsEndpoint]?

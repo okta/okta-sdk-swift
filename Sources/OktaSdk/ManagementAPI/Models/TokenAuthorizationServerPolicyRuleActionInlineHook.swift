@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct TokenAuthorizationServerPolicyRuleActionInlineHook: Codable/*, Hashable*/ {
+public struct TokenAuthorizationServerPolicyRuleActionInlineHook: Codable, Hashable {
 
     public var id: String?
 

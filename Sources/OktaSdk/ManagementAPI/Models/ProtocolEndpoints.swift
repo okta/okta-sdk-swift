@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ProtocolEndpoints: Codable/*, Hashable*/ {
+public struct ProtocolEndpoints: Codable, Hashable {
 
     public var acs: ProtocolEndpoint?
     public var authorization: ProtocolEndpoint?

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct EventSubscriptions: Codable/*, Hashable*/ {
+public struct EventSubscriptions: Codable, Hashable {
 
     public enum ModelType: String, Codable, CaseIterable {
         case eventType = "EVENT_TYPE"

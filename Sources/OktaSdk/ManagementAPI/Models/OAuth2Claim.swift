@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OAuth2Claim: Codable/*, Hashable*/ {
+public struct OAuth2Claim: Codable, Hashable {
 
     public enum ClaimType: String, Codable, CaseIterable {
         case identity = "IDENTITY"

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct Duration: Codable/*, Hashable*/ {
+public struct Duration: Codable, Hashable {
 
     public var number: Int?
     public var unit: String?

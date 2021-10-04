@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ApplicationVisibilityHide: Codable/*, Hashable*/ {
+public struct ApplicationVisibilityHide: Codable, Hashable {
 
     public var iOS: Bool?
     public var web: Bool?

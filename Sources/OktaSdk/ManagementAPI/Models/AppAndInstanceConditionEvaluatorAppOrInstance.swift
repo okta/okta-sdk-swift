@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct AppAndInstanceConditionEvaluatorAppOrInstance: Codable/*, Hashable*/ {
+public struct AppAndInstanceConditionEvaluatorAppOrInstance: Codable, Hashable {
 
     public enum ModelType: String, Codable, CaseIterable {
         case appType = "APP_TYPE"

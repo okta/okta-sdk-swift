@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct Feature: Codable/*, Hashable*/ {
+public struct Feature: Codable, Hashable {
 
     public var links: [String: AnyCodable]?
     public var description: String?

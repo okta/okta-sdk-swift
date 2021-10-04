@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct VerifyFactorRequest: Codable/*, Hashable*/ {
+public struct VerifyFactorRequest: Codable, Hashable {
 
     public var activationToken: String?
     public var answer: String?

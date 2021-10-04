@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OAuth2ClaimConditions: Codable/*, Hashable*/ {
+public struct OAuth2ClaimConditions: Codable, Hashable {
 
     public var scopes: [String]?
 

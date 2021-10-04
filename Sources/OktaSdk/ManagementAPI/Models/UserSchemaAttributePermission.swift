@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserSchemaAttributePermission: Codable/*, Hashable*/ {
+public struct UserSchemaAttributePermission: Codable, Hashable {
 
     public var principal: String?
     public var action: String?

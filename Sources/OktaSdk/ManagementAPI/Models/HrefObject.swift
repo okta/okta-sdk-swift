@@ -9,7 +9,7 @@ import Foundation
 import AnyCodable
 
 /** Used for links */
-public struct HrefObject: Codable/*, Hashable*/ {
+public struct HrefObject: Codable, Hashable {
 
     public var href: String?
     public var hints: HrefObjectHints?

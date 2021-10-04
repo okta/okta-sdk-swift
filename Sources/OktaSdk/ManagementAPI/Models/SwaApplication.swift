@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SwaApplication: Codable/*, Hashable*/ {
+public struct SwaApplication: Codable, Hashable {
 
     public var name: String? = "template_swa"
     public var settings: SwaApplicationSettings?

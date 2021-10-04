@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ApplicationVisibility: Codable/*, Hashable*/ {
+public struct ApplicationVisibility: Codable, Hashable {
 
     public var appLinks: [String: Bool]?
     public var autoLaunch: Bool?

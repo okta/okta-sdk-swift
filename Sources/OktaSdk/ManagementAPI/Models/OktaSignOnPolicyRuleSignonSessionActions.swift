@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OktaSignOnPolicyRuleSignonSessionActions: Codable/*, Hashable*/ {
+public struct OktaSignOnPolicyRuleSignonSessionActions: Codable, Hashable {
 
     public var maxSessionIdleMinutes: Int?
     public var maxSessionLifetimeMinutes: Int?

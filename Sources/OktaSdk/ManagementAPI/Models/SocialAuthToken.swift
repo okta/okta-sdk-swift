@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SocialAuthToken: Codable/*, Hashable*/ {
+public struct SocialAuthToken: Codable, Hashable {
 
     public enum TokenType: String, Codable, CaseIterable {
         case access = "ACCESS"

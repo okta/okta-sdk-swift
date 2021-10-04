@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ContextPolicyRuleCondition: Codable/*, Hashable*/ {
+public struct ContextPolicyRuleCondition: Codable, Hashable {
 
     public var expression: String?
 

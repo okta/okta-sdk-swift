@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OpenIdConnectApplicationIdpInitiatedLogin: Codable/*, Hashable*/ {
+public struct OpenIdConnectApplicationIdpInitiatedLogin: Codable, Hashable {
 
     public var mode: String?
     public var defaultScope: [String]?

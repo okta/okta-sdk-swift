@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordPolicyPasswordSettingsLockout: Codable/*, Hashable*/ {
+public struct PasswordPolicyPasswordSettingsLockout: Codable, Hashable {
 
     public var autoUnlockMinutes: Int?
     public var maxAttempts: Int?

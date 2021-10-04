@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct DomainListResponse: Codable/*, Hashable*/ {
+public struct DomainListResponse: Codable, Hashable {
 
     public var domains: [DomainResponse]?
 

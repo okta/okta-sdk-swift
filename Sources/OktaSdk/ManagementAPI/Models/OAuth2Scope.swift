@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OAuth2Scope: Codable/*, Hashable*/ {
+public struct OAuth2Scope: Codable, Hashable {
 
     public enum Consent: String, Codable, CaseIterable {
         case _required = "REQUIRED"

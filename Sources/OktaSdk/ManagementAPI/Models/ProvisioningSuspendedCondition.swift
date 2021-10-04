@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ProvisioningSuspendedCondition: Codable/*, Hashable*/ {
+public struct ProvisioningSuspendedCondition: Codable, Hashable {
 
     public enum Action: String, Codable, CaseIterable {
         case _none = "NONE"

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct BookmarkApplicationSettingsApplication: Codable/*, Hashable*/ {
+public struct BookmarkApplicationSettingsApplication: Codable, Hashable {
 
     public var requestIntegration: Bool?
     public var url: String?

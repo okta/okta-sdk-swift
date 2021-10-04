@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct GroupRuleAction: Codable/*, Hashable*/ {
+public struct GroupRuleAction: Codable, Hashable {
 
     public var assignUserToGroups: GroupRuleGroupAssignment?
 

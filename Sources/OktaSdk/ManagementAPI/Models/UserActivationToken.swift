@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserActivationToken: Codable/*, Hashable*/ {
+public struct UserActivationToken: Codable, Hashable {
 
     public var activationToken: String?
     public var activationUrl: String?

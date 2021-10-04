@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct Scope: Codable/*, Hashable*/ {
+public struct Scope: Codable, Hashable {
 
     public var stringValue: String?
     public var type: ScopeType?

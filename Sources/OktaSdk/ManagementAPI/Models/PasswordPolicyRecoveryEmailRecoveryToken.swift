@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordPolicyRecoveryEmailRecoveryToken: Codable/*, Hashable*/ {
+public struct PasswordPolicyRecoveryEmailRecoveryToken: Codable, Hashable {
 
     public var tokenLifetimeMinutes: Int?
 

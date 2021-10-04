@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserSchemaPropertiesProfile: Codable/*, Hashable*/ {
+public struct UserSchemaPropertiesProfile: Codable, Hashable {
 
     public var allOf: [UserSchemaPropertiesProfileItem]?
 

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserSchemaAttributeItems: Codable/*, Hashable*/ {
+public struct UserSchemaAttributeItems: Codable, Hashable {
 
     public var _enum: [String]?
     public var oneOf: [UserSchemaAttributeEnum]?

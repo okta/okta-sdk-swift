@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ChangePasswordRequest: Codable/*, Hashable*/ {
+public struct ChangePasswordRequest: Codable, Hashable {
 
     public var newPassword: PasswordCredential?
     public var oldPassword: PasswordCredential?

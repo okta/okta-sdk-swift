@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct LogOutcome: Codable/*, Hashable*/ {
+public struct LogOutcome: Codable, Hashable {
 
     public var reason: String?
     public var result: String?

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OpenIdConnectApplicationSettings: Codable/*, Hashable*/ {
+public struct OpenIdConnectApplicationSettings: Codable, Hashable {
 
     public var oauthClient: OpenIdConnectApplicationSettingsClient?
 

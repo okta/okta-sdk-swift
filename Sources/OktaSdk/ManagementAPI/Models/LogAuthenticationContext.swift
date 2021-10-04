@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct LogAuthenticationContext: Codable/*, Hashable*/ {
+public struct LogAuthenticationContext: Codable, Hashable {
 
     public var authenticationProvider: LogAuthenticationProvider?
     public var authenticationStep: Int?

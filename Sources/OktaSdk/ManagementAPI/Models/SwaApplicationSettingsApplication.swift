@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SwaApplicationSettingsApplication: Codable/*, Hashable*/ {
+public struct SwaApplicationSettingsApplication: Codable, Hashable {
 
     public var buttonField: String?
     public var loginUrlRegex: String?

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserCondition: Codable/*, Hashable*/ {
+public struct UserCondition: Codable, Hashable {
 
     public var exclude: [String]?
     public var include: [String]?

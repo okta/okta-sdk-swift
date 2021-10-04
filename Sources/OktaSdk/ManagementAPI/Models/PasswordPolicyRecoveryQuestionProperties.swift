@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordPolicyRecoveryQuestionProperties: Codable/*, Hashable*/ {
+public struct PasswordPolicyRecoveryQuestionProperties: Codable, Hashable {
 
     public var complexity: PasswordPolicyRecoveryQuestionComplexity?
 

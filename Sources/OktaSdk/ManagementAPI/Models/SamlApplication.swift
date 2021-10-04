@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SamlApplication: Codable/*, Hashable*/ {
+public struct SamlApplication: Codable, Hashable {
 
     public var settings: SamlApplicationSettings?
 

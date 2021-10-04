@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OpenIdConnectApplicationSettingsClientKeys: Codable/*, Hashable*/ {
+public struct OpenIdConnectApplicationSettingsClientKeys: Codable, Hashable {
 
     public var keys: [JsonWebKey]?
 

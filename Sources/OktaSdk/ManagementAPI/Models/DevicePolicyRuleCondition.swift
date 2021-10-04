@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct DevicePolicyRuleCondition: Codable/*, Hashable*/ {
+public struct DevicePolicyRuleCondition: Codable, Hashable {
 
     public enum TrustLevel: String, Codable, CaseIterable {
         case any = "ANY"

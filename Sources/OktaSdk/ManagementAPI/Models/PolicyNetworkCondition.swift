@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PolicyNetworkCondition: Codable/*, Hashable*/ {
+public struct PolicyNetworkCondition: Codable, Hashable {
 
     public enum Connection: String, Codable, CaseIterable {
         case anywhere = "ANYWHERE"

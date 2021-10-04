@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordExpirationPolicyRuleCondition: Codable/*, Hashable*/ {
+public struct PasswordExpirationPolicyRuleCondition: Codable, Hashable {
 
     public var number: Int?
     public var unit: String?

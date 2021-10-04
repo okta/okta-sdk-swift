@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OrgOktaSupportSettingsObj: Codable/*, Hashable*/ {
+public struct OrgOktaSupportSettingsObj: Codable, Hashable {
 
     public var links: [String: AnyCodable]?
     public var expiration: Date?

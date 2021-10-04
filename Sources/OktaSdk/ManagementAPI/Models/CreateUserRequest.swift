@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct CreateUserRequest: Codable/*, Hashable*/ {
+public struct CreateUserRequest: Codable, Hashable {
 
     public var credentials: UserCredentials?
     public var groupIds: [String]?

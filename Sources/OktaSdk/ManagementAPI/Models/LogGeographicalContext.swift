@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct LogGeographicalContext: Codable/*, Hashable*/ {
+public struct LogGeographicalContext: Codable, Hashable {
 
     public var city: String?
     public var country: String?

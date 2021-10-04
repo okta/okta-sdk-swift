@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct CAPTCHAInstance: Codable/*, Hashable*/ {
+public struct CAPTCHAInstance: Codable, Hashable {
 
     public enum ModelType: String, Codable, CaseIterable {
         case hcaptcha = "HCAPTCHA"

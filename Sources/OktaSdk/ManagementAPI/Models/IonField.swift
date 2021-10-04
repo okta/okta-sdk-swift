@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct IonField: Codable/*, Hashable*/ {
+public struct IonField: Codable, Hashable {
 
     public var form: IonForm?
     public var label: String?

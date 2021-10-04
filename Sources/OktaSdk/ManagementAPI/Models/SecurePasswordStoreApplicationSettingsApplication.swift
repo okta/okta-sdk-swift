@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SecurePasswordStoreApplicationSettingsApplication: Codable/*, Hashable*/ {
+public struct SecurePasswordStoreApplicationSettingsApplication: Codable, Hashable {
 
     public var optionalField1: String?
     public var optionalField1Value: String?

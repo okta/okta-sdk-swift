@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ResetPasswordToken: Codable/*, Hashable*/ {
+public struct ResetPasswordToken: Codable, Hashable {
 
     public var resetPasswordUrl: String?
 

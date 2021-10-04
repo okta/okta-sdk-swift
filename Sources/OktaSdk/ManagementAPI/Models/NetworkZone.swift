@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct NetworkZone: Codable/*, Hashable*/ {
+public struct NetworkZone: Codable, Hashable {
 
     public var type: NetworkZoneType?
     public var id: String?

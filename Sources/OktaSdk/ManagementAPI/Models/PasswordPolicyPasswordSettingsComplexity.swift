@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordPolicyPasswordSettingsComplexity: Codable/*, Hashable*/ {
+public struct PasswordPolicyPasswordSettingsComplexity: Codable, Hashable {
 
     public var dictionary: PasswordDictionary?
     public var excludeAttributes: [String]?

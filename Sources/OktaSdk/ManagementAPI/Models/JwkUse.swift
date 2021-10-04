@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct JwkUse: Codable/*, Hashable*/ {
+public struct JwkUse: Codable, Hashable {
 
     public enum Use: String, Codable, CaseIterable {
         case sig = "sig"

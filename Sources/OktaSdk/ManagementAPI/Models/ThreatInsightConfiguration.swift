@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ThreatInsightConfiguration: Codable/*, Hashable*/ {
+public struct ThreatInsightConfiguration: Codable, Hashable {
 
     public var action: String?
     public var excludeZones: [String]?

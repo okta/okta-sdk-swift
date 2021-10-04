@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct LifecycleExpirationPolicyRuleCondition: Codable/*, Hashable*/ {
+public struct LifecycleExpirationPolicyRuleCondition: Codable, Hashable {
 
     public var lifecycleStatus: String?
     public var number: Int?

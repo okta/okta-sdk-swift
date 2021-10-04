@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct CreateSessionRequest: Codable/*, Hashable*/ {
+public struct CreateSessionRequest: Codable, Hashable {
 
     public var sessionToken: String?
 

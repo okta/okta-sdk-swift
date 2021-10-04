@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct DomainCertificate: Codable/*, Hashable*/ {
+public struct DomainCertificate: Codable, Hashable {
 
     public var certificate: String?
     public var certificateChain: String?

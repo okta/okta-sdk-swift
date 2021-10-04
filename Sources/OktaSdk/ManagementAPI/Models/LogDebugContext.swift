@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct LogDebugContext: Codable/*, Hashable*/ {
+public struct LogDebugContext: Codable, Hashable {
 
     public var debugData: [String: AnyCodable]?
 

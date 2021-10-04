@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct EventHookChannelConfig: Codable/*, Hashable*/ {
+public struct EventHookChannelConfig: Codable, Hashable {
 
     public var authScheme: EventHookChannelConfigAuthScheme?
     public var headers: [EventHookChannelConfigHeader]?

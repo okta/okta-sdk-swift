@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct EmailUserFactorProfile: Codable/*, Hashable*/ {
+public struct EmailUserFactorProfile: Codable, Hashable {
 
     public var email: String?
 

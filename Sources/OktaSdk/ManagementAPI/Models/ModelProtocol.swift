@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ModelProtocol: Codable/*, Hashable*/ {
+public struct ModelProtocol: Codable, Hashable {
 
     public enum ModelType: String, Codable, CaseIterable {
         case saml2 = "SAML2"

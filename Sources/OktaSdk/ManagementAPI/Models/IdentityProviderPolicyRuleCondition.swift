@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct IdentityProviderPolicyRuleCondition: Codable/*, Hashable*/ {
+public struct IdentityProviderPolicyRuleCondition: Codable, Hashable {
 
     public enum Provider: String, Codable, CaseIterable {
         case any = "ANY"

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ApplicationAccessibility: Codable/*, Hashable*/ {
+public struct ApplicationAccessibility: Codable, Hashable {
 
     public var errorRedirectUrl: String?
     public var loginRedirectUrl: String?

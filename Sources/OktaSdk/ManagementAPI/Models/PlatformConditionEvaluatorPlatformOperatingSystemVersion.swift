@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PlatformConditionEvaluatorPlatformOperatingSystemVersion: Codable/*, Hashable*/ {
+public struct PlatformConditionEvaluatorPlatformOperatingSystemVersion: Codable, Hashable {
 
     public enum MatchType: String, Codable, CaseIterable {
         case expression = "EXPRESSION"

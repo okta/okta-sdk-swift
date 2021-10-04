@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct DomainCertificateMetadata: Codable/*, Hashable*/ {
+public struct DomainCertificateMetadata: Codable, Hashable {
 
     public var expiration: String?
     public var fingerprint: String?

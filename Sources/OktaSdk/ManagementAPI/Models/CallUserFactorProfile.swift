@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct CallUserFactorProfile: Codable/*, Hashable*/ {
+public struct CallUserFactorProfile: Codable, Hashable {
 
     public var phoneExtension: String?
     public var phoneNumber: String?

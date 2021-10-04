@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct LogUserAgent: Codable/*, Hashable*/ {
+public struct LogUserAgent: Codable, Hashable {
 
     public var browser: String?
     public var os: String?

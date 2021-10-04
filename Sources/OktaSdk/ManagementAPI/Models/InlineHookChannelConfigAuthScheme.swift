@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct InlineHookChannelConfigAuthScheme: Codable/*, Hashable*/ {
+public struct InlineHookChannelConfigAuthScheme: Codable, Hashable {
 
     public var key: String?
     public var type: String?

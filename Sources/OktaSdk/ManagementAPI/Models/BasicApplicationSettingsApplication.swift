@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct BasicApplicationSettingsApplication: Codable/*, Hashable*/ {
+public struct BasicApplicationSettingsApplication: Codable, Hashable {
 
     public var authURL: String?
     public var url: String?

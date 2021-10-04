@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct GroupSchemaBaseProperties: Codable/*, Hashable*/ {
+public struct GroupSchemaBaseProperties: Codable, Hashable {
 
     public var description: GroupSchemaAttribute?
     public var name: GroupSchemaAttribute?

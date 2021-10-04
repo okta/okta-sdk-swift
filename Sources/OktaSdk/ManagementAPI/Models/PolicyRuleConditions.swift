@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PolicyRuleConditions: Codable/*, Hashable*/ {
+public struct PolicyRuleConditions: Codable, Hashable {
 
     public var app: AppAndInstancePolicyRuleCondition?
     public var apps: AppInstancePolicyRuleCondition?

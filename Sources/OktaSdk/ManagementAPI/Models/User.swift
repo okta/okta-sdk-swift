@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct User: Codable/*, Hashable*/ {
+public struct User: Codable, Hashable {
 
     public var embedded: [String: AnyCodable]?
     public var links: [String: AnyCodable]?

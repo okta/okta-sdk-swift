@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserIdentifierPolicyRuleCondition: Codable/*, Hashable*/ {
+public struct UserIdentifierPolicyRuleCondition: Codable, Hashable {
 
     public enum ModelType: String, Codable, CaseIterable {
         case identifier = "IDENTIFIER"

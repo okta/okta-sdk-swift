@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OktaSignOnPolicyRuleSignonActions: Codable/*, Hashable*/ {
+public struct OktaSignOnPolicyRuleSignonActions: Codable, Hashable {
 
     public enum Access: String, Codable, CaseIterable {
         case allow = "ALLOW"

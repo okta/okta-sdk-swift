@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct OAuth2Token: Codable/*, Hashable*/ {
+public struct OAuth2Token: Codable, Hashable {
 
     public enum Status: String, Codable, CaseIterable {
         case active = "ACTIVE"

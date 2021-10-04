@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct LogSecurityContext: Codable/*, Hashable*/ {
+public struct LogSecurityContext: Codable, Hashable {
 
     public var asNumber: Int?
     public var asOrg: String?

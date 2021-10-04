@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PlatformPolicyRuleCondition: Codable/*, Hashable*/ {
+public struct PlatformPolicyRuleCondition: Codable, Hashable {
 
     public var exclude: [PlatformConditionEvaluatorPlatform]?
     public var include: [PlatformConditionEvaluatorPlatform]?

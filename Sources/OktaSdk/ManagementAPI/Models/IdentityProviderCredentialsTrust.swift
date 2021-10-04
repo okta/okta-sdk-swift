@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct IdentityProviderCredentialsTrust: Codable/*, Hashable*/ {
+public struct IdentityProviderCredentialsTrust: Codable, Hashable {
 
     public enum Revocation: String, Codable, CaseIterable {
         case crl = "CRL"

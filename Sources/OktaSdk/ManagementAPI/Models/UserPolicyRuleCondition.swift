@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct UserPolicyRuleCondition: Codable/*, Hashable*/ {
+public struct UserPolicyRuleCondition: Codable, Hashable {
 
     public var exclude: [String]?
     public var inactivity: InactivityPolicyRuleCondition?

@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct ApplicationCredentialsSigning: Codable/*, Hashable*/ {
+public struct ApplicationCredentialsSigning: Codable, Hashable {
 
     public var kid: String?
     public var lastRotated: Date?

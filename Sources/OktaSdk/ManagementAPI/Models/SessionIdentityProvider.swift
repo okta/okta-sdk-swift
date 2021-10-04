@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SessionIdentityProvider: Codable/*, Hashable*/ {
+public struct SessionIdentityProvider: Codable, Hashable {
 
     public var id: String?
     public var type: SessionIdentityProviderType?

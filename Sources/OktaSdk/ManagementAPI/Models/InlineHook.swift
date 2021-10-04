@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct InlineHook: Codable/*, Hashable*/ {
+public struct InlineHook: Codable, Hashable {
 
     public var links: [String: AnyCodable]?
     public var channel: InlineHookChannel?

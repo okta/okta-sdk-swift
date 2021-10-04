@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct BasicAuthApplication: Codable/*, Hashable*/ {
+public struct BasicAuthApplication: Codable, Hashable {
 
     public var credentials: SchemeApplicationCredentials?
     public var name: String? = "template_basic_auth"

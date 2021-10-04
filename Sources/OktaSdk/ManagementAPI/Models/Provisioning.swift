@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct Provisioning: Codable/*, Hashable*/ {
+public struct Provisioning: Codable, Hashable {
 
     public enum Action: String, Codable, CaseIterable {
         case auto = "AUTO"

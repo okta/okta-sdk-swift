@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct TokenAuthorizationServerPolicyRuleAction: Codable/*, Hashable*/ {
+public struct TokenAuthorizationServerPolicyRuleAction: Codable, Hashable {
 
     public var accessTokenLifetimeMinutes: Int?
     public var refreshTokenLifetimeMinutes: Int?

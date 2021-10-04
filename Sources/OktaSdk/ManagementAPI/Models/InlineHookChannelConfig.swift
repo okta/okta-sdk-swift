@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct InlineHookChannelConfig: Codable/*, Hashable*/ {
+public struct InlineHookChannelConfig: Codable, Hashable {
 
     public var authScheme: InlineHookChannelConfigAuthScheme?
     public var headers: [InlineHookChannelConfigHeaders]?

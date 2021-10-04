@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordPolicyAuthenticationProviderCondition: Codable/*, Hashable*/ {
+public struct PasswordPolicyAuthenticationProviderCondition: Codable, Hashable {
 
     public enum Provider: String, Codable, CaseIterable {
         case activeDirectory = "ACTIVE_DIRECTORY"

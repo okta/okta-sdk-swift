@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct GroupSchemaAttribute: Codable/*, Hashable*/ {
+public struct GroupSchemaAttribute: Codable, Hashable {
 
     public var description: String?
     public var _enum: [String]?

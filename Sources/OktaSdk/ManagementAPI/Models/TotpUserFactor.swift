@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct TotpUserFactor: Codable/*, Hashable*/ {
+public struct TotpUserFactor: Codable, Hashable {
 
     public var profile: TotpUserFactorProfile?
 

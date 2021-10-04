@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PolicyAccountLinkFilter: Codable/*, Hashable*/ {
+public struct PolicyAccountLinkFilter: Codable, Hashable {
 
     public var groups: PolicyAccountLinkFilterGroups?
 

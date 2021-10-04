@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct PasswordDictionary: Codable/*, Hashable*/ {
+public struct PasswordDictionary: Codable, Hashable {
 
     public var common: PasswordDictionaryCommon?
 

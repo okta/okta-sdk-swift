@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SpCertificate: Codable/*, Hashable*/ {
+public struct SpCertificate: Codable, Hashable {
 
     public var x5c: [String]?
 

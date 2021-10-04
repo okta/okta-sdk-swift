@@ -8,7 +8,7 @@
 import Foundation
 import AnyCodable
 
-public struct SingleLogout: Codable/*, Hashable*/ {
+public struct SingleLogout: Codable, Hashable {
 
     public var enabled: Bool?
     public var issuer: String?
