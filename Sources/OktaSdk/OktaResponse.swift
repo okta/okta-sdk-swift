@@ -12,18 +12,31 @@
 
 import Foundation
 
+/// Describes a response from an Okta request, which includes the supplied result, and other associated response metadata.
 public struct OktaResponse<T: Decodable>: Decodable {
+    /// Links between response resources.
     public enum Link: String, Codable {
         case current = "self", next, previous
     }
     
+    /// Result provided from the request.
     public let result: T
+    
+    /// Information about links between related resources.
     public let links: [Link:URL]
+    
+    /// Information about the current rate limit.
     public let rateInfo: RateLimit?
+    
+    /// The ID for the current request.
     public let requestId: String?
-
+    
+    /// Describes information related to the organization's current rate limit.
     public struct RateLimit: Decodable {
+        /// The current limit.
         public let limit: Int
+        
+        /// The rate limit remaining.
         public let remaining: Int
         public let reset: Int
         

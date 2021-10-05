@@ -43,24 +43,6 @@ extension Date: OktaClientArgument {
     }
 }
 
-//@available(iOS 15.0, macOS 12.0, *)
-//extension URLSession {
-//    func data(for request: URLRequest) async throws -> (Data, URLResponse) {
-//        try await withCheckedThrowingContinuation { continuation in
-//            dataTask(with: request) { data, response, error in
-//                guard let response = response,
-//                      let data = data
-//                else {
-//                    continuation.resume(throwing: error ?? OktaClientError.invalidResponse)
-//                    return
-//                }
-//
-//                continuation.resume(returning: (data, response))
-//            }.resume()
-//        }
-//    }
-//}
-
 internal protocol OktaClientAPI {
     var baseURL: URL { get }
     var session: URLSession { get }

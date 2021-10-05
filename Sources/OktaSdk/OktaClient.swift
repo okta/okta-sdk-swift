@@ -24,7 +24,9 @@ enum OktaClientError: Error {
     case unknown
 }
 
+/// The class describing an active client used to interact with an Okta org.
 open class OktaClient {
+    /// The configuration used with this client.
     public let configuration: Configuration
 
     internal let queue = OperationQueue()
@@ -55,6 +57,8 @@ open class OktaClient {
     public lazy var userSchema: OktaClient.UserSchemaAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
     public lazy var userType: OktaClient.UserTypeAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
     
+    /// Initializer for creating an Okta client with the given configuration.
+    /// - Parameter configuration: Configuration instance describing how to connect to the desired Okta organization.
     public init(configuration: Configuration) {
         self.configuration = configuration
         self.baseURL = URL(string: "\(configuration.basePath)/api/")!
@@ -66,10 +70,18 @@ open class OktaClient {
 }
 
 extension OktaClient {
+    /// Describes the configuration for an Okta client.
     public struct Configuration {
+        /// The API key for the Okta organization.
         public let apiKey: String
+        
+        /// The domain name for the desired Okta organization.
         public let domain: String
         
+        /// Initializer for creating an Okta configuration
+        /// - Parameters:
+        ///   - apiKey: The API key for the Okta organization.
+        ///   - domain: The domain name for the desired Okta organization.
         public init(apiKey: String, domain: String) {
             self.apiKey = apiKey
             self.domain = domain
