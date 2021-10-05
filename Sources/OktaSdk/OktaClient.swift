@@ -25,7 +25,7 @@ enum OktaClientError: Error {
 }
 
 /// The class describing an active client used to interact with an Okta org.
-open class OktaClient {
+open class OktaClient: OktaClientAPI {
     /// The configuration used with this client.
     public let configuration: Configuration
 
@@ -33,29 +33,29 @@ open class OktaClient {
     internal let urlSession: URLSession
     internal let baseURL: URL
 
-    public lazy var application: OktaClient.ApplicationAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var authenticator: OktaClient.AuthenticatorAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var authorizationServer: OktaClient.AuthorizationServerAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var captcha: OktaClient.CAPTCHAAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var domain: OktaClient.DomainAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var eventHook: OktaClient.EventHookAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var feature: OktaClient.FeatureAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var group: OktaClient.GroupAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var identityProvider: OktaClient.IdentityProviderAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var inlineHook: OktaClient.InlineHookAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var linkedObject: OktaClient.LinkedObjectAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var log: OktaClient.LogAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var networkZone: OktaClient.NetworkZoneAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var policy: OktaClient.PolicyAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var profileMapping: OktaClient.ProfileMappingAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var session: OktaClient.SessionAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var template: OktaClient.TemplateAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var threadInsight: OktaClient.ThreatInsightAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var trustedOrigin: OktaClient.TrustedOriginAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var user: OktaClient.UserAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var userFactor: OktaClient.UserFactorAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var userSchema: OktaClient.UserSchemaAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
-    public lazy var userType: OktaClient.UserTypeAPI = { .init(baseURL: self.baseURL, session: self.urlSession) }()
+    public lazy var application: OktaClient.ApplicationAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var authenticator: OktaClient.AuthenticatorAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var authorizationServer: OktaClient.AuthorizationServerAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var captcha: OktaClient.CAPTCHAAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var domain: OktaClient.DomainAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var eventHook: OktaClient.EventHookAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var feature: OktaClient.FeatureAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var group: OktaClient.GroupAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var identityProvider: OktaClient.IdentityProviderAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var inlineHook: OktaClient.InlineHookAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var linkedObject: OktaClient.LinkedObjectAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var log: OktaClient.LogAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var networkZone: OktaClient.NetworkZoneAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var policy: OktaClient.PolicyAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var profileMapping: OktaClient.ProfileMappingAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var session: OktaClient.SessionAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var template: OktaClient.TemplateAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var threadInsight: OktaClient.ThreatInsightAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var trustedOrigin: OktaClient.TrustedOriginAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var user: OktaClient.UserAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var userFactor: OktaClient.UserFactorAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var userSchema: OktaClient.UserSchemaAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
+    public lazy var userType: OktaClient.UserTypeAPI = { .init(baseURL: self.baseURL, urlSession: self.urlSession) }()
     
     /// Initializer for creating an Okta client with the given configuration.
     /// - Parameter configuration: Configuration instance describing how to connect to the desired Okta organization.
@@ -67,6 +67,34 @@ open class OktaClient {
         sessionConfiguration.httpAdditionalHeaders = configuration.customHeaders
         urlSession = URLSession(configuration: sessionConfiguration, delegate: nil, delegateQueue: queue)
     }
+    
+    internal func fetchURLRequest<T>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) throws -> URLRequest {
+        guard let url = response.links[link] else {
+            throw OktaClientError.invalidUrl
+        }
+
+        return URLRequest(url: url)
+    }
+
+    public func fetch<T>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>, completion: @escaping(Result<OktaResponse<T>, Error>) -> Void) {
+        do {
+            send(try fetchURLRequest(link, from: response), completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+    public func fetchAsync<T: Decodable>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) async throws -> OktaResponse<T> {
+        try await send(try fetchURLRequest(link, from: response)) as OktaResponse<T>
+    }
+
+    #if canImport(Combine)
+    @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
+    public func fetch<T>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) throws -> AnyPublisher<OktaResponse<T>, Error> {
+        publish(try fetchURLRequest(link, from: response))
+    }
+    #endif
 }
 
 extension OktaClient {

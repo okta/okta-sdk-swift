@@ -24,7 +24,7 @@ public extension OktaClient {
 
     struct TemplateAPI: OktaClientAPI {
         internal let baseURL: URL
-        internal let session: URLSession
+        internal let urlSession: URLSession
 
 
         internal func createSmsTemplateURLRequest(smsTemplate: SmsTemplate) throws -> URLRequest {

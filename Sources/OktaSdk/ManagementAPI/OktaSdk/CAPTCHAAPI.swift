@@ -24,7 +24,7 @@ public extension OktaClient {
 
     struct CAPTCHAAPI: OktaClientAPI {
         internal let baseURL: URL
-        internal let session: URLSession
+        internal let urlSession: URLSession
 
 
         internal func createCaptchaInstanceURLRequest(cAPTCHAInstance: CAPTCHAInstance? = nil) throws -> URLRequest {

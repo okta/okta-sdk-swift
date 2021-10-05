@@ -24,7 +24,7 @@ public extension OktaClient {
 
     struct NetworkZoneAPI: OktaClientAPI {
         internal let baseURL: URL
-        internal let session: URLSession
+        internal let urlSession: URLSession
 
 
         internal func activateNetworkZoneURLRequest(zoneId: String) throws -> URLRequest {

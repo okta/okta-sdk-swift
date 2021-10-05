@@ -24,7 +24,7 @@ public extension OktaClient {
 
     struct UserFactorAPI: OktaClientAPI {
         internal let baseURL: URL
-        internal let session: URLSession
+        internal let urlSession: URLSession
 
 
         internal func activateFactorURLRequest(userId: String, factorId: String, activateFactorRequest: ActivateFactorRequest? = nil) throws -> URLRequest {

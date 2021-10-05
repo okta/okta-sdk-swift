@@ -24,7 +24,7 @@ public extension OktaClient {
 
     struct UserTypeAPI: OktaClientAPI {
         internal let baseURL: URL
-        internal let session: URLSession
+        internal let urlSession: URLSession
 
 
         internal func createUserTypeURLRequest(userType: UserType) throws -> URLRequest {
