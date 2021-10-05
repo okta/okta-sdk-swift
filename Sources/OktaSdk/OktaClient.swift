@@ -75,7 +75,8 @@ open class OktaClient: OktaClientAPI {
 
         return URLRequest(url: url)
     }
-
+    
+    /// Fetches the related pagination link from the given response.
     public func fetch<T>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>, completion: @escaping(Result<OktaResponse<T>, Error>) -> Void) {
         do {
             send(try fetchURLRequest(link, from: response), completion: completion)
@@ -83,16 +84,41 @@ open class OktaClient: OktaClientAPI {
             completion(.failure(error))
         }
     }
+    
+    /// Fetches a response of the given type from the supplied URL.
+    ///
+    /// This may be used to process the `_links` related list from responses.
+    public func fetch<T>(_ type: T.Type, at url: URL, completion: @escaping(Result<OktaResponse<T>, Error>) -> Void) where T : Decodable {
+        send(URLRequest(url: url), completion: completion)
+    }
 
+    /// Asynchronously fetches the related pagination link from the given response.
     @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
     public func fetchAsync<T: Decodable>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) async throws -> OktaResponse<T> {
         try await send(try fetchURLRequest(link, from: response)) as OktaResponse<T>
     }
 
+    /// Asynchronously fetches a response of the given type from the supplied URL.
+    ///
+    /// This may be used to process the `_links` related list from responses.
+    @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+    public func fetchAsync<T: Decodable>(_ type: T.Type, at url: URL) async throws -> OktaResponse<T> {
+        try await send(URLRequest(url: url)) as OktaResponse<T>
+    }
+
     #if canImport(Combine)
+    /// Fetches the related pagination link from the given response as a Combine publisher.
     @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
     public func fetch<T>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) throws -> AnyPublisher<OktaResponse<T>, Error> {
         publish(try fetchURLRequest(link, from: response))
+    }
+
+    /// Fetches a response of the given type from the supplied URL as a Combine publisher.
+    ///
+    /// This may be used to process the `_links` related list from responses.
+    @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
+    public func fetch<T>(_ type: T.Type, at url: URL) throws -> AnyPublisher<OktaResponse<T>, Error> {
+        publish(URLRequest(url: url))
     }
     #endif
 }
