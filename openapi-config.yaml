@@ -1,0 +1,9 @@
+library: urlsession
+projectName: OktaSdk
+responseAs: Result
+swiftPackagePath: Sources/OktaSdk/ManagementAPI/
+swiftUseApiNamespace: true
+useSPMFileStructure: true
+useClasses: false
+useCombine: true
+nonPublicApiBuilder: true

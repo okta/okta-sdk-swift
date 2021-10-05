@@ -1,0 +1,9 @@
+{{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} enum {{classname}}: {{dataType}}, Codable, CaseIterable, OktaClientArgument {
+{{#allowableValues}}
+{{#enumVars}}
+    case {{name}} = {{{value}}}
+{{/enumVars}}
+{{/allowableValues}}
+
+    var stringValue: String { rawValue }
+}

@@ -1,24 +1,30 @@
-// swift-tools-version:5.3
-// The swift-tools-version declares the minimum version of Swift required to build this package.
+// swift-tools-version:5.1
 
 import PackageDescription
 
 let package = Package(
     name: "OktaSdk",
     platforms: [
+        .iOS(.v9),
         .macOS(.v10_11),
-        .iOS(.v10)
+        .tvOS(.v9)
     ],
     products: [
-        .library(name: "OktaSdk", targets: [ "OktaSdk" ])
+        .library(
+            name: "OktaSdk",
+            targets: ["OktaSdk"]
+        ),
     ],
     dependencies: [
-        .package(url: "https://github.com/Flight-School/AnyCodable", .exact("0.4.0"))
+        .package(url: "https://github.com/Flight-School/AnyCodable", .exact("0.4.0")),
     ],
     targets: [
-        .target(name: "OktaSdk",
-            dependencies: [
-                .product(name: "AnyCodable", package: "AnyCodable")
-            ])
+        .target(
+            name: "OktaSdk",
+            dependencies: ["AnyCodable"],
+            path: "Sources/OktaSdk/"
+        ),
+        .testTarget(name: "OktaSdkTests",
+                    dependencies: ["OktaSdk"])
     ]
 )

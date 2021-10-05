@@ -1,0 +1,15 @@
+name: OktaSdk
+targets:
+  OktaSdk:
+    type: framework
+    platform: iOS
+    deploymentTarget: "9.0"
+    sources: [Sources/OktaSdk/ManagementAPI/]
+    info:
+      path: ./Info.plist
+      version: 2.7.0
+    settings:
+      APPLICATION_EXTENSION_API_ONLY: true
+    scheme: {}
+    
+    - carthage: AnyCodable
