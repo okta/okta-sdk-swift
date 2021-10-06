@@ -51,7 +51,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateEventHookAsync(eventHookId: String) async throws -> OktaResponse<EventHook> {
+        func activateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try activateEventHookURLRequest(eventHookId: eventHookId))
         }
 
@@ -89,7 +89,7 @@ public extension OktaClient {
          - parameter eventHook: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createEventHookAsync(eventHook: EventHook) async throws -> OktaResponse<EventHook> {
+        func createEventHook(eventHook: EventHook) async throws -> OktaResponse<EventHook> {
             try await send(try createEventHookURLRequest(eventHook: eventHook))
         }
 
@@ -129,7 +129,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivateEventHookAsync(eventHookId: String) async throws -> OktaResponse<EventHook> {
+        func deactivateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try deactivateEventHookURLRequest(eventHookId: eventHookId))
         }
 
@@ -169,7 +169,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteEventHookAsync(eventHookId: String) async throws -> OktaResponse<Empty> {
+        func deleteEventHook(eventHookId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteEventHookURLRequest(eventHookId: eventHookId))
         }
 
@@ -209,7 +209,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getEventHookAsync(eventHookId: String) async throws -> OktaResponse<EventHook> {
+        func getEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try getEventHookURLRequest(eventHookId: eventHookId))
         }
 
@@ -245,7 +245,7 @@ public extension OktaClient {
 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listEventHooksAsync() async throws -> OktaResponse<[EventHook]> {
+        func listEventHooks() async throws -> OktaResponse<[EventHook]> {
             try await send(try listEventHooksURLRequest())
         }
 
@@ -286,7 +286,7 @@ public extension OktaClient {
          - parameter eventHook: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateEventHookAsync(eventHookId: String, eventHook: EventHook) async throws -> OktaResponse<EventHook> {
+        func updateEventHook(eventHookId: String, eventHook: EventHook) async throws -> OktaResponse<EventHook> {
             try await send(try updateEventHookURLRequest(eventHookId: eventHookId, eventHook: eventHook))
         }
 
@@ -327,7 +327,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func verifyEventHookAsync(eventHookId: String) async throws -> OktaResponse<EventHook> {
+        func verifyEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try verifyEventHookURLRequest(eventHookId: eventHookId))
         }
 

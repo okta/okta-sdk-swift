@@ -53,7 +53,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateIdentityProviderAsync(idpId: String) async throws -> OktaResponse<IdentityProvider> {
+        func activateIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
             try await send(try activateIdentityProviderURLRequest(idpId: idpId))
         }
 
@@ -103,7 +103,7 @@ public extension OktaClient {
          - parameter targetIdpId: (query)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func cloneIdentityProviderKeyAsync(idpId: String, keyId: String, targetIdpId: String) async throws -> OktaResponse<JsonWebKey> {
+        func cloneIdentityProviderKey(idpId: String, keyId: String, targetIdpId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try cloneIdentityProviderKeyURLRequest(idpId: idpId, keyId: keyId, targetIdpId: targetIdpId))
         }
 
@@ -146,7 +146,7 @@ public extension OktaClient {
          - parameter identityProvider: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createIdentityProviderAsync(identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
+        func createIdentityProvider(identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
             try await send(try createIdentityProviderURLRequest(identityProvider: identityProvider))
         }
 
@@ -187,7 +187,7 @@ public extension OktaClient {
          - parameter jsonWebKey: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createIdentityProviderKeyAsync(jsonWebKey: JsonWebKey) async throws -> OktaResponse<JsonWebKey> {
+        func createIdentityProviderKey(jsonWebKey: JsonWebKey) async throws -> OktaResponse<JsonWebKey> {
             try await send(try createIdentityProviderKeyURLRequest(jsonWebKey: jsonWebKey))
         }
 
@@ -230,7 +230,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivateIdentityProviderAsync(idpId: String) async throws -> OktaResponse<IdentityProvider> {
+        func deactivateIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
             try await send(try deactivateIdentityProviderURLRequest(idpId: idpId))
         }
 
@@ -273,7 +273,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteIdentityProviderAsync(idpId: String) async throws -> OktaResponse<Empty> {
+        func deleteIdentityProvider(idpId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteIdentityProviderURLRequest(idpId: idpId))
         }
 
@@ -316,7 +316,7 @@ public extension OktaClient {
          - parameter keyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteIdentityProviderKeyAsync(keyId: String) async throws -> OktaResponse<Empty> {
+        func deleteIdentityProviderKey(keyId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteIdentityProviderKeyURLRequest(keyId: keyId))
         }
 
@@ -361,7 +361,7 @@ public extension OktaClient {
          - parameter csrMetadata: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func generateCsrForIdentityProviderAsync(idpId: String, csrMetadata: CsrMetadata) async throws -> OktaResponse<Csr> {
+        func generateCsrForIdentityProvider(idpId: String, csrMetadata: CsrMetadata) async throws -> OktaResponse<Csr> {
             try await send(try generateCsrForIdentityProviderURLRequest(idpId: idpId, csrMetadata: csrMetadata))
         }
 
@@ -409,7 +409,7 @@ public extension OktaClient {
          - parameter validityYears: (query) expiry of the IdP Key Credential 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func generateIdentityProviderSigningKeyAsync(idpId: String, validityYears: Int) async throws -> OktaResponse<JsonWebKey> {
+        func generateIdentityProviderSigningKey(idpId: String, validityYears: Int) async throws -> OktaResponse<JsonWebKey> {
             try await send(try generateIdentityProviderSigningKeyURLRequest(idpId: idpId, validityYears: validityYears))
         }
 
@@ -454,7 +454,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getCsrForIdentityProviderAsync(idpId: String, csrId: String) async throws -> OktaResponse<Csr> {
+        func getCsrForIdentityProvider(idpId: String, csrId: String) async throws -> OktaResponse<Csr> {
             try await send(try getCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId))
         }
 
@@ -497,7 +497,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getIdentityProviderAsync(idpId: String) async throws -> OktaResponse<IdentityProvider> {
+        func getIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
             try await send(try getIdentityProviderURLRequest(idpId: idpId))
         }
 
@@ -541,7 +541,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getIdentityProviderApplicationUserAsync(idpId: String, userId: String) async throws -> OktaResponse<IdentityProviderApplicationUser> {
+        func getIdentityProviderApplicationUser(idpId: String, userId: String) async throws -> OktaResponse<IdentityProviderApplicationUser> {
             try await send(try getIdentityProviderApplicationUserURLRequest(idpId: idpId, userId: userId))
         }
 
@@ -584,7 +584,7 @@ public extension OktaClient {
          - parameter keyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getIdentityProviderKeyAsync(keyId: String) async throws -> OktaResponse<JsonWebKey> {
+        func getIdentityProviderKey(keyId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try getIdentityProviderKeyURLRequest(keyId: keyId))
         }
 
@@ -630,7 +630,7 @@ public extension OktaClient {
          - parameter keyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getIdentityProviderSigningKeyAsync(idpId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
+        func getIdentityProviderSigningKey(idpId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try getIdentityProviderSigningKeyURLRequest(idpId: idpId, keyId: keyId))
         }
 
@@ -679,7 +679,7 @@ public extension OktaClient {
          - parameter userIdentityProviderLinkRequest: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func linkUserToIdentityProviderAsync(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest) async throws -> OktaResponse<IdentityProviderApplicationUser> {
+        func linkUserToIdentityProvider(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest) async throws -> OktaResponse<IdentityProviderApplicationUser> {
             try await send(try linkUserToIdentityProviderURLRequest(idpId: idpId, userId: userId, userIdentityProviderLinkRequest: userIdentityProviderLinkRequest))
         }
 
@@ -724,7 +724,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listCsrsForIdentityProviderAsync(idpId: String) async throws -> OktaResponse<[Csr]> {
+        func listCsrsForIdentityProvider(idpId: String) async throws -> OktaResponse<[Csr]> {
             try await send(try listCsrsForIdentityProviderURLRequest(idpId: idpId))
         }
 
@@ -767,7 +767,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listIdentityProviderApplicationUsersAsync(idpId: String) async throws -> OktaResponse<[IdentityProviderApplicationUser]> {
+        func listIdentityProviderApplicationUsers(idpId: String) async throws -> OktaResponse<[IdentityProviderApplicationUser]> {
             try await send(try listIdentityProviderApplicationUsersURLRequest(idpId: idpId))
         }
 
@@ -813,7 +813,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of key results in a page (optional, default to 20)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listIdentityProviderKeysAsync(after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[JsonWebKey]> {
+        func listIdentityProviderKeys(after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try listIdentityProviderKeysURLRequest(after: after, limit: limit))
         }
 
@@ -857,7 +857,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listIdentityProviderSigningKeysAsync(idpId: String) async throws -> OktaResponse<[JsonWebKey]> {
+        func listIdentityProviderSigningKeys(idpId: String) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try listIdentityProviderSigningKeysURLRequest(idpId: idpId))
         }
 
@@ -909,7 +909,7 @@ public extension OktaClient {
          - parameter type: (query) Filters IdPs by type (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listIdentityProvidersAsync(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil) async throws -> OktaResponse<[IdentityProvider]> {
+        func listIdentityProviders(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil) async throws -> OktaResponse<[IdentityProvider]> {
             try await send(try listIdentityProvidersURLRequest(q: q, after: after, limit: limit, type: type))
         }
 
@@ -958,7 +958,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listSocialAuthTokensAsync(idpId: String, userId: String) async throws -> OktaResponse<[SocialAuthToken]> {
+        func listSocialAuthTokens(idpId: String, userId: String) async throws -> OktaResponse<[SocialAuthToken]> {
             try await send(try listSocialAuthTokensURLRequest(idpId: idpId, userId: userId))
         }
 
@@ -1005,7 +1005,7 @@ public extension OktaClient {
          - parameter body: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func publishCsrForIdentityProviderAsync(idpId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
+        func publishCsrForIdentityProvider(idpId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
             try await send(try publishCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId, body: body))
         }
 
@@ -1050,7 +1050,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeCsrForIdentityProviderAsync(idpId: String, csrId: String) async throws -> OktaResponse<Empty> {
+        func revokeCsrForIdentityProvider(idpId: String, csrId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId))
         }
 
@@ -1096,7 +1096,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func unlinkUserFromIdentityProviderAsync(idpId: String, userId: String) async throws -> OktaResponse<Empty> {
+        func unlinkUserFromIdentityProvider(idpId: String, userId: String) async throws -> OktaResponse<Empty> {
             try await send(try unlinkUserFromIdentityProviderURLRequest(idpId: idpId, userId: userId))
         }
 
@@ -1142,7 +1142,7 @@ public extension OktaClient {
          - parameter identityProvider: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateIdentityProviderAsync(idpId: String, identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
+        func updateIdentityProvider(idpId: String, identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
             try await send(try updateIdentityProviderURLRequest(idpId: idpId, identityProvider: identityProvider))
         }
 

@@ -53,7 +53,7 @@ public extension OktaClient {
          - parameter appInstanceId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getApplicationUserSchemaAsync(appInstanceId: String) async throws -> OktaResponse<UserSchema> {
+        func getApplicationUserSchema(appInstanceId: String) async throws -> OktaResponse<UserSchema> {
             try await send(try getApplicationUserSchemaURLRequest(appInstanceId: appInstanceId))
         }
 
@@ -96,7 +96,7 @@ public extension OktaClient {
          - parameter schemaId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getUserSchemaAsync(schemaId: String) async throws -> OktaResponse<UserSchema> {
+        func getUserSchema(schemaId: String) async throws -> OktaResponse<UserSchema> {
             try await send(try getUserSchemaURLRequest(schemaId: schemaId))
         }
 
@@ -141,7 +141,7 @@ public extension OktaClient {
          - parameter userSchema: (body)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateApplicationUserProfileAsync(appInstanceId: String, userSchema: UserSchema? = nil) async throws -> OktaResponse<UserSchema> {
+        func updateApplicationUserProfile(appInstanceId: String, userSchema: UserSchema? = nil) async throws -> OktaResponse<UserSchema> {
             try await send(try updateApplicationUserProfileURLRequest(appInstanceId: appInstanceId, userSchema: userSchema))
         }
 
@@ -185,7 +185,7 @@ public extension OktaClient {
          - parameter userSchema: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateUserProfileAsync(schemaId: String, userSchema: UserSchema) async throws -> OktaResponse<UserSchema> {
+        func updateUserProfile(schemaId: String, userSchema: UserSchema) async throws -> OktaResponse<UserSchema> {
             try await send(try updateUserProfileURLRequest(schemaId: schemaId, userSchema: userSchema))
         }
 

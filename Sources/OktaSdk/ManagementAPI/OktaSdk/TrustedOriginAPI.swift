@@ -51,7 +51,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateOriginAsync(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
+        func activateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try activateOriginURLRequest(trustedOriginId: trustedOriginId))
         }
 
@@ -89,7 +89,7 @@ public extension OktaClient {
          - parameter trustedOrigin: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createOriginAsync(trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
+        func createOrigin(trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try createOriginURLRequest(trustedOrigin: trustedOrigin))
         }
 
@@ -129,7 +129,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivateOriginAsync(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
+        func deactivateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try deactivateOriginURLRequest(trustedOriginId: trustedOriginId))
         }
 
@@ -169,7 +169,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteOriginAsync(trustedOriginId: String) async throws -> OktaResponse<Empty> {
+        func deleteOrigin(trustedOriginId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteOriginURLRequest(trustedOriginId: trustedOriginId))
         }
 
@@ -209,7 +209,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOriginAsync(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
+        func getOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try getOriginURLRequest(trustedOriginId: trustedOriginId))
         }
 
@@ -258,7 +258,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to -1)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listOriginsAsync(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[TrustedOrigin]> {
+        func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[TrustedOrigin]> {
             try await send(try listOriginsURLRequest(q: q, filter: filter, after: after, limit: limit))
         }
 
@@ -303,7 +303,7 @@ public extension OktaClient {
          - parameter trustedOrigin: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateOriginAsync(trustedOriginId: String, trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
+        func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try updateOriginURLRequest(trustedOriginId: trustedOriginId, trustedOrigin: trustedOrigin))
         }
 

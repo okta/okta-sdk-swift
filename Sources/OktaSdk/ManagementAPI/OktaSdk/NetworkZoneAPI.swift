@@ -53,7 +53,7 @@ public extension OktaClient {
          - parameter zoneId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateNetworkZoneAsync(zoneId: String) async throws -> OktaResponse<NetworkZone> {
+        func activateNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
             try await send(try activateNetworkZoneURLRequest(zoneId: zoneId))
         }
 
@@ -94,7 +94,7 @@ public extension OktaClient {
          - parameter networkZone: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createNetworkZoneAsync(networkZone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
+        func createNetworkZone(networkZone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
             try await send(try createNetworkZoneURLRequest(networkZone: networkZone))
         }
 
@@ -137,7 +137,7 @@ public extension OktaClient {
          - parameter zoneId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivateNetworkZoneAsync(zoneId: String) async throws -> OktaResponse<NetworkZone> {
+        func deactivateNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
             try await send(try deactivateNetworkZoneURLRequest(zoneId: zoneId))
         }
 
@@ -180,7 +180,7 @@ public extension OktaClient {
          - parameter zoneId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteNetworkZoneAsync(zoneId: String) async throws -> OktaResponse<Empty> {
+        func deleteNetworkZone(zoneId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteNetworkZoneURLRequest(zoneId: zoneId))
         }
 
@@ -223,7 +223,7 @@ public extension OktaClient {
          - parameter zoneId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getNetworkZoneAsync(zoneId: String) async throws -> OktaResponse<NetworkZone> {
+        func getNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
             try await send(try getNetworkZoneURLRequest(zoneId: zoneId))
         }
 
@@ -272,7 +272,7 @@ public extension OktaClient {
          - parameter filter: (query) Filters zones by usage or id expression (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listNetworkZonesAsync(after: String? = nil, limit: Int? = nil, filter: String? = nil) async throws -> OktaResponse<[NetworkZone]> {
+        func listNetworkZones(after: String? = nil, limit: Int? = nil, filter: String? = nil) async throws -> OktaResponse<[NetworkZone]> {
             try await send(try listNetworkZonesURLRequest(after: after, limit: limit, filter: filter))
         }
 
@@ -319,7 +319,7 @@ public extension OktaClient {
          - parameter networkZone: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateNetworkZoneAsync(zoneId: String, networkZone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
+        func updateNetworkZone(zoneId: String, networkZone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
             try await send(try updateNetworkZoneURLRequest(zoneId: zoneId, networkZone: networkZone))
         }
 
