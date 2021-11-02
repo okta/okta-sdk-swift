@@ -6,11 +6,12 @@ on:
   pull_request:
     branches: [ master ]
 
+
 jobs:
-  MacOS11:
-
+  Xcode13.1:
     runs-on: macos-11
-
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_13.1.app/Contents/Developer
     steps:
     - uses: actions/checkout@v2
     - name: Build
