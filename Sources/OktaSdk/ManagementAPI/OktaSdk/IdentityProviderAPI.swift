@@ -47,6 +47,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Activate Identity Provider
          
@@ -56,6 +57,7 @@ public extension OktaClient {
         func activateIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
             try await send(try activateIdentityProviderURLRequest(idpId: idpId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -95,6 +97,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Clone Signing Key Credential for IdP
          
@@ -106,6 +109,7 @@ public extension OktaClient {
         func cloneIdentityProviderKey(idpId: String, keyId: String, targetIdpId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try cloneIdentityProviderKeyURLRequest(idpId: idpId, keyId: keyId, targetIdpId: targetIdpId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -140,6 +144,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Add Identity Provider
          
@@ -149,6 +154,7 @@ public extension OktaClient {
         func createIdentityProvider(identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
             try await send(try createIdentityProviderURLRequest(identityProvider: identityProvider))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -181,6 +187,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Add X.509 Certificate Public Key
          
@@ -190,6 +197,7 @@ public extension OktaClient {
         func createIdentityProviderKey(jsonWebKey: JsonWebKey) async throws -> OktaResponse<JsonWebKey> {
             try await send(try createIdentityProviderKeyURLRequest(jsonWebKey: jsonWebKey))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -224,6 +232,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Deactivate Identity Provider
          
@@ -233,6 +242,7 @@ public extension OktaClient {
         func deactivateIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
             try await send(try deactivateIdentityProviderURLRequest(idpId: idpId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -267,6 +277,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Delete Identity Provider
          
@@ -276,6 +287,7 @@ public extension OktaClient {
         func deleteIdentityProvider(idpId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteIdentityProviderURLRequest(idpId: idpId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -310,6 +322,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Delete Key
          
@@ -319,6 +332,7 @@ public extension OktaClient {
         func deleteIdentityProviderKey(keyId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteIdentityProviderKeyURLRequest(keyId: keyId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -354,6 +368,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Generate Certificate Signing Request for IdP
          
@@ -364,6 +379,7 @@ public extension OktaClient {
         func generateCsrForIdentityProvider(idpId: String, csrMetadata: CsrMetadata) async throws -> OktaResponse<Csr> {
             try await send(try generateCsrForIdentityProviderURLRequest(idpId: idpId, csrMetadata: csrMetadata))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -402,6 +418,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Generate New IdP Signing Key Credential
          
@@ -412,6 +429,7 @@ public extension OktaClient {
         func generateIdentityProviderSigningKey(idpId: String, validityYears: Int) async throws -> OktaResponse<JsonWebKey> {
             try await send(try generateIdentityProviderSigningKeyURLRequest(idpId: idpId, validityYears: validityYears))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -448,6 +466,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter idpId: (path)  
@@ -457,6 +476,7 @@ public extension OktaClient {
         func getCsrForIdentityProvider(idpId: String, csrId: String) async throws -> OktaResponse<Csr> {
             try await send(try getCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -491,6 +511,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get Identity Provider
          
@@ -500,6 +521,7 @@ public extension OktaClient {
         func getIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
             try await send(try getIdentityProviderURLRequest(idpId: idpId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -535,6 +557,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter idpId: (path)  
@@ -544,6 +567,7 @@ public extension OktaClient {
         func getIdentityProviderApplicationUser(idpId: String, userId: String) async throws -> OktaResponse<IdentityProviderApplicationUser> {
             try await send(try getIdentityProviderApplicationUserURLRequest(idpId: idpId, userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -578,6 +602,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get Key
          
@@ -587,6 +612,7 @@ public extension OktaClient {
         func getIdentityProviderKey(keyId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try getIdentityProviderKeyURLRequest(keyId: keyId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -623,6 +649,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get Signing Key Credential for IdP
          
@@ -633,6 +660,7 @@ public extension OktaClient {
         func getIdentityProviderSigningKey(idpId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try getIdentityProviderSigningKeyURLRequest(idpId: idpId, keyId: keyId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -671,6 +699,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Link a user to a Social IdP without a transaction
          
@@ -682,6 +711,7 @@ public extension OktaClient {
         func linkUserToIdentityProvider(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest) async throws -> OktaResponse<IdentityProviderApplicationUser> {
             try await send(try linkUserToIdentityProviderURLRequest(idpId: idpId, userId: userId, userIdentityProviderLinkRequest: userIdentityProviderLinkRequest))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -718,6 +748,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          List Certificate Signing Requests for IdP
          
@@ -727,6 +758,7 @@ public extension OktaClient {
         func listCsrsForIdentityProvider(idpId: String) async throws -> OktaResponse<[Csr]> {
             try await send(try listCsrsForIdentityProviderURLRequest(idpId: idpId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -761,6 +793,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Find Users
          
@@ -770,6 +803,7 @@ public extension OktaClient {
         func listIdentityProviderApplicationUsers(idpId: String) async throws -> OktaResponse<[IdentityProviderApplicationUser]> {
             try await send(try listIdentityProviderApplicationUsersURLRequest(idpId: idpId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -806,6 +840,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          List Keys
          
@@ -816,6 +851,7 @@ public extension OktaClient {
         func listIdentityProviderKeys(after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try listIdentityProviderKeysURLRequest(after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -851,6 +887,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          List Signing Key Credentials for IdP
          
@@ -860,6 +897,7 @@ public extension OktaClient {
         func listIdentityProviderSigningKeys(idpId: String) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try listIdentityProviderSigningKeysURLRequest(idpId: idpId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -900,6 +938,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          List Identity Providers
          
@@ -912,6 +951,7 @@ public extension OktaClient {
         func listIdentityProviders(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil) async throws -> OktaResponse<[IdentityProvider]> {
             try await send(try listIdentityProvidersURLRequest(q: q, after: after, limit: limit, type: type))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -951,6 +991,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Social Authentication Token Operation
          
@@ -961,6 +1002,7 @@ public extension OktaClient {
         func listSocialAuthTokens(idpId: String, userId: String) async throws -> OktaResponse<[SocialAuthToken]> {
             try await send(try listSocialAuthTokensURLRequest(idpId: idpId, userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -998,6 +1040,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter idpId: (path)  
@@ -1008,6 +1051,7 @@ public extension OktaClient {
         func publishCsrForIdentityProvider(idpId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
             try await send(try publishCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId, body: body))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1044,6 +1088,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter idpId: (path)  
@@ -1053,6 +1098,7 @@ public extension OktaClient {
         func revokeCsrForIdentityProvider(idpId: String, csrId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1089,6 +1135,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Unlink User from IdP
          
@@ -1099,6 +1146,7 @@ public extension OktaClient {
         func unlinkUserFromIdentityProvider(idpId: String, userId: String) async throws -> OktaResponse<Empty> {
             try await send(try unlinkUserFromIdentityProviderURLRequest(idpId: idpId, userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1135,6 +1183,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Update Identity Provider
          
@@ -1145,6 +1194,7 @@ public extension OktaClient {
         func updateIdentityProvider(idpId: String, identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
             try await send(try updateIdentityProviderURLRequest(idpId: idpId, identityProvider: identityProvider))
         }
+        #endif
 
         #if canImport(Combine)
         /**

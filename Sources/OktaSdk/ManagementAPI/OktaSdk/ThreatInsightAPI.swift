@@ -43,6 +43,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          */
@@ -50,6 +51,7 @@ public extension OktaClient {
         func getCurrentConfiguration() async throws -> OktaResponse<ThreatInsightConfiguration> {
             try await send(try getCurrentConfigurationURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -79,6 +81,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter threatInsightConfiguration: (body)  
@@ -87,6 +90,7 @@ public extension OktaClient {
         func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration) async throws -> OktaResponse<ThreatInsightConfiguration> {
             try await send(try updateConfigurationURLRequest(threatInsightConfiguration: threatInsightConfiguration))
         }
+        #endif
 
         #if canImport(Combine)
         /**

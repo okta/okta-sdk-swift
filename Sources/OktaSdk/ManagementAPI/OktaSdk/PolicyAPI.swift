@@ -46,6 +46,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policyId: (path)  
@@ -54,6 +55,7 @@ public extension OktaClient {
         func activatePolicy(policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try activatePolicyURLRequest(policyId: policyId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -88,6 +90,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policyId: (path)  
@@ -97,6 +100,7 @@ public extension OktaClient {
         func activatePolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try activatePolicyRuleURLRequest(policyId: policyId, ruleId: ruleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -131,6 +135,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policy: (body)  
@@ -140,6 +145,7 @@ public extension OktaClient {
         func createPolicy(policy: Policy, activate: Bool? = nil) async throws -> OktaResponse<Policy> {
             try await send(try createPolicyURLRequest(policy: policy, activate: activate))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -174,6 +180,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policyId: (path)  
@@ -183,6 +190,7 @@ public extension OktaClient {
         func createPolicyRule(policyId: String, policyRule: PolicyRule) async throws -> OktaResponse<PolicyRule> {
             try await send(try createPolicyRuleURLRequest(policyId: policyId, policyRule: policyRule))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -216,6 +224,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policyId: (path)  
@@ -224,6 +233,7 @@ public extension OktaClient {
         func deactivatePolicy(policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivatePolicyURLRequest(policyId: policyId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -258,6 +268,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policyId: (path)  
@@ -267,6 +278,7 @@ public extension OktaClient {
         func deactivatePolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivatePolicyRuleURLRequest(policyId: policyId, ruleId: ruleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -300,6 +312,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policyId: (path)  
@@ -308,6 +321,7 @@ public extension OktaClient {
         func deletePolicy(policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try deletePolicyURLRequest(policyId: policyId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -342,6 +356,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policyId: (path)  
@@ -351,6 +366,7 @@ public extension OktaClient {
         func deletePolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try deletePolicyRuleURLRequest(policyId: policyId, ruleId: ruleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -387,6 +403,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policyId: (path)  
@@ -396,6 +413,7 @@ public extension OktaClient {
         func getPolicy(policyId: String, expand: String? = nil) async throws -> OktaResponse<Policy> {
             try await send(try getPolicyURLRequest(policyId: policyId, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -431,6 +449,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policyId: (path)  
@@ -440,6 +459,7 @@ public extension OktaClient {
         func getPolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<PolicyRule> {
             try await send(try getPolicyRuleURLRequest(policyId: policyId, ruleId: ruleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -477,6 +497,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter type: (query)  
@@ -487,6 +508,7 @@ public extension OktaClient {
         func listPolicies(type: String, status: String? = nil, expand: String? = nil) async throws -> OktaResponse<[Policy]> {
             try await send(try listPoliciesURLRequest(type: type, status: status, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -521,6 +543,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policyId: (path)  
@@ -529,6 +552,7 @@ public extension OktaClient {
         func listPolicyRules(policyId: String) async throws -> OktaResponse<[PolicyRule]> {
             try await send(try listPolicyRulesURLRequest(policyId: policyId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -562,6 +586,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policyId: (path)  
@@ -571,6 +596,7 @@ public extension OktaClient {
         func updatePolicy(policyId: String, policy: Policy) async throws -> OktaResponse<Policy> {
             try await send(try updatePolicyURLRequest(policyId: policyId, policy: policy))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -607,6 +633,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter policyId: (path)  
@@ -617,6 +644,7 @@ public extension OktaClient {
         func updatePolicyRule(policyId: String, ruleId: String, policyRule: PolicyRule) async throws -> OktaResponse<PolicyRule> {
             try await send(try updatePolicyRuleURLRequest(policyId: policyId, ruleId: ruleId, policyRule: policyRule))
         }
+        #endif
 
         #if canImport(Combine)
         /**

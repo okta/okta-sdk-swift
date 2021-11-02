@@ -46,6 +46,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter inlineHookId: (path)  
@@ -54,6 +55,7 @@ public extension OktaClient {
         func activateInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
             try await send(try activateInlineHookURLRequest(inlineHookId: inlineHookId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -84,6 +86,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter inlineHook: (body)  
@@ -92,6 +95,7 @@ public extension OktaClient {
         func createInlineHook(inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
             try await send(try createInlineHookURLRequest(inlineHook: inlineHook))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -124,6 +128,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter inlineHookId: (path)  
@@ -132,6 +137,7 @@ public extension OktaClient {
         func deactivateInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
             try await send(try deactivateInlineHookURLRequest(inlineHookId: inlineHookId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -164,6 +170,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter inlineHookId: (path)  
@@ -172,6 +179,7 @@ public extension OktaClient {
         func deleteInlineHook(inlineHookId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteInlineHookURLRequest(inlineHookId: inlineHookId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -205,6 +213,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter inlineHookId: (path)  
@@ -214,6 +223,7 @@ public extension OktaClient {
         func executeInlineHook(inlineHookId: String, body: AnyCodable) async throws -> OktaResponse<InlineHookResponse> {
             try await send(try executeInlineHookURLRequest(inlineHookId: inlineHookId, body: body))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -247,6 +257,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter inlineHookId: (path)  
@@ -255,6 +266,7 @@ public extension OktaClient {
         func getInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
             try await send(try getInlineHookURLRequest(inlineHookId: inlineHookId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -287,6 +299,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter type: (query)  (optional)
@@ -295,6 +308,7 @@ public extension OktaClient {
         func listInlineHooks(type: String? = nil) async throws -> OktaResponse<[InlineHook]> {
             try await send(try listInlineHooksURLRequest(type: type))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -328,6 +342,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter inlineHookId: (path)  
@@ -337,6 +352,7 @@ public extension OktaClient {
         func updateInlineHook(inlineHookId: String, inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
             try await send(try updateInlineHookURLRequest(inlineHookId: inlineHookId, inlineHook: inlineHook))
         }
+        #endif
 
         #if canImport(Combine)
         /**

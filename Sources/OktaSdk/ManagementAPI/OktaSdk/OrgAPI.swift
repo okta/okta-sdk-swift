@@ -44,6 +44,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Extend Okta Support
          
@@ -52,6 +53,7 @@ public extension OktaClient {
         func extendOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try extendOktaSupportURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -82,6 +84,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get Okta Communication Settings
          
@@ -90,6 +93,7 @@ public extension OktaClient {
         func getOktaCommunicationSettings() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try getOktaCommunicationSettingsURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -120,6 +124,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get org contact types
          
@@ -128,6 +133,7 @@ public extension OktaClient {
         func getOrgContactTypes() async throws -> OktaResponse<[OrgContactTypeObj]> {
             try await send(try getOrgContactTypesURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -161,6 +167,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get org contact user
          
@@ -170,6 +177,7 @@ public extension OktaClient {
         func getOrgContactUser(contactType: String) async throws -> OktaResponse<OrgContactUser> {
             try await send(try getOrgContactUserURLRequest(contactType: contactType))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -201,6 +209,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get Okta Support settings
          
@@ -209,6 +218,7 @@ public extension OktaClient {
         func getOrgOktaSupportSettings() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try getOrgOktaSupportSettingsURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -239,6 +249,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get org preferences
          
@@ -247,6 +258,7 @@ public extension OktaClient {
         func getOrgPreferences() async throws -> OktaResponse<OrgPreferences> {
             try await send(try getOrgPreferencesURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -277,6 +289,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get org settings
          
@@ -285,6 +298,7 @@ public extension OktaClient {
         func getOrgSettings() async throws -> OktaResponse<OrgSetting> {
             try await send(try getOrgSettingsURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -315,6 +329,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Grant Okta Support
          
@@ -323,6 +338,7 @@ public extension OktaClient {
         func grantOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try grantOktaSupportURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -353,6 +369,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Show Okta UI Footer
          
@@ -361,6 +378,7 @@ public extension OktaClient {
         func hideOktaUIFooter() async throws -> OktaResponse<OrgPreferences> {
             try await send(try hideOktaUIFooterURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -391,6 +409,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Opt in all users to Okta Communication emails
          
@@ -399,6 +418,7 @@ public extension OktaClient {
         func optInUsersToOktaCommunicationEmails() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try optInUsersToOktaCommunicationEmailsURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -429,6 +449,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Opt out all users from Okta Communication emails
          
@@ -437,6 +458,7 @@ public extension OktaClient {
         func optOutUsersFromOktaCommunicationEmails() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try optOutUsersFromOktaCommunicationEmailsURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -468,6 +490,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Partial update Org Setting
          
@@ -477,6 +500,7 @@ public extension OktaClient {
         func partialUpdateOrgSetting(orgSetting: OrgSetting? = nil) async throws -> OktaResponse<OrgSetting> {
             try await send(try partialUpdateOrgSettingURLRequest(orgSetting: orgSetting))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -508,6 +532,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Extend Okta Support
          
@@ -516,6 +541,7 @@ public extension OktaClient {
         func revokeOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try revokeOktaSupportURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -546,6 +572,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Show Okta UI Footer
          
@@ -554,6 +581,7 @@ public extension OktaClient {
         func showOktaUIFooter() async throws -> OktaResponse<OrgPreferences> {
             try await send(try showOktaUIFooterURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -588,6 +616,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Update org contact user
          
@@ -598,6 +627,7 @@ public extension OktaClient {
         func updateOrgContactUser(contactType: String, userIdString: UserIdString) async throws -> OktaResponse<OrgContactUser> {
             try await send(try updateOrgContactUserURLRequest(contactType: contactType, userIdString: userIdString))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -631,6 +661,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Update Org setting
          
@@ -640,6 +671,7 @@ public extension OktaClient {
         func updateOrgSetting(orgSetting: OrgSetting) async throws -> OktaResponse<OrgSetting> {
             try await send(try updateOrgSettingURLRequest(orgSetting: orgSetting))
         }
+        #endif
 
         #if canImport(Combine)
         /**

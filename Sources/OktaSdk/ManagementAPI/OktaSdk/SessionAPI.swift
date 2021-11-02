@@ -45,6 +45,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Create Session with Session Token
          
@@ -54,6 +55,7 @@ public extension OktaClient {
         func createSession(createSessionRequest: CreateSessionRequest) async throws -> OktaResponse<Session> {
             try await send(try createSessionURLRequest(createSessionRequest: createSessionRequest))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -88,6 +90,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          End Session
          
@@ -97,6 +100,7 @@ public extension OktaClient {
         func endSession(sessionId: String) async throws -> OktaResponse<Empty> {
             try await send(try endSessionURLRequest(sessionId: sessionId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -131,6 +135,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get Session
          
@@ -140,6 +145,7 @@ public extension OktaClient {
         func getSession(sessionId: String) async throws -> OktaResponse<Session> {
             try await send(try getSessionURLRequest(sessionId: sessionId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -174,6 +180,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Refresh Session
          
@@ -183,6 +190,7 @@ public extension OktaClient {
         func refreshSession(sessionId: String) async throws -> OktaResponse<Session> {
             try await send(try refreshSessionURLRequest(sessionId: sessionId))
         }
+        #endif
 
         #if canImport(Combine)
         /**

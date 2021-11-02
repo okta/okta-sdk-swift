@@ -44,6 +44,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter userType: (body)  
@@ -52,6 +53,7 @@ public extension OktaClient {
         func createUserType(userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try createUserTypeURLRequest(userType: userType))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -84,6 +86,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter typeId: (path)  
@@ -92,6 +95,7 @@ public extension OktaClient {
         func deleteUserType(typeId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteUserTypeURLRequest(typeId: typeId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -124,6 +128,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter typeId: (path)  
@@ -132,6 +137,7 @@ public extension OktaClient {
         func getUserType(typeId: String) async throws -> OktaResponse<UserType> {
             try await send(try getUserTypeURLRequest(typeId: typeId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -161,6 +167,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          */
@@ -168,6 +175,7 @@ public extension OktaClient {
         func listUserTypes() async throws -> OktaResponse<[UserType]> {
             try await send(try listUserTypesURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -200,6 +208,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter typeId: (path)  
@@ -209,6 +218,7 @@ public extension OktaClient {
         func replaceUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try replaceUserTypeURLRequest(typeId: typeId, userType: userType))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -243,6 +253,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter typeId: (path)  
@@ -252,6 +263,7 @@ public extension OktaClient {
         func updateUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try updateUserTypeURLRequest(typeId: typeId, userType: userType))
         }
+        #endif
 
         #if canImport(Combine)
         /**

@@ -44,6 +44,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Fetches the group schema
          
@@ -52,6 +53,7 @@ public extension OktaClient {
         func getGroupSchema() async throws -> OktaResponse<GroupSchema> {
             try await send(try getGroupSchemaURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -83,6 +85,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Updates, adds ore removes one or more custom Group Profile properties in the schema
          
@@ -92,6 +95,7 @@ public extension OktaClient {
         func updateGroupSchema(groupSchema: GroupSchema? = nil) async throws -> OktaResponse<GroupSchema> {
             try await send(try updateGroupSchemaURLRequest(groupSchema: groupSchema))
         }
+        #endif
 
         #if canImport(Combine)
         /**

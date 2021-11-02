@@ -47,6 +47,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get Profile Mapping
          
@@ -56,6 +57,7 @@ public extension OktaClient {
         func getProfileMapping(mappingId: String) async throws -> OktaResponse<ProfileMapping> {
             try await send(try getProfileMappingURLRequest(mappingId: mappingId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -95,6 +97,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
 
          - parameter after: (query)  (optional)
@@ -106,6 +109,7 @@ public extension OktaClient {
         func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) async throws -> OktaResponse<[ProfileMapping]> {
             try await send(try listProfileMappingsURLRequest(after: after, limit: limit, sourceId: sourceId, targetId: targetId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -143,6 +147,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Update Profile Mapping
          
@@ -153,6 +158,7 @@ public extension OktaClient {
         func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) async throws -> OktaResponse<ProfileMapping> {
             try await send(try updateProfileMappingURLRequest(mappingId: mappingId, profileMapping: profileMapping))
         }
+        #endif
 
         #if canImport(Combine)
         /**

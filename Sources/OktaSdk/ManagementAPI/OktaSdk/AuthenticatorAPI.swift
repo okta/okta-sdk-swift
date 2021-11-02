@@ -47,6 +47,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Activate Authenticator
          
@@ -56,6 +57,7 @@ public extension OktaClient {
         func activateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -90,6 +92,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Deactivate Authenticator
          
@@ -99,6 +102,7 @@ public extension OktaClient {
         func deactivateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -133,6 +137,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get Authenticator
          
@@ -142,6 +147,7 @@ public extension OktaClient {
         func getAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
             try await send(try getAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -173,6 +179,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          List Authenticators
          
@@ -181,6 +188,7 @@ public extension OktaClient {
         func listAuthenticators() async throws -> OktaResponse<[Authenticator]> {
             try await send(try listAuthenticatorsURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**

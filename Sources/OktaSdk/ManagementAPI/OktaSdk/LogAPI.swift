@@ -59,6 +59,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Fetch a list of events from your Okta organization system log.
          
@@ -74,6 +75,7 @@ public extension OktaClient {
         func getLogs(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil) async throws -> OktaResponse<[LogEvent]> {
             try await send(try getLogsURLRequest(since: since, until: until, filter: filter, q: q, limit: limit, sortOrder: sortOrder, after: after))
         }
+        #endif
 
         #if canImport(Combine)
         /**

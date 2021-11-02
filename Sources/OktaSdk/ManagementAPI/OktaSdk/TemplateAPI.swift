@@ -45,6 +45,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Add SMS Template
          
@@ -54,6 +55,7 @@ public extension OktaClient {
         func createSmsTemplate(smsTemplate: SmsTemplate) async throws -> OktaResponse<SmsTemplate> {
             try await send(try createSmsTemplateURLRequest(smsTemplate: smsTemplate))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -88,6 +90,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Remove SMS Template
          
@@ -97,6 +100,7 @@ public extension OktaClient {
         func deleteSmsTemplate(templateId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteSmsTemplateURLRequest(templateId: templateId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -131,6 +135,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Get SMS Template
          
@@ -140,6 +145,7 @@ public extension OktaClient {
         func getSmsTemplate(templateId: String) async throws -> OktaResponse<SmsTemplate> {
             try await send(try getSmsTemplateURLRequest(templateId: templateId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -174,6 +180,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          List SMS Templates
          
@@ -183,6 +190,7 @@ public extension OktaClient {
         func listSmsTemplates(templateType: SmsTemplateType? = nil) async throws -> OktaResponse<[SmsTemplate]> {
             try await send(try listSmsTemplatesURLRequest(templateType: templateType))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -218,6 +226,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Partial SMS Template Update
          
@@ -228,6 +237,7 @@ public extension OktaClient {
         func partialUpdateSmsTemplate(templateId: String, smsTemplate: SmsTemplate) async throws -> OktaResponse<SmsTemplate> {
             try await send(try partialUpdateSmsTemplateURLRequest(templateId: templateId, smsTemplate: smsTemplate))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -264,6 +274,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1)
         /**
          Update SMS Template
          
@@ -274,6 +285,7 @@ public extension OktaClient {
         func updateSmsTemplate(templateId: String, smsTemplate: SmsTemplate) async throws -> OktaResponse<SmsTemplate> {
             try await send(try updateSmsTemplateURLRequest(templateId: templateId, smsTemplate: smsTemplate))
         }
+        #endif
 
         #if canImport(Combine)
         /**

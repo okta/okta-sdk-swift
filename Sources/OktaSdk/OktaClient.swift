@@ -92,6 +92,7 @@ open class OktaClient: OktaClientAPI {
         send(URLRequest(url: url), completion: completion)
     }
 
+    #if swift(>=5.5.1)
     /// Asynchronously fetches the related pagination link from the given response.
     @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
     public func fetchAsync<T: Decodable>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) async throws -> OktaResponse<T> {
@@ -105,6 +106,7 @@ open class OktaClient: OktaClientAPI {
     public func fetchAsync<T: Decodable>(_ type: T.Type, at url: URL) async throws -> OktaResponse<T> {
         try await send(URLRequest(url: url)) as OktaResponse<T>
     }
+    #endif
 
     #if canImport(Combine)
     /// Fetches the related pagination link from the given response as a Combine publisher.
