@@ -20,6 +20,10 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct SessionAPI: OktaClientAPI {

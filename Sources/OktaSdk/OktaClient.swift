@@ -16,6 +16,10 @@ import Foundation
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 enum OktaClientError: Error {
     case invalidUrl
     case invalidResponse

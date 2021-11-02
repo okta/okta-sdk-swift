@@ -17,6 +17,10 @@ import Combine
 import AnyCodable
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 protocol OktaClientArgument {
     var stringValue: String { get }
 }

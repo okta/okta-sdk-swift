@@ -45,21 +45,21 @@ class UserClientTests: XCTestCase {
         let body = String(data: request.httpBody!, encoding: .utf8)
         XCTAssertEqual(body, """
         {
-          "profile" : {
-            "email" : "arthur@example.com",
-            "firstName" : "Arthur",
-            "lastName" : "Dent",
-            "displayName" : "Arthur Dent",
-            "login" : "arthur@example.com"
-          },
           "credentials" : {
+            "password" : {
+              "value" : "TestPassword"
+            },
             "recovery_question" : {
               "answer" : "Okta",
               "question" : "What's your favorite CIAM provider?"
-            },
-            "password" : {
-              "value" : "TestPassword"
             }
+          },
+          "profile" : {
+            "displayName" : "Arthur Dent",
+            "email" : "arthur@example.com",
+            "firstName" : "Arthur",
+            "lastName" : "Dent",
+            "login" : "arthur@example.com"
           }
         }
         """)
