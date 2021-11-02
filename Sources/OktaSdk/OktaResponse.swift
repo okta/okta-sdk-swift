@@ -38,7 +38,9 @@ public struct OktaResponse<T: Decodable>: Decodable {
         
         /// The rate limit remaining.
         public let remaining: Int
-        public let reset: Int
+
+        /// The time offset from UTC when the rate limit will reset, and a request may be retried.
+        public let reset: TimeInterval
         
         init?(with httpHeaders: [AnyHashable:Any]) {
             guard let rateLimitString = httpHeaders["x-rate-limit-limit"] as? String,
@@ -46,7 +48,7 @@ public struct OktaResponse<T: Decodable>: Decodable {
                   let remainingString = httpHeaders["x-rate-limit-remaining"] as? String,
                   let remaining = Int(remainingString),
                   let resetString = httpHeaders["x-rate-limit-reset"] as? String,
-                  let reset = Int(resetString)
+                  let reset = TimeInterval(resetString)
             else {
                 return nil
             }

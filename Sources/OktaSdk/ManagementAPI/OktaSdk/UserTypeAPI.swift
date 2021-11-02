@@ -49,7 +49,7 @@ public extension OktaClient {
          - parameter userType: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createUserTypeAsync(userType: UserType) async throws -> OktaResponse<UserType> {
+        func createUserType(userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try createUserTypeURLRequest(userType: userType))
         }
 
@@ -89,7 +89,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteUserTypeAsync(typeId: String) async throws -> OktaResponse<Empty> {
+        func deleteUserType(typeId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteUserTypeURLRequest(typeId: typeId))
         }
 
@@ -129,7 +129,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getUserTypeAsync(typeId: String) async throws -> OktaResponse<UserType> {
+        func getUserType(typeId: String) async throws -> OktaResponse<UserType> {
             try await send(try getUserTypeURLRequest(typeId: typeId))
         }
 
@@ -165,7 +165,7 @@ public extension OktaClient {
 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listUserTypesAsync() async throws -> OktaResponse<[UserType]> {
+        func listUserTypes() async throws -> OktaResponse<[UserType]> {
             try await send(try listUserTypesURLRequest())
         }
 
@@ -206,7 +206,7 @@ public extension OktaClient {
          - parameter userType: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func replaceUserTypeAsync(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
+        func replaceUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try replaceUserTypeURLRequest(typeId: typeId, userType: userType))
         }
 
@@ -249,7 +249,7 @@ public extension OktaClient {
          - parameter userType: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateUserTypeAsync(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
+        func updateUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try updateUserTypeURLRequest(typeId: typeId, userType: userType))
         }
 

@@ -49,7 +49,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getGroupSchemaAsync() async throws -> OktaResponse<GroupSchema> {
+        func getGroupSchema() async throws -> OktaResponse<GroupSchema> {
             try await send(try getGroupSchemaURLRequest())
         }
 
@@ -89,7 +89,7 @@ public extension OktaClient {
          - parameter groupSchema: (body)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateGroupSchemaAsync(groupSchema: GroupSchema? = nil) async throws -> OktaResponse<GroupSchema> {
+        func updateGroupSchema(groupSchema: GroupSchema? = nil) async throws -> OktaResponse<GroupSchema> {
             try await send(try updateGroupSchemaURLRequest(groupSchema: groupSchema))
         }
 

@@ -53,7 +53,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateAuthenticatorAsync(authenticatorId: String) async throws -> OktaResponse<Empty> {
+        func activateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
 
@@ -96,7 +96,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivateAuthenticatorAsync(authenticatorId: String) async throws -> OktaResponse<Empty> {
+        func deactivateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
 
@@ -139,7 +139,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getAuthenticatorAsync(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
+        func getAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
             try await send(try getAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
 
@@ -178,7 +178,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listAuthenticatorsAsync() async throws -> OktaResponse<[Authenticator]> {
+        func listAuthenticators() async throws -> OktaResponse<[Authenticator]> {
             try await send(try listAuthenticatorsURLRequest())
         }
 

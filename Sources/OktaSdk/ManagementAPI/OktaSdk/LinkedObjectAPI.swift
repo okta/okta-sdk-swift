@@ -49,7 +49,7 @@ public extension OktaClient {
          - parameter linkedObject: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func addLinkedObjectDefinitionAsync(linkedObject: LinkedObject) async throws -> OktaResponse<LinkedObject> {
+        func addLinkedObjectDefinition(linkedObject: LinkedObject) async throws -> OktaResponse<LinkedObject> {
             try await send(try addLinkedObjectDefinitionURLRequest(linkedObject: linkedObject))
         }
 
@@ -89,7 +89,7 @@ public extension OktaClient {
          - parameter linkedObjectName: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteLinkedObjectDefinitionAsync(linkedObjectName: String) async throws -> OktaResponse<Empty> {
+        func deleteLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName))
         }
 
@@ -129,7 +129,7 @@ public extension OktaClient {
          - parameter linkedObjectName: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getLinkedObjectDefinitionAsync(linkedObjectName: String) async throws -> OktaResponse<LinkedObject> {
+        func getLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<LinkedObject> {
             try await send(try getLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName))
         }
 
@@ -165,7 +165,7 @@ public extension OktaClient {
 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listLinkedObjectDefinitionsAsync() async throws -> OktaResponse<[LinkedObject]> {
+        func listLinkedObjectDefinitions() async throws -> OktaResponse<[LinkedObject]> {
             try await send(try listLinkedObjectDefinitionsURLRequest())
         }
 

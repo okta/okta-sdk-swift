@@ -49,7 +49,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func extendOktaSupportAsync() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
+        func extendOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try extendOktaSupportURLRequest())
         }
 
@@ -87,7 +87,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOktaCommunicationSettingsAsync() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
+        func getOktaCommunicationSettings() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try getOktaCommunicationSettingsURLRequest())
         }
 
@@ -125,7 +125,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOrgContactTypesAsync() async throws -> OktaResponse<[OrgContactTypeObj]> {
+        func getOrgContactTypes() async throws -> OktaResponse<[OrgContactTypeObj]> {
             try await send(try getOrgContactTypesURLRequest())
         }
 
@@ -167,7 +167,7 @@ public extension OktaClient {
          - parameter contactType: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOrgContactUserAsync(contactType: String) async throws -> OktaResponse<OrgContactUser> {
+        func getOrgContactUser(contactType: String) async throws -> OktaResponse<OrgContactUser> {
             try await send(try getOrgContactUserURLRequest(contactType: contactType))
         }
 
@@ -206,7 +206,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOrgOktaSupportSettingsAsync() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
+        func getOrgOktaSupportSettings() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try getOrgOktaSupportSettingsURLRequest())
         }
 
@@ -244,7 +244,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOrgPreferencesAsync() async throws -> OktaResponse<OrgPreferences> {
+        func getOrgPreferences() async throws -> OktaResponse<OrgPreferences> {
             try await send(try getOrgPreferencesURLRequest())
         }
 
@@ -282,7 +282,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOrgSettingsAsync() async throws -> OktaResponse<OrgSetting> {
+        func getOrgSettings() async throws -> OktaResponse<OrgSetting> {
             try await send(try getOrgSettingsURLRequest())
         }
 
@@ -320,7 +320,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func grantOktaSupportAsync() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
+        func grantOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try grantOktaSupportURLRequest())
         }
 
@@ -358,7 +358,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func hideOktaUIFooterAsync() async throws -> OktaResponse<OrgPreferences> {
+        func hideOktaUIFooter() async throws -> OktaResponse<OrgPreferences> {
             try await send(try hideOktaUIFooterURLRequest())
         }
 
@@ -396,7 +396,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func optInUsersToOktaCommunicationEmailsAsync() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
+        func optInUsersToOktaCommunicationEmails() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try optInUsersToOktaCommunicationEmailsURLRequest())
         }
 
@@ -434,7 +434,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func optOutUsersFromOktaCommunicationEmailsAsync() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
+        func optOutUsersFromOktaCommunicationEmails() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try optOutUsersFromOktaCommunicationEmailsURLRequest())
         }
 
@@ -474,7 +474,7 @@ public extension OktaClient {
          - parameter orgSetting: (body)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func partialUpdateOrgSettingAsync(orgSetting: OrgSetting? = nil) async throws -> OktaResponse<OrgSetting> {
+        func partialUpdateOrgSetting(orgSetting: OrgSetting? = nil) async throws -> OktaResponse<OrgSetting> {
             try await send(try partialUpdateOrgSettingURLRequest(orgSetting: orgSetting))
         }
 
@@ -513,7 +513,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeOktaSupportAsync() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
+        func revokeOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try revokeOktaSupportURLRequest())
         }
 
@@ -551,7 +551,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func showOktaUIFooterAsync() async throws -> OktaResponse<OrgPreferences> {
+        func showOktaUIFooter() async throws -> OktaResponse<OrgPreferences> {
             try await send(try showOktaUIFooterURLRequest())
         }
 
@@ -595,7 +595,7 @@ public extension OktaClient {
          - parameter userIdString: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateOrgContactUserAsync(contactType: String, userIdString: UserIdString) async throws -> OktaResponse<OrgContactUser> {
+        func updateOrgContactUser(contactType: String, userIdString: UserIdString) async throws -> OktaResponse<OrgContactUser> {
             try await send(try updateOrgContactUserURLRequest(contactType: contactType, userIdString: userIdString))
         }
 
@@ -637,7 +637,7 @@ public extension OktaClient {
          - parameter orgSetting: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateOrgSettingAsync(orgSetting: OrgSetting) async throws -> OktaResponse<OrgSetting> {
+        func updateOrgSetting(orgSetting: OrgSetting) async throws -> OktaResponse<OrgSetting> {
             try await send(try updateOrgSettingURLRequest(orgSetting: orgSetting))
         }
 

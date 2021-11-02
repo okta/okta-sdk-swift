@@ -58,7 +58,7 @@ public extension OktaClient {
          - parameter activateFactorRequest: (body)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateFactorAsync(userId: String, factorId: String, activateFactorRequest: ActivateFactorRequest? = nil) async throws -> OktaResponse<UserFactor> {
+        func activateFactor(userId: String, factorId: String, activateFactorRequest: ActivateFactorRequest? = nil) async throws -> OktaResponse<UserFactor> {
             try await send(try activateFactorURLRequest(userId: userId, factorId: factorId, activateFactorRequest: activateFactorRequest))
         }
 
@@ -104,7 +104,7 @@ public extension OktaClient {
          - parameter factorId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteFactorAsync(userId: String, factorId: String) async throws -> OktaResponse<Empty> {
+        func deleteFactor(userId: String, factorId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteFactorURLRequest(userId: userId, factorId: factorId))
         }
 
@@ -162,7 +162,7 @@ public extension OktaClient {
          - parameter activate: (query)  (optional, default to false)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func enrollFactorAsync(userId: String, userFactor: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) async throws -> OktaResponse<UserFactor> {
+        func enrollFactor(userId: String, userFactor: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) async throws -> OktaResponse<UserFactor> {
             try await send(try enrollFactorURLRequest(userId: userId, userFactor: userFactor, updatePhone: updatePhone, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, activate: activate))
         }
 
@@ -211,7 +211,7 @@ public extension OktaClient {
          - parameter factorId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getFactorAsync(userId: String, factorId: String) async throws -> OktaResponse<UserFactor> {
+        func getFactor(userId: String, factorId: String) async throws -> OktaResponse<UserFactor> {
             try await send(try getFactorURLRequest(userId: userId, factorId: factorId))
         }
 
@@ -258,7 +258,7 @@ public extension OktaClient {
          - parameter transactionId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getFactorTransactionStatusAsync(userId: String, factorId: String, transactionId: String) async throws -> OktaResponse<VerifyUserFactorResponse> {
+        func getFactorTransactionStatus(userId: String, factorId: String, transactionId: String) async throws -> OktaResponse<VerifyUserFactorResponse> {
             try await send(try getFactorTransactionStatusURLRequest(userId: userId, factorId: factorId, transactionId: transactionId))
         }
 
@@ -300,7 +300,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listFactorsAsync(userId: String) async throws -> OktaResponse<[UserFactor]> {
+        func listFactors(userId: String) async throws -> OktaResponse<[UserFactor]> {
             try await send(try listFactorsURLRequest(userId: userId))
         }
 
@@ -340,7 +340,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listSupportedFactorsAsync(userId: String) async throws -> OktaResponse<[UserFactor]> {
+        func listSupportedFactors(userId: String) async throws -> OktaResponse<[UserFactor]> {
             try await send(try listSupportedFactorsURLRequest(userId: userId))
         }
 
@@ -380,7 +380,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listSupportedSecurityQuestionsAsync(userId: String) async throws -> OktaResponse<[SecurityQuestion]> {
+        func listSupportedSecurityQuestions(userId: String) async throws -> OktaResponse<[SecurityQuestion]> {
             try await send(try listSupportedSecurityQuestionsURLRequest(userId: userId))
         }
 
@@ -444,7 +444,7 @@ public extension OktaClient {
          - parameter verifyFactorRequest: (body)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func verifyFactorAsync(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, verifyFactorRequest: VerifyFactorRequest? = nil) async throws -> OktaResponse<VerifyUserFactorResponse> {
+        func verifyFactor(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, verifyFactorRequest: VerifyFactorRequest? = nil) async throws -> OktaResponse<VerifyUserFactorResponse> {
             try await send(try verifyFactorURLRequest(userId: userId, factorId: factorId, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, xForwardedFor: xForwardedFor, userAgent: userAgent, acceptLanguage: acceptLanguage, verifyFactorRequest: verifyFactorRequest))
         }
 

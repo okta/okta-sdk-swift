@@ -47,7 +47,7 @@ public extension OktaClient {
 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getCurrentConfigurationAsync() async throws -> OktaResponse<ThreatInsightConfiguration> {
+        func getCurrentConfiguration() async throws -> OktaResponse<ThreatInsightConfiguration> {
             try await send(try getCurrentConfigurationURLRequest())
         }
 
@@ -84,7 +84,7 @@ public extension OktaClient {
          - parameter threatInsightConfiguration: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateConfigurationAsync(threatInsightConfiguration: ThreatInsightConfiguration) async throws -> OktaResponse<ThreatInsightConfiguration> {
+        func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration) async throws -> OktaResponse<ThreatInsightConfiguration> {
             try await send(try updateConfigurationURLRequest(threatInsightConfiguration: threatInsightConfiguration))
         }
 

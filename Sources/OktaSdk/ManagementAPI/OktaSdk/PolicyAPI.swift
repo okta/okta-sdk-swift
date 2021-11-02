@@ -51,7 +51,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activatePolicyAsync(policyId: String) async throws -> OktaResponse<Empty> {
+        func activatePolicy(policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try activatePolicyURLRequest(policyId: policyId))
         }
 
@@ -94,7 +94,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activatePolicyRuleAsync(policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
+        func activatePolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try activatePolicyRuleURLRequest(policyId: policyId, ruleId: ruleId))
         }
 
@@ -137,7 +137,7 @@ public extension OktaClient {
          - parameter activate: (query)  (optional, default to true)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createPolicyAsync(policy: Policy, activate: Bool? = nil) async throws -> OktaResponse<Policy> {
+        func createPolicy(policy: Policy, activate: Bool? = nil) async throws -> OktaResponse<Policy> {
             try await send(try createPolicyURLRequest(policy: policy, activate: activate))
         }
 
@@ -180,7 +180,7 @@ public extension OktaClient {
          - parameter policyRule: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createPolicyRuleAsync(policyId: String, policyRule: PolicyRule) async throws -> OktaResponse<PolicyRule> {
+        func createPolicyRule(policyId: String, policyRule: PolicyRule) async throws -> OktaResponse<PolicyRule> {
             try await send(try createPolicyRuleURLRequest(policyId: policyId, policyRule: policyRule))
         }
 
@@ -221,7 +221,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivatePolicyAsync(policyId: String) async throws -> OktaResponse<Empty> {
+        func deactivatePolicy(policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivatePolicyURLRequest(policyId: policyId))
         }
 
@@ -264,7 +264,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivatePolicyRuleAsync(policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
+        func deactivatePolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivatePolicyRuleURLRequest(policyId: policyId, ruleId: ruleId))
         }
 
@@ -305,7 +305,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deletePolicyAsync(policyId: String) async throws -> OktaResponse<Empty> {
+        func deletePolicy(policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try deletePolicyURLRequest(policyId: policyId))
         }
 
@@ -348,7 +348,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deletePolicyRuleAsync(policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
+        func deletePolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try deletePolicyRuleURLRequest(policyId: policyId, ruleId: ruleId))
         }
 
@@ -393,7 +393,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional, default to "")
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getPolicyAsync(policyId: String, expand: String? = nil) async throws -> OktaResponse<Policy> {
+        func getPolicy(policyId: String, expand: String? = nil) async throws -> OktaResponse<Policy> {
             try await send(try getPolicyURLRequest(policyId: policyId, expand: expand))
         }
 
@@ -437,7 +437,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getPolicyRuleAsync(policyId: String, ruleId: String) async throws -> OktaResponse<PolicyRule> {
+        func getPolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<PolicyRule> {
             try await send(try getPolicyRuleURLRequest(policyId: policyId, ruleId: ruleId))
         }
 
@@ -484,7 +484,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional, default to "")
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listPoliciesAsync(type: String, status: String? = nil, expand: String? = nil) async throws -> OktaResponse<[Policy]> {
+        func listPolicies(type: String, status: String? = nil, expand: String? = nil) async throws -> OktaResponse<[Policy]> {
             try await send(try listPoliciesURLRequest(type: type, status: status, expand: expand))
         }
 
@@ -526,7 +526,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listPolicyRulesAsync(policyId: String) async throws -> OktaResponse<[PolicyRule]> {
+        func listPolicyRules(policyId: String) async throws -> OktaResponse<[PolicyRule]> {
             try await send(try listPolicyRulesURLRequest(policyId: policyId))
         }
 
@@ -568,7 +568,7 @@ public extension OktaClient {
          - parameter policy: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updatePolicyAsync(policyId: String, policy: Policy) async throws -> OktaResponse<Policy> {
+        func updatePolicy(policyId: String, policy: Policy) async throws -> OktaResponse<Policy> {
             try await send(try updatePolicyURLRequest(policyId: policyId, policy: policy))
         }
 
@@ -614,7 +614,7 @@ public extension OktaClient {
          - parameter policyRule: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updatePolicyRuleAsync(policyId: String, ruleId: String, policyRule: PolicyRule) async throws -> OktaResponse<PolicyRule> {
+        func updatePolicyRule(policyId: String, ruleId: String, policyRule: PolicyRule) async throws -> OktaResponse<PolicyRule> {
             try await send(try updatePolicyRuleURLRequest(policyId: policyId, ruleId: ruleId, policyRule: policyRule))
         }
 

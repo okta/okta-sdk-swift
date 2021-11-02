@@ -53,7 +53,7 @@ public extension OktaClient {
          - parameter appId: (path) Application ID. 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateApplicationAsync(appId: String) async throws -> OktaResponse<Empty> {
+        func activateApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateApplicationURLRequest(appId: appId))
         }
 
@@ -98,7 +98,7 @@ public extension OktaClient {
          - parameter appUser: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func assignUserToApplicationAsync(appId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
+        func assignUserToApplication(appId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
             try await send(try assignUserToApplicationURLRequest(appId: appId, appUser: appUser))
         }
 
@@ -149,7 +149,7 @@ public extension OktaClient {
          - parameter targetAid: (query) Unique key of the target Application 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func cloneApplicationKeyAsync(appId: String, keyId: String, targetAid: String) async throws -> OktaResponse<JsonWebKey> {
+        func cloneApplicationKey(appId: String, keyId: String, targetAid: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try cloneApplicationKeyURLRequest(appId: appId, keyId: keyId, targetAid: targetAid))
         }
 
@@ -200,7 +200,7 @@ public extension OktaClient {
          - parameter oktaAccessGatewayAgent: (header)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createApplicationAsync(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) async throws -> OktaResponse<Application> {
+        func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) async throws -> OktaResponse<Application> {
             try await send(try createApplicationURLRequest(application: application, activate: activate, oktaAccessGatewayAgent: oktaAccessGatewayAgent))
         }
 
@@ -250,7 +250,7 @@ public extension OktaClient {
          - parameter applicationGroupAssignment: (body)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createApplicationGroupAssignmentAsync(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
+        func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
             try await send(try createApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, applicationGroupAssignment: applicationGroupAssignment))
         }
 
@@ -295,7 +295,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivateApplicationAsync(appId: String) async throws -> OktaResponse<Empty> {
+        func deactivateApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateApplicationURLRequest(appId: appId))
         }
 
@@ -338,7 +338,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteApplicationAsync(appId: String) async throws -> OktaResponse<Empty> {
+        func deleteApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteApplicationURLRequest(appId: appId))
         }
 
@@ -384,7 +384,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteApplicationGroupAssignmentAsync(appId: String, groupId: String) async throws -> OktaResponse<Empty> {
+        func deleteApplicationGroupAssignment(appId: String, groupId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId))
         }
 
@@ -435,7 +435,7 @@ public extension OktaClient {
          - parameter sendEmail: (query)  (optional, default to false)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteApplicationUserAsync(appId: String, userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
+        func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try deleteApplicationUserURLRequest(appId: appId, userId: userId, sendEmail: sendEmail))
         }
 
@@ -482,7 +482,7 @@ public extension OktaClient {
          - parameter validityYears: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func generateApplicationKeyAsync(appId: String, validityYears: Int? = nil) async throws -> OktaResponse<JsonWebKey> {
+        func generateApplicationKey(appId: String, validityYears: Int? = nil) async throws -> OktaResponse<JsonWebKey> {
             try await send(try generateApplicationKeyURLRequest(appId: appId, validityYears: validityYears))
         }
 
@@ -527,7 +527,7 @@ public extension OktaClient {
          - parameter csrMetadata: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func generateCsrForApplicationAsync(appId: String, csrMetadata: CsrMetadata) async throws -> OktaResponse<Csr> {
+        func generateCsrForApplication(appId: String, csrMetadata: CsrMetadata) async throws -> OktaResponse<Csr> {
             try await send(try generateCsrForApplicationURLRequest(appId: appId, csrMetadata: csrMetadata))
         }
 
@@ -575,7 +575,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getApplicationAsync(appId: String, expand: String? = nil) async throws -> OktaResponse<Application> {
+        func getApplication(appId: String, expand: String? = nil) async throws -> OktaResponse<Application> {
             try await send(try getApplicationURLRequest(appId: appId, expand: expand))
         }
 
@@ -626,7 +626,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getApplicationGroupAssignmentAsync(appId: String, groupId: String, expand: String? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
+        func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
             try await send(try getApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, expand: expand))
         }
 
@@ -674,7 +674,7 @@ public extension OktaClient {
          - parameter keyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getApplicationKeyAsync(appId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
+        func getApplicationKey(appId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try getApplicationKeyURLRequest(appId: appId, keyId: keyId))
         }
 
@@ -725,7 +725,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getApplicationUserAsync(appId: String, userId: String, expand: String? = nil) async throws -> OktaResponse<AppUser> {
+        func getApplicationUser(appId: String, userId: String, expand: String? = nil) async throws -> OktaResponse<AppUser> {
             try await send(try getApplicationUserURLRequest(appId: appId, userId: userId, expand: expand))
         }
 
@@ -773,7 +773,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getCsrForApplicationAsync(appId: String, csrId: String) async throws -> OktaResponse<Csr> {
+        func getCsrForApplication(appId: String, csrId: String) async throws -> OktaResponse<Csr> {
             try await send(try getCsrForApplicationURLRequest(appId: appId, csrId: csrId))
         }
 
@@ -822,7 +822,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOAuth2TokenForApplicationAsync(appId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2Token> {
+        func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2Token> {
             try await send(try getOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId, expand: expand))
         }
 
@@ -871,7 +871,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getScopeConsentGrantAsync(appId: String, grantId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
+        func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
             try await send(try getScopeConsentGrantURLRequest(appId: appId, grantId: grantId, expand: expand))
         }
 
@@ -915,7 +915,7 @@ public extension OktaClient {
          - parameter oAuth2ScopeConsentGrant: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func grantConsentToScopeAsync(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
+        func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
             try await send(try grantConsentToScopeURLRequest(appId: appId, oAuth2ScopeConsentGrant: oAuth2ScopeConsentGrant))
         }
 
@@ -971,7 +971,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listApplicationGroupAssignmentsAsync(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) async throws -> OktaResponse<[ApplicationGroupAssignment]> {
+        func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) async throws -> OktaResponse<[ApplicationGroupAssignment]> {
             try await send(try listApplicationGroupAssignmentsURLRequest(appId: appId, q: q, after: after, limit: limit, expand: expand))
         }
 
@@ -1018,7 +1018,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listApplicationKeysAsync(appId: String) async throws -> OktaResponse<[JsonWebKey]> {
+        func listApplicationKeys(appId: String) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try listApplicationKeysURLRequest(appId: appId))
         }
 
@@ -1080,7 +1080,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listApplicationUsersAsync(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) async throws -> OktaResponse<[AppUser]> {
+        func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) async throws -> OktaResponse<[AppUser]> {
             try await send(try listApplicationUsersURLRequest(appId: appId, q: q, queryScope: queryScope, after: after, limit: limit, filter: filter, expand: expand))
         }
 
@@ -1144,7 +1144,7 @@ public extension OktaClient {
          - parameter includeNonDeleted: (query)  (optional, default to false)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listApplicationsAsync(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) async throws -> OktaResponse<[Application]> {
+        func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) async throws -> OktaResponse<[Application]> {
             try await send(try listApplicationsURLRequest(q: q, after: after, limit: limit, filter: filter, expand: expand, includeNonDeleted: includeNonDeleted))
         }
 
@@ -1192,7 +1192,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listCsrsForApplicationAsync(appId: String) async throws -> OktaResponse<[Csr]> {
+        func listCsrsForApplication(appId: String) async throws -> OktaResponse<[Csr]> {
             try await send(try listCsrsForApplicationURLRequest(appId: appId))
         }
 
@@ -1243,7 +1243,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to 20)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listOAuth2TokensForApplicationAsync(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Token]> {
+        func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Token]> {
             try await send(try listOAuth2TokensForApplicationURLRequest(appId: appId, expand: expand, after: after, limit: limit))
         }
 
@@ -1290,7 +1290,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listScopeConsentGrantsAsync(appId: String, expand: String? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
+        func listScopeConsentGrants(appId: String, expand: String? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
             try await send(try listScopeConsentGrantsURLRequest(appId: appId, expand: expand))
         }
 
@@ -1338,7 +1338,7 @@ public extension OktaClient {
          - parameter body: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func publishCsrFromApplicationAsync(appId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
+        func publishCsrFromApplication(appId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
             try await send(try publishCsrFromApplicationURLRequest(appId: appId, csrId: csrId, body: body))
         }
 
@@ -1386,7 +1386,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeCsrFromApplicationAsync(appId: String, csrId: String) async throws -> OktaResponse<Empty> {
+        func revokeCsrFromApplication(appId: String, csrId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeCsrFromApplicationURLRequest(appId: appId, csrId: csrId))
         }
 
@@ -1431,7 +1431,7 @@ public extension OktaClient {
          - parameter tokenId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeOAuth2TokenForApplicationAsync(appId: String, tokenId: String) async throws -> OktaResponse<Empty> {
+        func revokeOAuth2TokenForApplication(appId: String, tokenId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId))
         }
 
@@ -1472,7 +1472,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeOAuth2TokensForApplicationAsync(appId: String) async throws -> OktaResponse<Empty> {
+        func revokeOAuth2TokensForApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeOAuth2TokensForApplicationURLRequest(appId: appId))
         }
 
@@ -1515,7 +1515,7 @@ public extension OktaClient {
          - parameter grantId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeScopeConsentGrantAsync(appId: String, grantId: String) async throws -> OktaResponse<Empty> {
+        func revokeScopeConsentGrant(appId: String, grantId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeScopeConsentGrantURLRequest(appId: appId, grantId: grantId))
         }
 
@@ -1560,7 +1560,7 @@ public extension OktaClient {
          - parameter application: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateApplicationAsync(appId: String, application: Application) async throws -> OktaResponse<Application> {
+        func updateApplication(appId: String, application: Application) async throws -> OktaResponse<Application> {
             try await send(try updateApplicationURLRequest(appId: appId, application: application))
         }
 
@@ -1609,7 +1609,7 @@ public extension OktaClient {
          - parameter appUser: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateApplicationUserAsync(appId: String, userId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
+        func updateApplicationUser(appId: String, userId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
             try await send(try updateApplicationUserURLRequest(appId: appId, userId: userId, appUser: appUser))
         }
 

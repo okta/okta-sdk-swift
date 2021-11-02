@@ -51,7 +51,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateAuthorizationServerAsync(authServerId: String) async throws -> OktaResponse<Empty> {
+        func activateAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateAuthorizationServerURLRequest(authServerId: authServerId))
         }
 
@@ -94,7 +94,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateAuthorizationServerPolicyAsync(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
+        func activateAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateAuthorizationServerPolicyURLRequest(authServerId: authServerId, policyId: policyId))
         }
 
@@ -141,7 +141,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateAuthorizationServerPolicyRuleAsync(authServerId: String, policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
+        func activateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateAuthorizationServerPolicyRuleURLRequest(authServerId: authServerId, policyId: policyId, ruleId: ruleId))
         }
 
@@ -181,7 +181,7 @@ public extension OktaClient {
          - parameter authorizationServer: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createAuthorizationServerAsync(authorizationServer: AuthorizationServer) async throws -> OktaResponse<AuthorizationServer> {
+        func createAuthorizationServer(authorizationServer: AuthorizationServer) async throws -> OktaResponse<AuthorizationServer> {
             try await send(try createAuthorizationServerURLRequest(authorizationServer: authorizationServer))
         }
 
@@ -223,7 +223,7 @@ public extension OktaClient {
          - parameter authorizationServerPolicy: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createAuthorizationServerPolicyAsync(authServerId: String, authorizationServerPolicy: AuthorizationServerPolicy) async throws -> OktaResponse<AuthorizationServerPolicy> {
+        func createAuthorizationServerPolicy(authServerId: String, authorizationServerPolicy: AuthorizationServerPolicy) async throws -> OktaResponse<AuthorizationServerPolicy> {
             try await send(try createAuthorizationServerPolicyURLRequest(authServerId: authServerId, authorizationServerPolicy: authorizationServerPolicy))
         }
 
@@ -269,7 +269,7 @@ public extension OktaClient {
          - parameter authorizationServerPolicyRule: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createAuthorizationServerPolicyRuleAsync(policyId: String, authServerId: String, authorizationServerPolicyRule: AuthorizationServerPolicyRule) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
+        func createAuthorizationServerPolicyRule(policyId: String, authServerId: String, authorizationServerPolicyRule: AuthorizationServerPolicyRule) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
             try await send(try createAuthorizationServerPolicyRuleURLRequest(policyId: policyId, authServerId: authServerId, authorizationServerPolicyRule: authorizationServerPolicyRule))
         }
 
@@ -313,7 +313,7 @@ public extension OktaClient {
          - parameter oAuth2Claim: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createOAuth2ClaimAsync(authServerId: String, oAuth2Claim: OAuth2Claim) async throws -> OktaResponse<OAuth2Claim> {
+        func createOAuth2Claim(authServerId: String, oAuth2Claim: OAuth2Claim) async throws -> OktaResponse<OAuth2Claim> {
             try await send(try createOAuth2ClaimURLRequest(authServerId: authServerId, oAuth2Claim: oAuth2Claim))
         }
 
@@ -356,7 +356,7 @@ public extension OktaClient {
          - parameter oAuth2Scope: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createOAuth2ScopeAsync(authServerId: String, oAuth2Scope: OAuth2Scope) async throws -> OktaResponse<OAuth2Scope> {
+        func createOAuth2Scope(authServerId: String, oAuth2Scope: OAuth2Scope) async throws -> OktaResponse<OAuth2Scope> {
             try await send(try createOAuth2ScopeURLRequest(authServerId: authServerId, oAuth2Scope: oAuth2Scope))
         }
 
@@ -397,7 +397,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivateAuthorizationServerAsync(authServerId: String) async throws -> OktaResponse<Empty> {
+        func deactivateAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateAuthorizationServerURLRequest(authServerId: authServerId))
         }
 
@@ -440,7 +440,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivateAuthorizationServerPolicyAsync(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
+        func deactivateAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateAuthorizationServerPolicyURLRequest(authServerId: authServerId, policyId: policyId))
         }
 
@@ -487,7 +487,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivateAuthorizationServerPolicyRuleAsync(authServerId: String, policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
+        func deactivateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateAuthorizationServerPolicyRuleURLRequest(authServerId: authServerId, policyId: policyId, ruleId: ruleId))
         }
 
@@ -529,7 +529,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteAuthorizationServerAsync(authServerId: String) async throws -> OktaResponse<Empty> {
+        func deleteAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteAuthorizationServerURLRequest(authServerId: authServerId))
         }
 
@@ -572,7 +572,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteAuthorizationServerPolicyAsync(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
+        func deleteAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteAuthorizationServerPolicyURLRequest(authServerId: authServerId, policyId: policyId))
         }
 
@@ -619,7 +619,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteAuthorizationServerPolicyRuleAsync(policyId: String, authServerId: String, ruleId: String) async throws -> OktaResponse<Empty> {
+        func deleteAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteAuthorizationServerPolicyRuleURLRequest(policyId: policyId, authServerId: authServerId, ruleId: ruleId))
         }
 
@@ -664,7 +664,7 @@ public extension OktaClient {
          - parameter claimId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteOAuth2ClaimAsync(authServerId: String, claimId: String) async throws -> OktaResponse<Empty> {
+        func deleteOAuth2Claim(authServerId: String, claimId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteOAuth2ClaimURLRequest(authServerId: authServerId, claimId: claimId))
         }
 
@@ -708,7 +708,7 @@ public extension OktaClient {
          - parameter scopeId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteOAuth2ScopeAsync(authServerId: String, scopeId: String) async throws -> OktaResponse<Empty> {
+        func deleteOAuth2Scope(authServerId: String, scopeId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteOAuth2ScopeURLRequest(authServerId: authServerId, scopeId: scopeId))
         }
 
@@ -749,7 +749,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getAuthorizationServerAsync(authServerId: String) async throws -> OktaResponse<AuthorizationServer> {
+        func getAuthorizationServer(authServerId: String) async throws -> OktaResponse<AuthorizationServer> {
             try await send(try getAuthorizationServerURLRequest(authServerId: authServerId))
         }
 
@@ -792,7 +792,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getAuthorizationServerPolicyAsync(authServerId: String, policyId: String) async throws -> OktaResponse<AuthorizationServerPolicy> {
+        func getAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<AuthorizationServerPolicy> {
             try await send(try getAuthorizationServerPolicyURLRequest(authServerId: authServerId, policyId: policyId))
         }
 
@@ -839,7 +839,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getAuthorizationServerPolicyRuleAsync(policyId: String, authServerId: String, ruleId: String) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
+        func getAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
             try await send(try getAuthorizationServerPolicyRuleURLRequest(policyId: policyId, authServerId: authServerId, ruleId: ruleId))
         }
 
@@ -884,7 +884,7 @@ public extension OktaClient {
          - parameter claimId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOAuth2ClaimAsync(authServerId: String, claimId: String) async throws -> OktaResponse<OAuth2Claim> {
+        func getOAuth2Claim(authServerId: String, claimId: String) async throws -> OktaResponse<OAuth2Claim> {
             try await send(try getOAuth2ClaimURLRequest(authServerId: authServerId, claimId: claimId))
         }
 
@@ -928,7 +928,7 @@ public extension OktaClient {
          - parameter scopeId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOAuth2ScopeAsync(authServerId: String, scopeId: String) async throws -> OktaResponse<OAuth2Scope> {
+        func getOAuth2Scope(authServerId: String, scopeId: String) async throws -> OktaResponse<OAuth2Scope> {
             try await send(try getOAuth2ScopeURLRequest(authServerId: authServerId, scopeId: scopeId))
         }
 
@@ -979,7 +979,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getRefreshTokenForAuthorizationServerAndClientAsync(authServerId: String, clientId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2RefreshToken> {
+        func getRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2RefreshToken> {
             try await send(try getRefreshTokenForAuthorizationServerAndClientURLRequest(authServerId: authServerId, clientId: clientId, tokenId: tokenId, expand: expand))
         }
 
@@ -1022,7 +1022,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listAuthorizationServerKeysAsync(authServerId: String) async throws -> OktaResponse<[JsonWebKey]> {
+        func listAuthorizationServerKeys(authServerId: String) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try listAuthorizationServerKeysURLRequest(authServerId: authServerId))
         }
 
@@ -1062,7 +1062,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listAuthorizationServerPoliciesAsync(authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicy]> {
+        func listAuthorizationServerPolicies(authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicy]> {
             try await send(try listAuthorizationServerPoliciesURLRequest(authServerId: authServerId))
         }
 
@@ -1105,7 +1105,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listAuthorizationServerPolicyRulesAsync(policyId: String, authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicyRule]> {
+        func listAuthorizationServerPolicyRules(policyId: String, authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicyRule]> {
             try await send(try listAuthorizationServerPolicyRulesURLRequest(policyId: policyId, authServerId: authServerId))
         }
 
@@ -1152,7 +1152,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listAuthorizationServersAsync(q: String? = nil, limit: String? = nil, after: String? = nil) async throws -> OktaResponse<[AuthorizationServer]> {
+        func listAuthorizationServers(q: String? = nil, limit: String? = nil, after: String? = nil) async throws -> OktaResponse<[AuthorizationServer]> {
             try await send(try listAuthorizationServersURLRequest(q: q, limit: limit, after: after))
         }
 
@@ -1194,7 +1194,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listOAuth2ClaimsAsync(authServerId: String) async throws -> OktaResponse<[OAuth2Claim]> {
+        func listOAuth2Claims(authServerId: String) async throws -> OktaResponse<[OAuth2Claim]> {
             try await send(try listOAuth2ClaimsURLRequest(authServerId: authServerId))
         }
 
@@ -1234,7 +1234,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listOAuth2ClientsForAuthorizationServerAsync(authServerId: String) async throws -> OktaResponse<[OAuth2Client]> {
+        func listOAuth2ClientsForAuthorizationServer(authServerId: String) async throws -> OktaResponse<[OAuth2Client]> {
             try await send(try listOAuth2ClientsForAuthorizationServerURLRequest(authServerId: authServerId))
         }
 
@@ -1287,7 +1287,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to -1)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listOAuth2ScopesAsync(authServerId: String, q: String? = nil, filter: String? = nil, cursor: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Scope]> {
+        func listOAuth2Scopes(authServerId: String, q: String? = nil, filter: String? = nil, cursor: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Scope]> {
             try await send(try listOAuth2ScopesURLRequest(authServerId: authServerId, q: q, filter: filter, cursor: cursor, limit: limit))
         }
 
@@ -1344,7 +1344,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to -1)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listRefreshTokensForAuthorizationServerAndClientAsync(authServerId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2RefreshToken]> {
+        func listRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2RefreshToken]> {
             try await send(try listRefreshTokensForAuthorizationServerAndClientURLRequest(authServerId: authServerId, clientId: clientId, expand: expand, after: after, limit: limit))
         }
 
@@ -1394,7 +1394,7 @@ public extension OktaClient {
          - parameter tokenId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeRefreshTokenForAuthorizationServerAndClientAsync(authServerId: String, clientId: String, tokenId: String) async throws -> OktaResponse<Empty> {
+        func revokeRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeRefreshTokenForAuthorizationServerAndClientURLRequest(authServerId: authServerId, clientId: clientId, tokenId: tokenId))
         }
 
@@ -1439,7 +1439,7 @@ public extension OktaClient {
          - parameter clientId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeRefreshTokensForAuthorizationServerAndClientAsync(authServerId: String, clientId: String) async throws -> OktaResponse<Empty> {
+        func revokeRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeRefreshTokensForAuthorizationServerAndClientURLRequest(authServerId: authServerId, clientId: clientId))
         }
 
@@ -1482,7 +1482,7 @@ public extension OktaClient {
          - parameter jwkUse: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func rotateAuthorizationServerKeysAsync(authServerId: String, jwkUse: JwkUse) async throws -> OktaResponse<[JsonWebKey]> {
+        func rotateAuthorizationServerKeys(authServerId: String, jwkUse: JwkUse) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try rotateAuthorizationServerKeysURLRequest(authServerId: authServerId, jwkUse: jwkUse))
         }
 
@@ -1525,7 +1525,7 @@ public extension OktaClient {
          - parameter authorizationServer: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateAuthorizationServerAsync(authServerId: String, authorizationServer: AuthorizationServer) async throws -> OktaResponse<AuthorizationServer> {
+        func updateAuthorizationServer(authServerId: String, authorizationServer: AuthorizationServer) async throws -> OktaResponse<AuthorizationServer> {
             try await send(try updateAuthorizationServerURLRequest(authServerId: authServerId, authorizationServer: authorizationServer))
         }
 
@@ -1571,7 +1571,7 @@ public extension OktaClient {
          - parameter authorizationServerPolicy: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateAuthorizationServerPolicyAsync(authServerId: String, policyId: String, authorizationServerPolicy: AuthorizationServerPolicy) async throws -> OktaResponse<AuthorizationServerPolicy> {
+        func updateAuthorizationServerPolicy(authServerId: String, policyId: String, authorizationServerPolicy: AuthorizationServerPolicy) async throws -> OktaResponse<AuthorizationServerPolicy> {
             try await send(try updateAuthorizationServerPolicyURLRequest(authServerId: authServerId, policyId: policyId, authorizationServerPolicy: authorizationServerPolicy))
         }
 
@@ -1621,7 +1621,7 @@ public extension OktaClient {
          - parameter authorizationServerPolicyRule: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateAuthorizationServerPolicyRuleAsync(policyId: String, authServerId: String, ruleId: String, authorizationServerPolicyRule: AuthorizationServerPolicyRule) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
+        func updateAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String, authorizationServerPolicyRule: AuthorizationServerPolicyRule) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
             try await send(try updateAuthorizationServerPolicyRuleURLRequest(policyId: policyId, authServerId: authServerId, ruleId: ruleId, authorizationServerPolicyRule: authorizationServerPolicyRule))
         }
 
@@ -1669,7 +1669,7 @@ public extension OktaClient {
          - parameter oAuth2Claim: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateOAuth2ClaimAsync(authServerId: String, claimId: String, oAuth2Claim: OAuth2Claim) async throws -> OktaResponse<OAuth2Claim> {
+        func updateOAuth2Claim(authServerId: String, claimId: String, oAuth2Claim: OAuth2Claim) async throws -> OktaResponse<OAuth2Claim> {
             try await send(try updateOAuth2ClaimURLRequest(authServerId: authServerId, claimId: claimId, oAuth2Claim: oAuth2Claim))
         }
 
@@ -1716,7 +1716,7 @@ public extension OktaClient {
          - parameter oAuth2Scope: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateOAuth2ScopeAsync(authServerId: String, scopeId: String, oAuth2Scope: OAuth2Scope) async throws -> OktaResponse<OAuth2Scope> {
+        func updateOAuth2Scope(authServerId: String, scopeId: String, oAuth2Scope: OAuth2Scope) async throws -> OktaResponse<OAuth2Scope> {
             try await send(try updateOAuth2ScopeURLRequest(authServerId: authServerId, scopeId: scopeId, oAuth2Scope: oAuth2Scope))
         }
 

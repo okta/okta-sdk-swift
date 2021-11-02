@@ -55,7 +55,7 @@ public extension OktaClient {
          - parameter domainCertificate: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createCertificateAsync(domainId: String, domainCertificate: DomainCertificate) async throws -> OktaResponse<Empty> {
+        func createCertificate(domainId: String, domainCertificate: DomainCertificate) async throws -> OktaResponse<Empty> {
             try await send(try createCertificateURLRequest(domainId: domainId, domainCertificate: domainCertificate))
         }
 
@@ -97,7 +97,7 @@ public extension OktaClient {
          - parameter domain: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createDomainAsync(domain: Domain) async throws -> OktaResponse<DomainResponse> {
+        func createDomain(domain: Domain) async throws -> OktaResponse<DomainResponse> {
             try await send(try createDomainURLRequest(domain: domain))
         }
 
@@ -140,7 +140,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteDomainAsync(domainId: String) async throws -> OktaResponse<Empty> {
+        func deleteDomain(domainId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteDomainURLRequest(domainId: domainId))
         }
 
@@ -183,7 +183,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getDomainAsync(domainId: String) async throws -> OktaResponse<DomainResponse> {
+        func getDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
             try await send(try getDomainURLRequest(domainId: domainId))
         }
 
@@ -222,7 +222,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listDomainsAsync() async throws -> OktaResponse<DomainListResponse> {
+        func listDomains() async throws -> OktaResponse<DomainListResponse> {
             try await send(try listDomainsURLRequest())
         }
 
@@ -264,7 +264,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func verifyDomainAsync(domainId: String) async throws -> OktaResponse<DomainResponse> {
+        func verifyDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
             try await send(try verifyDomainURLRequest(domainId: domainId))
         }
 
