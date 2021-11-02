@@ -8,7 +8,7 @@ on:
 
 
 jobs:
-  Xcode13.1:
+  Xcode13_1:
     runs-on: macos-11
     env:
       DEVELOPER_DIR: /Applications/Xcode_13.1.app/Contents/Developer
