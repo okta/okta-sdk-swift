@@ -24,7 +24,7 @@ public extension OktaClient {
 
     struct IdentityProviderAPI: OktaClientAPI {
         internal let baseURL: URL
-        internal let session: URLSession
+        internal let urlSession: URLSession
 
 
         internal func activateIdentityProviderURLRequest(idpId: String) throws -> URLRequest {

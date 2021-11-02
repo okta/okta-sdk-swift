@@ -24,7 +24,7 @@ public extension OktaClient {
 
     struct GroupAPI: OktaClientAPI {
         internal let baseURL: URL
-        internal let session: URLSession
+        internal let urlSession: URLSession
 
 
         internal func activateGroupRuleURLRequest(ruleId: String) throws -> URLRequest {

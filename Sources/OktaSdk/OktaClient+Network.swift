@@ -45,7 +45,7 @@ extension Date: OktaClientArgument {
 
 internal protocol OktaClientAPI {
     var baseURL: URL { get }
-    var session: URLSession { get }
+    var urlSession: URLSession { get }
 
     func request(to path: String,
                  method: String,
@@ -145,7 +145,7 @@ extension OktaClientAPI {
     }
 
     func send<T: Decodable>(_ request: URLRequest, completion: @escaping (Result<OktaResponse<T>, Error>) -> Void) {
-        session.dataTask(with: request) { data, response, error in
+        urlSession.dataTask(with: request) { data, response, error in
             guard let data = data,
                   let response = response
             else {
@@ -163,14 +163,14 @@ extension OktaClientAPI {
 
     @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T> {
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await urlSession.data(for: request)
         return try validate(data, response)
     }
 
     #if canImport(Combine)
     @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
     func publish<T: Decodable>(_ request: URLRequest) -> AnyPublisher<OktaResponse<T>, Error> {
-        session.dataTaskPublisher(for: request)
+        urlSession.dataTaskPublisher(for: request)
             .tryMap {
                 try self.validate($0.data, $0.response)
             }

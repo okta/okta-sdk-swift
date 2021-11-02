@@ -24,7 +24,7 @@ public extension OktaClient {
 
     struct LinkedObjectAPI: OktaClientAPI {
         internal let baseURL: URL
-        internal let session: URLSession
+        internal let urlSession: URLSession
 
 
         internal func addLinkedObjectDefinitionURLRequest(linkedObject: LinkedObject) throws -> URLRequest {

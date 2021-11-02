@@ -24,7 +24,7 @@ public extension OktaClient {
 
     struct EventHookAPI: OktaClientAPI {
         internal let baseURL: URL
-        internal let session: URLSession
+        internal let urlSession: URLSession
 
 
         internal func activateEventHookURLRequest(eventHookId: String) throws -> URLRequest {
