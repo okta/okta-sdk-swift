@@ -102,7 +102,7 @@ extension OktaClientAPI {
                 
         return OktaResponse(result: try CodableHelper.jsonDecoder.decode(T.self, from: data),
                             links: links,
-                            rateInfo: .init(with: httpResponse.allHeaderFields),
+                            rateInfo: OktaResponse.RateLimit(with: httpResponse.allHeaderFields),
                             requestId: httpResponse.allHeaderFields["x-okta-request-id"] as? String)
     }
 
