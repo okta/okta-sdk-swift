@@ -14,7 +14,6 @@ import Foundation
 
 #if canImport(Combine)
 import Combine
-import AnyCodable
 #endif
 
 #if canImport(FoundationNetworking)
@@ -63,12 +62,12 @@ internal protocol OktaClientAPI {
     func send<T: Decodable>(_ request: URLRequest, completion: @escaping (Result<OktaResponse<T>, Error>) -> Void)
 
     #if swift(>=5.5.1) && !os(Linux)
-    @available(iOS 15.0, macOS 12.0, *)
+    @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T>
     #endif
     
     #if canImport(Combine)
-    @available(iOS 13.0, macOS 10.15, *)
+    @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
     func publish<T: Decodable>(_ request: URLRequest) -> AnyPublisher<OktaResponse<T>, Error>
     #endif
 }
@@ -176,7 +175,7 @@ extension OktaClientAPI {
     #endif
     
     #if canImport(Combine)
-    @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, *)
     func publish<T: Decodable>(_ request: URLRequest) -> AnyPublisher<OktaResponse<T>, Error> {
         urlSession.dataTaskPublisher(for: request)
             .tryMap {
