@@ -49,7 +49,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Add SMS Template
          
@@ -94,7 +94,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Remove SMS Template
          
@@ -139,7 +139,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get SMS Template
          
@@ -184,7 +184,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List SMS Templates
          
@@ -230,7 +230,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Partial SMS Template Update
          
@@ -278,7 +278,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Update SMS Template
          

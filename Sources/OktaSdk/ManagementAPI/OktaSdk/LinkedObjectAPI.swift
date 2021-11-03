@@ -48,7 +48,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter linkedObject: (body)  
@@ -90,7 +90,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter linkedObjectName: (path)  
@@ -132,7 +132,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter linkedObjectName: (path)  
@@ -171,7 +171,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          */

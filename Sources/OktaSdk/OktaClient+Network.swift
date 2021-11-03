@@ -62,7 +62,7 @@ internal protocol OktaClientAPI {
                                body: T?) throws -> URLRequest
     func send<T: Decodable>(_ request: URLRequest, completion: @escaping (Result<OktaResponse<T>, Error>) -> Void)
 
-    #if swift(>=5.5.1)
+    #if swift(>=5.5.1) && !os(Linux)
     @available(iOS 15.0, macOS 12.0, *)
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T>
     #endif
@@ -167,7 +167,7 @@ extension OktaClientAPI {
         }.resume()
     }
 
-    #if swift(>=5.5.1)
+    #if swift(>=5.5.1) && !os(Linux)
     @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T> {
         let (data, response) = try await urlSession.data(for: request)

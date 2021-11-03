@@ -49,7 +49,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Create new CAPTCHA instance
          
@@ -94,7 +94,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Delete CAPTCHA Instance
          
@@ -139,7 +139,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get CAPTCHA Instance
          
@@ -181,7 +181,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List CAPTCHA instances
          
@@ -225,7 +225,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Partial Update CAPTCHA instance
          
@@ -273,7 +273,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Update CAPTCHA instance
          

@@ -48,7 +48,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Fetches the group schema
          
@@ -89,7 +89,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Updates, adds ore removes one or more custom Group Profile properties in the schema
          

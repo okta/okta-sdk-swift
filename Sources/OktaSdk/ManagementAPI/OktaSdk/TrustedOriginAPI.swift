@@ -50,7 +50,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter trustedOriginId: (path)  
@@ -90,7 +90,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter trustedOrigin: (body)  
@@ -132,7 +132,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter trustedOriginId: (path)  
@@ -174,7 +174,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter trustedOriginId: (path)  
@@ -216,7 +216,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter trustedOriginId: (path)  
@@ -264,7 +264,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter q: (query)  (optional)
@@ -313,7 +313,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter trustedOriginId: (path)  

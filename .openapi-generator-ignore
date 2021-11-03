@@ -27,6 +27,8 @@ README.md
 Package.swift
 git_push.sh
 docs/*
+Sources/OktaSdk/ManagementAPI/CodableHelper.swift
+Sources/OktaSdk/ManagementAPI/JSONDataEncoding.swift
 Sources/OktaSdk/ManagementAPI/APIs.swift
 Sources/OktaSdk/ManagementAPI/APIHelper.swift
 Sources/OktaSdk/ManagementAPI/Extensions.swift

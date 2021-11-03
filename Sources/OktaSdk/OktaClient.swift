@@ -96,7 +96,7 @@ open class OktaClient: OktaClientAPI {
         send(URLRequest(url: url), completion: completion)
     }
 
-    #if swift(>=5.5.1)
+    #if swift(>=5.5.1) && !os(Linux)
     /// Asynchronously fetches the related pagination link from the given response.
     @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
     public func fetchAsync<T: Decodable>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) async throws -> OktaResponse<T> {

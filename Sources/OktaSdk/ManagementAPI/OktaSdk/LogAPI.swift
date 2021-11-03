@@ -63,7 +63,7 @@ public extension OktaClient {
             }
         }
 
-        #if swift(>=5.5.1)
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Fetch a list of events from your Okta organization system log.
          
