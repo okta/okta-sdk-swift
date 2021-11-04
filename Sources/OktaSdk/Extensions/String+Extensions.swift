@@ -22,15 +22,15 @@ private let deviceModel: String = {
 
 private let systemName: String = {
     #if os(iOS)
-        "iOS"
+        return "iOS"
     #elseif os(watchOS)
-        "watchOS"
+        return "watchOS"
     #elseif os(tvOS)
-        "tvOS"
+        return "tvOS"
     #elseif os(macOS)
-        "macOS"
+        return "macOS"
     #elseif os(Linux)
-        "linux"
+        return "linux"
     #endif
 }()
 
