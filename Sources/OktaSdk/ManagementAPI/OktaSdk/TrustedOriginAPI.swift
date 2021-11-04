@@ -27,8 +27,7 @@ import FoundationNetworking
 public extension OktaClient {
 
     struct TrustedOriginAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateOriginURLRequest(trustedOriginId: String) throws -> URLRequest {

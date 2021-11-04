@@ -28,8 +28,7 @@ public extension OktaClient {
 {{#description}}
     /** {{description}} */{{/description}}
     struct {{classname}}: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 {{#operation}}
     {{#allParams}}

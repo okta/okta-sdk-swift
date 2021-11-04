@@ -27,8 +27,7 @@ import FoundationNetworking
 public extension OktaClient {
 
     struct DomainAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func createCertificateURLRequest(domainId: String, domainCertificate: DomainCertificate) throws -> URLRequest {

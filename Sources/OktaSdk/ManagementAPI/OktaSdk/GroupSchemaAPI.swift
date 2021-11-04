@@ -27,8 +27,7 @@ import FoundationNetworking
 public extension OktaClient {
 
     struct GroupSchemaAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func getGroupSchemaURLRequest() throws -> URLRequest {

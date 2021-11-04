@@ -27,8 +27,7 @@ import FoundationNetworking
 public extension OktaClient {
 
     struct UserFactorAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateFactorURLRequest(userId: String, factorId: String, activateFactorRequest: ActivateFactorRequest? = nil) throws -> URLRequest {

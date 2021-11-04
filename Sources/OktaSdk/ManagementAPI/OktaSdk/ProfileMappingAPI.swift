@@ -27,8 +27,7 @@ import FoundationNetworking
 public extension OktaClient {
 
     struct ProfileMappingAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func getProfileMappingURLRequest(mappingId: String) throws -> URLRequest {

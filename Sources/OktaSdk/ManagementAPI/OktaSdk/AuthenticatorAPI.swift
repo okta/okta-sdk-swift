@@ -27,8 +27,7 @@ import FoundationNetworking
 public extension OktaClient {
 
     struct AuthenticatorAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateAuthenticatorURLRequest(authenticatorId: String) throws -> URLRequest {

@@ -27,8 +27,7 @@ import FoundationNetworking
 public extension OktaClient {
 
     struct LogAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func getLogsURLRequest(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil) throws -> URLRequest {

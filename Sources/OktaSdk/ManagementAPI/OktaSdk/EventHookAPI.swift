@@ -27,8 +27,7 @@ import FoundationNetworking
 public extension OktaClient {
 
     struct EventHookAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateEventHookURLRequest(eventHookId: String) throws -> URLRequest {

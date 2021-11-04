@@ -46,9 +46,16 @@ extension Date: OktaClientArgument {
     }
 }
 
+internal extension OktaClient {
+    struct APIContext {
+        let baseURL: URL
+        let session: URLSession
+        let userAgent: String
+    }
+}
+
 internal protocol OktaClientAPI {
-    var baseURL: URL { get }
-    var urlSession: URLSession { get }
+    var context: OktaClient.APIContext { get }
 
     func request(to path: String,
                  method: String,
@@ -110,7 +117,7 @@ extension OktaClientAPI {
                  query: [String:OktaClientArgument?]? = nil,
                  headers: [String:OktaClientArgument?]? = nil) throws -> URLRequest
     {
-        guard let url = URL(string: path, relativeTo: baseURL) else {
+        guard let url = URL(string: path, relativeTo: context.baseURL) else {
             throw OktaClientError.invalidUrl
         }
         
@@ -127,6 +134,7 @@ extension OktaClientAPI {
         
         var request = URLRequest(url: requestUrl)
         request.httpMethod = method
+        request.setValue(context.userAgent, forHTTPHeaderField: "User-Agent")
         
         headers?.forEach { (key, value) in
             guard let value = value?.stringValue else { return }
@@ -150,7 +158,7 @@ extension OktaClientAPI {
     }
 
     func send<T: Decodable>(_ request: URLRequest, completion: @escaping (Result<OktaResponse<T>, Error>) -> Void) {
-        urlSession.dataTask(with: request) { data, response, error in
+        context.session.dataTask(with: request) { data, response, error in
             guard let data = data,
                   let response = response
             else {
@@ -169,7 +177,7 @@ extension OktaClientAPI {
     #if swift(>=5.5.1) && !os(Linux)
     @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T> {
-        let (data, response) = try await urlSession.data(for: request)
+        let (data, response) = try await context.session.data(for: request)
         return try validate(data, response)
     }
     #endif
@@ -177,7 +185,7 @@ extension OktaClientAPI {
     #if canImport(Combine)
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, *)
     func publish<T: Decodable>(_ request: URLRequest) -> AnyPublisher<OktaResponse<T>, Error> {
-        urlSession.dataTaskPublisher(for: request)
+        context.session.dataTaskPublisher(for: request)
             .tryMap {
                 try self.validate($0.data, $0.response)
             }

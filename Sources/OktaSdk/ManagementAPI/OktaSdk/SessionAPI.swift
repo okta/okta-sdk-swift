@@ -27,8 +27,7 @@ import FoundationNetworking
 public extension OktaClient {
 
     struct SessionAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func createSessionURLRequest(createSessionRequest: CreateSessionRequest) throws -> URLRequest {

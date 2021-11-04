@@ -27,8 +27,7 @@ import FoundationNetworking
 public extension OktaClient {
 
     struct PolicyAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activatePolicyURLRequest(policyId: String) throws -> URLRequest {
