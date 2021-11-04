@@ -81,7 +81,7 @@ open class OktaClient: OktaClientAPI {
         self.configuration = configuration
         self.context = .init(baseURL: URL(string: "\(configuration.basePath)/api/")!,
                              session: urlSession,
-                             userAgent: userAgent ?? .userAgent())
+                             userAgent: userAgent ?? .userAgent)
     }
     
     internal func fetchURLRequest<T>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) throws -> URLRequest {
