@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct AuthenticatorAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateAuthenticatorURLRequest(authenticatorId: String) throws -> URLRequest {
@@ -47,6 +50,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Activate Authenticator
          
@@ -56,6 +60,7 @@ public extension OktaClient {
         func activateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -90,6 +95,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Deactivate Authenticator
          
@@ -99,6 +105,7 @@ public extension OktaClient {
         func deactivateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -133,6 +140,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Authenticator
          
@@ -142,6 +150,7 @@ public extension OktaClient {
         func getAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
             try await send(try getAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -173,6 +182,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Authenticators
          
@@ -181,6 +191,7 @@ public extension OktaClient {
         func listAuthenticators() async throws -> OktaResponse<[Authenticator]> {
             try await send(try listAuthenticatorsURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**

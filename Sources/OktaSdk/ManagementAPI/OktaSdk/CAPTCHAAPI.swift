@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct CAPTCHAAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func createCaptchaInstanceURLRequest(cAPTCHAInstance: CAPTCHAInstance? = nil) throws -> URLRequest {
@@ -45,6 +48,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Create new CAPTCHA instance
          
@@ -54,6 +58,7 @@ public extension OktaClient {
         func createCaptchaInstance(cAPTCHAInstance: CAPTCHAInstance? = nil) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try createCaptchaInstanceURLRequest(cAPTCHAInstance: cAPTCHAInstance))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -88,6 +93,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Delete CAPTCHA Instance
          
@@ -97,6 +103,7 @@ public extension OktaClient {
         func deleteCaptchaInstance(captchaId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteCaptchaInstanceURLRequest(captchaId: captchaId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -131,6 +138,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get CAPTCHA Instance
          
@@ -140,6 +148,7 @@ public extension OktaClient {
         func getCaptchaInstance(captchaId: String) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try getCaptchaInstanceURLRequest(captchaId: captchaId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -171,6 +180,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List CAPTCHA instances
          
@@ -179,6 +189,7 @@ public extension OktaClient {
         func listCaptchaInstances() async throws -> OktaResponse<[CAPTCHAInstance]> {
             try await send(try listCaptchaInstancesURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -213,6 +224,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Partial Update CAPTCHA instance
          
@@ -223,6 +235,7 @@ public extension OktaClient {
         func partialUpdateCaptchaInstance(captchaId: String, cAPTCHAInstance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try partialUpdateCaptchaInstanceURLRequest(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -259,6 +272,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Update CAPTCHA instance
          
@@ -269,6 +283,7 @@ public extension OktaClient {
         func updateCaptchaInstance(captchaId: String, cAPTCHAInstance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try updateCaptchaInstanceURLRequest(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance))
         }
+        #endif
 
         #if canImport(Combine)
         /**

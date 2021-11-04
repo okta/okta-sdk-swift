@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct TrustedOriginAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateOriginURLRequest(trustedOriginId: String) throws -> URLRequest {
@@ -46,6 +49,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter trustedOriginId: (path)  
@@ -54,6 +58,7 @@ public extension OktaClient {
         func activateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try activateOriginURLRequest(trustedOriginId: trustedOriginId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -84,6 +89,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter trustedOrigin: (body)  
@@ -92,6 +98,7 @@ public extension OktaClient {
         func createOrigin(trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try createOriginURLRequest(trustedOrigin: trustedOrigin))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -124,6 +131,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter trustedOriginId: (path)  
@@ -132,6 +140,7 @@ public extension OktaClient {
         func deactivateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try deactivateOriginURLRequest(trustedOriginId: trustedOriginId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -164,6 +173,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter trustedOriginId: (path)  
@@ -172,6 +182,7 @@ public extension OktaClient {
         func deleteOrigin(trustedOriginId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteOriginURLRequest(trustedOriginId: trustedOriginId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -204,6 +215,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter trustedOriginId: (path)  
@@ -212,6 +224,7 @@ public extension OktaClient {
         func getOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try getOriginURLRequest(trustedOriginId: trustedOriginId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -250,6 +263,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter q: (query)  (optional)
@@ -261,6 +275,7 @@ public extension OktaClient {
         func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[TrustedOrigin]> {
             try await send(try listOriginsURLRequest(q: q, filter: filter, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -297,6 +312,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter trustedOriginId: (path)  
@@ -306,6 +322,7 @@ public extension OktaClient {
         func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try updateOriginURLRequest(trustedOriginId: trustedOriginId, trustedOrigin: trustedOrigin))
         }
+        #endif
 
         #if canImport(Combine)
         /**

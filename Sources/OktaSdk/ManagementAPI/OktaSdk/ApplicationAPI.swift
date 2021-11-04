@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct ApplicationAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateApplicationURLRequest(appId: String) throws -> URLRequest {
@@ -47,6 +50,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Activate Application
          
@@ -56,6 +60,7 @@ public extension OktaClient {
         func activateApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateApplicationURLRequest(appId: appId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -91,6 +96,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Assign User to Application for SSO & Provisioning
          
@@ -101,6 +107,7 @@ public extension OktaClient {
         func assignUserToApplication(appId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
             try await send(try assignUserToApplicationURLRequest(appId: appId, appUser: appUser))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -141,6 +148,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Clone Application Key Credential
          
@@ -152,6 +160,7 @@ public extension OktaClient {
         func cloneApplicationKey(appId: String, keyId: String, targetAid: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try cloneApplicationKeyURLRequest(appId: appId, keyId: keyId, targetAid: targetAid))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -192,6 +201,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Add Application
          
@@ -203,6 +213,7 @@ public extension OktaClient {
         func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) async throws -> OktaResponse<Application> {
             try await send(try createApplicationURLRequest(application: application, activate: activate, oktaAccessGatewayAgent: oktaAccessGatewayAgent))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -242,6 +253,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Assign Group to Application
          
@@ -253,6 +265,7 @@ public extension OktaClient {
         func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
             try await send(try createApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, applicationGroupAssignment: applicationGroupAssignment))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -289,6 +302,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Deactivate Application
          
@@ -298,6 +312,7 @@ public extension OktaClient {
         func deactivateApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateApplicationURLRequest(appId: appId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -332,6 +347,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Delete Application
          
@@ -341,6 +357,7 @@ public extension OktaClient {
         func deleteApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteApplicationURLRequest(appId: appId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -377,6 +394,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Remove Group from Application
          
@@ -387,6 +405,7 @@ public extension OktaClient {
         func deleteApplicationGroupAssignment(appId: String, groupId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -427,6 +446,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Remove User from Application
          
@@ -438,6 +458,7 @@ public extension OktaClient {
         func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try deleteApplicationUserURLRequest(appId: appId, userId: userId, sendEmail: sendEmail))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -476,6 +497,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter appId: (path)  
@@ -485,6 +507,7 @@ public extension OktaClient {
         func generateApplicationKey(appId: String, validityYears: Int? = nil) async throws -> OktaResponse<JsonWebKey> {
             try await send(try generateApplicationKeyURLRequest(appId: appId, validityYears: validityYears))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -520,6 +543,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Generate Certificate Signing Request for Application
          
@@ -530,6 +554,7 @@ public extension OktaClient {
         func generateCsrForApplication(appId: String, csrMetadata: CsrMetadata) async throws -> OktaResponse<Csr> {
             try await send(try generateCsrForApplicationURLRequest(appId: appId, csrMetadata: csrMetadata))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -568,6 +593,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Application
          
@@ -578,6 +604,7 @@ public extension OktaClient {
         func getApplication(appId: String, expand: String? = nil) async throws -> OktaResponse<Application> {
             try await send(try getApplicationURLRequest(appId: appId, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -618,6 +645,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Assigned Group for Application
          
@@ -629,6 +657,7 @@ public extension OktaClient {
         func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
             try await send(try getApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -667,6 +696,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Key Credential for Application
          
@@ -677,6 +707,7 @@ public extension OktaClient {
         func getApplicationKey(appId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try getApplicationKeyURLRequest(appId: appId, keyId: keyId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -717,6 +748,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Assigned User for Application
          
@@ -728,6 +760,7 @@ public extension OktaClient {
         func getApplicationUser(appId: String, userId: String, expand: String? = nil) async throws -> OktaResponse<AppUser> {
             try await send(try getApplicationUserURLRequest(appId: appId, userId: userId, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -766,6 +799,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Certificate Signing Request
          
@@ -776,6 +810,7 @@ public extension OktaClient {
         func getCsrForApplication(appId: String, csrId: String) async throws -> OktaResponse<Csr> {
             try await send(try getCsrForApplicationURLRequest(appId: appId, csrId: csrId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -815,6 +850,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter appId: (path)  
@@ -825,6 +861,7 @@ public extension OktaClient {
         func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2Token> {
             try await send(try getOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -864,6 +901,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter appId: (path)  
@@ -874,6 +912,7 @@ public extension OktaClient {
         func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
             try await send(try getScopeConsentGrantURLRequest(appId: appId, grantId: grantId, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -909,6 +948,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter appId: (path)  
@@ -918,6 +958,7 @@ public extension OktaClient {
         func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
             try await send(try grantConsentToScopeURLRequest(appId: appId, oAuth2ScopeConsentGrant: oAuth2ScopeConsentGrant))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -961,6 +1002,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Groups Assigned to Application
          
@@ -974,6 +1016,7 @@ public extension OktaClient {
         func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) async throws -> OktaResponse<[ApplicationGroupAssignment]> {
             try await send(try listApplicationGroupAssignmentsURLRequest(appId: appId, q: q, after: after, limit: limit, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1012,6 +1055,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Key Credentials for Application
          
@@ -1021,6 +1065,7 @@ public extension OktaClient {
         func listApplicationKeys(appId: String) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try listApplicationKeysURLRequest(appId: appId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1068,6 +1113,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Users Assigned to Application
          
@@ -1083,6 +1129,7 @@ public extension OktaClient {
         func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) async throws -> OktaResponse<[AppUser]> {
             try await send(try listApplicationUsersURLRequest(appId: appId, q: q, queryScope: queryScope, after: after, limit: limit, filter: filter, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1133,6 +1180,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Applications
          
@@ -1147,6 +1195,7 @@ public extension OktaClient {
         func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) async throws -> OktaResponse<[Application]> {
             try await send(try listApplicationsURLRequest(q: q, after: after, limit: limit, filter: filter, expand: expand, includeNonDeleted: includeNonDeleted))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1186,6 +1235,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Certificate Signing Requests for Application
          
@@ -1195,6 +1245,7 @@ public extension OktaClient {
         func listCsrsForApplication(appId: String) async throws -> OktaResponse<[Csr]> {
             try await send(try listCsrsForApplicationURLRequest(appId: appId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1235,6 +1286,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter appId: (path)  
@@ -1246,6 +1298,7 @@ public extension OktaClient {
         func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Token]> {
             try await send(try listOAuth2TokensForApplicationURLRequest(appId: appId, expand: expand, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1284,6 +1337,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter appId: (path)  
@@ -1293,6 +1347,7 @@ public extension OktaClient {
         func listScopeConsentGrants(appId: String, expand: String? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
             try await send(try listScopeConsentGrantsURLRequest(appId: appId, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1330,6 +1385,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Publish Certificate Signing Request
          
@@ -1341,6 +1397,7 @@ public extension OktaClient {
         func publishCsrFromApplication(appId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
             try await send(try publishCsrFromApplicationURLRequest(appId: appId, csrId: csrId, body: body))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1379,6 +1436,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Revoke Certificate Signing Request
          
@@ -1389,6 +1447,7 @@ public extension OktaClient {
         func revokeCsrFromApplication(appId: String, csrId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeCsrFromApplicationURLRequest(appId: appId, csrId: csrId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1425,6 +1484,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter appId: (path)  
@@ -1434,6 +1494,7 @@ public extension OktaClient {
         func revokeOAuth2TokenForApplication(appId: String, tokenId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1467,6 +1528,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter appId: (path)  
@@ -1475,6 +1537,7 @@ public extension OktaClient {
         func revokeOAuth2TokensForApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeOAuth2TokensForApplicationURLRequest(appId: appId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1509,6 +1572,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter appId: (path)  
@@ -1518,6 +1582,7 @@ public extension OktaClient {
         func revokeScopeConsentGrant(appId: String, grantId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeScopeConsentGrantURLRequest(appId: appId, grantId: grantId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1553,6 +1618,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Update Application
          
@@ -1563,6 +1629,7 @@ public extension OktaClient {
         func updateApplication(appId: String, application: Application) async throws -> OktaResponse<Application> {
             try await send(try updateApplicationURLRequest(appId: appId, application: application))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1601,6 +1668,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Update Application Profile for Assigned User
          
@@ -1612,6 +1680,7 @@ public extension OktaClient {
         func updateApplicationUser(appId: String, userId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
             try await send(try updateApplicationUserURLRequest(appId: appId, userId: userId, appUser: appUser))
         }
+        #endif
 
         #if canImport(Combine)
         /**

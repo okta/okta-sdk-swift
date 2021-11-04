@@ -30,7 +30,11 @@ open class CodableHelper {
     private static var defaultJSONEncoder: JSONEncoder = {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .formatted(CodableHelper.dateFormatter)
-        encoder.outputFormatting = .prettyPrinted
+        if #available(macOS 10.13, iOS 11.0, tvOS 11.0, *) {
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        } else {
+            encoder.outputFormatting = .prettyPrinted
+        }
         return encoder
     }()
 

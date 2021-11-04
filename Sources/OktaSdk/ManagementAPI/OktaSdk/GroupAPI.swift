@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct GroupAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateGroupRuleURLRequest(ruleId: String) throws -> URLRequest {
@@ -47,6 +50,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Activate a group Rule
          
@@ -56,6 +60,7 @@ public extension OktaClient {
         func activateGroupRule(ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateGroupRuleURLRequest(ruleId: ruleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -96,6 +101,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Add App Instance Target to App Administrator Role given to a Group
          
@@ -108,6 +114,7 @@ public extension OktaClient {
         func addApplicationInstanceTargetToAppAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
             try await send(try addApplicationInstanceTargetToAppAdminRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -148,6 +155,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter groupId: (path)  
@@ -158,6 +166,7 @@ public extension OktaClient {
         func addApplicationTargetToAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
             try await send(try addApplicationTargetToAdminRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -197,6 +206,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Add Group Target for Group Role
          
@@ -208,6 +218,7 @@ public extension OktaClient {
         func addGroupTargetToGroupAdministratorRoleForGroup(groupId: String, roleId: String, targetGroupId: String) async throws -> OktaResponse<Empty> {
             try await send(try addGroupTargetToGroupAdministratorRoleForGroupURLRequest(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -246,6 +257,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Add User to Group
          
@@ -256,6 +268,7 @@ public extension OktaClient {
         func addUserToGroup(groupId: String, userId: String) async throws -> OktaResponse<Empty> {
             try await send(try addUserToGroupURLRequest(groupId: groupId, userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -294,6 +307,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter groupId: (path)  
@@ -304,6 +318,7 @@ public extension OktaClient {
         func assignRoleToGroup(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) async throws -> OktaResponse<Role> {
             try await send(try assignRoleToGroupURLRequest(groupId: groupId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -337,6 +352,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Add Group
          
@@ -346,6 +362,7 @@ public extension OktaClient {
         func createGroup(group: Group) async throws -> OktaResponse<Group> {
             try await send(try createGroupURLRequest(group: group))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -378,6 +395,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Create Group Rule
          
@@ -387,6 +405,7 @@ public extension OktaClient {
         func createGroupRule(groupRule: GroupRule) async throws -> OktaResponse<GroupRule> {
             try await send(try createGroupRuleURLRequest(groupRule: groupRule))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -421,6 +440,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Deactivate a group Rule
          
@@ -430,6 +450,7 @@ public extension OktaClient {
         func deactivateGroupRule(ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateGroupRuleURLRequest(ruleId: ruleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -464,6 +485,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Remove Group
          
@@ -473,6 +495,7 @@ public extension OktaClient {
         func deleteGroup(groupId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteGroupURLRequest(groupId: groupId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -510,6 +533,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Delete a group Rule
          
@@ -520,6 +544,7 @@ public extension OktaClient {
         func deleteGroupRule(ruleId: String, removeUsers: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try deleteGroupRuleURLRequest(ruleId: ruleId, removeUsers: removeUsers))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -555,6 +580,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Group Rules
          
@@ -564,6 +590,7 @@ public extension OktaClient {
         func getGroup(groupId: String) async throws -> OktaResponse<Group> {
             try await send(try getGroupURLRequest(groupId: groupId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -601,6 +628,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Group Rule
          
@@ -611,6 +639,7 @@ public extension OktaClient {
         func getGroupRule(ruleId: String, expand: String? = nil) async throws -> OktaResponse<GroupRule> {
             try await send(try getGroupRuleURLRequest(ruleId: ruleId, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -647,6 +676,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter groupId: (path)  
@@ -656,6 +686,7 @@ public extension OktaClient {
         func getRole(groupId: String, roleId: String) async throws -> OktaResponse<Role> {
             try await send(try getRoleURLRequest(groupId: groupId, roleId: roleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -696,6 +727,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter groupId: (path)  
@@ -707,6 +739,7 @@ public extension OktaClient {
         func listApplicationTargetsForApplicationAdministratorRoleForGroup(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[CatalogApplication]> {
             try await send(try listApplicationTargetsForApplicationAdministratorRoleForGroupURLRequest(groupId: groupId, roleId: roleId, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -748,6 +781,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Assigned Applications
          
@@ -759,6 +793,7 @@ public extension OktaClient {
         func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[Application]> {
             try await send(try listAssignedApplicationsForGroupURLRequest(groupId: groupId, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -797,6 +832,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter groupId: (path)  
@@ -806,6 +842,7 @@ public extension OktaClient {
         func listGroupAssignedRoles(groupId: String, expand: String? = nil) async throws -> OktaResponse<[Role]> {
             try await send(try listGroupAssignedRolesURLRequest(groupId: groupId, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -846,6 +883,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Group Rules
          
@@ -858,6 +896,7 @@ public extension OktaClient {
         func listGroupRules(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil) async throws -> OktaResponse<[GroupRule]> {
             try await send(try listGroupRulesURLRequest(limit: limit, after: after, search: search, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -902,6 +941,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Group Targets for Group Role
          
@@ -914,6 +954,7 @@ public extension OktaClient {
         func listGroupTargetsForGroupRole(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[Group]> {
             try await send(try listGroupTargetsForGroupRoleURLRequest(groupId: groupId, roleId: roleId, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -956,6 +997,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Group Members
          
@@ -967,6 +1009,7 @@ public extension OktaClient {
         func listGroupUsers(groupId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[User]> {
             try await send(try listGroupUsersURLRequest(groupId: groupId, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1011,6 +1054,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Groups
          
@@ -1024,6 +1068,7 @@ public extension OktaClient {
         func listGroups(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) async throws -> OktaResponse<[Group]> {
             try await send(try listGroupsURLRequest(q: q, search: search, after: after, limit: limit, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1068,6 +1113,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Remove App Instance Target to App Administrator Role given to a Group
          
@@ -1080,6 +1126,7 @@ public extension OktaClient {
         func removeApplicationTargetFromAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
             try await send(try removeApplicationTargetFromAdministratorRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1120,6 +1167,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter groupId: (path)  
@@ -1130,6 +1178,7 @@ public extension OktaClient {
         func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
             try await send(try removeApplicationTargetFromApplicationAdministratorRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1169,6 +1218,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Delete Group Target for Group Role
          
@@ -1180,6 +1230,7 @@ public extension OktaClient {
         func removeGroupTargetFromGroupAdministratorRoleGivenToGroup(groupId: String, roleId: String, targetGroupId: String) async throws -> OktaResponse<Empty> {
             try await send(try removeGroupTargetFromGroupAdministratorRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1217,6 +1268,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter groupId: (path)  
@@ -1226,6 +1278,7 @@ public extension OktaClient {
         func removeRoleFromGroup(groupId: String, roleId: String) async throws -> OktaResponse<Empty> {
             try await send(try removeRoleFromGroupURLRequest(groupId: groupId, roleId: roleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1262,6 +1315,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Remove User from Group
          
@@ -1272,6 +1326,7 @@ public extension OktaClient {
         func removeUserFromGroup(groupId: String, userId: String) async throws -> OktaResponse<Empty> {
             try await send(try removeUserFromGroupURLRequest(groupId: groupId, userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1308,6 +1363,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Update Group
          
@@ -1318,6 +1374,7 @@ public extension OktaClient {
         func updateGroup(groupId: String, group: Group) async throws -> OktaResponse<Group> {
             try await send(try updateGroupURLRequest(groupId: groupId, group: group))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1353,6 +1410,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter ruleId: (path)  
@@ -1362,6 +1420,7 @@ public extension OktaClient {
         func updateGroupRule(ruleId: String, groupRule: GroupRule) async throws -> OktaResponse<GroupRule> {
             try await send(try updateGroupRuleURLRequest(ruleId: ruleId, groupRule: groupRule))
         }
+        #endif
 
         #if canImport(Combine)
         /**

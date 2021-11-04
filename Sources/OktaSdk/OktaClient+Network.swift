@@ -14,7 +14,10 @@ import Foundation
 
 #if canImport(Combine)
 import Combine
-import AnyCodable
+#endif
+
+#if canImport(FoundationNetworking)
+import FoundationNetworking
 #endif
 
 protocol OktaClientArgument {
@@ -43,9 +46,16 @@ extension Date: OktaClientArgument {
     }
 }
 
+internal extension OktaClient {
+    struct APIContext {
+        let baseURL: URL
+        let session: URLSession
+        let userAgent: String
+    }
+}
+
 internal protocol OktaClientAPI {
-    var baseURL: URL { get }
-    var urlSession: URLSession { get }
+    var context: OktaClient.APIContext { get }
 
     func request(to path: String,
                  method: String,
@@ -58,13 +68,15 @@ internal protocol OktaClientAPI {
                                body: T?) throws -> URLRequest
     func send<T: Decodable>(_ request: URLRequest, completion: @escaping (Result<OktaResponse<T>, Error>) -> Void)
 
-    @available(iOS 15.0, macOS 12.0, *)
+    #if swift(>=5.5.1) && !os(Linux)
+    @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T>
+    #endif
     
-#if canImport(Combine)
-    @available(iOS 13.0, macOS 10.15, *)
+    #if canImport(Combine)
+    @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
     func publish<T: Decodable>(_ request: URLRequest) -> AnyPublisher<OktaResponse<T>, Error>
-#endif
+    #endif
 }
 
 private let linkRegex = try? NSRegularExpression(pattern: "<([^>]+)>; rel=\"([^\"]+)\"", options: [])
@@ -96,7 +108,7 @@ extension OktaClientAPI {
                 
         return OktaResponse(result: try CodableHelper.jsonDecoder.decode(T.self, from: data),
                             links: links,
-                            rateInfo: .init(with: httpResponse.allHeaderFields),
+                            rateInfo: OktaResponse.RateLimit(with: httpResponse.allHeaderFields),
                             requestId: httpResponse.allHeaderFields["x-okta-request-id"] as? String)
     }
 
@@ -105,7 +117,7 @@ extension OktaClientAPI {
                  query: [String:OktaClientArgument?]? = nil,
                  headers: [String:OktaClientArgument?]? = nil) throws -> URLRequest
     {
-        guard let url = URL(string: path, relativeTo: baseURL) else {
+        guard let url = URL(string: path, relativeTo: context.baseURL) else {
             throw OktaClientError.invalidUrl
         }
         
@@ -122,6 +134,7 @@ extension OktaClientAPI {
         
         var request = URLRequest(url: requestUrl)
         request.httpMethod = method
+        request.setValue(context.userAgent, forHTTPHeaderField: "User-Agent")
         
         headers?.forEach { (key, value) in
             guard let value = value?.stringValue else { return }
@@ -145,7 +158,7 @@ extension OktaClientAPI {
     }
 
     func send<T: Decodable>(_ request: URLRequest, completion: @escaping (Result<OktaResponse<T>, Error>) -> Void) {
-        urlSession.dataTask(with: request) { data, response, error in
+        context.session.dataTask(with: request) { data, response, error in
             guard let data = data,
                   let response = response
             else {
@@ -161,16 +174,18 @@ extension OktaClientAPI {
         }.resume()
     }
 
+    #if swift(>=5.5.1) && !os(Linux)
     @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T> {
-        let (data, response) = try await urlSession.data(for: request)
+        let (data, response) = try await context.session.data(for: request)
         return try validate(data, response)
     }
-
+    #endif
+    
     #if canImport(Combine)
-    @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, *)
     func publish<T: Decodable>(_ request: URLRequest) -> AnyPublisher<OktaResponse<T>, Error> {
-        urlSession.dataTaskPublisher(for: request)
+        context.session.dataTaskPublisher(for: request)
             .tryMap {
                 try self.validate($0.data, $0.response)
             }

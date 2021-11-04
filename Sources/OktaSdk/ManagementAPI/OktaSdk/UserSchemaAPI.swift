@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct UserSchemaAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func getApplicationUserSchemaURLRequest(appInstanceId: String) throws -> URLRequest {
@@ -47,6 +50,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Fetches the Schema for an App User
          
@@ -56,6 +60,7 @@ public extension OktaClient {
         func getApplicationUserSchema(appInstanceId: String) async throws -> OktaResponse<UserSchema> {
             try await send(try getApplicationUserSchemaURLRequest(appInstanceId: appInstanceId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -90,6 +95,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Fetches the schema for a Schema Id.
          
@@ -99,6 +105,7 @@ public extension OktaClient {
         func getUserSchema(schemaId: String) async throws -> OktaResponse<UserSchema> {
             try await send(try getUserSchemaURLRequest(schemaId: schemaId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -134,6 +141,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Partial updates on the User Profile properties of the Application User Schema.
          
@@ -144,6 +152,7 @@ public extension OktaClient {
         func updateApplicationUserProfile(appInstanceId: String, userSchema: UserSchema? = nil) async throws -> OktaResponse<UserSchema> {
             try await send(try updateApplicationUserProfileURLRequest(appInstanceId: appInstanceId, userSchema: userSchema))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -179,6 +188,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter schemaId: (path)  
@@ -188,6 +198,7 @@ public extension OktaClient {
         func updateUserProfile(schemaId: String, userSchema: UserSchema) async throws -> OktaResponse<UserSchema> {
             try await send(try updateUserProfileURLRequest(schemaId: schemaId, userSchema: userSchema))
         }
+        #endif
 
         #if canImport(Combine)
         /**

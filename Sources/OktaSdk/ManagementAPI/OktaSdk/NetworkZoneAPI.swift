@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct NetworkZoneAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateNetworkZoneURLRequest(zoneId: String) throws -> URLRequest {
@@ -47,6 +50,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Activate Network Zone
          
@@ -56,6 +60,7 @@ public extension OktaClient {
         func activateNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
             try await send(try activateNetworkZoneURLRequest(zoneId: zoneId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -88,6 +93,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Add Network Zone
          
@@ -97,6 +103,7 @@ public extension OktaClient {
         func createNetworkZone(networkZone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
             try await send(try createNetworkZoneURLRequest(networkZone: networkZone))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -131,6 +138,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Deactivate Network Zone
          
@@ -140,6 +148,7 @@ public extension OktaClient {
         func deactivateNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
             try await send(try deactivateNetworkZoneURLRequest(zoneId: zoneId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -174,6 +183,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Delete Network Zone
          
@@ -183,6 +193,7 @@ public extension OktaClient {
         func deleteNetworkZone(zoneId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteNetworkZoneURLRequest(zoneId: zoneId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -217,6 +228,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Network Zone
          
@@ -226,6 +238,7 @@ public extension OktaClient {
         func getNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
             try await send(try getNetworkZoneURLRequest(zoneId: zoneId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -264,6 +277,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Network Zones
          
@@ -275,6 +289,7 @@ public extension OktaClient {
         func listNetworkZones(after: String? = nil, limit: Int? = nil, filter: String? = nil) async throws -> OktaResponse<[NetworkZone]> {
             try await send(try listNetworkZonesURLRequest(after: after, limit: limit, filter: filter))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -312,6 +327,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Update Network Zone
          
@@ -322,6 +338,7 @@ public extension OktaClient {
         func updateNetworkZone(zoneId: String, networkZone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
             try await send(try updateNetworkZoneURLRequest(zoneId: zoneId, networkZone: networkZone))
         }
+        #endif
 
         #if canImport(Combine)
         /**

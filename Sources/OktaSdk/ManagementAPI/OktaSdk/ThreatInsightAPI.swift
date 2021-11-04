@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct ThreatInsightAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func getCurrentConfigurationURLRequest() throws -> URLRequest {
@@ -43,6 +46,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          */
@@ -50,6 +54,7 @@ public extension OktaClient {
         func getCurrentConfiguration() async throws -> OktaResponse<ThreatInsightConfiguration> {
             try await send(try getCurrentConfigurationURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -79,6 +84,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter threatInsightConfiguration: (body)  
@@ -87,6 +93,7 @@ public extension OktaClient {
         func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration) async throws -> OktaResponse<ThreatInsightConfiguration> {
             try await send(try updateConfigurationURLRequest(threatInsightConfiguration: threatInsightConfiguration))
         }
+        #endif
 
         #if canImport(Combine)
         /**

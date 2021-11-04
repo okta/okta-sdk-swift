@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct EventHookAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateEventHookURLRequest(eventHookId: String) throws -> URLRequest {
@@ -46,6 +49,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter eventHookId: (path)  
@@ -54,6 +58,7 @@ public extension OktaClient {
         func activateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try activateEventHookURLRequest(eventHookId: eventHookId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -84,6 +89,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter eventHook: (body)  
@@ -92,6 +98,7 @@ public extension OktaClient {
         func createEventHook(eventHook: EventHook) async throws -> OktaResponse<EventHook> {
             try await send(try createEventHookURLRequest(eventHook: eventHook))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -124,6 +131,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter eventHookId: (path)  
@@ -132,6 +140,7 @@ public extension OktaClient {
         func deactivateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try deactivateEventHookURLRequest(eventHookId: eventHookId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -164,6 +173,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter eventHookId: (path)  
@@ -172,6 +182,7 @@ public extension OktaClient {
         func deleteEventHook(eventHookId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteEventHookURLRequest(eventHookId: eventHookId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -204,6 +215,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter eventHookId: (path)  
@@ -212,6 +224,7 @@ public extension OktaClient {
         func getEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try getEventHookURLRequest(eventHookId: eventHookId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -241,6 +254,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          */
@@ -248,6 +262,7 @@ public extension OktaClient {
         func listEventHooks() async throws -> OktaResponse<[EventHook]> {
             try await send(try listEventHooksURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -280,6 +295,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter eventHookId: (path)  
@@ -289,6 +305,7 @@ public extension OktaClient {
         func updateEventHook(eventHookId: String, eventHook: EventHook) async throws -> OktaResponse<EventHook> {
             try await send(try updateEventHookURLRequest(eventHookId: eventHookId, eventHook: eventHook))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -322,6 +339,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter eventHookId: (path)  
@@ -330,6 +348,7 @@ public extension OktaClient {
         func verifyEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try verifyEventHookURLRequest(eventHookId: eventHookId))
         }
+        #endif
 
         #if canImport(Combine)
         /**

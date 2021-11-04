@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct SessionAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func createSessionURLRequest(createSessionRequest: CreateSessionRequest) throws -> URLRequest {
@@ -45,6 +48,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Create Session with Session Token
          
@@ -54,6 +58,7 @@ public extension OktaClient {
         func createSession(createSessionRequest: CreateSessionRequest) async throws -> OktaResponse<Session> {
             try await send(try createSessionURLRequest(createSessionRequest: createSessionRequest))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -88,6 +93,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          End Session
          
@@ -97,6 +103,7 @@ public extension OktaClient {
         func endSession(sessionId: String) async throws -> OktaResponse<Empty> {
             try await send(try endSessionURLRequest(sessionId: sessionId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -131,6 +138,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Session
          
@@ -140,6 +148,7 @@ public extension OktaClient {
         func getSession(sessionId: String) async throws -> OktaResponse<Session> {
             try await send(try getSessionURLRequest(sessionId: sessionId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -174,6 +183,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Refresh Session
          
@@ -183,6 +193,7 @@ public extension OktaClient {
         func refreshSession(sessionId: String) async throws -> OktaResponse<Session> {
             try await send(try refreshSessionURLRequest(sessionId: sessionId))
         }
+        #endif
 
         #if canImport(Combine)
         /**

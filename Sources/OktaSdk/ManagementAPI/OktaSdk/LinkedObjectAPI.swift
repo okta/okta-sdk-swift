@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct LinkedObjectAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func addLinkedObjectDefinitionURLRequest(linkedObject: LinkedObject) throws -> URLRequest {
@@ -44,6 +47,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter linkedObject: (body)  
@@ -52,6 +56,7 @@ public extension OktaClient {
         func addLinkedObjectDefinition(linkedObject: LinkedObject) async throws -> OktaResponse<LinkedObject> {
             try await send(try addLinkedObjectDefinitionURLRequest(linkedObject: linkedObject))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -84,6 +89,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter linkedObjectName: (path)  
@@ -92,6 +98,7 @@ public extension OktaClient {
         func deleteLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -124,6 +131,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter linkedObjectName: (path)  
@@ -132,6 +140,7 @@ public extension OktaClient {
         func getLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<LinkedObject> {
             try await send(try getLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -161,6 +170,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          */
@@ -168,6 +178,7 @@ public extension OktaClient {
         func listLinkedObjectDefinitions() async throws -> OktaResponse<[LinkedObject]> {
             try await send(try listLinkedObjectDefinitionsURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**

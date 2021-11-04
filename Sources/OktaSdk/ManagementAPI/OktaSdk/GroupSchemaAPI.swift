@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct GroupSchemaAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func getGroupSchemaURLRequest() throws -> URLRequest {
@@ -44,6 +47,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Fetches the group schema
          
@@ -52,6 +56,7 @@ public extension OktaClient {
         func getGroupSchema() async throws -> OktaResponse<GroupSchema> {
             try await send(try getGroupSchemaURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -83,6 +88,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Updates, adds ore removes one or more custom Group Profile properties in the schema
          
@@ -92,6 +98,7 @@ public extension OktaClient {
         func updateGroupSchema(groupSchema: GroupSchema? = nil) async throws -> OktaResponse<GroupSchema> {
             try await send(try updateGroupSchemaURLRequest(groupSchema: groupSchema))
         }
+        #endif
 
         #if canImport(Combine)
         /**

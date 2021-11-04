@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct TemplateAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func createSmsTemplateURLRequest(smsTemplate: SmsTemplate) throws -> URLRequest {
@@ -45,6 +48,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Add SMS Template
          
@@ -54,6 +58,7 @@ public extension OktaClient {
         func createSmsTemplate(smsTemplate: SmsTemplate) async throws -> OktaResponse<SmsTemplate> {
             try await send(try createSmsTemplateURLRequest(smsTemplate: smsTemplate))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -88,6 +93,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Remove SMS Template
          
@@ -97,6 +103,7 @@ public extension OktaClient {
         func deleteSmsTemplate(templateId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteSmsTemplateURLRequest(templateId: templateId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -131,6 +138,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get SMS Template
          
@@ -140,6 +148,7 @@ public extension OktaClient {
         func getSmsTemplate(templateId: String) async throws -> OktaResponse<SmsTemplate> {
             try await send(try getSmsTemplateURLRequest(templateId: templateId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -174,6 +183,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List SMS Templates
          
@@ -183,6 +193,7 @@ public extension OktaClient {
         func listSmsTemplates(templateType: SmsTemplateType? = nil) async throws -> OktaResponse<[SmsTemplate]> {
             try await send(try listSmsTemplatesURLRequest(templateType: templateType))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -218,6 +229,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Partial SMS Template Update
          
@@ -228,6 +240,7 @@ public extension OktaClient {
         func partialUpdateSmsTemplate(templateId: String, smsTemplate: SmsTemplate) async throws -> OktaResponse<SmsTemplate> {
             try await send(try partialUpdateSmsTemplateURLRequest(templateId: templateId, smsTemplate: smsTemplate))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -264,6 +277,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Update SMS Template
          
@@ -274,6 +288,7 @@ public extension OktaClient {
         func updateSmsTemplate(templateId: String, smsTemplate: SmsTemplate) async throws -> OktaResponse<SmsTemplate> {
             try await send(try updateSmsTemplateURLRequest(templateId: templateId, smsTemplate: smsTemplate))
         }
+        #endif
 
         #if canImport(Combine)
         /**

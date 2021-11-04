@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct DomainAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func createCertificateURLRequest(domainId: String, domainCertificate: DomainCertificate) throws -> URLRequest {
@@ -48,6 +51,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Create Certificate
          
@@ -58,6 +62,7 @@ public extension OktaClient {
         func createCertificate(domainId: String, domainCertificate: DomainCertificate) async throws -> OktaResponse<Empty> {
             try await send(try createCertificateURLRequest(domainId: domainId, domainCertificate: domainCertificate))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -91,6 +96,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Create Domain
          
@@ -100,6 +106,7 @@ public extension OktaClient {
         func createDomain(domain: Domain) async throws -> OktaResponse<DomainResponse> {
             try await send(try createDomainURLRequest(domain: domain))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -134,6 +141,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Delete Domain
          
@@ -143,6 +151,7 @@ public extension OktaClient {
         func deleteDomain(domainId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteDomainURLRequest(domainId: domainId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -177,6 +186,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Domain
          
@@ -186,6 +196,7 @@ public extension OktaClient {
         func getDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
             try await send(try getDomainURLRequest(domainId: domainId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -217,6 +228,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Domains
          
@@ -225,6 +237,7 @@ public extension OktaClient {
         func listDomains() async throws -> OktaResponse<DomainListResponse> {
             try await send(try listDomainsURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -258,6 +271,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Verify Domain
          
@@ -267,6 +281,7 @@ public extension OktaClient {
         func verifyDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
             try await send(try verifyDomainURLRequest(domainId: domainId))
         }
+        #endif
 
         #if canImport(Combine)
         /**

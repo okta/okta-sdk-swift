@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct FeatureAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func getFeatureURLRequest(featureId: String) throws -> URLRequest {
@@ -46,6 +49,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter featureId: (path)  
@@ -54,6 +58,7 @@ public extension OktaClient {
         func getFeature(featureId: String) async throws -> OktaResponse<Feature> {
             try await send(try getFeatureURLRequest(featureId: featureId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -86,6 +91,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter featureId: (path)  
@@ -94,6 +100,7 @@ public extension OktaClient {
         func listFeatureDependencies(featureId: String) async throws -> OktaResponse<[Feature]> {
             try await send(try listFeatureDependenciesURLRequest(featureId: featureId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -126,6 +133,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter featureId: (path)  
@@ -134,6 +142,7 @@ public extension OktaClient {
         func listFeatureDependents(featureId: String) async throws -> OktaResponse<[Feature]> {
             try await send(try listFeatureDependentsURLRequest(featureId: featureId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -163,6 +172,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          */
@@ -170,6 +180,7 @@ public extension OktaClient {
         func listFeatures() async throws -> OktaResponse<[Feature]> {
             try await send(try listFeaturesURLRequest())
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -206,6 +217,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter featureId: (path)  
@@ -216,6 +228,7 @@ public extension OktaClient {
         func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil) async throws -> OktaResponse<Feature> {
             try await send(try updateFeatureLifecycleURLRequest(featureId: featureId, lifecycle: lifecycle, mode: mode))
         }
+        #endif
 
         #if canImport(Combine)
         /**

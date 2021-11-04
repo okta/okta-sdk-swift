@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct AuthorizationServerAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateAuthorizationServerURLRequest(authServerId: String) throws -> URLRequest {
@@ -46,6 +49,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -54,6 +58,7 @@ public extension OktaClient {
         func activateAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateAuthorizationServerURLRequest(authServerId: authServerId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -88,6 +93,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -97,6 +103,7 @@ public extension OktaClient {
         func activateAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateAuthorizationServerPolicyURLRequest(authServerId: authServerId, policyId: policyId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -134,6 +141,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -144,6 +152,7 @@ public extension OktaClient {
         func activateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateAuthorizationServerPolicyRuleURLRequest(authServerId: authServerId, policyId: policyId, ruleId: ruleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -176,6 +185,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authorizationServer: (body)  
@@ -184,6 +194,7 @@ public extension OktaClient {
         func createAuthorizationServer(authorizationServer: AuthorizationServer) async throws -> OktaResponse<AuthorizationServer> {
             try await send(try createAuthorizationServerURLRequest(authorizationServer: authorizationServer))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -217,6 +228,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -226,6 +238,7 @@ public extension OktaClient {
         func createAuthorizationServerPolicy(authServerId: String, authorizationServerPolicy: AuthorizationServerPolicy) async throws -> OktaResponse<AuthorizationServerPolicy> {
             try await send(try createAuthorizationServerPolicyURLRequest(authServerId: authServerId, authorizationServerPolicy: authorizationServerPolicy))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -262,6 +275,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter policyId: (path)  
@@ -272,6 +286,7 @@ public extension OktaClient {
         func createAuthorizationServerPolicyRule(policyId: String, authServerId: String, authorizationServerPolicyRule: AuthorizationServerPolicyRule) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
             try await send(try createAuthorizationServerPolicyRuleURLRequest(policyId: policyId, authServerId: authServerId, authorizationServerPolicyRule: authorizationServerPolicyRule))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -307,6 +322,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -316,6 +332,7 @@ public extension OktaClient {
         func createOAuth2Claim(authServerId: String, oAuth2Claim: OAuth2Claim) async throws -> OktaResponse<OAuth2Claim> {
             try await send(try createOAuth2ClaimURLRequest(authServerId: authServerId, oAuth2Claim: oAuth2Claim))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -350,6 +367,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -359,6 +377,7 @@ public extension OktaClient {
         func createOAuth2Scope(authServerId: String, oAuth2Scope: OAuth2Scope) async throws -> OktaResponse<OAuth2Scope> {
             try await send(try createOAuth2ScopeURLRequest(authServerId: authServerId, oAuth2Scope: oAuth2Scope))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -392,6 +411,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -400,6 +420,7 @@ public extension OktaClient {
         func deactivateAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateAuthorizationServerURLRequest(authServerId: authServerId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -434,6 +455,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -443,6 +465,7 @@ public extension OktaClient {
         func deactivateAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateAuthorizationServerPolicyURLRequest(authServerId: authServerId, policyId: policyId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -480,6 +503,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -490,6 +514,7 @@ public extension OktaClient {
         func deactivateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateAuthorizationServerPolicyRuleURLRequest(authServerId: authServerId, policyId: policyId, ruleId: ruleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -524,6 +549,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -532,6 +558,7 @@ public extension OktaClient {
         func deleteAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteAuthorizationServerURLRequest(authServerId: authServerId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -566,6 +593,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -575,6 +603,7 @@ public extension OktaClient {
         func deleteAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteAuthorizationServerPolicyURLRequest(authServerId: authServerId, policyId: policyId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -612,6 +641,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter policyId: (path)  
@@ -622,6 +652,7 @@ public extension OktaClient {
         func deleteAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteAuthorizationServerPolicyRuleURLRequest(policyId: policyId, authServerId: authServerId, ruleId: ruleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -658,6 +689,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -667,6 +699,7 @@ public extension OktaClient {
         func deleteOAuth2Claim(authServerId: String, claimId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteOAuth2ClaimURLRequest(authServerId: authServerId, claimId: claimId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -702,6 +735,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -711,6 +745,7 @@ public extension OktaClient {
         func deleteOAuth2Scope(authServerId: String, scopeId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteOAuth2ScopeURLRequest(authServerId: authServerId, scopeId: scopeId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -744,6 +779,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -752,6 +788,7 @@ public extension OktaClient {
         func getAuthorizationServer(authServerId: String) async throws -> OktaResponse<AuthorizationServer> {
             try await send(try getAuthorizationServerURLRequest(authServerId: authServerId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -786,6 +823,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -795,6 +833,7 @@ public extension OktaClient {
         func getAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<AuthorizationServerPolicy> {
             try await send(try getAuthorizationServerPolicyURLRequest(authServerId: authServerId, policyId: policyId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -832,6 +871,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter policyId: (path)  
@@ -842,6 +882,7 @@ public extension OktaClient {
         func getAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
             try await send(try getAuthorizationServerPolicyRuleURLRequest(policyId: policyId, authServerId: authServerId, ruleId: ruleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -878,6 +919,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -887,6 +929,7 @@ public extension OktaClient {
         func getOAuth2Claim(authServerId: String, claimId: String) async throws -> OktaResponse<OAuth2Claim> {
             try await send(try getOAuth2ClaimURLRequest(authServerId: authServerId, claimId: claimId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -922,6 +965,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -931,6 +975,7 @@ public extension OktaClient {
         func getOAuth2Scope(authServerId: String, scopeId: String) async throws -> OktaResponse<OAuth2Scope> {
             try await send(try getOAuth2ScopeURLRequest(authServerId: authServerId, scopeId: scopeId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -971,6 +1016,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -982,6 +1028,7 @@ public extension OktaClient {
         func getRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2RefreshToken> {
             try await send(try getRefreshTokenForAuthorizationServerAndClientURLRequest(authServerId: authServerId, clientId: clientId, tokenId: tokenId, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1017,6 +1064,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1025,6 +1073,7 @@ public extension OktaClient {
         func listAuthorizationServerKeys(authServerId: String) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try listAuthorizationServerKeysURLRequest(authServerId: authServerId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1057,6 +1106,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1065,6 +1115,7 @@ public extension OktaClient {
         func listAuthorizationServerPolicies(authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicy]> {
             try await send(try listAuthorizationServerPoliciesURLRequest(authServerId: authServerId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1099,6 +1150,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter policyId: (path)  
@@ -1108,6 +1160,7 @@ public extension OktaClient {
         func listAuthorizationServerPolicyRules(policyId: String, authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicyRule]> {
             try await send(try listAuthorizationServerPolicyRulesURLRequest(policyId: policyId, authServerId: authServerId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1145,6 +1198,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter q: (query)  (optional)
@@ -1155,6 +1209,7 @@ public extension OktaClient {
         func listAuthorizationServers(q: String? = nil, limit: String? = nil, after: String? = nil) async throws -> OktaResponse<[AuthorizationServer]> {
             try await send(try listAuthorizationServersURLRequest(q: q, limit: limit, after: after))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1189,6 +1244,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1197,6 +1253,7 @@ public extension OktaClient {
         func listOAuth2Claims(authServerId: String) async throws -> OktaResponse<[OAuth2Claim]> {
             try await send(try listOAuth2ClaimsURLRequest(authServerId: authServerId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1229,6 +1286,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1237,6 +1295,7 @@ public extension OktaClient {
         func listOAuth2ClientsForAuthorizationServer(authServerId: String) async throws -> OktaResponse<[OAuth2Client]> {
             try await send(try listOAuth2ClientsForAuthorizationServerURLRequest(authServerId: authServerId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1278,6 +1337,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1290,6 +1350,7 @@ public extension OktaClient {
         func listOAuth2Scopes(authServerId: String, q: String? = nil, filter: String? = nil, cursor: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Scope]> {
             try await send(try listOAuth2ScopesURLRequest(authServerId: authServerId, q: q, filter: filter, cursor: cursor, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1335,6 +1396,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1347,6 +1409,7 @@ public extension OktaClient {
         func listRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2RefreshToken]> {
             try await send(try listRefreshTokensForAuthorizationServerAndClientURLRequest(authServerId: authServerId, clientId: clientId, expand: expand, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1387,6 +1450,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1397,6 +1461,7 @@ public extension OktaClient {
         func revokeRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeRefreshTokenForAuthorizationServerAndClientURLRequest(authServerId: authServerId, clientId: clientId, tokenId: tokenId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1433,6 +1498,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1442,6 +1508,7 @@ public extension OktaClient {
         func revokeRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeRefreshTokensForAuthorizationServerAndClientURLRequest(authServerId: authServerId, clientId: clientId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1476,6 +1543,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1485,6 +1553,7 @@ public extension OktaClient {
         func rotateAuthorizationServerKeys(authServerId: String, jwkUse: JwkUse) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try rotateAuthorizationServerKeysURLRequest(authServerId: authServerId, jwkUse: jwkUse))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1519,6 +1588,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1528,6 +1598,7 @@ public extension OktaClient {
         func updateAuthorizationServer(authServerId: String, authorizationServer: AuthorizationServer) async throws -> OktaResponse<AuthorizationServer> {
             try await send(try updateAuthorizationServerURLRequest(authServerId: authServerId, authorizationServer: authorizationServer))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1564,6 +1635,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1574,6 +1646,7 @@ public extension OktaClient {
         func updateAuthorizationServerPolicy(authServerId: String, policyId: String, authorizationServerPolicy: AuthorizationServerPolicy) async throws -> OktaResponse<AuthorizationServerPolicy> {
             try await send(try updateAuthorizationServerPolicyURLRequest(authServerId: authServerId, policyId: policyId, authorizationServerPolicy: authorizationServerPolicy))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1613,6 +1686,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter policyId: (path)  
@@ -1624,6 +1698,7 @@ public extension OktaClient {
         func updateAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String, authorizationServerPolicyRule: AuthorizationServerPolicyRule) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
             try await send(try updateAuthorizationServerPolicyRuleURLRequest(policyId: policyId, authServerId: authServerId, ruleId: ruleId, authorizationServerPolicyRule: authorizationServerPolicyRule))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1662,6 +1737,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1672,6 +1748,7 @@ public extension OktaClient {
         func updateOAuth2Claim(authServerId: String, claimId: String, oAuth2Claim: OAuth2Claim) async throws -> OktaResponse<OAuth2Claim> {
             try await send(try updateOAuth2ClaimURLRequest(authServerId: authServerId, claimId: claimId, oAuth2Claim: oAuth2Claim))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1709,6 +1786,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter authServerId: (path)  
@@ -1719,6 +1797,7 @@ public extension OktaClient {
         func updateOAuth2Scope(authServerId: String, scopeId: String, oAuth2Scope: OAuth2Scope) async throws -> OktaResponse<OAuth2Scope> {
             try await send(try updateOAuth2ScopeURLRequest(authServerId: authServerId, scopeId: scopeId, oAuth2Scope: oAuth2Scope))
         }
+        #endif
 
         #if canImport(Combine)
         /**

@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct ProfileMappingAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func getProfileMappingURLRequest(mappingId: String) throws -> URLRequest {
@@ -47,6 +50,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Profile Mapping
          
@@ -56,6 +60,7 @@ public extension OktaClient {
         func getProfileMapping(mappingId: String) async throws -> OktaResponse<ProfileMapping> {
             try await send(try getProfileMappingURLRequest(mappingId: mappingId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -95,6 +100,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter after: (query)  (optional)
@@ -106,6 +112,7 @@ public extension OktaClient {
         func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) async throws -> OktaResponse<[ProfileMapping]> {
             try await send(try listProfileMappingsURLRequest(after: after, limit: limit, sourceId: sourceId, targetId: targetId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -143,6 +150,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Update Profile Mapping
          
@@ -153,6 +161,7 @@ public extension OktaClient {
         func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) async throws -> OktaResponse<ProfileMapping> {
             try await send(try updateProfileMappingURLRequest(mappingId: mappingId, profileMapping: profileMapping))
         }
+        #endif
 
         #if canImport(Combine)
         /**

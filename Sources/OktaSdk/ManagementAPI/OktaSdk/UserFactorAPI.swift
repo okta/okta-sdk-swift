@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct UserFactorAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateFactorURLRequest(userId: String, factorId: String, activateFactorRequest: ActivateFactorRequest? = nil) throws -> URLRequest {
@@ -50,6 +53,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Activate Factor
          
@@ -61,6 +65,7 @@ public extension OktaClient {
         func activateFactor(userId: String, factorId: String, activateFactorRequest: ActivateFactorRequest? = nil) async throws -> OktaResponse<UserFactor> {
             try await send(try activateFactorURLRequest(userId: userId, factorId: factorId, activateFactorRequest: activateFactorRequest))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -98,6 +103,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -107,6 +113,7 @@ public extension OktaClient {
         func deleteFactor(userId: String, factorId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteFactorURLRequest(userId: userId, factorId: factorId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -151,6 +158,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Enroll Factor
          
@@ -165,6 +173,7 @@ public extension OktaClient {
         func enrollFactor(userId: String, userFactor: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) async throws -> OktaResponse<UserFactor> {
             try await send(try enrollFactorURLRequest(userId: userId, userFactor: userFactor, updatePhone: updatePhone, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, activate: activate))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -205,6 +214,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -214,6 +224,7 @@ public extension OktaClient {
         func getFactor(userId: String, factorId: String) async throws -> OktaResponse<UserFactor> {
             try await send(try getFactorURLRequest(userId: userId, factorId: factorId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -251,6 +262,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -261,6 +273,7 @@ public extension OktaClient {
         func getFactorTransactionStatus(userId: String, factorId: String, transactionId: String) async throws -> OktaResponse<VerifyUserFactorResponse> {
             try await send(try getFactorTransactionStatusURLRequest(userId: userId, factorId: factorId, transactionId: transactionId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -295,6 +308,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -303,6 +317,7 @@ public extension OktaClient {
         func listFactors(userId: String) async throws -> OktaResponse<[UserFactor]> {
             try await send(try listFactorsURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -335,6 +350,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -343,6 +359,7 @@ public extension OktaClient {
         func listSupportedFactors(userId: String) async throws -> OktaResponse<[UserFactor]> {
             try await send(try listSupportedFactorsURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -375,6 +392,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -383,6 +401,7 @@ public extension OktaClient {
         func listSupportedSecurityQuestions(userId: String) async throws -> OktaResponse<[SecurityQuestion]> {
             try await send(try listSupportedSecurityQuestionsURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -431,6 +450,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Verify MFA Factor
          
@@ -447,6 +467,7 @@ public extension OktaClient {
         func verifyFactor(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, verifyFactorRequest: VerifyFactorRequest? = nil) async throws -> OktaResponse<VerifyUserFactorResponse> {
             try await send(try verifyFactorURLRequest(userId: userId, factorId: factorId, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, xForwardedFor: xForwardedFor, userAgent: userAgent, acceptLanguage: acceptLanguage, verifyFactorRequest: verifyFactorRequest))
         }
+        #endif
 
         #if canImport(Combine)
         /**

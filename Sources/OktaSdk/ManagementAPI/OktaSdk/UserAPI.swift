@@ -20,11 +20,14 @@ import AnyCodable
 import Combine
 #endif
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 public extension OktaClient {
 
     struct UserAPI: OktaClientAPI {
-        internal let baseURL: URL
-        internal let urlSession: URLSession
+        internal let context: OktaClient.APIContext
 
 
         internal func activateUserURLRequest(userId: String, sendEmail: Bool) throws -> URLRequest {
@@ -50,6 +53,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Activate User
          
@@ -60,6 +64,7 @@ public extension OktaClient {
         func activateUser(userId: String, sendEmail: Bool) async throws -> OktaResponse<UserActivationToken> {
             try await send(try activateUserURLRequest(userId: userId, sendEmail: sendEmail))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -96,6 +101,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -105,6 +111,7 @@ public extension OktaClient {
         func addAllAppsAsTargetToRole(userId: String, roleId: String) async throws -> OktaResponse<Empty> {
             try await send(try addAllAppsAsTargetToRoleURLRequest(userId: userId, roleId: roleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -142,6 +149,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -152,6 +160,7 @@ public extension OktaClient {
         func addApplicationTargetToAdminRoleForUser(userId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
             try await send(try addApplicationTargetToAdminRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -193,6 +202,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Add App Instance Target to App Administrator Role given to a User
          
@@ -205,6 +215,7 @@ public extension OktaClient {
         func addApplicationTargetToAppAdminRoleForUser(userId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
             try await send(try addApplicationTargetToAppAdminRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -245,6 +256,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -255,6 +267,7 @@ public extension OktaClient {
         func addGroupTargetToRole(userId: String, roleId: String, groupId: String) async throws -> OktaResponse<Empty> {
             try await send(try addGroupTargetToRoleURLRequest(userId: userId, roleId: roleId, groupId: groupId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -293,6 +306,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -303,6 +317,7 @@ public extension OktaClient {
         func assignRoleToUser(userId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) async throws -> OktaResponse<Role> {
             try await send(try assignRoleToUserURLRequest(userId: userId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -342,6 +357,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Change Password
          
@@ -353,6 +369,7 @@ public extension OktaClient {
         func changePassword(userId: String, changePasswordRequest: ChangePasswordRequest, strict: Bool? = nil) async throws -> OktaResponse<UserCredentials> {
             try await send(try changePasswordURLRequest(userId: userId, changePasswordRequest: changePasswordRequest, strict: strict))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -390,6 +407,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Change Recovery Question
          
@@ -400,6 +418,7 @@ public extension OktaClient {
         func changeRecoveryQuestion(userId: String, userCredentials: UserCredentials) async throws -> OktaResponse<UserCredentials> {
             try await send(try changeRecoveryQuestionURLRequest(userId: userId, userCredentials: userCredentials))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -437,6 +456,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -446,6 +466,7 @@ public extension OktaClient {
         func clearUserSessions(userId: String, oauthTokens: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try clearUserSessionsURLRequest(userId: userId, oauthTokens: oauthTokens))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -485,6 +506,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Create User
          
@@ -497,6 +519,7 @@ public extension OktaClient {
         func createUser(createUserRequest: CreateUserRequest, activate: Bool? = nil, provider: Bool? = nil, nextLogin: UserNextLogin? = nil) async throws -> OktaResponse<User> {
             try await send(try createUserURLRequest(createUserRequest: createUserRequest, activate: activate, provider: provider, nextLogin: nextLogin))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -537,6 +560,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Delete User
          
@@ -547,6 +571,7 @@ public extension OktaClient {
         func deactivateOrDeleteUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try deactivateOrDeleteUserURLRequest(userId: userId, sendEmail: sendEmail))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -585,6 +610,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Deactivate User
          
@@ -595,6 +621,7 @@ public extension OktaClient {
         func deactivateUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try deactivateUserURLRequest(userId: userId, sendEmail: sendEmail))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -630,6 +657,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Expire Password
          
@@ -639,6 +667,7 @@ public extension OktaClient {
         func expirePassword(userId: String) async throws -> OktaResponse<User> {
             try await send(try expirePasswordURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -673,6 +702,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Expire Password and Set Temporary Password
          
@@ -682,6 +712,7 @@ public extension OktaClient {
         func expirePasswordAndGetTemporaryPassword(userId: String) async throws -> OktaResponse<TempPassword> {
             try await send(try expirePasswordAndGetTemporaryPasswordURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -719,6 +750,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Initiate Forgot Password
          
@@ -729,6 +761,7 @@ public extension OktaClient {
         func forgotPassword(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<ForgotPasswordResponse> {
             try await send(try forgotPasswordURLRequest(userId: userId, sendEmail: sendEmail))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -768,6 +801,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Reset Password with Recovery Question
          
@@ -779,6 +813,7 @@ public extension OktaClient {
         func forgotPasswordSetNewPassword(userId: String, sendEmail: Bool? = nil, userCredentials: UserCredentials? = nil) async throws -> OktaResponse<UserCredentials> {
             try await send(try forgotPasswordSetNewPasswordURLRequest(userId: userId, sendEmail: sendEmail, userCredentials: userCredentials))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -821,6 +856,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -832,6 +868,7 @@ public extension OktaClient {
         func getLinkedObjectsForUser(userId: String, relationshipName: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[AnyCodable]> {
             try await send(try getLinkedObjectsForUserURLRequest(userId: userId, relationshipName: relationshipName, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -878,6 +915,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -891,6 +929,7 @@ public extension OktaClient {
         func getRefreshTokenForUserAndClient(userId: String, clientId: String, tokenId: String, expand: String? = nil, limit: Int? = nil, after: String? = nil) async throws -> OktaResponse<OAuth2RefreshToken> {
             try await send(try getRefreshTokenForUserAndClientURLRequest(userId: userId, clientId: clientId, tokenId: tokenId, expand: expand, limit: limit, after: after))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -929,6 +968,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get User
          
@@ -938,6 +978,7 @@ public extension OktaClient {
         func getUser(userId: String) async throws -> OktaResponse<User> {
             try await send(try getUserURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -976,6 +1017,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -986,6 +1028,7 @@ public extension OktaClient {
         func getUserGrant(userId: String, grantId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
             try await send(try getUserGrantURLRequest(userId: userId, grantId: grantId, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1022,6 +1065,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1031,6 +1075,7 @@ public extension OktaClient {
         func getUserRole(userId: String, roleId: String) async throws -> OktaResponse<Role> {
             try await send(try getUserRoleURLRequest(userId: userId, roleId: roleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1065,6 +1110,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Assigned App Links
          
@@ -1074,6 +1120,7 @@ public extension OktaClient {
         func listAppLinks(userId: String) async throws -> OktaResponse<[AppLink]> {
             try await send(try listAppLinksURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1114,6 +1161,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1125,6 +1173,7 @@ public extension OktaClient {
         func listApplicationTargetsForApplicationAdministratorRoleForUser(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[CatalogApplication]> {
             try await send(try listApplicationTargetsForApplicationAdministratorRoleForUserURLRequest(userId: userId, roleId: roleId, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1163,6 +1212,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1172,6 +1222,7 @@ public extension OktaClient {
         func listAssignedRolesForUser(userId: String, expand: String? = nil) async throws -> OktaResponse<[Role]> {
             try await send(try listAssignedRolesForUserURLRequest(userId: userId, expand: expand))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1214,6 +1265,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1226,6 +1278,7 @@ public extension OktaClient {
         func listGrantsForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
             try await send(try listGrantsForUserAndClientURLRequest(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1269,6 +1322,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1280,6 +1334,7 @@ public extension OktaClient {
         func listGroupTargetsForRole(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[Group]> {
             try await send(try listGroupTargetsForRoleURLRequest(userId: userId, roleId: roleId, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1324,6 +1379,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1336,6 +1392,7 @@ public extension OktaClient {
         func listRefreshTokensForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2RefreshToken]> {
             try await send(try listRefreshTokensForUserAndClientURLRequest(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1372,6 +1429,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1380,6 +1438,7 @@ public extension OktaClient {
         func listUserClients(userId: String) async throws -> OktaResponse<[OAuth2Client]> {
             try await send(try listUserClientsURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1421,6 +1480,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1433,6 +1493,7 @@ public extension OktaClient {
         func listUserGrants(userId: String, scopeId: String? = nil, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
             try await send(try listUserGrantsURLRequest(userId: userId, scopeId: scopeId, expand: expand, after: after, limit: limit))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1470,6 +1531,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Get Member Groups
          
@@ -1479,6 +1541,7 @@ public extension OktaClient {
         func listUserGroups(userId: String) async throws -> OktaResponse<[Group]> {
             try await send(try listUserGroupsURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1513,6 +1576,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Listing IdPs associated with a user
          
@@ -1522,6 +1586,7 @@ public extension OktaClient {
         func listUserIdentityProviders(userId: String) async throws -> OktaResponse<[IdentityProvider]> {
             try await send(try listUserIdentityProvidersURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1568,6 +1633,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          List Users
          
@@ -1583,6 +1649,7 @@ public extension OktaClient {
         func listUsers(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, search: String? = nil, sortBy: String? = nil, sortOrder: String? = nil) async throws -> OktaResponse<[User]> {
             try await send(try listUsersURLRequest(q: q, after: after, limit: limit, filter: filter, search: search, sortBy: sortBy, sortOrder: sortOrder))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1626,6 +1693,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1636,6 +1704,7 @@ public extension OktaClient {
         func partialUpdateUser(userId: String, user: User, strict: Bool? = nil) async throws -> OktaResponse<User> {
             try await send(try partialUpdateUserURLRequest(userId: userId, user: user, strict: strict))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1674,6 +1743,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Reactivate User
          
@@ -1684,6 +1754,7 @@ public extension OktaClient {
         func reactivateUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<UserActivationToken> {
             try await send(try reactivateUserURLRequest(userId: userId, sendEmail: sendEmail))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1725,6 +1796,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Remove App Instance Target to App Administrator Role given to a User
          
@@ -1737,6 +1809,7 @@ public extension OktaClient {
         func removeApplicationTargetFromAdministratorRoleForUser(userId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
             try await send(try removeApplicationTargetFromAdministratorRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1777,6 +1850,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1787,6 +1861,7 @@ public extension OktaClient {
         func removeApplicationTargetFromApplicationAdministratorRoleForUser(userId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
             try await send(try removeApplicationTargetFromApplicationAdministratorRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1825,6 +1900,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1835,6 +1911,7 @@ public extension OktaClient {
         func removeGroupTargetFromRole(userId: String, roleId: String, groupId: String) async throws -> OktaResponse<Empty> {
             try await send(try removeGroupTargetFromRoleURLRequest(userId: userId, roleId: roleId, groupId: groupId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1871,6 +1948,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1880,6 +1958,7 @@ public extension OktaClient {
         func removeLinkedObjectForUser(userId: String, relationshipName: String) async throws -> OktaResponse<Empty> {
             try await send(try removeLinkedObjectForUserURLRequest(userId: userId, relationshipName: relationshipName))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1915,6 +1994,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -1924,6 +2004,7 @@ public extension OktaClient {
         func removeRoleFromUser(userId: String, roleId: String) async throws -> OktaResponse<Empty> {
             try await send(try removeRoleFromUserURLRequest(userId: userId, roleId: roleId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -1958,6 +2039,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Reset Factors
          
@@ -1967,6 +2049,7 @@ public extension OktaClient {
         func resetFactors(userId: String) async throws -> OktaResponse<Empty> {
             try await send(try resetFactorsURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -2004,6 +2087,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Reset Password
          
@@ -2014,6 +2098,7 @@ public extension OktaClient {
         func resetPassword(userId: String, sendEmail: Bool) async throws -> OktaResponse<ResetPasswordToken> {
             try await send(try resetPasswordURLRequest(userId: userId, sendEmail: sendEmail))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -2050,6 +2135,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -2059,6 +2145,7 @@ public extension OktaClient {
         func revokeGrantsForUserAndClient(userId: String, clientId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeGrantsForUserAndClientURLRequest(userId: userId, clientId: clientId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -2096,6 +2183,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -2106,6 +2194,7 @@ public extension OktaClient {
         func revokeTokenForUserAndClient(userId: String, clientId: String, tokenId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeTokenForUserAndClientURLRequest(userId: userId, clientId: clientId, tokenId: tokenId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -2142,6 +2231,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -2151,6 +2241,7 @@ public extension OktaClient {
         func revokeTokensForUserAndClient(userId: String, clientId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeTokensForUserAndClientURLRequest(userId: userId, clientId: clientId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -2186,6 +2277,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -2195,6 +2287,7 @@ public extension OktaClient {
         func revokeUserGrant(userId: String, grantId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeUserGrantURLRequest(userId: userId, grantId: grantId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -2228,6 +2321,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
 
          - parameter userId: (path)  
@@ -2236,6 +2330,7 @@ public extension OktaClient {
         func revokeUserGrants(userId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeUserGrantsURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -2273,6 +2368,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Set Linked Object for User
          
@@ -2284,6 +2380,7 @@ public extension OktaClient {
         func setLinkedObjectForUser(associatedUserId: String, primaryRelationshipName: String, primaryUserId: String) async throws -> OktaResponse<Empty> {
             try await send(try setLinkedObjectForUserURLRequest(associatedUserId: associatedUserId, primaryRelationshipName: primaryRelationshipName, primaryUserId: primaryUserId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -2320,6 +2417,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Suspend User
          
@@ -2329,6 +2427,7 @@ public extension OktaClient {
         func suspendUser(userId: String) async throws -> OktaResponse<Empty> {
             try await send(try suspendUserURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -2363,6 +2462,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Unlock User
          
@@ -2372,6 +2472,7 @@ public extension OktaClient {
         func unlockUser(userId: String) async throws -> OktaResponse<Empty> {
             try await send(try unlockUserURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -2406,6 +2507,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Unsuspend User
          
@@ -2415,6 +2517,7 @@ public extension OktaClient {
         func unsuspendUser(userId: String) async throws -> OktaResponse<Empty> {
             try await send(try unsuspendUserURLRequest(userId: userId))
         }
+        #endif
 
         #if canImport(Combine)
         /**
@@ -2453,6 +2556,7 @@ public extension OktaClient {
             }
         }
 
+        #if swift(>=5.5.1) && !os(Linux)
         /**
          Update User
          
@@ -2464,6 +2568,7 @@ public extension OktaClient {
         func updateUser(userId: String, user: User, strict: Bool? = nil) async throws -> OktaResponse<User> {
             try await send(try updateUserURLRequest(userId: userId, user: user, strict: strict))
         }
+        #endif
 
         #if canImport(Combine)
         /**
