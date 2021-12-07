@@ -42,7 +42,7 @@ public extension OktaClient {
          - parameter mappingId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getProfileMapping(mappingId: String, completion: @escaping (Result<OktaResponse<ProfileMapping>, Error>) -> Void) {
+        public func getProfileMapping(mappingId: String, completion: @escaping (Result<OktaResponse<ProfileMapping>, Error>) -> Void) {
             do {
                 send(try getProfileMappingURLRequest(mappingId: mappingId), completion: completion)
             } catch {
@@ -57,7 +57,7 @@ public extension OktaClient {
          - parameter mappingId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getProfileMapping(mappingId: String) async throws -> OktaResponse<ProfileMapping> {
+        public func getProfileMapping(mappingId: String) async throws -> OktaResponse<ProfileMapping> {
             try await send(try getProfileMappingURLRequest(mappingId: mappingId))
         }
         #endif
@@ -69,7 +69,7 @@ public extension OktaClient {
          - parameter mappingId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getProfileMapping(mappingId: String) throws -> AnyPublisher<OktaResponse<ProfileMapping>, Error> {
+        public func getProfileMapping(mappingId: String) throws -> AnyPublisher<OktaResponse<ProfileMapping>, Error> {
             publish(try getProfileMappingURLRequest(mappingId: mappingId))
         }
         #endif
@@ -92,7 +92,7 @@ public extension OktaClient {
          - parameter targetId: (query)  (optional, default to "")
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil, completion: @escaping (Result<OktaResponse<[ProfileMapping]>, Error>) -> Void) {
+        public func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil, completion: @escaping (Result<OktaResponse<[ProfileMapping]>, Error>) -> Void) {
             do {
                 send(try listProfileMappingsURLRequest(after: after, limit: limit, sourceId: sourceId, targetId: targetId), completion: completion)
             } catch {
@@ -109,7 +109,7 @@ public extension OktaClient {
          - parameter targetId: (query)  (optional, default to "")
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) async throws -> OktaResponse<[ProfileMapping]> {
+        public func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) async throws -> OktaResponse<[ProfileMapping]> {
             try await send(try listProfileMappingsURLRequest(after: after, limit: limit, sourceId: sourceId, targetId: targetId))
         }
         #endif
@@ -123,7 +123,7 @@ public extension OktaClient {
          - parameter targetId: (query)  (optional, default to "")
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) throws -> AnyPublisher<OktaResponse<[ProfileMapping]>, Error> {
+        public func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) throws -> AnyPublisher<OktaResponse<[ProfileMapping]>, Error> {
             publish(try listProfileMappingsURLRequest(after: after, limit: limit, sourceId: sourceId, targetId: targetId))
         }
         #endif
@@ -142,7 +142,7 @@ public extension OktaClient {
          - parameter profileMapping: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping, completion: @escaping (Result<OktaResponse<ProfileMapping>, Error>) -> Void) {
+        public func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping, completion: @escaping (Result<OktaResponse<ProfileMapping>, Error>) -> Void) {
             do {
                 send(try updateProfileMappingURLRequest(mappingId: mappingId, profileMapping: profileMapping), completion: completion)
             } catch {
@@ -158,7 +158,7 @@ public extension OktaClient {
          - parameter profileMapping: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) async throws -> OktaResponse<ProfileMapping> {
+        public func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) async throws -> OktaResponse<ProfileMapping> {
             try await send(try updateProfileMappingURLRequest(mappingId: mappingId, profileMapping: profileMapping))
         }
         #endif
@@ -171,7 +171,7 @@ public extension OktaClient {
          - parameter profileMapping: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) throws -> AnyPublisher<OktaResponse<ProfileMapping>, Error> {
+        public func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) throws -> AnyPublisher<OktaResponse<ProfileMapping>, Error> {
             publish(try updateProfileMappingURLRequest(mappingId: mappingId, profileMapping: profileMapping))
         }
         #endif

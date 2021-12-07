@@ -45,7 +45,7 @@ public extension OktaClient {
          - parameter activateFactorRequest: (body)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func activateFactor(userId: String, factorId: String, activateFactorRequest: ActivateFactorRequest? = nil, completion: @escaping (Result<OktaResponse<UserFactor>, Error>) -> Void) {
+        public func activateFactor(userId: String, factorId: String, activateFactorRequest: ActivateFactorRequest? = nil, completion: @escaping (Result<OktaResponse<UserFactor>, Error>) -> Void) {
             do {
                 send(try activateFactorURLRequest(userId: userId, factorId: factorId, activateFactorRequest: activateFactorRequest), completion: completion)
             } catch {
@@ -62,7 +62,7 @@ public extension OktaClient {
          - parameter activateFactorRequest: (body)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateFactor(userId: String, factorId: String, activateFactorRequest: ActivateFactorRequest? = nil) async throws -> OktaResponse<UserFactor> {
+        public func activateFactor(userId: String, factorId: String, activateFactorRequest: ActivateFactorRequest? = nil) async throws -> OktaResponse<UserFactor> {
             try await send(try activateFactorURLRequest(userId: userId, factorId: factorId, activateFactorRequest: activateFactorRequest))
         }
         #endif
@@ -76,7 +76,7 @@ public extension OktaClient {
          - parameter activateFactorRequest: (body)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func activateFactor(userId: String, factorId: String, activateFactorRequest: ActivateFactorRequest? = nil) throws -> AnyPublisher<OktaResponse<UserFactor>, Error> {
+        public func activateFactor(userId: String, factorId: String, activateFactorRequest: ActivateFactorRequest? = nil) throws -> AnyPublisher<OktaResponse<UserFactor>, Error> {
             publish(try activateFactorURLRequest(userId: userId, factorId: factorId, activateFactorRequest: activateFactorRequest))
         }
         #endif
@@ -95,7 +95,7 @@ public extension OktaClient {
          - parameter factorId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func deleteFactor(userId: String, factorId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func deleteFactor(userId: String, factorId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deleteFactorURLRequest(userId: userId, factorId: factorId), completion: completion)
             } catch {
@@ -110,7 +110,7 @@ public extension OktaClient {
          - parameter factorId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteFactor(userId: String, factorId: String) async throws -> OktaResponse<Empty> {
+        public func deleteFactor(userId: String, factorId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteFactorURLRequest(userId: userId, factorId: factorId))
         }
         #endif
@@ -122,7 +122,7 @@ public extension OktaClient {
          - parameter factorId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteFactor(userId: String, factorId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func deleteFactor(userId: String, factorId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deleteFactorURLRequest(userId: userId, factorId: factorId))
         }
         #endif
@@ -150,7 +150,7 @@ public extension OktaClient {
          - parameter activate: (query)  (optional, default to false)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func enrollFactor(userId: String, userFactor: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil, completion: @escaping (Result<OktaResponse<UserFactor>, Error>) -> Void) {
+        public func enrollFactor(userId: String, userFactor: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil, completion: @escaping (Result<OktaResponse<UserFactor>, Error>) -> Void) {
             do {
                 send(try enrollFactorURLRequest(userId: userId, userFactor: userFactor, updatePhone: updatePhone, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, activate: activate), completion: completion)
             } catch {
@@ -170,7 +170,7 @@ public extension OktaClient {
          - parameter activate: (query)  (optional, default to false)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func enrollFactor(userId: String, userFactor: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) async throws -> OktaResponse<UserFactor> {
+        public func enrollFactor(userId: String, userFactor: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) async throws -> OktaResponse<UserFactor> {
             try await send(try enrollFactorURLRequest(userId: userId, userFactor: userFactor, updatePhone: updatePhone, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, activate: activate))
         }
         #endif
@@ -187,7 +187,7 @@ public extension OktaClient {
          - parameter activate: (query)  (optional, default to false)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func enrollFactor(userId: String, userFactor: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) throws -> AnyPublisher<OktaResponse<UserFactor>, Error> {
+        public func enrollFactor(userId: String, userFactor: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) throws -> AnyPublisher<OktaResponse<UserFactor>, Error> {
             publish(try enrollFactorURLRequest(userId: userId, userFactor: userFactor, updatePhone: updatePhone, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, activate: activate))
         }
         #endif
@@ -206,7 +206,7 @@ public extension OktaClient {
          - parameter factorId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getFactor(userId: String, factorId: String, completion: @escaping (Result<OktaResponse<UserFactor>, Error>) -> Void) {
+        public func getFactor(userId: String, factorId: String, completion: @escaping (Result<OktaResponse<UserFactor>, Error>) -> Void) {
             do {
                 send(try getFactorURLRequest(userId: userId, factorId: factorId), completion: completion)
             } catch {
@@ -221,7 +221,7 @@ public extension OktaClient {
          - parameter factorId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getFactor(userId: String, factorId: String) async throws -> OktaResponse<UserFactor> {
+        public func getFactor(userId: String, factorId: String) async throws -> OktaResponse<UserFactor> {
             try await send(try getFactorURLRequest(userId: userId, factorId: factorId))
         }
         #endif
@@ -233,7 +233,7 @@ public extension OktaClient {
          - parameter factorId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getFactor(userId: String, factorId: String) throws -> AnyPublisher<OktaResponse<UserFactor>, Error> {
+        public func getFactor(userId: String, factorId: String) throws -> AnyPublisher<OktaResponse<UserFactor>, Error> {
             publish(try getFactorURLRequest(userId: userId, factorId: factorId))
         }
         #endif
@@ -254,7 +254,7 @@ public extension OktaClient {
          - parameter transactionId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getFactorTransactionStatus(userId: String, factorId: String, transactionId: String, completion: @escaping (Result<OktaResponse<VerifyUserFactorResponse>, Error>) -> Void) {
+        public func getFactorTransactionStatus(userId: String, factorId: String, transactionId: String, completion: @escaping (Result<OktaResponse<VerifyUserFactorResponse>, Error>) -> Void) {
             do {
                 send(try getFactorTransactionStatusURLRequest(userId: userId, factorId: factorId, transactionId: transactionId), completion: completion)
             } catch {
@@ -270,7 +270,7 @@ public extension OktaClient {
          - parameter transactionId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getFactorTransactionStatus(userId: String, factorId: String, transactionId: String) async throws -> OktaResponse<VerifyUserFactorResponse> {
+        public func getFactorTransactionStatus(userId: String, factorId: String, transactionId: String) async throws -> OktaResponse<VerifyUserFactorResponse> {
             try await send(try getFactorTransactionStatusURLRequest(userId: userId, factorId: factorId, transactionId: transactionId))
         }
         #endif
@@ -283,7 +283,7 @@ public extension OktaClient {
          - parameter transactionId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getFactorTransactionStatus(userId: String, factorId: String, transactionId: String) throws -> AnyPublisher<OktaResponse<VerifyUserFactorResponse>, Error> {
+        public func getFactorTransactionStatus(userId: String, factorId: String, transactionId: String) throws -> AnyPublisher<OktaResponse<VerifyUserFactorResponse>, Error> {
             publish(try getFactorTransactionStatusURLRequest(userId: userId, factorId: factorId, transactionId: transactionId))
         }
         #endif
@@ -300,7 +300,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listFactors(userId: String, completion: @escaping (Result<OktaResponse<[UserFactor]>, Error>) -> Void) {
+        public func listFactors(userId: String, completion: @escaping (Result<OktaResponse<[UserFactor]>, Error>) -> Void) {
             do {
                 send(try listFactorsURLRequest(userId: userId), completion: completion)
             } catch {
@@ -314,7 +314,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listFactors(userId: String) async throws -> OktaResponse<[UserFactor]> {
+        public func listFactors(userId: String) async throws -> OktaResponse<[UserFactor]> {
             try await send(try listFactorsURLRequest(userId: userId))
         }
         #endif
@@ -325,7 +325,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listFactors(userId: String) throws -> AnyPublisher<OktaResponse<[UserFactor]>, Error> {
+        public func listFactors(userId: String) throws -> AnyPublisher<OktaResponse<[UserFactor]>, Error> {
             publish(try listFactorsURLRequest(userId: userId))
         }
         #endif
@@ -342,7 +342,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listSupportedFactors(userId: String, completion: @escaping (Result<OktaResponse<[UserFactor]>, Error>) -> Void) {
+        public func listSupportedFactors(userId: String, completion: @escaping (Result<OktaResponse<[UserFactor]>, Error>) -> Void) {
             do {
                 send(try listSupportedFactorsURLRequest(userId: userId), completion: completion)
             } catch {
@@ -356,7 +356,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listSupportedFactors(userId: String) async throws -> OktaResponse<[UserFactor]> {
+        public func listSupportedFactors(userId: String) async throws -> OktaResponse<[UserFactor]> {
             try await send(try listSupportedFactorsURLRequest(userId: userId))
         }
         #endif
@@ -367,7 +367,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listSupportedFactors(userId: String) throws -> AnyPublisher<OktaResponse<[UserFactor]>, Error> {
+        public func listSupportedFactors(userId: String) throws -> AnyPublisher<OktaResponse<[UserFactor]>, Error> {
             publish(try listSupportedFactorsURLRequest(userId: userId))
         }
         #endif
@@ -384,7 +384,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listSupportedSecurityQuestions(userId: String, completion: @escaping (Result<OktaResponse<[SecurityQuestion]>, Error>) -> Void) {
+        public func listSupportedSecurityQuestions(userId: String, completion: @escaping (Result<OktaResponse<[SecurityQuestion]>, Error>) -> Void) {
             do {
                 send(try listSupportedSecurityQuestionsURLRequest(userId: userId), completion: completion)
             } catch {
@@ -398,7 +398,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listSupportedSecurityQuestions(userId: String) async throws -> OktaResponse<[SecurityQuestion]> {
+        public func listSupportedSecurityQuestions(userId: String) async throws -> OktaResponse<[SecurityQuestion]> {
             try await send(try listSupportedSecurityQuestionsURLRequest(userId: userId))
         }
         #endif
@@ -409,7 +409,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listSupportedSecurityQuestions(userId: String) throws -> AnyPublisher<OktaResponse<[SecurityQuestion]>, Error> {
+        public func listSupportedSecurityQuestions(userId: String) throws -> AnyPublisher<OktaResponse<[SecurityQuestion]>, Error> {
             publish(try listSupportedSecurityQuestionsURLRequest(userId: userId))
         }
         #endif
@@ -442,7 +442,7 @@ public extension OktaClient {
          - parameter verifyFactorRequest: (body)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func verifyFactor(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, verifyFactorRequest: VerifyFactorRequest? = nil, completion: @escaping (Result<OktaResponse<VerifyUserFactorResponse>, Error>) -> Void) {
+        public func verifyFactor(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, verifyFactorRequest: VerifyFactorRequest? = nil, completion: @escaping (Result<OktaResponse<VerifyUserFactorResponse>, Error>) -> Void) {
             do {
                 send(try verifyFactorURLRequest(userId: userId, factorId: factorId, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, xForwardedFor: xForwardedFor, userAgent: userAgent, acceptLanguage: acceptLanguage, verifyFactorRequest: verifyFactorRequest), completion: completion)
             } catch {
@@ -464,7 +464,7 @@ public extension OktaClient {
          - parameter verifyFactorRequest: (body)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func verifyFactor(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, verifyFactorRequest: VerifyFactorRequest? = nil) async throws -> OktaResponse<VerifyUserFactorResponse> {
+        public func verifyFactor(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, verifyFactorRequest: VerifyFactorRequest? = nil) async throws -> OktaResponse<VerifyUserFactorResponse> {
             try await send(try verifyFactorURLRequest(userId: userId, factorId: factorId, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, xForwardedFor: xForwardedFor, userAgent: userAgent, acceptLanguage: acceptLanguage, verifyFactorRequest: verifyFactorRequest))
         }
         #endif
@@ -483,7 +483,7 @@ public extension OktaClient {
          - parameter verifyFactorRequest: (body)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func verifyFactor(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, verifyFactorRequest: VerifyFactorRequest? = nil) throws -> AnyPublisher<OktaResponse<VerifyUserFactorResponse>, Error> {
+        public func verifyFactor(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, verifyFactorRequest: VerifyFactorRequest? = nil) throws -> AnyPublisher<OktaResponse<VerifyUserFactorResponse>, Error> {
             publish(try verifyFactorURLRequest(userId: userId, factorId: factorId, templateId: templateId, tokenLifetimeSeconds: tokenLifetimeSeconds, xForwardedFor: xForwardedFor, userAgent: userAgent, acceptLanguage: acceptLanguage, verifyFactorRequest: verifyFactorRequest))
         }
         #endif

@@ -41,7 +41,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func activateEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
+        public func activateEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
             do {
                 send(try activateEventHookURLRequest(eventHookId: eventHookId), completion: completion)
             } catch {
@@ -55,7 +55,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
+        public func activateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try activateEventHookURLRequest(eventHookId: eventHookId))
         }
         #endif
@@ -66,7 +66,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func activateEventHook(eventHookId: String) throws -> AnyPublisher<OktaResponse<EventHook>, Error> {
+        public func activateEventHook(eventHookId: String) throws -> AnyPublisher<OktaResponse<EventHook>, Error> {
             publish(try activateEventHookURLRequest(eventHookId: eventHookId))
         }
         #endif
@@ -81,7 +81,7 @@ public extension OktaClient {
          - parameter eventHook: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func createEventHook(eventHook: EventHook, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
+        public func createEventHook(eventHook: EventHook, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
             do {
                 send(try createEventHookURLRequest(eventHook: eventHook), completion: completion)
             } catch {
@@ -95,7 +95,7 @@ public extension OktaClient {
          - parameter eventHook: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createEventHook(eventHook: EventHook) async throws -> OktaResponse<EventHook> {
+        public func createEventHook(eventHook: EventHook) async throws -> OktaResponse<EventHook> {
             try await send(try createEventHookURLRequest(eventHook: eventHook))
         }
         #endif
@@ -106,7 +106,7 @@ public extension OktaClient {
          - parameter eventHook: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createEventHook(eventHook: EventHook) throws -> AnyPublisher<OktaResponse<EventHook>, Error> {
+        public func createEventHook(eventHook: EventHook) throws -> AnyPublisher<OktaResponse<EventHook>, Error> {
             publish(try createEventHookURLRequest(eventHook: eventHook))
         }
         #endif
@@ -123,7 +123,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func deactivateEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
+        public func deactivateEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
             do {
                 send(try deactivateEventHookURLRequest(eventHookId: eventHookId), completion: completion)
             } catch {
@@ -137,7 +137,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
+        public func deactivateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try deactivateEventHookURLRequest(eventHookId: eventHookId))
         }
         #endif
@@ -148,7 +148,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deactivateEventHook(eventHookId: String) throws -> AnyPublisher<OktaResponse<EventHook>, Error> {
+        public func deactivateEventHook(eventHookId: String) throws -> AnyPublisher<OktaResponse<EventHook>, Error> {
             publish(try deactivateEventHookURLRequest(eventHookId: eventHookId))
         }
         #endif
@@ -165,7 +165,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func deleteEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func deleteEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deleteEventHookURLRequest(eventHookId: eventHookId), completion: completion)
             } catch {
@@ -179,7 +179,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteEventHook(eventHookId: String) async throws -> OktaResponse<Empty> {
+        public func deleteEventHook(eventHookId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteEventHookURLRequest(eventHookId: eventHookId))
         }
         #endif
@@ -190,7 +190,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteEventHook(eventHookId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func deleteEventHook(eventHookId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deleteEventHookURLRequest(eventHookId: eventHookId))
         }
         #endif
@@ -207,7 +207,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
+        public func getEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
             do {
                 send(try getEventHookURLRequest(eventHookId: eventHookId), completion: completion)
             } catch {
@@ -221,7 +221,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
+        public func getEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try getEventHookURLRequest(eventHookId: eventHookId))
         }
         #endif
@@ -232,7 +232,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getEventHook(eventHookId: String) throws -> AnyPublisher<OktaResponse<EventHook>, Error> {
+        public func getEventHook(eventHookId: String) throws -> AnyPublisher<OktaResponse<EventHook>, Error> {
             publish(try getEventHookURLRequest(eventHookId: eventHookId))
         }
         #endif
@@ -246,7 +246,7 @@ public extension OktaClient {
 
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listEventHooks(completion: @escaping (Result<OktaResponse<[EventHook]>, Error>) -> Void) {
+        public func listEventHooks(completion: @escaping (Result<OktaResponse<[EventHook]>, Error>) -> Void) {
             do {
                 send(try listEventHooksURLRequest(), completion: completion)
             } catch {
@@ -259,7 +259,7 @@ public extension OktaClient {
 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listEventHooks() async throws -> OktaResponse<[EventHook]> {
+        public func listEventHooks() async throws -> OktaResponse<[EventHook]> {
             try await send(try listEventHooksURLRequest())
         }
         #endif
@@ -269,7 +269,7 @@ public extension OktaClient {
 
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listEventHooks() throws -> AnyPublisher<OktaResponse<[EventHook]>, Error> {
+        public func listEventHooks() throws -> AnyPublisher<OktaResponse<[EventHook]>, Error> {
             publish(try listEventHooksURLRequest())
         }
         #endif
@@ -287,7 +287,7 @@ public extension OktaClient {
          - parameter eventHook: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func updateEventHook(eventHookId: String, eventHook: EventHook, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
+        public func updateEventHook(eventHookId: String, eventHook: EventHook, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
             do {
                 send(try updateEventHookURLRequest(eventHookId: eventHookId, eventHook: eventHook), completion: completion)
             } catch {
@@ -302,7 +302,7 @@ public extension OktaClient {
          - parameter eventHook: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateEventHook(eventHookId: String, eventHook: EventHook) async throws -> OktaResponse<EventHook> {
+        public func updateEventHook(eventHookId: String, eventHook: EventHook) async throws -> OktaResponse<EventHook> {
             try await send(try updateEventHookURLRequest(eventHookId: eventHookId, eventHook: eventHook))
         }
         #endif
@@ -314,7 +314,7 @@ public extension OktaClient {
          - parameter eventHook: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateEventHook(eventHookId: String, eventHook: EventHook) throws -> AnyPublisher<OktaResponse<EventHook>, Error> {
+        public func updateEventHook(eventHookId: String, eventHook: EventHook) throws -> AnyPublisher<OktaResponse<EventHook>, Error> {
             publish(try updateEventHookURLRequest(eventHookId: eventHookId, eventHook: eventHook))
         }
         #endif
@@ -331,7 +331,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func verifyEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
+        public func verifyEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
             do {
                 send(try verifyEventHookURLRequest(eventHookId: eventHookId), completion: completion)
             } catch {
@@ -345,7 +345,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func verifyEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
+        public func verifyEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try verifyEventHookURLRequest(eventHookId: eventHookId))
         }
         #endif
@@ -356,7 +356,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func verifyEventHook(eventHookId: String) throws -> AnyPublisher<OktaResponse<EventHook>, Error> {
+        public func verifyEventHook(eventHookId: String) throws -> AnyPublisher<OktaResponse<EventHook>, Error> {
             publish(try verifyEventHookURLRequest(eventHookId: eventHookId))
         }
         #endif

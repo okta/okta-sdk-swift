@@ -39,7 +39,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func extendOktaSupport(completion: @escaping (Result<OktaResponse<OrgOktaSupportSettingsObj>, Error>) -> Void) {
+        public func extendOktaSupport(completion: @escaping (Result<OktaResponse<OrgOktaSupportSettingsObj>, Error>) -> Void) {
             do {
                 send(try extendOktaSupportURLRequest(), completion: completion)
             } catch {
@@ -53,7 +53,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func extendOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
+        public func extendOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try extendOktaSupportURLRequest())
         }
         #endif
@@ -64,7 +64,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func extendOktaSupport() throws -> AnyPublisher<OktaResponse<OrgOktaSupportSettingsObj>, Error> {
+        public func extendOktaSupport() throws -> AnyPublisher<OktaResponse<OrgOktaSupportSettingsObj>, Error> {
             publish(try extendOktaSupportURLRequest())
         }
         #endif
@@ -79,7 +79,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getOktaCommunicationSettings(completion: @escaping (Result<OktaResponse<OrgOktaCommunicationSetting>, Error>) -> Void) {
+        public func getOktaCommunicationSettings(completion: @escaping (Result<OktaResponse<OrgOktaCommunicationSetting>, Error>) -> Void) {
             do {
                 send(try getOktaCommunicationSettingsURLRequest(), completion: completion)
             } catch {
@@ -93,7 +93,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOktaCommunicationSettings() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
+        public func getOktaCommunicationSettings() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try getOktaCommunicationSettingsURLRequest())
         }
         #endif
@@ -104,7 +104,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getOktaCommunicationSettings() throws -> AnyPublisher<OktaResponse<OrgOktaCommunicationSetting>, Error> {
+        public func getOktaCommunicationSettings() throws -> AnyPublisher<OktaResponse<OrgOktaCommunicationSetting>, Error> {
             publish(try getOktaCommunicationSettingsURLRequest())
         }
         #endif
@@ -119,7 +119,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getOrgContactTypes(completion: @escaping (Result<OktaResponse<[OrgContactTypeObj]>, Error>) -> Void) {
+        public func getOrgContactTypes(completion: @escaping (Result<OktaResponse<[OrgContactTypeObj]>, Error>) -> Void) {
             do {
                 send(try getOrgContactTypesURLRequest(), completion: completion)
             } catch {
@@ -133,7 +133,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOrgContactTypes() async throws -> OktaResponse<[OrgContactTypeObj]> {
+        public func getOrgContactTypes() async throws -> OktaResponse<[OrgContactTypeObj]> {
             try await send(try getOrgContactTypesURLRequest())
         }
         #endif
@@ -144,7 +144,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getOrgContactTypes() throws -> AnyPublisher<OktaResponse<[OrgContactTypeObj]>, Error> {
+        public func getOrgContactTypes() throws -> AnyPublisher<OktaResponse<[OrgContactTypeObj]>, Error> {
             publish(try getOrgContactTypesURLRequest())
         }
         #endif
@@ -162,7 +162,7 @@ public extension OktaClient {
          - parameter contactType: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getOrgContactUser(contactType: String, completion: @escaping (Result<OktaResponse<OrgContactUser>, Error>) -> Void) {
+        public func getOrgContactUser(contactType: String, completion: @escaping (Result<OktaResponse<OrgContactUser>, Error>) -> Void) {
             do {
                 send(try getOrgContactUserURLRequest(contactType: contactType), completion: completion)
             } catch {
@@ -177,7 +177,7 @@ public extension OktaClient {
          - parameter contactType: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOrgContactUser(contactType: String) async throws -> OktaResponse<OrgContactUser> {
+        public func getOrgContactUser(contactType: String) async throws -> OktaResponse<OrgContactUser> {
             try await send(try getOrgContactUserURLRequest(contactType: contactType))
         }
         #endif
@@ -189,7 +189,7 @@ public extension OktaClient {
          - parameter contactType: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getOrgContactUser(contactType: String) throws -> AnyPublisher<OktaResponse<OrgContactUser>, Error> {
+        public func getOrgContactUser(contactType: String) throws -> AnyPublisher<OktaResponse<OrgContactUser>, Error> {
             publish(try getOrgContactUserURLRequest(contactType: contactType))
         }
         #endif
@@ -204,7 +204,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getOrgOktaSupportSettings(completion: @escaping (Result<OktaResponse<OrgOktaSupportSettingsObj>, Error>) -> Void) {
+        public func getOrgOktaSupportSettings(completion: @escaping (Result<OktaResponse<OrgOktaSupportSettingsObj>, Error>) -> Void) {
             do {
                 send(try getOrgOktaSupportSettingsURLRequest(), completion: completion)
             } catch {
@@ -218,7 +218,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOrgOktaSupportSettings() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
+        public func getOrgOktaSupportSettings() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try getOrgOktaSupportSettingsURLRequest())
         }
         #endif
@@ -229,7 +229,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getOrgOktaSupportSettings() throws -> AnyPublisher<OktaResponse<OrgOktaSupportSettingsObj>, Error> {
+        public func getOrgOktaSupportSettings() throws -> AnyPublisher<OktaResponse<OrgOktaSupportSettingsObj>, Error> {
             publish(try getOrgOktaSupportSettingsURLRequest())
         }
         #endif
@@ -244,7 +244,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getOrgPreferences(completion: @escaping (Result<OktaResponse<OrgPreferences>, Error>) -> Void) {
+        public func getOrgPreferences(completion: @escaping (Result<OktaResponse<OrgPreferences>, Error>) -> Void) {
             do {
                 send(try getOrgPreferencesURLRequest(), completion: completion)
             } catch {
@@ -258,7 +258,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOrgPreferences() async throws -> OktaResponse<OrgPreferences> {
+        public func getOrgPreferences() async throws -> OktaResponse<OrgPreferences> {
             try await send(try getOrgPreferencesURLRequest())
         }
         #endif
@@ -269,7 +269,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getOrgPreferences() throws -> AnyPublisher<OktaResponse<OrgPreferences>, Error> {
+        public func getOrgPreferences() throws -> AnyPublisher<OktaResponse<OrgPreferences>, Error> {
             publish(try getOrgPreferencesURLRequest())
         }
         #endif
@@ -284,7 +284,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getOrgSettings(completion: @escaping (Result<OktaResponse<OrgSetting>, Error>) -> Void) {
+        public func getOrgSettings(completion: @escaping (Result<OktaResponse<OrgSetting>, Error>) -> Void) {
             do {
                 send(try getOrgSettingsURLRequest(), completion: completion)
             } catch {
@@ -298,7 +298,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOrgSettings() async throws -> OktaResponse<OrgSetting> {
+        public func getOrgSettings() async throws -> OktaResponse<OrgSetting> {
             try await send(try getOrgSettingsURLRequest())
         }
         #endif
@@ -309,7 +309,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getOrgSettings() throws -> AnyPublisher<OktaResponse<OrgSetting>, Error> {
+        public func getOrgSettings() throws -> AnyPublisher<OktaResponse<OrgSetting>, Error> {
             publish(try getOrgSettingsURLRequest())
         }
         #endif
@@ -324,7 +324,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func grantOktaSupport(completion: @escaping (Result<OktaResponse<OrgOktaSupportSettingsObj>, Error>) -> Void) {
+        public func grantOktaSupport(completion: @escaping (Result<OktaResponse<OrgOktaSupportSettingsObj>, Error>) -> Void) {
             do {
                 send(try grantOktaSupportURLRequest(), completion: completion)
             } catch {
@@ -338,7 +338,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func grantOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
+        public func grantOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try grantOktaSupportURLRequest())
         }
         #endif
@@ -349,7 +349,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func grantOktaSupport() throws -> AnyPublisher<OktaResponse<OrgOktaSupportSettingsObj>, Error> {
+        public func grantOktaSupport() throws -> AnyPublisher<OktaResponse<OrgOktaSupportSettingsObj>, Error> {
             publish(try grantOktaSupportURLRequest())
         }
         #endif
@@ -364,7 +364,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func hideOktaUIFooter(completion: @escaping (Result<OktaResponse<OrgPreferences>, Error>) -> Void) {
+        public func hideOktaUIFooter(completion: @escaping (Result<OktaResponse<OrgPreferences>, Error>) -> Void) {
             do {
                 send(try hideOktaUIFooterURLRequest(), completion: completion)
             } catch {
@@ -378,7 +378,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func hideOktaUIFooter() async throws -> OktaResponse<OrgPreferences> {
+        public func hideOktaUIFooter() async throws -> OktaResponse<OrgPreferences> {
             try await send(try hideOktaUIFooterURLRequest())
         }
         #endif
@@ -389,7 +389,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func hideOktaUIFooter() throws -> AnyPublisher<OktaResponse<OrgPreferences>, Error> {
+        public func hideOktaUIFooter() throws -> AnyPublisher<OktaResponse<OrgPreferences>, Error> {
             publish(try hideOktaUIFooterURLRequest())
         }
         #endif
@@ -404,7 +404,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func optInUsersToOktaCommunicationEmails(completion: @escaping (Result<OktaResponse<OrgOktaCommunicationSetting>, Error>) -> Void) {
+        public func optInUsersToOktaCommunicationEmails(completion: @escaping (Result<OktaResponse<OrgOktaCommunicationSetting>, Error>) -> Void) {
             do {
                 send(try optInUsersToOktaCommunicationEmailsURLRequest(), completion: completion)
             } catch {
@@ -418,7 +418,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func optInUsersToOktaCommunicationEmails() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
+        public func optInUsersToOktaCommunicationEmails() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try optInUsersToOktaCommunicationEmailsURLRequest())
         }
         #endif
@@ -429,7 +429,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func optInUsersToOktaCommunicationEmails() throws -> AnyPublisher<OktaResponse<OrgOktaCommunicationSetting>, Error> {
+        public func optInUsersToOktaCommunicationEmails() throws -> AnyPublisher<OktaResponse<OrgOktaCommunicationSetting>, Error> {
             publish(try optInUsersToOktaCommunicationEmailsURLRequest())
         }
         #endif
@@ -444,7 +444,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func optOutUsersFromOktaCommunicationEmails(completion: @escaping (Result<OktaResponse<OrgOktaCommunicationSetting>, Error>) -> Void) {
+        public func optOutUsersFromOktaCommunicationEmails(completion: @escaping (Result<OktaResponse<OrgOktaCommunicationSetting>, Error>) -> Void) {
             do {
                 send(try optOutUsersFromOktaCommunicationEmailsURLRequest(), completion: completion)
             } catch {
@@ -458,7 +458,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func optOutUsersFromOktaCommunicationEmails() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
+        public func optOutUsersFromOktaCommunicationEmails() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try optOutUsersFromOktaCommunicationEmailsURLRequest())
         }
         #endif
@@ -469,7 +469,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func optOutUsersFromOktaCommunicationEmails() throws -> AnyPublisher<OktaResponse<OrgOktaCommunicationSetting>, Error> {
+        public func optOutUsersFromOktaCommunicationEmails() throws -> AnyPublisher<OktaResponse<OrgOktaCommunicationSetting>, Error> {
             publish(try optOutUsersFromOktaCommunicationEmailsURLRequest())
         }
         #endif
@@ -485,7 +485,7 @@ public extension OktaClient {
          - parameter orgSetting: (body)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func partialUpdateOrgSetting(orgSetting: OrgSetting? = nil, completion: @escaping (Result<OktaResponse<OrgSetting>, Error>) -> Void) {
+        public func partialUpdateOrgSetting(orgSetting: OrgSetting? = nil, completion: @escaping (Result<OktaResponse<OrgSetting>, Error>) -> Void) {
             do {
                 send(try partialUpdateOrgSettingURLRequest(orgSetting: orgSetting), completion: completion)
             } catch {
@@ -500,7 +500,7 @@ public extension OktaClient {
          - parameter orgSetting: (body)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func partialUpdateOrgSetting(orgSetting: OrgSetting? = nil) async throws -> OktaResponse<OrgSetting> {
+        public func partialUpdateOrgSetting(orgSetting: OrgSetting? = nil) async throws -> OktaResponse<OrgSetting> {
             try await send(try partialUpdateOrgSettingURLRequest(orgSetting: orgSetting))
         }
         #endif
@@ -512,7 +512,7 @@ public extension OktaClient {
          - parameter orgSetting: (body)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func partialUpdateOrgSetting(orgSetting: OrgSetting? = nil) throws -> AnyPublisher<OktaResponse<OrgSetting>, Error> {
+        public func partialUpdateOrgSetting(orgSetting: OrgSetting? = nil) throws -> AnyPublisher<OktaResponse<OrgSetting>, Error> {
             publish(try partialUpdateOrgSettingURLRequest(orgSetting: orgSetting))
         }
         #endif
@@ -527,7 +527,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func revokeOktaSupport(completion: @escaping (Result<OktaResponse<OrgOktaSupportSettingsObj>, Error>) -> Void) {
+        public func revokeOktaSupport(completion: @escaping (Result<OktaResponse<OrgOktaSupportSettingsObj>, Error>) -> Void) {
             do {
                 send(try revokeOktaSupportURLRequest(), completion: completion)
             } catch {
@@ -541,7 +541,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
+        public func revokeOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try revokeOktaSupportURLRequest())
         }
         #endif
@@ -552,7 +552,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func revokeOktaSupport() throws -> AnyPublisher<OktaResponse<OrgOktaSupportSettingsObj>, Error> {
+        public func revokeOktaSupport() throws -> AnyPublisher<OktaResponse<OrgOktaSupportSettingsObj>, Error> {
             publish(try revokeOktaSupportURLRequest())
         }
         #endif
@@ -567,7 +567,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func showOktaUIFooter(completion: @escaping (Result<OktaResponse<OrgPreferences>, Error>) -> Void) {
+        public func showOktaUIFooter(completion: @escaping (Result<OktaResponse<OrgPreferences>, Error>) -> Void) {
             do {
                 send(try showOktaUIFooterURLRequest(), completion: completion)
             } catch {
@@ -581,7 +581,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func showOktaUIFooter() async throws -> OktaResponse<OrgPreferences> {
+        public func showOktaUIFooter() async throws -> OktaResponse<OrgPreferences> {
             try await send(try showOktaUIFooterURLRequest())
         }
         #endif
@@ -592,7 +592,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func showOktaUIFooter() throws -> AnyPublisher<OktaResponse<OrgPreferences>, Error> {
+        public func showOktaUIFooter() throws -> AnyPublisher<OktaResponse<OrgPreferences>, Error> {
             publish(try showOktaUIFooterURLRequest())
         }
         #endif
@@ -611,7 +611,7 @@ public extension OktaClient {
          - parameter userIdString: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func updateOrgContactUser(contactType: String, userIdString: UserIdString, completion: @escaping (Result<OktaResponse<OrgContactUser>, Error>) -> Void) {
+        public func updateOrgContactUser(contactType: String, userIdString: UserIdString, completion: @escaping (Result<OktaResponse<OrgContactUser>, Error>) -> Void) {
             do {
                 send(try updateOrgContactUserURLRequest(contactType: contactType, userIdString: userIdString), completion: completion)
             } catch {
@@ -627,7 +627,7 @@ public extension OktaClient {
          - parameter userIdString: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateOrgContactUser(contactType: String, userIdString: UserIdString) async throws -> OktaResponse<OrgContactUser> {
+        public func updateOrgContactUser(contactType: String, userIdString: UserIdString) async throws -> OktaResponse<OrgContactUser> {
             try await send(try updateOrgContactUserURLRequest(contactType: contactType, userIdString: userIdString))
         }
         #endif
@@ -640,7 +640,7 @@ public extension OktaClient {
          - parameter userIdString: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateOrgContactUser(contactType: String, userIdString: UserIdString) throws -> AnyPublisher<OktaResponse<OrgContactUser>, Error> {
+        public func updateOrgContactUser(contactType: String, userIdString: UserIdString) throws -> AnyPublisher<OktaResponse<OrgContactUser>, Error> {
             publish(try updateOrgContactUserURLRequest(contactType: contactType, userIdString: userIdString))
         }
         #endif
@@ -656,7 +656,7 @@ public extension OktaClient {
          - parameter orgSetting: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func updateOrgSetting(orgSetting: OrgSetting, completion: @escaping (Result<OktaResponse<OrgSetting>, Error>) -> Void) {
+        public func updateOrgSetting(orgSetting: OrgSetting, completion: @escaping (Result<OktaResponse<OrgSetting>, Error>) -> Void) {
             do {
                 send(try updateOrgSettingURLRequest(orgSetting: orgSetting), completion: completion)
             } catch {
@@ -671,7 +671,7 @@ public extension OktaClient {
          - parameter orgSetting: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateOrgSetting(orgSetting: OrgSetting) async throws -> OktaResponse<OrgSetting> {
+        public func updateOrgSetting(orgSetting: OrgSetting) async throws -> OktaResponse<OrgSetting> {
             try await send(try updateOrgSettingURLRequest(orgSetting: orgSetting))
         }
         #endif
@@ -683,7 +683,7 @@ public extension OktaClient {
          - parameter orgSetting: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateOrgSetting(orgSetting: OrgSetting) throws -> AnyPublisher<OktaResponse<OrgSetting>, Error> {
+        public func updateOrgSetting(orgSetting: OrgSetting) throws -> AnyPublisher<OktaResponse<OrgSetting>, Error> {
             publish(try updateOrgSettingURLRequest(orgSetting: orgSetting))
         }
         #endif

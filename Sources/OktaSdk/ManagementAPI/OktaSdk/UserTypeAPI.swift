@@ -39,7 +39,7 @@ public extension OktaClient {
          - parameter userType: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func createUserType(userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
+        public func createUserType(userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
             do {
                 send(try createUserTypeURLRequest(userType: userType), completion: completion)
             } catch {
@@ -53,7 +53,7 @@ public extension OktaClient {
          - parameter userType: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createUserType(userType: UserType) async throws -> OktaResponse<UserType> {
+        public func createUserType(userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try createUserTypeURLRequest(userType: userType))
         }
         #endif
@@ -64,7 +64,7 @@ public extension OktaClient {
          - parameter userType: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createUserType(userType: UserType) throws -> AnyPublisher<OktaResponse<UserType>, Error> {
+        public func createUserType(userType: UserType) throws -> AnyPublisher<OktaResponse<UserType>, Error> {
             publish(try createUserTypeURLRequest(userType: userType))
         }
         #endif
@@ -81,7 +81,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func deleteUserType(typeId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func deleteUserType(typeId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deleteUserTypeURLRequest(typeId: typeId), completion: completion)
             } catch {
@@ -95,7 +95,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteUserType(typeId: String) async throws -> OktaResponse<Empty> {
+        public func deleteUserType(typeId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteUserTypeURLRequest(typeId: typeId))
         }
         #endif
@@ -106,7 +106,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteUserType(typeId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func deleteUserType(typeId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deleteUserTypeURLRequest(typeId: typeId))
         }
         #endif
@@ -123,7 +123,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getUserType(typeId: String, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
+        public func getUserType(typeId: String, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
             do {
                 send(try getUserTypeURLRequest(typeId: typeId), completion: completion)
             } catch {
@@ -137,7 +137,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getUserType(typeId: String) async throws -> OktaResponse<UserType> {
+        public func getUserType(typeId: String) async throws -> OktaResponse<UserType> {
             try await send(try getUserTypeURLRequest(typeId: typeId))
         }
         #endif
@@ -148,7 +148,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getUserType(typeId: String) throws -> AnyPublisher<OktaResponse<UserType>, Error> {
+        public func getUserType(typeId: String) throws -> AnyPublisher<OktaResponse<UserType>, Error> {
             publish(try getUserTypeURLRequest(typeId: typeId))
         }
         #endif
@@ -162,7 +162,7 @@ public extension OktaClient {
 
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listUserTypes(completion: @escaping (Result<OktaResponse<[UserType]>, Error>) -> Void) {
+        public func listUserTypes(completion: @escaping (Result<OktaResponse<[UserType]>, Error>) -> Void) {
             do {
                 send(try listUserTypesURLRequest(), completion: completion)
             } catch {
@@ -175,7 +175,7 @@ public extension OktaClient {
 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listUserTypes() async throws -> OktaResponse<[UserType]> {
+        public func listUserTypes() async throws -> OktaResponse<[UserType]> {
             try await send(try listUserTypesURLRequest())
         }
         #endif
@@ -185,7 +185,7 @@ public extension OktaClient {
 
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listUserTypes() throws -> AnyPublisher<OktaResponse<[UserType]>, Error> {
+        public func listUserTypes() throws -> AnyPublisher<OktaResponse<[UserType]>, Error> {
             publish(try listUserTypesURLRequest())
         }
         #endif
@@ -203,7 +203,7 @@ public extension OktaClient {
          - parameter userType: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func replaceUserType(typeId: String, userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
+        public func replaceUserType(typeId: String, userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
             do {
                 send(try replaceUserTypeURLRequest(typeId: typeId, userType: userType), completion: completion)
             } catch {
@@ -218,7 +218,7 @@ public extension OktaClient {
          - parameter userType: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func replaceUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
+        public func replaceUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try replaceUserTypeURLRequest(typeId: typeId, userType: userType))
         }
         #endif
@@ -230,7 +230,7 @@ public extension OktaClient {
          - parameter userType: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func replaceUserType(typeId: String, userType: UserType) throws -> AnyPublisher<OktaResponse<UserType>, Error> {
+        public func replaceUserType(typeId: String, userType: UserType) throws -> AnyPublisher<OktaResponse<UserType>, Error> {
             publish(try replaceUserTypeURLRequest(typeId: typeId, userType: userType))
         }
         #endif
@@ -248,7 +248,7 @@ public extension OktaClient {
          - parameter userType: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func updateUserType(typeId: String, userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
+        public func updateUserType(typeId: String, userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
             do {
                 send(try updateUserTypeURLRequest(typeId: typeId, userType: userType), completion: completion)
             } catch {
@@ -263,7 +263,7 @@ public extension OktaClient {
          - parameter userType: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
+        public func updateUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try updateUserTypeURLRequest(typeId: typeId, userType: userType))
         }
         #endif
@@ -275,7 +275,7 @@ public extension OktaClient {
          - parameter userType: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateUserType(typeId: String, userType: UserType) throws -> AnyPublisher<OktaResponse<UserType>, Error> {
+        public func updateUserType(typeId: String, userType: UserType) throws -> AnyPublisher<OktaResponse<UserType>, Error> {
             publish(try updateUserTypeURLRequest(typeId: typeId, userType: userType))
         }
         #endif
