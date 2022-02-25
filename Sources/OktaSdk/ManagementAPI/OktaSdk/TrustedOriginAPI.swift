@@ -41,7 +41,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func activateOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
+        public func activateOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
             do {
                 send(try activateOriginURLRequest(trustedOriginId: trustedOriginId), completion: completion)
             } catch {
@@ -55,7 +55,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
+        public func activateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try activateOriginURLRequest(trustedOriginId: trustedOriginId))
         }
         #endif
@@ -66,7 +66,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func activateOrigin(trustedOriginId: String) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
+        public func activateOrigin(trustedOriginId: String) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
             publish(try activateOriginURLRequest(trustedOriginId: trustedOriginId))
         }
         #endif
@@ -81,7 +81,7 @@ public extension OktaClient {
          - parameter trustedOrigin: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func createOrigin(trustedOrigin: TrustedOrigin, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
+        public func createOrigin(trustedOrigin: TrustedOrigin, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
             do {
                 send(try createOriginURLRequest(trustedOrigin: trustedOrigin), completion: completion)
             } catch {
@@ -95,7 +95,7 @@ public extension OktaClient {
          - parameter trustedOrigin: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createOrigin(trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
+        public func createOrigin(trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try createOriginURLRequest(trustedOrigin: trustedOrigin))
         }
         #endif
@@ -106,7 +106,7 @@ public extension OktaClient {
          - parameter trustedOrigin: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createOrigin(trustedOrigin: TrustedOrigin) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
+        public func createOrigin(trustedOrigin: TrustedOrigin) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
             publish(try createOriginURLRequest(trustedOrigin: trustedOrigin))
         }
         #endif
@@ -123,7 +123,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func deactivateOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
+        public func deactivateOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
             do {
                 send(try deactivateOriginURLRequest(trustedOriginId: trustedOriginId), completion: completion)
             } catch {
@@ -137,7 +137,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
+        public func deactivateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try deactivateOriginURLRequest(trustedOriginId: trustedOriginId))
         }
         #endif
@@ -148,7 +148,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deactivateOrigin(trustedOriginId: String) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
+        public func deactivateOrigin(trustedOriginId: String) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
             publish(try deactivateOriginURLRequest(trustedOriginId: trustedOriginId))
         }
         #endif
@@ -165,7 +165,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func deleteOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func deleteOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deleteOriginURLRequest(trustedOriginId: trustedOriginId), completion: completion)
             } catch {
@@ -179,7 +179,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteOrigin(trustedOriginId: String) async throws -> OktaResponse<Empty> {
+        public func deleteOrigin(trustedOriginId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteOriginURLRequest(trustedOriginId: trustedOriginId))
         }
         #endif
@@ -190,7 +190,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteOrigin(trustedOriginId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func deleteOrigin(trustedOriginId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deleteOriginURLRequest(trustedOriginId: trustedOriginId))
         }
         #endif
@@ -207,7 +207,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
+        public func getOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
             do {
                 send(try getOriginURLRequest(trustedOriginId: trustedOriginId), completion: completion)
             } catch {
@@ -221,7 +221,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
+        public func getOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try getOriginURLRequest(trustedOriginId: trustedOriginId))
         }
         #endif
@@ -232,7 +232,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getOrigin(trustedOriginId: String) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
+        public func getOrigin(trustedOriginId: String) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
             publish(try getOriginURLRequest(trustedOriginId: trustedOriginId))
         }
         #endif
@@ -255,7 +255,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to -1)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[TrustedOrigin]>, Error>) -> Void) {
+        public func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[TrustedOrigin]>, Error>) -> Void) {
             do {
                 send(try listOriginsURLRequest(q: q, filter: filter, after: after, limit: limit), completion: completion)
             } catch {
@@ -272,7 +272,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to -1)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[TrustedOrigin]> {
+        public func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[TrustedOrigin]> {
             try await send(try listOriginsURLRequest(q: q, filter: filter, after: after, limit: limit))
         }
         #endif
@@ -286,7 +286,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to -1)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[TrustedOrigin]>, Error> {
+        public func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[TrustedOrigin]>, Error> {
             publish(try listOriginsURLRequest(q: q, filter: filter, after: after, limit: limit))
         }
         #endif
@@ -304,7 +304,7 @@ public extension OktaClient {
          - parameter trustedOrigin: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
+        public func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
             do {
                 send(try updateOriginURLRequest(trustedOriginId: trustedOriginId, trustedOrigin: trustedOrigin), completion: completion)
             } catch {
@@ -319,7 +319,7 @@ public extension OktaClient {
          - parameter trustedOrigin: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
+        public func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try updateOriginURLRequest(trustedOriginId: trustedOriginId, trustedOrigin: trustedOrigin))
         }
         #endif
@@ -331,7 +331,7 @@ public extension OktaClient {
          - parameter trustedOrigin: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
+        public func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
             publish(try updateOriginURLRequest(trustedOriginId: trustedOriginId, trustedOrigin: trustedOrigin))
         }
         #endif

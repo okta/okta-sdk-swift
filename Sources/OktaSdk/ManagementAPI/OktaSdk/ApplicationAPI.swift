@@ -42,7 +42,7 @@ public extension OktaClient {
          - parameter appId: (path) Application ID. 
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func activateApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func activateApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try activateApplicationURLRequest(appId: appId), completion: completion)
             } catch {
@@ -57,7 +57,7 @@ public extension OktaClient {
          - parameter appId: (path) Application ID. 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func activateApplication(appId: String) async throws -> OktaResponse<Empty> {
+        public func activateApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateApplicationURLRequest(appId: appId))
         }
         #endif
@@ -69,7 +69,7 @@ public extension OktaClient {
          - parameter appId: (path) Application ID. 
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func activateApplication(appId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func activateApplication(appId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try activateApplicationURLRequest(appId: appId))
         }
         #endif
@@ -88,7 +88,7 @@ public extension OktaClient {
          - parameter appUser: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func assignUserToApplication(appId: String, appUser: AppUser, completion: @escaping (Result<OktaResponse<AppUser>, Error>) -> Void) {
+        public func assignUserToApplication(appId: String, appUser: AppUser, completion: @escaping (Result<OktaResponse<AppUser>, Error>) -> Void) {
             do {
                 send(try assignUserToApplicationURLRequest(appId: appId, appUser: appUser), completion: completion)
             } catch {
@@ -104,7 +104,7 @@ public extension OktaClient {
          - parameter appUser: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func assignUserToApplication(appId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
+        public func assignUserToApplication(appId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
             try await send(try assignUserToApplicationURLRequest(appId: appId, appUser: appUser))
         }
         #endif
@@ -117,7 +117,7 @@ public extension OktaClient {
          - parameter appUser: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func assignUserToApplication(appId: String, appUser: AppUser) throws -> AnyPublisher<OktaResponse<AppUser>, Error> {
+        public func assignUserToApplication(appId: String, appUser: AppUser) throws -> AnyPublisher<OktaResponse<AppUser>, Error> {
             publish(try assignUserToApplicationURLRequest(appId: appId, appUser: appUser))
         }
         #endif
@@ -140,7 +140,7 @@ public extension OktaClient {
          - parameter targetAid: (query) Unique key of the target Application 
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func cloneApplicationKey(appId: String, keyId: String, targetAid: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+        public func cloneApplicationKey(appId: String, keyId: String, targetAid: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
             do {
                 send(try cloneApplicationKeyURLRequest(appId: appId, keyId: keyId, targetAid: targetAid), completion: completion)
             } catch {
@@ -157,7 +157,7 @@ public extension OktaClient {
          - parameter targetAid: (query) Unique key of the target Application 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func cloneApplicationKey(appId: String, keyId: String, targetAid: String) async throws -> OktaResponse<JsonWebKey> {
+        public func cloneApplicationKey(appId: String, keyId: String, targetAid: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try cloneApplicationKeyURLRequest(appId: appId, keyId: keyId, targetAid: targetAid))
         }
         #endif
@@ -171,7 +171,7 @@ public extension OktaClient {
          - parameter targetAid: (query) Unique key of the target Application 
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func cloneApplicationKey(appId: String, keyId: String, targetAid: String) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
+        public func cloneApplicationKey(appId: String, keyId: String, targetAid: String) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
             publish(try cloneApplicationKeyURLRequest(appId: appId, keyId: keyId, targetAid: targetAid))
         }
         #endif
@@ -193,7 +193,7 @@ public extension OktaClient {
          - parameter oktaAccessGatewayAgent: (header)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil, completion: @escaping (Result<OktaResponse<Application>, Error>) -> Void) {
+        public func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil, completion: @escaping (Result<OktaResponse<Application>, Error>) -> Void) {
             do {
                 send(try createApplicationURLRequest(application: application, activate: activate, oktaAccessGatewayAgent: oktaAccessGatewayAgent), completion: completion)
             } catch {
@@ -210,7 +210,7 @@ public extension OktaClient {
          - parameter oktaAccessGatewayAgent: (header)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) async throws -> OktaResponse<Application> {
+        public func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) async throws -> OktaResponse<Application> {
             try await send(try createApplicationURLRequest(application: application, activate: activate, oktaAccessGatewayAgent: oktaAccessGatewayAgent))
         }
         #endif
@@ -224,7 +224,7 @@ public extension OktaClient {
          - parameter oktaAccessGatewayAgent: (header)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) throws -> AnyPublisher<OktaResponse<Application>, Error> {
+        public func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) throws -> AnyPublisher<OktaResponse<Application>, Error> {
             publish(try createApplicationURLRequest(application: application, activate: activate, oktaAccessGatewayAgent: oktaAccessGatewayAgent))
         }
         #endif
@@ -245,7 +245,7 @@ public extension OktaClient {
          - parameter applicationGroupAssignment: (body)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil, completion: @escaping (Result<OktaResponse<ApplicationGroupAssignment>, Error>) -> Void) {
+        public func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil, completion: @escaping (Result<OktaResponse<ApplicationGroupAssignment>, Error>) -> Void) {
             do {
                 send(try createApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, applicationGroupAssignment: applicationGroupAssignment), completion: completion)
             } catch {
@@ -262,7 +262,7 @@ public extension OktaClient {
          - parameter applicationGroupAssignment: (body)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
+        public func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
             try await send(try createApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, applicationGroupAssignment: applicationGroupAssignment))
         }
         #endif
@@ -276,7 +276,7 @@ public extension OktaClient {
          - parameter applicationGroupAssignment: (body)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) throws -> AnyPublisher<OktaResponse<ApplicationGroupAssignment>, Error> {
+        public func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) throws -> AnyPublisher<OktaResponse<ApplicationGroupAssignment>, Error> {
             publish(try createApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, applicationGroupAssignment: applicationGroupAssignment))
         }
         #endif
@@ -294,7 +294,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func deactivateApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func deactivateApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deactivateApplicationURLRequest(appId: appId), completion: completion)
             } catch {
@@ -309,7 +309,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deactivateApplication(appId: String) async throws -> OktaResponse<Empty> {
+        public func deactivateApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateApplicationURLRequest(appId: appId))
         }
         #endif
@@ -321,7 +321,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deactivateApplication(appId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func deactivateApplication(appId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deactivateApplicationURLRequest(appId: appId))
         }
         #endif
@@ -339,7 +339,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func deleteApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func deleteApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deleteApplicationURLRequest(appId: appId), completion: completion)
             } catch {
@@ -354,7 +354,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteApplication(appId: String) async throws -> OktaResponse<Empty> {
+        public func deleteApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteApplicationURLRequest(appId: appId))
         }
         #endif
@@ -366,7 +366,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteApplication(appId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func deleteApplication(appId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deleteApplicationURLRequest(appId: appId))
         }
         #endif
@@ -386,7 +386,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func deleteApplicationGroupAssignment(appId: String, groupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func deleteApplicationGroupAssignment(appId: String, groupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deleteApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId), completion: completion)
             } catch {
@@ -402,7 +402,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteApplicationGroupAssignment(appId: String, groupId: String) async throws -> OktaResponse<Empty> {
+        public func deleteApplicationGroupAssignment(appId: String, groupId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId))
         }
         #endif
@@ -415,7 +415,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteApplicationGroupAssignment(appId: String, groupId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func deleteApplicationGroupAssignment(appId: String, groupId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deleteApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId))
         }
         #endif
@@ -438,7 +438,7 @@ public extension OktaClient {
          - parameter sendEmail: (query)  (optional, default to false)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deleteApplicationUserURLRequest(appId: appId, userId: userId, sendEmail: sendEmail), completion: completion)
             } catch {
@@ -455,7 +455,7 @@ public extension OktaClient {
          - parameter sendEmail: (query)  (optional, default to false)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
+        public func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try deleteApplicationUserURLRequest(appId: appId, userId: userId, sendEmail: sendEmail))
         }
         #endif
@@ -469,7 +469,7 @@ public extension OktaClient {
          - parameter sendEmail: (query)  (optional, default to false)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deleteApplicationUserURLRequest(appId: appId, userId: userId, sendEmail: sendEmail))
         }
         #endif
@@ -489,7 +489,7 @@ public extension OktaClient {
          - parameter validityYears: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func generateApplicationKey(appId: String, validityYears: Int? = nil, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+        public func generateApplicationKey(appId: String, validityYears: Int? = nil, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
             do {
                 send(try generateApplicationKeyURLRequest(appId: appId, validityYears: validityYears), completion: completion)
             } catch {
@@ -504,7 +504,7 @@ public extension OktaClient {
          - parameter validityYears: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func generateApplicationKey(appId: String, validityYears: Int? = nil) async throws -> OktaResponse<JsonWebKey> {
+        public func generateApplicationKey(appId: String, validityYears: Int? = nil) async throws -> OktaResponse<JsonWebKey> {
             try await send(try generateApplicationKeyURLRequest(appId: appId, validityYears: validityYears))
         }
         #endif
@@ -516,7 +516,7 @@ public extension OktaClient {
          - parameter validityYears: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func generateApplicationKey(appId: String, validityYears: Int? = nil) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
+        public func generateApplicationKey(appId: String, validityYears: Int? = nil) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
             publish(try generateApplicationKeyURLRequest(appId: appId, validityYears: validityYears))
         }
         #endif
@@ -535,7 +535,7 @@ public extension OktaClient {
          - parameter csrMetadata: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func generateCsrForApplication(appId: String, csrMetadata: CsrMetadata, completion: @escaping (Result<OktaResponse<Csr>, Error>) -> Void) {
+        public func generateCsrForApplication(appId: String, csrMetadata: CsrMetadata, completion: @escaping (Result<OktaResponse<Csr>, Error>) -> Void) {
             do {
                 send(try generateCsrForApplicationURLRequest(appId: appId, csrMetadata: csrMetadata), completion: completion)
             } catch {
@@ -551,7 +551,7 @@ public extension OktaClient {
          - parameter csrMetadata: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func generateCsrForApplication(appId: String, csrMetadata: CsrMetadata) async throws -> OktaResponse<Csr> {
+        public func generateCsrForApplication(appId: String, csrMetadata: CsrMetadata) async throws -> OktaResponse<Csr> {
             try await send(try generateCsrForApplicationURLRequest(appId: appId, csrMetadata: csrMetadata))
         }
         #endif
@@ -564,7 +564,7 @@ public extension OktaClient {
          - parameter csrMetadata: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func generateCsrForApplication(appId: String, csrMetadata: CsrMetadata) throws -> AnyPublisher<OktaResponse<Csr>, Error> {
+        public func generateCsrForApplication(appId: String, csrMetadata: CsrMetadata) throws -> AnyPublisher<OktaResponse<Csr>, Error> {
             publish(try generateCsrForApplicationURLRequest(appId: appId, csrMetadata: csrMetadata))
         }
         #endif
@@ -585,7 +585,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getApplication(appId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<Application>, Error>) -> Void) {
+        public func getApplication(appId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<Application>, Error>) -> Void) {
             do {
                 send(try getApplicationURLRequest(appId: appId, expand: expand), completion: completion)
             } catch {
@@ -601,7 +601,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getApplication(appId: String, expand: String? = nil) async throws -> OktaResponse<Application> {
+        public func getApplication(appId: String, expand: String? = nil) async throws -> OktaResponse<Application> {
             try await send(try getApplicationURLRequest(appId: appId, expand: expand))
         }
         #endif
@@ -614,7 +614,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getApplication(appId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<Application>, Error> {
+        public func getApplication(appId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<Application>, Error> {
             publish(try getApplicationURLRequest(appId: appId, expand: expand))
         }
         #endif
@@ -637,7 +637,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<ApplicationGroupAssignment>, Error>) -> Void) {
+        public func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<ApplicationGroupAssignment>, Error>) -> Void) {
             do {
                 send(try getApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, expand: expand), completion: completion)
             } catch {
@@ -654,7 +654,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
+        public func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
             try await send(try getApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, expand: expand))
         }
         #endif
@@ -668,7 +668,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<ApplicationGroupAssignment>, Error> {
+        public func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<ApplicationGroupAssignment>, Error> {
             publish(try getApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, expand: expand))
         }
         #endif
@@ -688,7 +688,7 @@ public extension OktaClient {
          - parameter keyId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getApplicationKey(appId: String, keyId: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+        public func getApplicationKey(appId: String, keyId: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
             do {
                 send(try getApplicationKeyURLRequest(appId: appId, keyId: keyId), completion: completion)
             } catch {
@@ -704,7 +704,7 @@ public extension OktaClient {
          - parameter keyId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getApplicationKey(appId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
+        public func getApplicationKey(appId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try getApplicationKeyURLRequest(appId: appId, keyId: keyId))
         }
         #endif
@@ -717,7 +717,7 @@ public extension OktaClient {
          - parameter keyId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getApplicationKey(appId: String, keyId: String) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
+        public func getApplicationKey(appId: String, keyId: String) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
             publish(try getApplicationKeyURLRequest(appId: appId, keyId: keyId))
         }
         #endif
@@ -740,7 +740,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getApplicationUser(appId: String, userId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<AppUser>, Error>) -> Void) {
+        public func getApplicationUser(appId: String, userId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<AppUser>, Error>) -> Void) {
             do {
                 send(try getApplicationUserURLRequest(appId: appId, userId: userId, expand: expand), completion: completion)
             } catch {
@@ -757,7 +757,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getApplicationUser(appId: String, userId: String, expand: String? = nil) async throws -> OktaResponse<AppUser> {
+        public func getApplicationUser(appId: String, userId: String, expand: String? = nil) async throws -> OktaResponse<AppUser> {
             try await send(try getApplicationUserURLRequest(appId: appId, userId: userId, expand: expand))
         }
         #endif
@@ -771,7 +771,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getApplicationUser(appId: String, userId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<AppUser>, Error> {
+        public func getApplicationUser(appId: String, userId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<AppUser>, Error> {
             publish(try getApplicationUserURLRequest(appId: appId, userId: userId, expand: expand))
         }
         #endif
@@ -791,7 +791,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getCsrForApplication(appId: String, csrId: String, completion: @escaping (Result<OktaResponse<Csr>, Error>) -> Void) {
+        public func getCsrForApplication(appId: String, csrId: String, completion: @escaping (Result<OktaResponse<Csr>, Error>) -> Void) {
             do {
                 send(try getCsrForApplicationURLRequest(appId: appId, csrId: csrId), completion: completion)
             } catch {
@@ -807,7 +807,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getCsrForApplication(appId: String, csrId: String) async throws -> OktaResponse<Csr> {
+        public func getCsrForApplication(appId: String, csrId: String) async throws -> OktaResponse<Csr> {
             try await send(try getCsrForApplicationURLRequest(appId: appId, csrId: csrId))
         }
         #endif
@@ -820,7 +820,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getCsrForApplication(appId: String, csrId: String) throws -> AnyPublisher<OktaResponse<Csr>, Error> {
+        public func getCsrForApplication(appId: String, csrId: String) throws -> AnyPublisher<OktaResponse<Csr>, Error> {
             publish(try getCsrForApplicationURLRequest(appId: appId, csrId: csrId))
         }
         #endif
@@ -842,7 +842,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<OAuth2Token>, Error>) -> Void) {
+        public func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<OAuth2Token>, Error>) -> Void) {
             do {
                 send(try getOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId, expand: expand), completion: completion)
             } catch {
@@ -858,7 +858,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2Token> {
+        public func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2Token> {
             try await send(try getOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId, expand: expand))
         }
         #endif
@@ -871,7 +871,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<OAuth2Token>, Error> {
+        public func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<OAuth2Token>, Error> {
             publish(try getOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId, expand: expand))
         }
         #endif
@@ -893,7 +893,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<OAuth2ScopeConsentGrant>, Error>) -> Void) {
+        public func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<OAuth2ScopeConsentGrant>, Error>) -> Void) {
             do {
                 send(try getScopeConsentGrantURLRequest(appId: appId, grantId: grantId, expand: expand), completion: completion)
             } catch {
@@ -909,7 +909,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
+        public func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
             try await send(try getScopeConsentGrantURLRequest(appId: appId, grantId: grantId, expand: expand))
         }
         #endif
@@ -922,7 +922,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<OAuth2ScopeConsentGrant>, Error> {
+        public func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<OAuth2ScopeConsentGrant>, Error> {
             publish(try getScopeConsentGrantURLRequest(appId: appId, grantId: grantId, expand: expand))
         }
         #endif
@@ -940,7 +940,7 @@ public extension OktaClient {
          - parameter oAuth2ScopeConsentGrant: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant, completion: @escaping (Result<OktaResponse<OAuth2ScopeConsentGrant>, Error>) -> Void) {
+        public func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant, completion: @escaping (Result<OktaResponse<OAuth2ScopeConsentGrant>, Error>) -> Void) {
             do {
                 send(try grantConsentToScopeURLRequest(appId: appId, oAuth2ScopeConsentGrant: oAuth2ScopeConsentGrant), completion: completion)
             } catch {
@@ -955,7 +955,7 @@ public extension OktaClient {
          - parameter oAuth2ScopeConsentGrant: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
+        public func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
             try await send(try grantConsentToScopeURLRequest(appId: appId, oAuth2ScopeConsentGrant: oAuth2ScopeConsentGrant))
         }
         #endif
@@ -967,7 +967,7 @@ public extension OktaClient {
          - parameter oAuth2ScopeConsentGrant: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) throws -> AnyPublisher<OktaResponse<OAuth2ScopeConsentGrant>, Error> {
+        public func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) throws -> AnyPublisher<OktaResponse<OAuth2ScopeConsentGrant>, Error> {
             publish(try grantConsentToScopeURLRequest(appId: appId, oAuth2ScopeConsentGrant: oAuth2ScopeConsentGrant))
         }
         #endif
@@ -994,7 +994,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[ApplicationGroupAssignment]>, Error>) -> Void) {
+        public func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[ApplicationGroupAssignment]>, Error>) -> Void) {
             do {
                 send(try listApplicationGroupAssignmentsURLRequest(appId: appId, q: q, after: after, limit: limit, expand: expand), completion: completion)
             } catch {
@@ -1013,7 +1013,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) async throws -> OktaResponse<[ApplicationGroupAssignment]> {
+        public func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) async throws -> OktaResponse<[ApplicationGroupAssignment]> {
             try await send(try listApplicationGroupAssignmentsURLRequest(appId: appId, q: q, after: after, limit: limit, expand: expand))
         }
         #endif
@@ -1029,7 +1029,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[ApplicationGroupAssignment]>, Error> {
+        public func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[ApplicationGroupAssignment]>, Error> {
             publish(try listApplicationGroupAssignmentsURLRequest(appId: appId, q: q, after: after, limit: limit, expand: expand))
         }
         #endif
@@ -1047,7 +1047,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listApplicationKeys(appId: String, completion: @escaping (Result<OktaResponse<[JsonWebKey]>, Error>) -> Void) {
+        public func listApplicationKeys(appId: String, completion: @escaping (Result<OktaResponse<[JsonWebKey]>, Error>) -> Void) {
             do {
                 send(try listApplicationKeysURLRequest(appId: appId), completion: completion)
             } catch {
@@ -1062,7 +1062,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listApplicationKeys(appId: String) async throws -> OktaResponse<[JsonWebKey]> {
+        public func listApplicationKeys(appId: String) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try listApplicationKeysURLRequest(appId: appId))
         }
         #endif
@@ -1074,7 +1074,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listApplicationKeys(appId: String) throws -> AnyPublisher<OktaResponse<[JsonWebKey]>, Error> {
+        public func listApplicationKeys(appId: String) throws -> AnyPublisher<OktaResponse<[JsonWebKey]>, Error> {
             publish(try listApplicationKeysURLRequest(appId: appId))
         }
         #endif
@@ -1105,7 +1105,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[AppUser]>, Error>) -> Void) {
+        public func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[AppUser]>, Error>) -> Void) {
             do {
                 send(try listApplicationUsersURLRequest(appId: appId, q: q, queryScope: queryScope, after: after, limit: limit, filter: filter, expand: expand), completion: completion)
             } catch {
@@ -1126,7 +1126,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) async throws -> OktaResponse<[AppUser]> {
+        public func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) async throws -> OktaResponse<[AppUser]> {
             try await send(try listApplicationUsersURLRequest(appId: appId, q: q, queryScope: queryScope, after: after, limit: limit, filter: filter, expand: expand))
         }
         #endif
@@ -1144,7 +1144,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[AppUser]>, Error> {
+        public func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[AppUser]>, Error> {
             publish(try listApplicationUsersURLRequest(appId: appId, q: q, queryScope: queryScope, after: after, limit: limit, filter: filter, expand: expand))
         }
         #endif
@@ -1172,7 +1172,7 @@ public extension OktaClient {
          - parameter includeNonDeleted: (query)  (optional, default to false)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil, completion: @escaping (Result<OktaResponse<[Application]>, Error>) -> Void) {
+        public func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil, completion: @escaping (Result<OktaResponse<[Application]>, Error>) -> Void) {
             do {
                 send(try listApplicationsURLRequest(q: q, after: after, limit: limit, filter: filter, expand: expand, includeNonDeleted: includeNonDeleted), completion: completion)
             } catch {
@@ -1192,7 +1192,7 @@ public extension OktaClient {
          - parameter includeNonDeleted: (query)  (optional, default to false)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) async throws -> OktaResponse<[Application]> {
+        public func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) async throws -> OktaResponse<[Application]> {
             try await send(try listApplicationsURLRequest(q: q, after: after, limit: limit, filter: filter, expand: expand, includeNonDeleted: includeNonDeleted))
         }
         #endif
@@ -1209,7 +1209,7 @@ public extension OktaClient {
          - parameter includeNonDeleted: (query)  (optional, default to false)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) throws -> AnyPublisher<OktaResponse<[Application]>, Error> {
+        public func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) throws -> AnyPublisher<OktaResponse<[Application]>, Error> {
             publish(try listApplicationsURLRequest(q: q, after: after, limit: limit, filter: filter, expand: expand, includeNonDeleted: includeNonDeleted))
         }
         #endif
@@ -1227,7 +1227,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listCsrsForApplication(appId: String, completion: @escaping (Result<OktaResponse<[Csr]>, Error>) -> Void) {
+        public func listCsrsForApplication(appId: String, completion: @escaping (Result<OktaResponse<[Csr]>, Error>) -> Void) {
             do {
                 send(try listCsrsForApplicationURLRequest(appId: appId), completion: completion)
             } catch {
@@ -1242,7 +1242,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listCsrsForApplication(appId: String) async throws -> OktaResponse<[Csr]> {
+        public func listCsrsForApplication(appId: String) async throws -> OktaResponse<[Csr]> {
             try await send(try listCsrsForApplicationURLRequest(appId: appId))
         }
         #endif
@@ -1254,7 +1254,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listCsrsForApplication(appId: String) throws -> AnyPublisher<OktaResponse<[Csr]>, Error> {
+        public func listCsrsForApplication(appId: String) throws -> AnyPublisher<OktaResponse<[Csr]>, Error> {
             publish(try listCsrsForApplicationURLRequest(appId: appId))
         }
         #endif
@@ -1278,7 +1278,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to 20)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[OAuth2Token]>, Error>) -> Void) {
+        public func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[OAuth2Token]>, Error>) -> Void) {
             do {
                 send(try listOAuth2TokensForApplicationURLRequest(appId: appId, expand: expand, after: after, limit: limit), completion: completion)
             } catch {
@@ -1295,7 +1295,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to 20)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Token]> {
+        public func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Token]> {
             try await send(try listOAuth2TokensForApplicationURLRequest(appId: appId, expand: expand, after: after, limit: limit))
         }
         #endif
@@ -1309,7 +1309,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to 20)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[OAuth2Token]>, Error> {
+        public func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[OAuth2Token]>, Error> {
             publish(try listOAuth2TokensForApplicationURLRequest(appId: appId, expand: expand, after: after, limit: limit))
         }
         #endif
@@ -1329,7 +1329,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listScopeConsentGrants(appId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<[OAuth2ScopeConsentGrant]>, Error>) -> Void) {
+        public func listScopeConsentGrants(appId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<[OAuth2ScopeConsentGrant]>, Error>) -> Void) {
             do {
                 send(try listScopeConsentGrantsURLRequest(appId: appId, expand: expand), completion: completion)
             } catch {
@@ -1344,7 +1344,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listScopeConsentGrants(appId: String, expand: String? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
+        public func listScopeConsentGrants(appId: String, expand: String? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
             try await send(try listScopeConsentGrantsURLRequest(appId: appId, expand: expand))
         }
         #endif
@@ -1356,7 +1356,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listScopeConsentGrants(appId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[OAuth2ScopeConsentGrant]>, Error> {
+        public func listScopeConsentGrants(appId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[OAuth2ScopeConsentGrant]>, Error> {
             publish(try listScopeConsentGrantsURLRequest(appId: appId, expand: expand))
         }
         #endif
@@ -1377,7 +1377,7 @@ public extension OktaClient {
          - parameter body: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func publishCsrFromApplication(appId: String, csrId: String, body: URL, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+        public func publishCsrFromApplication(appId: String, csrId: String, body: URL, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
             do {
                 send(try publishCsrFromApplicationURLRequest(appId: appId, csrId: csrId, body: body), completion: completion)
             } catch {
@@ -1394,7 +1394,7 @@ public extension OktaClient {
          - parameter body: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func publishCsrFromApplication(appId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
+        public func publishCsrFromApplication(appId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
             try await send(try publishCsrFromApplicationURLRequest(appId: appId, csrId: csrId, body: body))
         }
         #endif
@@ -1408,7 +1408,7 @@ public extension OktaClient {
          - parameter body: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func publishCsrFromApplication(appId: String, csrId: String, body: URL) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
+        public func publishCsrFromApplication(appId: String, csrId: String, body: URL) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
             publish(try publishCsrFromApplicationURLRequest(appId: appId, csrId: csrId, body: body))
         }
         #endif
@@ -1428,7 +1428,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func revokeCsrFromApplication(appId: String, csrId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func revokeCsrFromApplication(appId: String, csrId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try revokeCsrFromApplicationURLRequest(appId: appId, csrId: csrId), completion: completion)
             } catch {
@@ -1444,7 +1444,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeCsrFromApplication(appId: String, csrId: String) async throws -> OktaResponse<Empty> {
+        public func revokeCsrFromApplication(appId: String, csrId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeCsrFromApplicationURLRequest(appId: appId, csrId: csrId))
         }
         #endif
@@ -1457,7 +1457,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func revokeCsrFromApplication(appId: String, csrId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func revokeCsrFromApplication(appId: String, csrId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try revokeCsrFromApplicationURLRequest(appId: appId, csrId: csrId))
         }
         #endif
@@ -1476,7 +1476,7 @@ public extension OktaClient {
          - parameter tokenId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func revokeOAuth2TokenForApplication(appId: String, tokenId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func revokeOAuth2TokenForApplication(appId: String, tokenId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try revokeOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId), completion: completion)
             } catch {
@@ -1491,7 +1491,7 @@ public extension OktaClient {
          - parameter tokenId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeOAuth2TokenForApplication(appId: String, tokenId: String) async throws -> OktaResponse<Empty> {
+        public func revokeOAuth2TokenForApplication(appId: String, tokenId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId))
         }
         #endif
@@ -1503,7 +1503,7 @@ public extension OktaClient {
          - parameter tokenId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func revokeOAuth2TokenForApplication(appId: String, tokenId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func revokeOAuth2TokenForApplication(appId: String, tokenId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try revokeOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId))
         }
         #endif
@@ -1520,7 +1520,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func revokeOAuth2TokensForApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func revokeOAuth2TokensForApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try revokeOAuth2TokensForApplicationURLRequest(appId: appId), completion: completion)
             } catch {
@@ -1534,7 +1534,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeOAuth2TokensForApplication(appId: String) async throws -> OktaResponse<Empty> {
+        public func revokeOAuth2TokensForApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeOAuth2TokensForApplicationURLRequest(appId: appId))
         }
         #endif
@@ -1545,7 +1545,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func revokeOAuth2TokensForApplication(appId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func revokeOAuth2TokensForApplication(appId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try revokeOAuth2TokensForApplicationURLRequest(appId: appId))
         }
         #endif
@@ -1564,7 +1564,7 @@ public extension OktaClient {
          - parameter grantId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func revokeScopeConsentGrant(appId: String, grantId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        public func revokeScopeConsentGrant(appId: String, grantId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try revokeScopeConsentGrantURLRequest(appId: appId, grantId: grantId), completion: completion)
             } catch {
@@ -1579,7 +1579,7 @@ public extension OktaClient {
          - parameter grantId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func revokeScopeConsentGrant(appId: String, grantId: String) async throws -> OktaResponse<Empty> {
+        public func revokeScopeConsentGrant(appId: String, grantId: String) async throws -> OktaResponse<Empty> {
             try await send(try revokeScopeConsentGrantURLRequest(appId: appId, grantId: grantId))
         }
         #endif
@@ -1591,7 +1591,7 @@ public extension OktaClient {
          - parameter grantId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func revokeScopeConsentGrant(appId: String, grantId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        public func revokeScopeConsentGrant(appId: String, grantId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try revokeScopeConsentGrantURLRequest(appId: appId, grantId: grantId))
         }
         #endif
@@ -1610,7 +1610,7 @@ public extension OktaClient {
          - parameter application: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func updateApplication(appId: String, application: Application, completion: @escaping (Result<OktaResponse<Application>, Error>) -> Void) {
+        public func updateApplication(appId: String, application: Application, completion: @escaping (Result<OktaResponse<Application>, Error>) -> Void) {
             do {
                 send(try updateApplicationURLRequest(appId: appId, application: application), completion: completion)
             } catch {
@@ -1626,7 +1626,7 @@ public extension OktaClient {
          - parameter application: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateApplication(appId: String, application: Application) async throws -> OktaResponse<Application> {
+        public func updateApplication(appId: String, application: Application) async throws -> OktaResponse<Application> {
             try await send(try updateApplicationURLRequest(appId: appId, application: application))
         }
         #endif
@@ -1639,7 +1639,7 @@ public extension OktaClient {
          - parameter application: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateApplication(appId: String, application: Application) throws -> AnyPublisher<OktaResponse<Application>, Error> {
+        public func updateApplication(appId: String, application: Application) throws -> AnyPublisher<OktaResponse<Application>, Error> {
             publish(try updateApplicationURLRequest(appId: appId, application: application))
         }
         #endif
@@ -1660,7 +1660,7 @@ public extension OktaClient {
          - parameter appUser: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func updateApplicationUser(appId: String, userId: String, appUser: AppUser, completion: @escaping (Result<OktaResponse<AppUser>, Error>) -> Void) {
+        public func updateApplicationUser(appId: String, userId: String, appUser: AppUser, completion: @escaping (Result<OktaResponse<AppUser>, Error>) -> Void) {
             do {
                 send(try updateApplicationUserURLRequest(appId: appId, userId: userId, appUser: appUser), completion: completion)
             } catch {
@@ -1677,7 +1677,7 @@ public extension OktaClient {
          - parameter appUser: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateApplicationUser(appId: String, userId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
+        public func updateApplicationUser(appId: String, userId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
             try await send(try updateApplicationUserURLRequest(appId: appId, userId: userId, appUser: appUser))
         }
         #endif
@@ -1691,7 +1691,7 @@ public extension OktaClient {
          - parameter appUser: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateApplicationUser(appId: String, userId: String, appUser: AppUser) throws -> AnyPublisher<OktaResponse<AppUser>, Error> {
+        public func updateApplicationUser(appId: String, userId: String, appUser: AppUser) throws -> AnyPublisher<OktaResponse<AppUser>, Error> {
             publish(try updateApplicationUserURLRequest(appId: appId, userId: userId, appUser: appUser))
         }
         #endif

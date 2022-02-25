@@ -41,7 +41,7 @@ public extension OktaClient {
          - parameter featureId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func getFeature(featureId: String, completion: @escaping (Result<OktaResponse<Feature>, Error>) -> Void) {
+        public func getFeature(featureId: String, completion: @escaping (Result<OktaResponse<Feature>, Error>) -> Void) {
             do {
                 send(try getFeatureURLRequest(featureId: featureId), completion: completion)
             } catch {
@@ -55,7 +55,7 @@ public extension OktaClient {
          - parameter featureId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func getFeature(featureId: String) async throws -> OktaResponse<Feature> {
+        public func getFeature(featureId: String) async throws -> OktaResponse<Feature> {
             try await send(try getFeatureURLRequest(featureId: featureId))
         }
         #endif
@@ -66,7 +66,7 @@ public extension OktaClient {
          - parameter featureId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getFeature(featureId: String) throws -> AnyPublisher<OktaResponse<Feature>, Error> {
+        public func getFeature(featureId: String) throws -> AnyPublisher<OktaResponse<Feature>, Error> {
             publish(try getFeatureURLRequest(featureId: featureId))
         }
         #endif
@@ -83,7 +83,7 @@ public extension OktaClient {
          - parameter featureId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listFeatureDependencies(featureId: String, completion: @escaping (Result<OktaResponse<[Feature]>, Error>) -> Void) {
+        public func listFeatureDependencies(featureId: String, completion: @escaping (Result<OktaResponse<[Feature]>, Error>) -> Void) {
             do {
                 send(try listFeatureDependenciesURLRequest(featureId: featureId), completion: completion)
             } catch {
@@ -97,7 +97,7 @@ public extension OktaClient {
          - parameter featureId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listFeatureDependencies(featureId: String) async throws -> OktaResponse<[Feature]> {
+        public func listFeatureDependencies(featureId: String) async throws -> OktaResponse<[Feature]> {
             try await send(try listFeatureDependenciesURLRequest(featureId: featureId))
         }
         #endif
@@ -108,7 +108,7 @@ public extension OktaClient {
          - parameter featureId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listFeatureDependencies(featureId: String) throws -> AnyPublisher<OktaResponse<[Feature]>, Error> {
+        public func listFeatureDependencies(featureId: String) throws -> AnyPublisher<OktaResponse<[Feature]>, Error> {
             publish(try listFeatureDependenciesURLRequest(featureId: featureId))
         }
         #endif
@@ -125,7 +125,7 @@ public extension OktaClient {
          - parameter featureId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listFeatureDependents(featureId: String, completion: @escaping (Result<OktaResponse<[Feature]>, Error>) -> Void) {
+        public func listFeatureDependents(featureId: String, completion: @escaping (Result<OktaResponse<[Feature]>, Error>) -> Void) {
             do {
                 send(try listFeatureDependentsURLRequest(featureId: featureId), completion: completion)
             } catch {
@@ -139,7 +139,7 @@ public extension OktaClient {
          - parameter featureId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listFeatureDependents(featureId: String) async throws -> OktaResponse<[Feature]> {
+        public func listFeatureDependents(featureId: String) async throws -> OktaResponse<[Feature]> {
             try await send(try listFeatureDependentsURLRequest(featureId: featureId))
         }
         #endif
@@ -150,7 +150,7 @@ public extension OktaClient {
          - parameter featureId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listFeatureDependents(featureId: String) throws -> AnyPublisher<OktaResponse<[Feature]>, Error> {
+        public func listFeatureDependents(featureId: String) throws -> AnyPublisher<OktaResponse<[Feature]>, Error> {
             publish(try listFeatureDependentsURLRequest(featureId: featureId))
         }
         #endif
@@ -164,7 +164,7 @@ public extension OktaClient {
 
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func listFeatures(completion: @escaping (Result<OktaResponse<[Feature]>, Error>) -> Void) {
+        public func listFeatures(completion: @escaping (Result<OktaResponse<[Feature]>, Error>) -> Void) {
             do {
                 send(try listFeaturesURLRequest(), completion: completion)
             } catch {
@@ -177,7 +177,7 @@ public extension OktaClient {
 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func listFeatures() async throws -> OktaResponse<[Feature]> {
+        public func listFeatures() async throws -> OktaResponse<[Feature]> {
             try await send(try listFeaturesURLRequest())
         }
         #endif
@@ -187,7 +187,7 @@ public extension OktaClient {
 
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listFeatures() throws -> AnyPublisher<OktaResponse<[Feature]>, Error> {
+        public func listFeatures() throws -> AnyPublisher<OktaResponse<[Feature]>, Error> {
             publish(try listFeaturesURLRequest())
         }
         #endif
@@ -209,7 +209,7 @@ public extension OktaClient {
          - parameter mode: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil, completion: @escaping (Result<OktaResponse<Feature>, Error>) -> Void) {
+        public func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil, completion: @escaping (Result<OktaResponse<Feature>, Error>) -> Void) {
             do {
                 send(try updateFeatureLifecycleURLRequest(featureId: featureId, lifecycle: lifecycle, mode: mode), completion: completion)
             } catch {
@@ -225,7 +225,7 @@ public extension OktaClient {
          - parameter mode: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil) async throws -> OktaResponse<Feature> {
+        public func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil) async throws -> OktaResponse<Feature> {
             try await send(try updateFeatureLifecycleURLRequest(featureId: featureId, lifecycle: lifecycle, mode: mode))
         }
         #endif
@@ -238,7 +238,7 @@ public extension OktaClient {
          - parameter mode: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil) throws -> AnyPublisher<OktaResponse<Feature>, Error> {
+        public func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil) throws -> AnyPublisher<OktaResponse<Feature>, Error> {
             publish(try updateFeatureLifecycleURLRequest(featureId: featureId, lifecycle: lifecycle, mode: mode))
         }
         #endif
