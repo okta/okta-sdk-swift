@@ -155,12 +155,7 @@ extension OktaClientAPI {
     }
 
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T> {
-        do {
-            let (data, response) = try await context.session.data(for: request)
-            return try validate(data, response)
-        } catch {
-            print(error)
-            throw error
-        }
+        let (data, response) = try await context.session.data(for: request)
+        return try validate(data, response)
     }
 }
