@@ -18,16 +18,10 @@ import AnyCodable
 
 public struct PasswordPolicyAuthenticationProviderCondition: Codable, Hashable {
 
-    public enum Provider: String, Codable, CaseIterable {
-        case activeDirectory = "ACTIVE_DIRECTORY"
-        case any = "ANY"
-        case ldap = "LDAP"
-        case okta = "OKTA"
-    }
     public var include: [String]?
-    public var provider: Provider?
+    public var provider: PasswordPolicyAuthenticationProviderType?
 
-    public init(include: [String]? = nil, provider: Provider? = nil) {
+    public init(include: [String]? = nil, provider: PasswordPolicyAuthenticationProviderType? = nil) {
         self.include = include
         self.provider = provider
     }

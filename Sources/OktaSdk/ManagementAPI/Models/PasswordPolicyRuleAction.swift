@@ -18,13 +18,9 @@ import AnyCodable
 
 public struct PasswordPolicyRuleAction: Codable, Hashable {
 
-    public enum Access: String, Codable, CaseIterable {
-        case allow = "ALLOW"
-        case deny = "DENY"
-    }
-    public var access: Access?
+    public var access: PolicyAccess?
 
-    public init(access: Access? = nil) {
+    public init(access: PolicyAccess? = nil) {
         self.access = access
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {

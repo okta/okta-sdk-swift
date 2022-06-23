@@ -18,12 +18,45 @@ import AnyCodable
 
 public struct OktaSignOnPolicy: Codable, Hashable {
 
+    public var created: Date?
+    public var description: String?
+    public var id: String?
+    public var lastUpdated: Date?
+    public var name: String?
+    public var priority: Int?
+    public var status: LifecycleStatus?
+    public var system: Bool?
+    public var type: PolicyType?
+    public var embedded: [String: AnyCodable]?
+    public var links: [String: AnyCodable]?
     public var conditions: OktaSignOnPolicyConditions?
 
-    public init(conditions: OktaSignOnPolicyConditions? = nil) {
+    public init(created: Date? = nil, description: String? = nil, id: String? = nil, lastUpdated: Date? = nil, name: String? = nil, priority: Int? = nil, status: LifecycleStatus? = nil, system: Bool? = nil, type: PolicyType? = nil, embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil, conditions: OktaSignOnPolicyConditions? = nil) {
+        self.created = created
+        self.description = description
+        self.id = id
+        self.lastUpdated = lastUpdated
+        self.name = name
+        self.priority = priority
+        self.status = status
+        self.system = system
+        self.type = type
+        self.embedded = embedded
+        self.links = links
         self.conditions = conditions
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case created
+        case description
+        case id
+        case lastUpdated
+        case name
+        case priority
+        case status
+        case system
+        case type
+        case embedded = "_embedded"
+        case links = "_links"
         case conditions
     }
 
@@ -31,6 +64,17 @@ public struct OktaSignOnPolicy: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(created, forKey: .created)
+        try container.encodeIfPresent(description, forKey: .description)
+        try container.encodeIfPresent(id, forKey: .id)
+        try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
+        try container.encodeIfPresent(name, forKey: .name)
+        try container.encodeIfPresent(priority, forKey: .priority)
+        try container.encodeIfPresent(status, forKey: .status)
+        try container.encodeIfPresent(system, forKey: .system)
+        try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(embedded, forKey: .embedded)
+        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(conditions, forKey: .conditions)
     }
 

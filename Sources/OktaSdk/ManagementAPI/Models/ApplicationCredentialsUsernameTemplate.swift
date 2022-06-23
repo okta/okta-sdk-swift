@@ -18,16 +18,19 @@ import AnyCodable
 
 public struct ApplicationCredentialsUsernameTemplate: Codable, Hashable {
 
+    public var pushStatus: String?
     public var suffix: String?
     public var template: String?
     public var type: String?
 
-    public init(suffix: String? = nil, template: String? = nil, type: String? = nil) {
+    public init(pushStatus: String? = nil, suffix: String? = nil, template: String? = nil, type: String? = nil) {
+        self.pushStatus = pushStatus
         self.suffix = suffix
         self.template = template
         self.type = type
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case pushStatus
         case suffix
         case template
         case type
@@ -37,6 +40,7 @@ public struct ApplicationCredentialsUsernameTemplate: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(pushStatus, forKey: .pushStatus)
         try container.encodeIfPresent(suffix, forKey: .suffix)
         try container.encodeIfPresent(template, forKey: .template)
         try container.encodeIfPresent(type, forKey: .type)

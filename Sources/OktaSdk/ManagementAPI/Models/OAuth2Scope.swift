@@ -18,25 +18,16 @@ import AnyCodable
 
 public struct OAuth2Scope: Codable, Hashable {
 
-    public enum Consent: String, Codable, CaseIterable {
-        case _required = "REQUIRED"
-        case implicit = "IMPLICIT"
-        case admin = "ADMIN"
-    }
-    public enum MetadataPublish: String, Codable, CaseIterable {
-        case allClients = "ALL_CLIENTS"
-        case noClients = "NO_CLIENTS"
-    }
-    public var consent: Consent?
+    public var consent: OAuth2ScopeConsentType?
     public var _default: Bool?
     public var description: String?
     public var displayName: String?
     public var id: String?
-    public var metadataPublish: MetadataPublish?
+    public var metadataPublish: OAuth2ScopeMetadataPublish?
     public var name: String?
     public var system: Bool?
 
-    public init(consent: Consent? = nil, _default: Bool? = nil, description: String? = nil, displayName: String? = nil, id: String? = nil, metadataPublish: MetadataPublish? = nil, name: String? = nil, system: Bool? = nil) {
+    public init(consent: OAuth2ScopeConsentType? = nil, _default: Bool? = nil, description: String? = nil, displayName: String? = nil, id: String? = nil, metadataPublish: OAuth2ScopeMetadataPublish? = nil, name: String? = nil, system: Bool? = nil) {
         self.consent = consent
         self._default = _default
         self.description = description

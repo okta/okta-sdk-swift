@@ -17,12 +17,12 @@ import Foundation
 import AnyCodable
 
 public enum LogCredentialProvider: String, Codable, CaseIterable, OktaClientArgument {
+    case duo = "DUO"
+    case google = "GOOGLE"
     case oktaAuthenticationProvider = "OKTA_AUTHENTICATION_PROVIDER"
     case oktaCredentialProvider = "OKTA_CREDENTIAL_PROVIDER"
     case rsa = "RSA"
     case symantec = "SYMANTEC"
-    case google = "GOOGLE"
-    case duo = "DUO"
     case yubikey = "YUBIKEY"
 
     var stringValue: String { rawValue }

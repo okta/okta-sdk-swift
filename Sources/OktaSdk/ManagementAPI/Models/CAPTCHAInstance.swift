@@ -16,20 +16,17 @@
 import Foundation
 import AnyCodable
 
+/**  */
 public struct CAPTCHAInstance: Codable, Hashable {
 
-    public enum ModelType: String, Codable, CaseIterable {
-        case hcaptcha = "HCAPTCHA"
-        case recaptchaV2 = "RECAPTCHA_V2"
-    }
     public var id: String?
     public var name: String?
     public var secretKey: String?
     public var siteKey: String?
-    public var type: ModelType?
-    public var link: CAPTCHAInstanceLink?
+    public var type: CAPTCHAType?
+    public var link: ApiTokenLink?
 
-    public init(id: String? = nil, name: String? = nil, secretKey: String? = nil, siteKey: String? = nil, type: ModelType? = nil, link: CAPTCHAInstanceLink? = nil) {
+    public init(id: String? = nil, name: String? = nil, secretKey: String? = nil, siteKey: String? = nil, type: CAPTCHAType? = nil, link: ApiTokenLink? = nil) {
         self.id = id
         self.name = name
         self.secretKey = secretKey

@@ -17,8 +17,8 @@ import Foundation
 import AnyCodable
 
 public enum UserSchemaAttributeScope: String, Codable, CaseIterable, OktaClientArgument {
-    case _self = "SELF"
     case _none = "NONE"
+    case _self = "SELF"
 
     var stringValue: String { rawValue }
 }

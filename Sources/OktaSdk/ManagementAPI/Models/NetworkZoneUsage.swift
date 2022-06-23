@@ -17,8 +17,8 @@ import Foundation
 import AnyCodable
 
 public enum NetworkZoneUsage: String, Codable, CaseIterable, OktaClientArgument {
-    case policy = "POLICY"
     case blocklist = "BLOCKLIST"
+    case policy = "POLICY"
 
     var stringValue: String { rawValue }
 }

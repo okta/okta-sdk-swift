@@ -18,24 +18,24 @@ import AnyCodable
 
 public struct OrgOktaCommunicationSetting: Codable, Hashable {
 
-    public var links: [String: AnyCodable]?
     public var optOutEmailUsers: Bool?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, optOutEmailUsers: Bool? = nil) {
-        self.links = links
+    public init(optOutEmailUsers: Bool? = nil, links: [String: AnyCodable]? = nil) {
         self.optOutEmailUsers = optOutEmailUsers
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case optOutEmailUsers
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(optOutEmailUsers, forKey: .optOutEmailUsers)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

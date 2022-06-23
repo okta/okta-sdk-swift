@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,329 +25,86 @@ public extension OktaClient {
     struct NetworkZoneAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func activateNetworkZoneURLRequest(zoneId: String) throws -> URLRequest {
-            try request(to: "/api/v1/zones/{zoneId}/lifecycle/activate".expanded(using: [
-                "zoneId": zoneId
-            ]), method: "POST")
-        }
-
         /**
-         Activate Network Zone
-         
-         - parameter zoneId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func activateNetworkZone(zoneId: String, completion: @escaping (Result<OktaResponse<NetworkZone>, Error>) -> Void) {
-            do {
-                send(try activateNetworkZoneURLRequest(zoneId: zoneId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Activate Network Zone
+         Activate a Network Zone
          
          - parameter zoneId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func activateNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
-            try await send(try activateNetworkZoneURLRequest(zoneId: zoneId))
+            try await send(try request(to: "/api/v1/zones/{zoneId}/lifecycle/activate".expanded(using: [
+                    "zoneId": zoneId
+                ]), method: "POST"))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Activate Network Zone
+         Create a Network Zone
+         
+         - parameter zone: (body)  
+         */
+        func createNetworkZone(zone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
+            try await send(try requestWithBody(to: "/api/v1/zones", method: "POST", body: zone))
+        }
+
+        /**
+         Deactivate a Network Zone
          
          - parameter zoneId: (path)  
          */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func activateNetworkZone(zoneId: String) throws -> AnyPublisher<OktaResponse<NetworkZone>, Error> {
-            publish(try activateNetworkZoneURLRequest(zoneId: zoneId))
-        }
-        #endif
-
-
-        internal func createNetworkZoneURLRequest(networkZone: NetworkZone) throws -> URLRequest {
-            try request(to: "/api/v1/zones", method: "POST", body: networkZone)
-        }
-
-        /**
-         Add Network Zone
-         
-         - parameter networkZone: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func createNetworkZone(networkZone: NetworkZone, completion: @escaping (Result<OktaResponse<NetworkZone>, Error>) -> Void) {
-            do {
-                send(try createNetworkZoneURLRequest(networkZone: networkZone), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Add Network Zone
-         
-         - parameter networkZone: (body)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func createNetworkZone(networkZone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
-            try await send(try createNetworkZoneURLRequest(networkZone: networkZone))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Add Network Zone
-         
-         - parameter networkZone: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createNetworkZone(networkZone: NetworkZone) throws -> AnyPublisher<OktaResponse<NetworkZone>, Error> {
-            publish(try createNetworkZoneURLRequest(networkZone: networkZone))
-        }
-        #endif
-
-
-        internal func deactivateNetworkZoneURLRequest(zoneId: String) throws -> URLRequest {
-            try request(to: "/api/v1/zones/{zoneId}/lifecycle/deactivate".expanded(using: [
-                "zoneId": zoneId
-            ]), method: "POST")
-        }
-
-        /**
-         Deactivate Network Zone
-         
-         - parameter zoneId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func deactivateNetworkZone(zoneId: String, completion: @escaping (Result<OktaResponse<NetworkZone>, Error>) -> Void) {
-            do {
-                send(try deactivateNetworkZoneURLRequest(zoneId: zoneId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Deactivate Network Zone
-         
-         - parameter zoneId: (path)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func deactivateNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
-            try await send(try deactivateNetworkZoneURLRequest(zoneId: zoneId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Deactivate Network Zone
-         
-         - parameter zoneId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deactivateNetworkZone(zoneId: String) throws -> AnyPublisher<OktaResponse<NetworkZone>, Error> {
-            publish(try deactivateNetworkZoneURLRequest(zoneId: zoneId))
-        }
-        #endif
-
-
-        internal func deleteNetworkZoneURLRequest(zoneId: String) throws -> URLRequest {
-            try request(to: "/api/v1/zones/{zoneId}".expanded(using: [
-                "zoneId": zoneId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/zones/{zoneId}/lifecycle/deactivate".expanded(using: [
+                    "zoneId": zoneId
+                ]), method: "POST"))
         }
 
         /**
-         Delete Network Zone
-         
-         - parameter zoneId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func deleteNetworkZone(zoneId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteNetworkZoneURLRequest(zoneId: zoneId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Delete Network Zone
+         Delete a Network Zone
          
          - parameter zoneId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func deleteNetworkZone(zoneId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deleteNetworkZoneURLRequest(zoneId: zoneId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Delete Network Zone
-         
-         - parameter zoneId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteNetworkZone(zoneId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteNetworkZoneURLRequest(zoneId: zoneId))
-        }
-        #endif
-
-
-        internal func getNetworkZoneURLRequest(zoneId: String) throws -> URLRequest {
-            try request(to: "/api/v1/zones/{zoneId}".expanded(using: [
-                "zoneId": zoneId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/zones/{zoneId}".expanded(using: [
+                    "zoneId": zoneId
+                ]), method: "DELETE"))
         }
 
         /**
-         Get Network Zone
-         
-         - parameter zoneId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getNetworkZone(zoneId: String, completion: @escaping (Result<OktaResponse<NetworkZone>, Error>) -> Void) {
-            do {
-                send(try getNetworkZoneURLRequest(zoneId: zoneId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Network Zone
+         Retrieve a Network Zone
          
          - parameter zoneId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
-            try await send(try getNetworkZoneURLRequest(zoneId: zoneId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Get Network Zone
-         
-         - parameter zoneId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getNetworkZone(zoneId: String) throws -> AnyPublisher<OktaResponse<NetworkZone>, Error> {
-            publish(try getNetworkZoneURLRequest(zoneId: zoneId))
-        }
-        #endif
-
-
-        internal func listNetworkZonesURLRequest(after: String? = nil, limit: Int? = nil, filter: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/zones", method: "GET", query: [
-                "after": after, 
-                "limit": limit, 
-                "filter": filter
-            ])
+            try await send(try request(to: "/api/v1/zones/{zoneId}".expanded(using: [
+                    "zoneId": zoneId
+                ]), method: "GET"))
         }
 
         /**
-         List Network Zones
-         
-         - parameter after: (query) Specifies the pagination cursor for the next page of network zones (optional)
-         - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
-         - parameter filter: (query) Filters zones by usage or id expression (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listNetworkZones(after: String? = nil, limit: Int? = nil, filter: String? = nil, completion: @escaping (Result<OktaResponse<[NetworkZone]>, Error>) -> Void) {
-            do {
-                send(try listNetworkZonesURLRequest(after: after, limit: limit, filter: filter), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Network Zones
+         List all Network Zones
          
          - parameter after: (query) Specifies the pagination cursor for the next page of network zones (optional)
          - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
          - parameter filter: (query) Filters zones by usage or id expression (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listNetworkZones(after: String? = nil, limit: Int? = nil, filter: String? = nil) async throws -> OktaResponse<[NetworkZone]> {
-            try await send(try listNetworkZonesURLRequest(after: after, limit: limit, filter: filter))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List Network Zones
-         
-         - parameter after: (query) Specifies the pagination cursor for the next page of network zones (optional)
-         - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
-         - parameter filter: (query) Filters zones by usage or id expression (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listNetworkZones(after: String? = nil, limit: Int? = nil, filter: String? = nil) throws -> AnyPublisher<OktaResponse<[NetworkZone]>, Error> {
-            publish(try listNetworkZonesURLRequest(after: after, limit: limit, filter: filter))
-        }
-        #endif
-
-
-        internal func updateNetworkZoneURLRequest(zoneId: String, networkZone: NetworkZone) throws -> URLRequest {
-            try request(to: "/api/v1/zones/{zoneId}".expanded(using: [
-                "zoneId": zoneId
-            ]), method: "PUT", body: networkZone)
+            try await send(try request(to: "/api/v1/zones", method: "GET", query: [
+                    "after": after, 
+                    "limit": limit, 
+                    "filter": filter
+                ]))
         }
 
         /**
-         Update Network Zone
+         Replace a Network Zone
          
          - parameter zoneId: (path)  
-         - parameter networkZone: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
+         - parameter zone: (body)  
          */
-        func updateNetworkZone(zoneId: String, networkZone: NetworkZone, completion: @escaping (Result<OktaResponse<NetworkZone>, Error>) -> Void) {
-            do {
-                send(try updateNetworkZoneURLRequest(zoneId: zoneId, networkZone: networkZone), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
+        func updateNetworkZone(zoneId: String, zone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
+            try await send(try requestWithBody(to: "/api/v1/zones/{zoneId}".expanded(using: [
+                    "zoneId": zoneId
+                ]), method: "PUT", body: zone))
         }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Update Network Zone
-         
-         - parameter zoneId: (path)  
-         - parameter networkZone: (body)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func updateNetworkZone(zoneId: String, networkZone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
-            try await send(try updateNetworkZoneURLRequest(zoneId: zoneId, networkZone: networkZone))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Update Network Zone
-         
-         - parameter zoneId: (path)  
-         - parameter networkZone: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateNetworkZone(zoneId: String, networkZone: NetworkZone) throws -> AnyPublisher<OktaResponse<NetworkZone>, Error> {
-            publish(try updateNetworkZoneURLRequest(zoneId: zoneId, networkZone: networkZone))
-        }
-        #endif
 
     }
 }

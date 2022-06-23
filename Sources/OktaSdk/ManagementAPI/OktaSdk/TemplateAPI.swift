@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,279 +25,72 @@ public extension OktaClient {
     struct TemplateAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func createSmsTemplateURLRequest(smsTemplate: SmsTemplate) throws -> URLRequest {
-            try request(to: "/api/v1/templates/sms", method: "POST", body: smsTemplate)
-        }
-
         /**
-         Add SMS Template
-         
-         - parameter smsTemplate: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func createSmsTemplate(smsTemplate: SmsTemplate, completion: @escaping (Result<OktaResponse<SmsTemplate>, Error>) -> Void) {
-            do {
-                send(try createSmsTemplateURLRequest(smsTemplate: smsTemplate), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Add SMS Template
+         Create an SMS Template
          
          - parameter smsTemplate: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func createSmsTemplate(smsTemplate: SmsTemplate) async throws -> OktaResponse<SmsTemplate> {
-            try await send(try createSmsTemplateURLRequest(smsTemplate: smsTemplate))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Add SMS Template
-         
-         - parameter smsTemplate: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createSmsTemplate(smsTemplate: SmsTemplate) throws -> AnyPublisher<OktaResponse<SmsTemplate>, Error> {
-            publish(try createSmsTemplateURLRequest(smsTemplate: smsTemplate))
-        }
-        #endif
-
-
-        internal func deleteSmsTemplateURLRequest(templateId: String) throws -> URLRequest {
-            try request(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
-                "templateId": templateId
-            ]), method: "DELETE")
+            try await send(try requestWithBody(to: "/api/v1/templates/sms", method: "POST", body: smsTemplate))
         }
 
         /**
-         Remove SMS Template
-         
-         - parameter templateId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func deleteSmsTemplate(templateId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteSmsTemplateURLRequest(templateId: templateId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Remove SMS Template
+         Delete an SMS Template
          
          - parameter templateId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func deleteSmsTemplate(templateId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deleteSmsTemplateURLRequest(templateId: templateId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Remove SMS Template
-         
-         - parameter templateId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteSmsTemplate(templateId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteSmsTemplateURLRequest(templateId: templateId))
-        }
-        #endif
-
-
-        internal func getSmsTemplateURLRequest(templateId: String) throws -> URLRequest {
-            try request(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
-                "templateId": templateId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
+                    "templateId": templateId
+                ]), method: "DELETE"))
         }
 
         /**
-         Get SMS Template
-         
-         - parameter templateId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getSmsTemplate(templateId: String, completion: @escaping (Result<OktaResponse<SmsTemplate>, Error>) -> Void) {
-            do {
-                send(try getSmsTemplateURLRequest(templateId: templateId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get SMS Template
+         Retrieve an SMS Template
          
          - parameter templateId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getSmsTemplate(templateId: String) async throws -> OktaResponse<SmsTemplate> {
-            try await send(try getSmsTemplateURLRequest(templateId: templateId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Get SMS Template
-         
-         - parameter templateId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getSmsTemplate(templateId: String) throws -> AnyPublisher<OktaResponse<SmsTemplate>, Error> {
-            publish(try getSmsTemplateURLRequest(templateId: templateId))
-        }
-        #endif
-
-
-        internal func listSmsTemplatesURLRequest(templateType: SmsTemplateType? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/templates/sms", method: "GET", query: [
-                "templateType": templateType
-            ])
+            try await send(try request(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
+                    "templateId": templateId
+                ]), method: "GET"))
         }
 
         /**
-         List SMS Templates
-         
-         - parameter templateType: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listSmsTemplates(templateType: SmsTemplateType? = nil, completion: @escaping (Result<OktaResponse<[SmsTemplate]>, Error>) -> Void) {
-            do {
-                send(try listSmsTemplatesURLRequest(templateType: templateType), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List SMS Templates
+         List all SMS Templates
          
          - parameter templateType: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listSmsTemplates(templateType: SmsTemplateType? = nil) async throws -> OktaResponse<[SmsTemplate]> {
-            try await send(try listSmsTemplatesURLRequest(templateType: templateType))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List SMS Templates
-         
-         - parameter templateType: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listSmsTemplates(templateType: SmsTemplateType? = nil) throws -> AnyPublisher<OktaResponse<[SmsTemplate]>, Error> {
-            publish(try listSmsTemplatesURLRequest(templateType: templateType))
-        }
-        #endif
-
-
-        internal func partialUpdateSmsTemplateURLRequest(templateId: String, smsTemplate: SmsTemplate) throws -> URLRequest {
-            try request(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
-                "templateId": templateId
-            ]), method: "POST", body: smsTemplate)
+            try await send(try request(to: "/api/v1/templates/sms", method: "GET", query: [
+                    "templateType": templateType
+                ]))
         }
 
         /**
-         Partial SMS Template Update
-         
-         - parameter templateId: (path)  
-         - parameter smsTemplate: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func partialUpdateSmsTemplate(templateId: String, smsTemplate: SmsTemplate, completion: @escaping (Result<OktaResponse<SmsTemplate>, Error>) -> Void) {
-            do {
-                send(try partialUpdateSmsTemplateURLRequest(templateId: templateId, smsTemplate: smsTemplate), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Partial SMS Template Update
+         Update an SMS Template
          
          - parameter templateId: (path)  
          - parameter smsTemplate: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func partialUpdateSmsTemplate(templateId: String, smsTemplate: SmsTemplate) async throws -> OktaResponse<SmsTemplate> {
-            try await send(try partialUpdateSmsTemplateURLRequest(templateId: templateId, smsTemplate: smsTemplate))
+            try await send(try requestWithBody(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
+                    "templateId": templateId
+                ]), method: "POST", body: smsTemplate))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Partial SMS Template Update
+         Replace an SMS Template
          
          - parameter templateId: (path)  
          - parameter smsTemplate: (body)  
          */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func partialUpdateSmsTemplate(templateId: String, smsTemplate: SmsTemplate) throws -> AnyPublisher<OktaResponse<SmsTemplate>, Error> {
-            publish(try partialUpdateSmsTemplateURLRequest(templateId: templateId, smsTemplate: smsTemplate))
-        }
-        #endif
-
-
-        internal func updateSmsTemplateURLRequest(templateId: String, smsTemplate: SmsTemplate) throws -> URLRequest {
-            try request(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
-                "templateId": templateId
-            ]), method: "PUT", body: smsTemplate)
-        }
-
-        /**
-         Update SMS Template
-         
-         - parameter templateId: (path)  
-         - parameter smsTemplate: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func updateSmsTemplate(templateId: String, smsTemplate: SmsTemplate, completion: @escaping (Result<OktaResponse<SmsTemplate>, Error>) -> Void) {
-            do {
-                send(try updateSmsTemplateURLRequest(templateId: templateId, smsTemplate: smsTemplate), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Update SMS Template
-         
-         - parameter templateId: (path)  
-         - parameter smsTemplate: (body)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func updateSmsTemplate(templateId: String, smsTemplate: SmsTemplate) async throws -> OktaResponse<SmsTemplate> {
-            try await send(try updateSmsTemplateURLRequest(templateId: templateId, smsTemplate: smsTemplate))
+            try await send(try requestWithBody(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
+                    "templateId": templateId
+                ]), method: "PUT", body: smsTemplate))
         }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Update SMS Template
-         
-         - parameter templateId: (path)  
-         - parameter smsTemplate: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateSmsTemplate(templateId: String, smsTemplate: SmsTemplate) throws -> AnyPublisher<OktaResponse<SmsTemplate>, Error> {
-            publish(try updateSmsTemplateURLRequest(templateId: templateId, smsTemplate: smsTemplate))
-        }
-        #endif
 
     }
 }

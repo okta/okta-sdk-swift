@@ -19,21 +19,21 @@ import AnyCodable
 public struct UserSchemaPublic: Codable, Hashable {
 
     public var id: String?
-    public var type: String?
     public var properties: [String: UserSchemaAttribute]?
     public var _required: [String]?
+    public var type: String?
 
-    public init(id: String? = nil, type: String? = nil, properties: [String: UserSchemaAttribute]? = nil, _required: [String]? = nil) {
+    public init(id: String? = nil, properties: [String: UserSchemaAttribute]? = nil, _required: [String]? = nil, type: String? = nil) {
         self.id = id
-        self.type = type
         self.properties = properties
         self._required = _required
+        self.type = type
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case id
-        case type
         case properties
         case _required = "required"
+        case type
     }
 
     // Encodable protocol methods
@@ -41,9 +41,9 @@ public struct UserSchemaPublic: Codable, Hashable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(id, forKey: .id)
-        try container.encodeIfPresent(type, forKey: .type)
         try container.encodeIfPresent(properties, forKey: .properties)
         try container.encodeIfPresent(_required, forKey: ._required)
+        try container.encodeIfPresent(type, forKey: .type)
     }
 
 

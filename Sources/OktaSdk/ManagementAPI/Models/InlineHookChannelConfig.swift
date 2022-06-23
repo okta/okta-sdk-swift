@@ -20,20 +20,20 @@ public struct InlineHookChannelConfig: Codable, Hashable {
 
     public var authScheme: InlineHookChannelConfigAuthScheme?
     public var headers: [InlineHookChannelConfigHeaders]?
-    public var uri: String?
     public var method: String?
+    public var uri: String?
 
-    public init(authScheme: InlineHookChannelConfigAuthScheme? = nil, headers: [InlineHookChannelConfigHeaders]? = nil, uri: String? = nil, method: String? = nil) {
+    public init(authScheme: InlineHookChannelConfigAuthScheme? = nil, headers: [InlineHookChannelConfigHeaders]? = nil, method: String? = nil, uri: String? = nil) {
         self.authScheme = authScheme
         self.headers = headers
-        self.uri = uri
         self.method = method
+        self.uri = uri
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case authScheme
         case headers
-        case uri
         case method
+        case uri
     }
 
     // Encodable protocol methods
@@ -42,8 +42,8 @@ public struct InlineHookChannelConfig: Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(authScheme, forKey: .authScheme)
         try container.encodeIfPresent(headers, forKey: .headers)
-        try container.encodeIfPresent(uri, forKey: .uri)
         try container.encodeIfPresent(method, forKey: .method)
+        try container.encodeIfPresent(uri, forKey: .uri)
     }
 
 

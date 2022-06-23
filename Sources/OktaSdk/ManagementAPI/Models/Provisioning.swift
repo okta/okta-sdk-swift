@@ -18,17 +18,12 @@ import AnyCodable
 
 public struct Provisioning: Codable, Hashable {
 
-    public enum Action: String, Codable, CaseIterable {
-        case auto = "AUTO"
-        case callout = "CALLOUT"
-        case disabled = "DISABLED"
-    }
-    public var action: Action?
+    public var action: ProvisioningAction?
     public var conditions: ProvisioningConditions?
     public var groups: ProvisioningGroups?
     public var profileMaster: Bool?
 
-    public init(action: Action? = nil, conditions: ProvisioningConditions? = nil, groups: ProvisioningGroups? = nil, profileMaster: Bool? = nil) {
+    public init(action: ProvisioningAction? = nil, conditions: ProvisioningConditions? = nil, groups: ProvisioningGroups? = nil, profileMaster: Bool? = nil) {
         self.action = action
         self.conditions = conditions
         self.groups = groups

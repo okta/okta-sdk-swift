@@ -18,40 +18,40 @@ import AnyCodable
 
 public struct ModelError: Codable, Hashable {
 
+    public var errorCauses: [ErrorErrorCausesInner]?
     /** An Okta code for this type of error */
     public var errorCode: String?
-    /** A short description of what caused this error. Sometimes this contains dynamically-generated information about your specific error. */
-    public var errorSummary: String?
-    /** An Okta code for this type of error */
-    public var errorLink: String?
     /** A unique identifier for this error. This can be used by Okta Support to help with troubleshooting. */
     public var errorId: String?
-    public var errorCauses: [ErrorErrorCauses]?
+    /** An Okta code for this type of error */
+    public var errorLink: String?
+    /** A short description of what caused this error. Sometimes this contains dynamically-generated information about your specific error. */
+    public var errorSummary: String?
 
-    public init(errorCode: String? = nil, errorSummary: String? = nil, errorLink: String? = nil, errorId: String? = nil, errorCauses: [ErrorErrorCauses]? = nil) {
-        self.errorCode = errorCode
-        self.errorSummary = errorSummary
-        self.errorLink = errorLink
-        self.errorId = errorId
+    public init(errorCauses: [ErrorErrorCausesInner]? = nil, errorCode: String? = nil, errorId: String? = nil, errorLink: String? = nil, errorSummary: String? = nil) {
         self.errorCauses = errorCauses
+        self.errorCode = errorCode
+        self.errorId = errorId
+        self.errorLink = errorLink
+        self.errorSummary = errorSummary
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case errorCode
-        case errorSummary
-        case errorLink
-        case errorId
         case errorCauses
+        case errorCode
+        case errorId
+        case errorLink
+        case errorSummary
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(errorCode, forKey: .errorCode)
-        try container.encodeIfPresent(errorSummary, forKey: .errorSummary)
-        try container.encodeIfPresent(errorLink, forKey: .errorLink)
-        try container.encodeIfPresent(errorId, forKey: .errorId)
         try container.encodeIfPresent(errorCauses, forKey: .errorCauses)
+        try container.encodeIfPresent(errorCode, forKey: .errorCode)
+        try container.encodeIfPresent(errorId, forKey: .errorId)
+        try container.encodeIfPresent(errorLink, forKey: .errorLink)
+        try container.encodeIfPresent(errorSummary, forKey: .errorSummary)
     }
 
 

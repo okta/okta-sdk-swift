@@ -37,10 +37,10 @@ public struct PolicyRuleConditions: Codable, Hashable {
     public var riskScore: RiskScorePolicyRuleCondition?
     public var scopes: OAuth2ScopesMediationPolicyRuleCondition?
     public var userIdentifier: UserIdentifierPolicyRuleCondition?
-    public var userStatus: UserStatusPolicyRuleCondition?
     public var users: UserPolicyRuleCondition?
+    public var userStatus: UserStatusPolicyRuleCondition?
 
-    public init(app: AppAndInstancePolicyRuleCondition? = nil, apps: AppInstancePolicyRuleCondition? = nil, authContext: PolicyRuleAuthContextCondition? = nil, authProvider: PasswordPolicyAuthenticationProviderCondition? = nil, beforeScheduledAction: BeforeScheduledActionPolicyRuleCondition? = nil, clients: ClientPolicyCondition? = nil, context: ContextPolicyRuleCondition? = nil, device: DevicePolicyRuleCondition? = nil, grantTypes: GrantTypePolicyRuleCondition? = nil, groups: GroupPolicyRuleCondition? = nil, identityProvider: IdentityProviderPolicyRuleCondition? = nil, mdmEnrollment: MDMEnrollmentPolicyRuleCondition? = nil, network: PolicyNetworkCondition? = nil, people: PolicyPeopleCondition? = nil, platform: PlatformPolicyRuleCondition? = nil, risk: RiskPolicyRuleCondition? = nil, riskScore: RiskScorePolicyRuleCondition? = nil, scopes: OAuth2ScopesMediationPolicyRuleCondition? = nil, userIdentifier: UserIdentifierPolicyRuleCondition? = nil, userStatus: UserStatusPolicyRuleCondition? = nil, users: UserPolicyRuleCondition? = nil) {
+    public init(app: AppAndInstancePolicyRuleCondition? = nil, apps: AppInstancePolicyRuleCondition? = nil, authContext: PolicyRuleAuthContextCondition? = nil, authProvider: PasswordPolicyAuthenticationProviderCondition? = nil, beforeScheduledAction: BeforeScheduledActionPolicyRuleCondition? = nil, clients: ClientPolicyCondition? = nil, context: ContextPolicyRuleCondition? = nil, device: DevicePolicyRuleCondition? = nil, grantTypes: GrantTypePolicyRuleCondition? = nil, groups: GroupPolicyRuleCondition? = nil, identityProvider: IdentityProviderPolicyRuleCondition? = nil, mdmEnrollment: MDMEnrollmentPolicyRuleCondition? = nil, network: PolicyNetworkCondition? = nil, people: PolicyPeopleCondition? = nil, platform: PlatformPolicyRuleCondition? = nil, risk: RiskPolicyRuleCondition? = nil, riskScore: RiskScorePolicyRuleCondition? = nil, scopes: OAuth2ScopesMediationPolicyRuleCondition? = nil, userIdentifier: UserIdentifierPolicyRuleCondition? = nil, users: UserPolicyRuleCondition? = nil, userStatus: UserStatusPolicyRuleCondition? = nil) {
         self.app = app
         self.apps = apps
         self.authContext = authContext
@@ -60,8 +60,8 @@ public struct PolicyRuleConditions: Codable, Hashable {
         self.riskScore = riskScore
         self.scopes = scopes
         self.userIdentifier = userIdentifier
-        self.userStatus = userStatus
         self.users = users
+        self.userStatus = userStatus
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case app
@@ -83,8 +83,8 @@ public struct PolicyRuleConditions: Codable, Hashable {
         case riskScore
         case scopes
         case userIdentifier
-        case userStatus
         case users
+        case userStatus
     }
 
     // Encodable protocol methods
@@ -110,8 +110,8 @@ public struct PolicyRuleConditions: Codable, Hashable {
         try container.encodeIfPresent(riskScore, forKey: .riskScore)
         try container.encodeIfPresent(scopes, forKey: .scopes)
         try container.encodeIfPresent(userIdentifier, forKey: .userIdentifier)
-        try container.encodeIfPresent(userStatus, forKey: .userStatus)
         try container.encodeIfPresent(users, forKey: .users)
+        try container.encodeIfPresent(userStatus, forKey: .userStatus)
     }
 
 

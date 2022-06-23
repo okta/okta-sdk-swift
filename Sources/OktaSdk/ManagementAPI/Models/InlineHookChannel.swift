@@ -18,14 +18,11 @@ import AnyCodable
 
 public struct InlineHookChannel: Codable, Hashable {
 
-    public enum ModelType: String, Codable, CaseIterable {
-        case http = "HTTP"
-    }
     public var config: InlineHookChannelConfig?
-    public var type: ModelType?
+    public var type: InlineHookChannelType?
     public var version: String?
 
-    public init(config: InlineHookChannelConfig? = nil, type: ModelType? = nil, version: String? = nil) {
+    public init(config: InlineHookChannelConfig? = nil, type: InlineHookChannelType? = nil, version: String? = nil) {
         self.config = config
         self.type = type
         self.version = version

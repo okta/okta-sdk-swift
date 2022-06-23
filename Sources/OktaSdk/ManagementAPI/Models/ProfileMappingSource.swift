@@ -18,32 +18,32 @@ import AnyCodable
 
 public struct ProfileMappingSource: Codable, Hashable {
 
-    public var links: [String: AnyCodable]?
     public var id: String?
     public var name: String?
     public var type: String?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, id: String? = nil, name: String? = nil, type: String? = nil) {
-        self.links = links
+    public init(id: String? = nil, name: String? = nil, type: String? = nil, links: [String: AnyCodable]? = nil) {
         self.id = id
         self.name = name
         self.type = type
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case id
         case name
         case type
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(id, forKey: .id)
         try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

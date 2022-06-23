@@ -18,15 +18,11 @@ import AnyCodable
 
 public struct UserIdentifierPolicyRuleCondition: Codable, Hashable {
 
-    public enum ModelType: String, Codable, CaseIterable {
-        case identifier = "IDENTIFIER"
-        case attribute = "ATTRIBUTE"
-    }
     public var attribute: String?
     public var patterns: [UserIdentifierConditionEvaluatorPattern]?
-    public var type: ModelType?
+    public var type: UserIdentifierType?
 
-    public init(attribute: String? = nil, patterns: [UserIdentifierConditionEvaluatorPattern]? = nil, type: ModelType? = nil) {
+    public init(attribute: String? = nil, patterns: [UserIdentifierConditionEvaluatorPattern]? = nil, type: UserIdentifierType? = nil) {
         self.attribute = attribute
         self.patterns = patterns
         self.type = type

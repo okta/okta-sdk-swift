@@ -18,7 +18,6 @@ import AnyCodable
 
 public struct InlineHook: Codable, Hashable {
 
-    public var links: [String: AnyCodable]?
     public var channel: InlineHookChannel?
     public var created: Date?
     public var id: String?
@@ -27,9 +26,9 @@ public struct InlineHook: Codable, Hashable {
     public var status: InlineHookStatus?
     public var type: InlineHookType?
     public var version: String?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, channel: InlineHookChannel? = nil, created: Date? = nil, id: String? = nil, lastUpdated: Date? = nil, name: String? = nil, status: InlineHookStatus? = nil, type: InlineHookType? = nil, version: String? = nil) {
-        self.links = links
+    public init(channel: InlineHookChannel? = nil, created: Date? = nil, id: String? = nil, lastUpdated: Date? = nil, name: String? = nil, status: InlineHookStatus? = nil, type: InlineHookType? = nil, version: String? = nil, links: [String: AnyCodable]? = nil) {
         self.channel = channel
         self.created = created
         self.id = id
@@ -38,9 +37,9 @@ public struct InlineHook: Codable, Hashable {
         self.status = status
         self.type = type
         self.version = version
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case channel
         case created
         case id
@@ -49,13 +48,13 @@ public struct InlineHook: Codable, Hashable {
         case status
         case type
         case version
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(channel, forKey: .channel)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(id, forKey: .id)
@@ -64,6 +63,7 @@ public struct InlineHook: Codable, Hashable {
         try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(type, forKey: .type)
         try container.encodeIfPresent(version, forKey: .version)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

@@ -17,14 +17,14 @@ import Foundation
 import AnyCodable
 
 public enum LogCredentialType: String, Codable, CaseIterable, OktaClientArgument {
-    case otp = "OTP"
-    case sms = "SMS"
-    case password = "PASSWORD"
     case assertion = "ASSERTION"
-    case iwa = "IWA"
     case email = "EMAIL"
-    case oauth2 = "OAUTH2"
+    case iwa = "IWA"
     case jwt = "JWT"
+    case oauth2Period0 = "OAuth 2.0"
+    case otp = "OTP"
+    case password = "PASSWORD"
+    case sms = "SMS"
 
     var stringValue: String { rawValue }
 }

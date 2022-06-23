@@ -18,17 +18,10 @@ import AnyCodable
 
 public struct UserIdentifierConditionEvaluatorPattern: Codable, Hashable {
 
-    public enum MatchType: String, Codable, CaseIterable {
-        case suffix = "SUFFIX"
-        case expression = "EXPRESSION"
-        case startsWith = "STARTS_WITH"
-        case equals = "EQUALS"
-        case contains = "CONTAINS"
-    }
-    public var matchType: MatchType?
+    public var matchType: UserIdentifierMatchType?
     public var value: String?
 
-    public init(matchType: MatchType? = nil, value: String? = nil) {
+    public init(matchType: UserIdentifierMatchType? = nil, value: String? = nil) {
         self.matchType = matchType
         self.value = value
     }

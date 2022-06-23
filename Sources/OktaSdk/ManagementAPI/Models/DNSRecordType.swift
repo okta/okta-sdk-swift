@@ -17,8 +17,8 @@ import Foundation
 import AnyCodable
 
 public enum DNSRecordType: String, Codable, CaseIterable, OktaClientArgument {
-    case txt = "TXT"
     case cname = "CNAME"
+    case txt = "TXT"
 
     var stringValue: String { rawValue }
 }

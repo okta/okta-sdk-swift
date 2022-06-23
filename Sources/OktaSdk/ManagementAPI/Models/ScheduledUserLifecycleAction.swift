@@ -18,19 +18,9 @@ import AnyCodable
 
 public struct ScheduledUserLifecycleAction: Codable, Hashable {
 
-    public enum Status: String, Codable, CaseIterable {
-        case active = "ACTIVE"
-        case inactive = "INACTIVE"
-        case pending = "PENDING"
-        case deleted = "DELETED"
-        case expiredPassword = "EXPIRED_PASSWORD"
-        case activating = "ACTIVATING"
-        case suspended = "SUSPENDED"
-        case deleting = "DELETING"
-    }
-    public var status: Status?
+    public var status: PolicyUserStatus?
 
-    public init(status: Status? = nil) {
+    public init(status: PolicyUserStatus? = nil) {
         self.status = status
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {

@@ -19,24 +19,48 @@ import AnyCodable
 public struct SwaApplicationSettingsApplication: Codable, Hashable {
 
     public var buttonField: String?
+    public var buttonSelector: String?
+    public var checkbox: String?
+    public var extraFieldSelector: String?
+    public var extraFieldValue: String?
     public var loginUrlRegex: String?
     public var passwordField: String?
+    public var passwordSelector: String?
+    public var redirectUrl: String?
+    public var targetURL: String?
     public var url: String?
     public var usernameField: String?
+    public var userNameSelector: String?
 
-    public init(buttonField: String? = nil, loginUrlRegex: String? = nil, passwordField: String? = nil, url: String? = nil, usernameField: String? = nil) {
+    public init(buttonField: String? = nil, buttonSelector: String? = nil, checkbox: String? = nil, extraFieldSelector: String? = nil, extraFieldValue: String? = nil, loginUrlRegex: String? = nil, passwordField: String? = nil, passwordSelector: String? = nil, redirectUrl: String? = nil, targetURL: String? = nil, url: String? = nil, usernameField: String? = nil, userNameSelector: String? = nil) {
         self.buttonField = buttonField
+        self.buttonSelector = buttonSelector
+        self.checkbox = checkbox
+        self.extraFieldSelector = extraFieldSelector
+        self.extraFieldValue = extraFieldValue
         self.loginUrlRegex = loginUrlRegex
         self.passwordField = passwordField
+        self.passwordSelector = passwordSelector
+        self.redirectUrl = redirectUrl
+        self.targetURL = targetURL
         self.url = url
         self.usernameField = usernameField
+        self.userNameSelector = userNameSelector
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case buttonField
+        case buttonSelector
+        case checkbox
+        case extraFieldSelector
+        case extraFieldValue
         case loginUrlRegex
         case passwordField
+        case passwordSelector
+        case redirectUrl
+        case targetURL
         case url
         case usernameField
+        case userNameSelector
     }
 
     // Encodable protocol methods
@@ -44,10 +68,18 @@ public struct SwaApplicationSettingsApplication: Codable, Hashable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(buttonField, forKey: .buttonField)
+        try container.encodeIfPresent(buttonSelector, forKey: .buttonSelector)
+        try container.encodeIfPresent(checkbox, forKey: .checkbox)
+        try container.encodeIfPresent(extraFieldSelector, forKey: .extraFieldSelector)
+        try container.encodeIfPresent(extraFieldValue, forKey: .extraFieldValue)
         try container.encodeIfPresent(loginUrlRegex, forKey: .loginUrlRegex)
         try container.encodeIfPresent(passwordField, forKey: .passwordField)
+        try container.encodeIfPresent(passwordSelector, forKey: .passwordSelector)
+        try container.encodeIfPresent(redirectUrl, forKey: .redirectUrl)
+        try container.encodeIfPresent(targetURL, forKey: .targetURL)
         try container.encodeIfPresent(url, forKey: .url)
         try container.encodeIfPresent(usernameField, forKey: .usernameField)
+        try container.encodeIfPresent(userNameSelector, forKey: .userNameSelector)
     }
 
 

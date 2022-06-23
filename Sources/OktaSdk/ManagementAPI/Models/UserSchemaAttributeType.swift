@@ -17,11 +17,11 @@ import Foundation
 import AnyCodable
 
 public enum UserSchemaAttributeType: String, Codable, CaseIterable, OktaClientArgument {
-    case string = "string"
-    case boolean = "boolean"
-    case number = "number"
-    case integer = "integer"
     case array = "array"
+    case boolean = "boolean"
+    case integer = "integer"
+    case number = "number"
+    case string = "string"
 
     var stringValue: String { rawValue }
 }

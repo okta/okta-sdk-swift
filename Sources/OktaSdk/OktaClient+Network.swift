@@ -12,10 +12,6 @@
 
 import Foundation
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -46,6 +42,12 @@ extension Date: OktaClientArgument {
     }
 }
 
+extension Array: OktaClientArgument where Element == String {
+    var stringValue: String {
+        joined(separator: ",")
+    }
+}
+
 internal extension OktaClient {
     struct APIContext {
         let baseURL: URL
@@ -61,22 +63,12 @@ internal protocol OktaClientAPI {
                  method: String,
                  query: [String:OktaClientArgument?]?,
                  headers: [String:OktaClientArgument?]?) throws -> URLRequest
-    func request<T: Encodable>(to path: String,
-                               method: String,
-                               query: [String:OktaClientArgument?]?,
-                               headers: [String:OktaClientArgument?]?,
-                               body: T?) throws -> URLRequest
-    func send<T: Decodable>(_ request: URLRequest, completion: @escaping (Result<OktaResponse<T>, Error>) -> Void)
-
-    #if swift(>=5.5.1) && !os(Linux)
-    @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+    func requestWithBody<T: Encodable>(to path: String,
+                                       method: String,
+                                       query: [String:OktaClientArgument?]?,
+                                       headers: [String:OktaClientArgument?]?,
+                                       body: T?) throws -> URLRequest
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T>
-    #endif
-    
-    #if canImport(Combine)
-    @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-    func publish<T: Decodable>(_ request: URLRequest) -> AnyPublisher<OktaResponse<T>, Error>
-    #endif
 }
 
 private let linkRegex = try? NSRegularExpression(pattern: "<([^>]+)>; rel=\"([^\"]+)\"", options: [])
@@ -105,8 +97,11 @@ extension OktaClientAPI {
                 links[key] = url
             }
         }
-                
-        return OktaResponse(result: try CodableHelper.jsonDecoder.decode(T.self, from: data),
+        
+        // Ensure empty data responses from DELETE operations can be handled by JSONDecoder
+        let parseData = data.isEmpty ? "{}".data(using: .utf8)! : data
+        
+        return OktaResponse(result: try CodableHelper.jsonDecoder.decode(T.self, from: parseData),
                             links: links,
                             rateInfo: OktaResponse.RateLimit(with: httpResponse.allHeaderFields),
                             requestId: httpResponse.allHeaderFields["x-okta-request-id"] as? String)
@@ -144,11 +139,11 @@ extension OktaClientAPI {
         return request
     }
 
-    func request<T: Encodable>(to path: String,
-                               method: String = "GET",
-                               query: [String:OktaClientArgument?]? = nil,
-                               headers: [String:OktaClientArgument?]? = nil,
-                               body: T?) throws -> URLRequest
+    func requestWithBody<T: Encodable>(to path: String,
+                                       method: String = "GET",
+                                       query: [String:OktaClientArgument?]? = nil,
+                                       headers: [String:OktaClientArgument?]? = nil,
+                                       body: T?) throws -> URLRequest
     {
         var result = try request(to: path, method: method, query: query, headers: headers)
         if let body = body {
@@ -157,39 +152,13 @@ extension OktaClientAPI {
         return result
     }
 
-    func send<T: Decodable>(_ request: URLRequest, completion: @escaping (Result<OktaResponse<T>, Error>) -> Void) {
-        context.session.dataTask(with: request) { data, response, error in
-            guard let data = data,
-                  let response = response
-            else {
-                completion(.failure(error ?? OktaClientError.unknown))
-                return
-            }
-
-            do {
-                try completion(.success(self.validate(data, response)))
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
-    }
-
-    #if swift(>=5.5.1) && !os(Linux)
-    @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T> {
-        let (data, response) = try await context.session.data(for: request)
-        return try validate(data, response)
+        do {
+            let (data, response) = try await context.session.data(for: request)
+            return try validate(data, response)
+        } catch {
+            print(error)
+            throw error
+        }
     }
-    #endif
-    
-    #if canImport(Combine)
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, *)
-    func publish<T: Decodable>(_ request: URLRequest) -> AnyPublisher<OktaResponse<T>, Error> {
-        context.session.dataTaskPublisher(for: request)
-            .tryMap {
-                try self.validate($0.data, $0.response)
-            }
-            .eraseToAnyPublisher()
-    }
-    #endif
 }

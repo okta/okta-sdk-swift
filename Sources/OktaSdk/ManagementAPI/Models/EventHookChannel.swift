@@ -18,14 +18,11 @@ import AnyCodable
 
 public struct EventHookChannel: Codable, Hashable {
 
-    public enum ModelType: String, Codable, CaseIterable {
-        case http = "HTTP"
-    }
     public var config: EventHookChannelConfig?
-    public var type: ModelType?
+    public var type: EventHookChannelType?
     public var version: String?
 
-    public init(config: EventHookChannelConfig? = nil, type: ModelType? = nil, version: String? = nil) {
+    public init(config: EventHookChannelConfig? = nil, type: EventHookChannelType? = nil, version: String? = nil) {
         self.config = config
         self.type = type
         self.version = version

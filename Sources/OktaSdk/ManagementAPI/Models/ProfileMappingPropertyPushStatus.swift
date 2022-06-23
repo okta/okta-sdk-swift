@@ -17,8 +17,8 @@ import Foundation
 import AnyCodable
 
 public enum ProfileMappingPropertyPushStatus: String, Codable, CaseIterable, OktaClientArgument {
-    case push = "PUSH"
     case dontPush = "DONT_PUSH"
+    case push = "PUSH"
 
     var stringValue: String { rawValue }
 }

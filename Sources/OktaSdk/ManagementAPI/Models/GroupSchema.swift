@@ -19,7 +19,6 @@ import AnyCodable
 public struct GroupSchema: Codable, Hashable {
 
     public var schema: String?
-    public var links: [String: AnyCodable]?
     public var created: String?
     public var definitions: GroupSchemaDefinitions?
     public var description: String?
@@ -29,10 +28,10 @@ public struct GroupSchema: Codable, Hashable {
     public var properties: UserSchemaProperties?
     public var title: String?
     public var type: String?
+    public var links: [String: AnyCodable]?
 
-    public init(schema: String? = nil, links: [String: AnyCodable]? = nil, created: String? = nil, definitions: GroupSchemaDefinitions? = nil, description: String? = nil, id: String? = nil, lastUpdated: String? = nil, name: String? = nil, properties: UserSchemaProperties? = nil, title: String? = nil, type: String? = nil) {
+    public init(schema: String? = nil, created: String? = nil, definitions: GroupSchemaDefinitions? = nil, description: String? = nil, id: String? = nil, lastUpdated: String? = nil, name: String? = nil, properties: UserSchemaProperties? = nil, title: String? = nil, type: String? = nil, links: [String: AnyCodable]? = nil) {
         self.schema = schema
-        self.links = links
         self.created = created
         self.definitions = definitions
         self.description = description
@@ -42,10 +41,10 @@ public struct GroupSchema: Codable, Hashable {
         self.properties = properties
         self.title = title
         self.type = type
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case schema = "$schema"
-        case links = "_links"
         case created
         case definitions
         case description
@@ -55,6 +54,7 @@ public struct GroupSchema: Codable, Hashable {
         case properties
         case title
         case type
+        case links = "_links"
     }
 
     // Encodable protocol methods
@@ -62,7 +62,6 @@ public struct GroupSchema: Codable, Hashable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(schema, forKey: .schema)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(definitions, forKey: .definitions)
         try container.encodeIfPresent(description, forKey: .description)
@@ -72,6 +71,7 @@ public struct GroupSchema: Codable, Hashable {
         try container.encodeIfPresent(properties, forKey: .properties)
         try container.encodeIfPresent(title, forKey: .title)
         try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,312 +25,88 @@ public extension OktaClient {
     struct TrustedOriginAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func activateOriginURLRequest(trustedOriginId: String) throws -> URLRequest {
-            try request(to: "/api/v1/trustedOrigins/{trustedOriginId}/lifecycle/activate".expanded(using: [
-                "trustedOriginId": trustedOriginId
-            ]), method: "POST")
-        }
-
         /**
-
-         - parameter trustedOriginId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func activateOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
-            do {
-                send(try activateOriginURLRequest(trustedOriginId: trustedOriginId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Activate a Trusted Origin
+         
          - parameter trustedOriginId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func activateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
-            try await send(try activateOriginURLRequest(trustedOriginId: trustedOriginId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter trustedOriginId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func activateOrigin(trustedOriginId: String) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
-            publish(try activateOriginURLRequest(trustedOriginId: trustedOriginId))
-        }
-        #endif
-
-
-        internal func createOriginURLRequest(trustedOrigin: TrustedOrigin) throws -> URLRequest {
-            try request(to: "/api/v1/trustedOrigins", method: "POST", body: trustedOrigin)
+            try await send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}/lifecycle/activate".expanded(using: [
+                    "trustedOriginId": trustedOriginId
+                ]), method: "POST"))
         }
 
         /**
-
-         - parameter trustedOrigin: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func createOrigin(trustedOrigin: TrustedOrigin, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
-            do {
-                send(try createOriginURLRequest(trustedOrigin: trustedOrigin), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Create a Trusted Origin
+         
          - parameter trustedOrigin: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func createOrigin(trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
-            try await send(try createOriginURLRequest(trustedOrigin: trustedOrigin))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter trustedOrigin: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createOrigin(trustedOrigin: TrustedOrigin) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
-            publish(try createOriginURLRequest(trustedOrigin: trustedOrigin))
-        }
-        #endif
-
-
-        internal func deactivateOriginURLRequest(trustedOriginId: String) throws -> URLRequest {
-            try request(to: "/api/v1/trustedOrigins/{trustedOriginId}/lifecycle/deactivate".expanded(using: [
-                "trustedOriginId": trustedOriginId
-            ]), method: "POST")
+            try await send(try requestWithBody(to: "/api/v1/trustedOrigins", method: "POST", body: trustedOrigin))
         }
 
         /**
-
-         - parameter trustedOriginId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func deactivateOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
-            do {
-                send(try deactivateOriginURLRequest(trustedOriginId: trustedOriginId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Deactivate a Trusted Origin
+         
          - parameter trustedOriginId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func deactivateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
-            try await send(try deactivateOriginURLRequest(trustedOriginId: trustedOriginId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter trustedOriginId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deactivateOrigin(trustedOriginId: String) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
-            publish(try deactivateOriginURLRequest(trustedOriginId: trustedOriginId))
-        }
-        #endif
-
-
-        internal func deleteOriginURLRequest(trustedOriginId: String) throws -> URLRequest {
-            try request(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
-                "trustedOriginId": trustedOriginId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}/lifecycle/deactivate".expanded(using: [
+                    "trustedOriginId": trustedOriginId
+                ]), method: "POST"))
         }
 
         /**
-
-         - parameter trustedOriginId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func deleteOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteOriginURLRequest(trustedOriginId: trustedOriginId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Delete a Trusted Origin
+         
          - parameter trustedOriginId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func deleteOrigin(trustedOriginId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deleteOriginURLRequest(trustedOriginId: trustedOriginId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter trustedOriginId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteOrigin(trustedOriginId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteOriginURLRequest(trustedOriginId: trustedOriginId))
-        }
-        #endif
-
-
-        internal func getOriginURLRequest(trustedOriginId: String) throws -> URLRequest {
-            try request(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
-                "trustedOriginId": trustedOriginId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
+                    "trustedOriginId": trustedOriginId
+                ]), method: "DELETE"))
         }
 
         /**
-
-         - parameter trustedOriginId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
-            do {
-                send(try getOriginURLRequest(trustedOriginId: trustedOriginId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Retrieve a Trusted Origin
+         
          - parameter trustedOriginId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
-            try await send(try getOriginURLRequest(trustedOriginId: trustedOriginId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter trustedOriginId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getOrigin(trustedOriginId: String) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
-            publish(try getOriginURLRequest(trustedOriginId: trustedOriginId))
-        }
-        #endif
-
-
-        internal func listOriginsURLRequest(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/trustedOrigins", method: "GET", query: [
-                "q": q, 
-                "filter": filter, 
-                "after": after, 
-                "limit": limit
-            ])
+            try await send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
+                    "trustedOriginId": trustedOriginId
+                ]), method: "GET"))
         }
 
         /**
-
-         - parameter q: (query)  (optional)
-         - parameter filter: (query)  (optional)
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to -1)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[TrustedOrigin]>, Error>) -> Void) {
-            do {
-                send(try listOriginsURLRequest(q: q, filter: filter, after: after, limit: limit), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         List all Trusted Origins
+         
          - parameter q: (query)  (optional)
          - parameter filter: (query)  (optional)
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to -1)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[TrustedOrigin]> {
-            try await send(try listOriginsURLRequest(q: q, filter: filter, after: after, limit: limit))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter q: (query)  (optional)
-         - parameter filter: (query)  (optional)
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to -1)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[TrustedOrigin]>, Error> {
-            publish(try listOriginsURLRequest(q: q, filter: filter, after: after, limit: limit))
-        }
-        #endif
-
-
-        internal func updateOriginURLRequest(trustedOriginId: String, trustedOrigin: TrustedOrigin) throws -> URLRequest {
-            try request(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
-                "trustedOriginId": trustedOriginId
-            ]), method: "PUT", body: trustedOrigin)
+            try await send(try request(to: "/api/v1/trustedOrigins", method: "GET", query: [
+                    "q": q, 
+                    "filter": filter, 
+                    "after": after, 
+                    "limit": limit
+                ]))
         }
 
         /**
-
-         - parameter trustedOriginId: (path)  
-         - parameter trustedOrigin: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
-            do {
-                send(try updateOriginURLRequest(trustedOriginId: trustedOriginId, trustedOrigin: trustedOrigin), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Replace a Trusted Origin
+         
          - parameter trustedOriginId: (path)  
          - parameter trustedOrigin: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
-            try await send(try updateOriginURLRequest(trustedOriginId: trustedOriginId, trustedOrigin: trustedOrigin))
+            try await send(try requestWithBody(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
+                    "trustedOriginId": trustedOriginId
+                ]), method: "PUT", body: trustedOrigin))
         }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter trustedOriginId: (path)  
-         - parameter trustedOrigin: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin) throws -> AnyPublisher<OktaResponse<TrustedOrigin>, Error> {
-            publish(try updateOriginURLRequest(trustedOriginId: trustedOriginId, trustedOrigin: trustedOrigin))
-        }
-        #endif
 
     }
 }

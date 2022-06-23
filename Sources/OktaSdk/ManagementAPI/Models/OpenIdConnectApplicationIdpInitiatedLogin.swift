@@ -18,24 +18,24 @@ import AnyCodable
 
 public struct OpenIdConnectApplicationIdpInitiatedLogin: Codable, Hashable {
 
-    public var mode: String?
     public var defaultScope: [String]?
+    public var mode: String?
 
-    public init(mode: String? = nil, defaultScope: [String]? = nil) {
-        self.mode = mode
+    public init(defaultScope: [String]? = nil, mode: String? = nil) {
         self.defaultScope = defaultScope
+        self.mode = mode
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case mode
         case defaultScope = "default_scope"
+        case mode
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(mode, forKey: .mode)
         try container.encodeIfPresent(defaultScope, forKey: .defaultScope)
+        try container.encodeIfPresent(mode, forKey: .mode)
     }
 
 

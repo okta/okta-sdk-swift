@@ -17,12 +17,12 @@ import Foundation
 import AnyCodable
 
 public enum LogAuthenticationProvider: String, Codable, CaseIterable, OktaClientArgument {
-    case oktaAuthenticationProvider = "OKTA_AUTHENTICATION_PROVIDER"
     case activeDirectory = "ACTIVE_DIRECTORY"
-    case ldap = "LDAP"
-    case federation = "FEDERATION"
-    case social = "SOCIAL"
     case factorProvider = "FACTOR_PROVIDER"
+    case federation = "FEDERATION"
+    case ldap = "LDAP"
+    case oktaAuthenticationProvider = "OKTA_AUTHENTICATION_PROVIDER"
+    case social = "SOCIAL"
 
     var stringValue: String { rawValue }
 }

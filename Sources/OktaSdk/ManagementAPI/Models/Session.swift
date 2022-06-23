@@ -18,7 +18,6 @@ import AnyCodable
 
 public struct Session: Codable, Hashable {
 
-    public var links: [String: AnyCodable]?
     public var amr: [SessionAuthenticationMethod]?
     public var createdAt: Date?
     public var expiresAt: Date?
@@ -29,9 +28,9 @@ public struct Session: Codable, Hashable {
     public var login: String?
     public var status: SessionStatus?
     public var userId: String?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, amr: [SessionAuthenticationMethod]? = nil, createdAt: Date? = nil, expiresAt: Date? = nil, id: String? = nil, idp: SessionIdentityProvider? = nil, lastFactorVerification: Date? = nil, lastPasswordVerification: Date? = nil, login: String? = nil, status: SessionStatus? = nil, userId: String? = nil) {
-        self.links = links
+    public init(amr: [SessionAuthenticationMethod]? = nil, createdAt: Date? = nil, expiresAt: Date? = nil, id: String? = nil, idp: SessionIdentityProvider? = nil, lastFactorVerification: Date? = nil, lastPasswordVerification: Date? = nil, login: String? = nil, status: SessionStatus? = nil, userId: String? = nil, links: [String: AnyCodable]? = nil) {
         self.amr = amr
         self.createdAt = createdAt
         self.expiresAt = expiresAt
@@ -42,9 +41,9 @@ public struct Session: Codable, Hashable {
         self.login = login
         self.status = status
         self.userId = userId
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case amr
         case createdAt
         case expiresAt
@@ -55,13 +54,13 @@ public struct Session: Codable, Hashable {
         case login
         case status
         case userId
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(amr, forKey: .amr)
         try container.encodeIfPresent(createdAt, forKey: .createdAt)
         try container.encodeIfPresent(expiresAt, forKey: .expiresAt)
@@ -72,6 +71,7 @@ public struct Session: Codable, Hashable {
         try container.encodeIfPresent(login, forKey: .login)
         try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(userId, forKey: .userId)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

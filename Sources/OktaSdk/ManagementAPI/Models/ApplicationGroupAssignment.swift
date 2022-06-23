@@ -18,40 +18,40 @@ import AnyCodable
 
 public struct ApplicationGroupAssignment: Codable, Hashable {
 
-    public var embedded: [String: AnyCodable]?
-    public var links: [String: AnyCodable]?
     public var id: String?
     public var lastUpdated: Date?
     public var priority: Int?
     public var profile: [String: AnyCodable]?
+    public var embedded: [String: AnyCodable]?
+    public var links: [String: AnyCodable]?
 
-    public init(embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil, id: String? = nil, lastUpdated: Date? = nil, priority: Int? = nil, profile: [String: AnyCodable]? = nil) {
-        self.embedded = embedded
-        self.links = links
+    public init(id: String? = nil, lastUpdated: Date? = nil, priority: Int? = nil, profile: [String: AnyCodable]? = nil, embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil) {
         self.id = id
         self.lastUpdated = lastUpdated
         self.priority = priority
         self.profile = profile
+        self.embedded = embedded
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case embedded = "_embedded"
-        case links = "_links"
         case id
         case lastUpdated
         case priority
         case profile
+        case embedded = "_embedded"
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(embedded, forKey: .embedded)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(id, forKey: .id)
         try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
         try container.encodeIfPresent(priority, forKey: .priority)
         try container.encodeIfPresent(profile, forKey: .profile)
+        try container.encodeIfPresent(embedded, forKey: .embedded)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

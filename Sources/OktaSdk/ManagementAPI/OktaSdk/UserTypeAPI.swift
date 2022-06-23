@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,256 +25,69 @@ public extension OktaClient {
     struct UserTypeAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func createUserTypeURLRequest(userType: UserType) throws -> URLRequest {
-            try request(to: "/api/v1/meta/types/user", method: "POST", body: userType)
-        }
-
         /**
-
-         - parameter userType: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func createUserType(userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
-            do {
-                send(try createUserTypeURLRequest(userType: userType), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Create a User Type
+         
          - parameter userType: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func createUserType(userType: UserType) async throws -> OktaResponse<UserType> {
-            try await send(try createUserTypeURLRequest(userType: userType))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userType: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createUserType(userType: UserType) throws -> AnyPublisher<OktaResponse<UserType>, Error> {
-            publish(try createUserTypeURLRequest(userType: userType))
-        }
-        #endif
-
-
-        internal func deleteUserTypeURLRequest(typeId: String) throws -> URLRequest {
-            try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
-                "typeId": typeId
-            ]), method: "DELETE")
+            try await send(try requestWithBody(to: "/api/v1/meta/types/user", method: "POST", body: userType))
         }
 
         /**
-
-         - parameter typeId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func deleteUserType(typeId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteUserTypeURLRequest(typeId: typeId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Delete a User Type
+         
          - parameter typeId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func deleteUserType(typeId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deleteUserTypeURLRequest(typeId: typeId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter typeId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteUserType(typeId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteUserTypeURLRequest(typeId: typeId))
-        }
-        #endif
-
-
-        internal func getUserTypeURLRequest(typeId: String) throws -> URLRequest {
-            try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
-                "typeId": typeId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
+                    "typeId": typeId
+                ]), method: "DELETE"))
         }
 
         /**
-
-         - parameter typeId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getUserType(typeId: String, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
-            do {
-                send(try getUserTypeURLRequest(typeId: typeId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Retrieve a User Type
+         
          - parameter typeId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getUserType(typeId: String) async throws -> OktaResponse<UserType> {
-            try await send(try getUserTypeURLRequest(typeId: typeId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter typeId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getUserType(typeId: String) throws -> AnyPublisher<OktaResponse<UserType>, Error> {
-            publish(try getUserTypeURLRequest(typeId: typeId))
-        }
-        #endif
-
-
-        internal func listUserTypesURLRequest() throws -> URLRequest {
-            try request(to: "/api/v1/meta/types/user", method: "GET")
+            try await send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
+                    "typeId": typeId
+                ]), method: "GET"))
         }
 
         /**
-
-         - parameter completion: completion handler to receive the data and the error objects
+         List all User Types
+         
          */
-        func listUserTypes(completion: @escaping (Result<OktaResponse<[UserType]>, Error>) -> Void) {
-            do {
-                send(try listUserTypesURLRequest(), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listUserTypes() async throws -> OktaResponse<[UserType]> {
-            try await send(try listUserTypesURLRequest())
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listUserTypes() throws -> AnyPublisher<OktaResponse<[UserType]>, Error> {
-            publish(try listUserTypesURLRequest())
-        }
-        #endif
-
-
-        internal func replaceUserTypeURLRequest(typeId: String, userType: UserType) throws -> URLRequest {
-            try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
-                "typeId": typeId
-            ]), method: "PUT", body: userType)
+            try await send(try request(to: "/api/v1/meta/types/user", method: "GET"))
         }
 
         /**
-
-         - parameter typeId: (path)  
-         - parameter userType: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func replaceUserType(typeId: String, userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
-            do {
-                send(try replaceUserTypeURLRequest(typeId: typeId, userType: userType), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Replace a User Type
+         
          - parameter typeId: (path)  
          - parameter userType: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func replaceUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
-            try await send(try replaceUserTypeURLRequest(typeId: typeId, userType: userType))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter typeId: (path)  
-         - parameter userType: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func replaceUserType(typeId: String, userType: UserType) throws -> AnyPublisher<OktaResponse<UserType>, Error> {
-            publish(try replaceUserTypeURLRequest(typeId: typeId, userType: userType))
-        }
-        #endif
-
-
-        internal func updateUserTypeURLRequest(typeId: String, userType: UserType) throws -> URLRequest {
-            try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
-                "typeId": typeId
-            ]), method: "POST", body: userType)
+            try await send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
+                    "typeId": typeId
+                ]), method: "PUT", body: userType))
         }
 
         /**
-
-         - parameter typeId: (path)  
-         - parameter userType: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func updateUserType(typeId: String, userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
-            do {
-                send(try updateUserTypeURLRequest(typeId: typeId, userType: userType), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Update a User Type
+         
          - parameter typeId: (path)  
          - parameter userType: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func updateUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
-            try await send(try updateUserTypeURLRequest(typeId: typeId, userType: userType))
+            try await send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
+                    "typeId": typeId
+                ]), method: "POST", body: userType))
         }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter typeId: (path)  
-         - parameter userType: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateUserType(typeId: String, userType: UserType) throws -> AnyPublisher<OktaResponse<UserType>, Error> {
-            publish(try updateUserTypeURLRequest(typeId: typeId, userType: userType))
-        }
-        #endif
 
     }
 }

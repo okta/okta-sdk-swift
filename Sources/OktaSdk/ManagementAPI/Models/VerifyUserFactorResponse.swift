@@ -18,48 +18,36 @@ import AnyCodable
 
 public struct VerifyUserFactorResponse: Codable, Hashable {
 
-    public enum FactorResult: String, Codable, CaseIterable {
-        case success = "SUCCESS"
-        case expired = "EXPIRED"
-        case challenge = "CHALLENGE"
-        case waiting = "WAITING"
-        case failed = "FAILED"
-        case rejected = "REJECTED"
-        case timeout = "TIMEOUT"
-        case timeWindowExceeded = "TIME_WINDOW_EXCEEDED"
-        case passcodeReplayed = "PASSCODE_REPLAYED"
-        case error = "ERROR"
-    }
+    public var expiresAt: Date?
+    public var factorResult: VerifyUserFactorResult?
+    public var factorResultMessage: String?
     public var embedded: [String: AnyCodable]?
     public var links: [String: AnyCodable]?
-    public var expiresAt: Date?
-    public var factorResult: FactorResult?
-    public var factorResultMessage: String?
 
-    public init(embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil, expiresAt: Date? = nil, factorResult: FactorResult? = nil, factorResultMessage: String? = nil) {
-        self.embedded = embedded
-        self.links = links
+    public init(expiresAt: Date? = nil, factorResult: VerifyUserFactorResult? = nil, factorResultMessage: String? = nil, embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil) {
         self.expiresAt = expiresAt
         self.factorResult = factorResult
         self.factorResultMessage = factorResultMessage
+        self.embedded = embedded
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case embedded = "_embedded"
-        case links = "_links"
         case expiresAt
         case factorResult
         case factorResultMessage
+        case embedded = "_embedded"
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(embedded, forKey: .embedded)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(expiresAt, forKey: .expiresAt)
         try container.encodeIfPresent(factorResult, forKey: .factorResult)
         try container.encodeIfPresent(factorResultMessage, forKey: .factorResultMessage)
+        try container.encodeIfPresent(embedded, forKey: .embedded)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

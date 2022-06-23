@@ -18,15 +18,11 @@ import AnyCodable
 
 public struct AppAndInstanceConditionEvaluatorAppOrInstance: Codable, Hashable {
 
-    public enum ModelType: String, Codable, CaseIterable {
-        case appType = "APP_TYPE"
-        case app = "APP"
-    }
     public var id: String?
     public var name: String?
-    public var type: ModelType?
+    public var type: AppAndInstanceType?
 
-    public init(id: String? = nil, name: String? = nil, type: ModelType? = nil) {
+    public init(id: String? = nil, name: String? = nil, type: AppAndInstanceType? = nil) {
         self.id = id
         self.name = name
         self.type = type

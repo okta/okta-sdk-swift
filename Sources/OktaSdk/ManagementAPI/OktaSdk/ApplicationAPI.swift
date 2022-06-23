@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,982 +25,322 @@ public extension OktaClient {
     struct ApplicationAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func activateApplicationURLRequest(appId: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/lifecycle/activate".expanded(using: [
-                "appId": appId
-            ]), method: "POST")
-        }
-
         /**
-         Activate Application
+         Activate an Application
          
-         - parameter appId: (path) Application ID. 
-         - parameter completion: completion handler to receive the data and the error objects
+         - parameter appId: (path)  
          */
-        func activateApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try activateApplicationURLRequest(appId: appId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Activate Application
-         
-         - parameter appId: (path) Application ID. 
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func activateApplication(appId: String) async throws -> OktaResponse<Empty> {
-            try await send(try activateApplicationURLRequest(appId: appId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Activate Application
-         
-         - parameter appId: (path) Application ID. 
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func activateApplication(appId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try activateApplicationURLRequest(appId: appId))
-        }
-        #endif
-
-
-        internal func assignUserToApplicationURLRequest(appId: String, appUser: AppUser) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/users".expanded(using: [
-                "appId": appId
-            ]), method: "POST", body: appUser)
+            try await send(try request(to: "/api/v1/apps/{appId}/lifecycle/activate".expanded(using: [
+                    "appId": appId
+                ]), method: "POST"))
         }
 
         /**
-         Assign User to Application for SSO & Provisioning
+         Activate the default Provisioning Connection
          
          - parameter appId: (path)  
-         - parameter appUser: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
          */
-        func assignUserToApplication(appId: String, appUser: AppUser, completion: @escaping (Result<OktaResponse<AppUser>, Error>) -> Void) {
-            do {
-                send(try assignUserToApplicationURLRequest(appId: appId, appUser: appUser), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
+        @discardableResult
+        func activateDefaultProvisioningConnectionForApplication(appId: String) async throws -> OktaResponse<Empty> {
+            try await send(try request(to: "/api/v1/apps/{appId}/connections/default/lifecycle/activate".expanded(using: [
+                    "appId": appId
+                ]), method: "POST"))
         }
 
-        #if swift(>=5.5.1) && !os(Linux)
         /**
-         Assign User to Application for SSO & Provisioning
+         Assign a User
          
          - parameter appId: (path)  
          - parameter appUser: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func assignUserToApplication(appId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
-            try await send(try assignUserToApplicationURLRequest(appId: appId, appUser: appUser))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Assign User to Application for SSO & Provisioning
-         
-         - parameter appId: (path)  
-         - parameter appUser: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func assignUserToApplication(appId: String, appUser: AppUser) throws -> AnyPublisher<OktaResponse<AppUser>, Error> {
-            publish(try assignUserToApplicationURLRequest(appId: appId, appUser: appUser))
-        }
-        #endif
-
-
-        internal func cloneApplicationKeyURLRequest(appId: String, keyId: String, targetAid: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/credentials/keys/{keyId}/clone".expanded(using: [
-                "appId": appId, 
-                "keyId": keyId
-            ]), method: "POST", query: [
-                "targetAid": targetAid
-            ])
+            try await send(try requestWithBody(to: "/api/v1/apps/{appId}/users".expanded(using: [
+                    "appId": appId
+                ]), method: "POST", body: appUser))
         }
 
         /**
-         Clone Application Key Credential
-         
-         - parameter appId: (path)  
-         - parameter keyId: (path)  
-         - parameter targetAid: (query) Unique key of the target Application 
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func cloneApplicationKey(appId: String, keyId: String, targetAid: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
-            do {
-                send(try cloneApplicationKeyURLRequest(appId: appId, keyId: keyId, targetAid: targetAid), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Clone Application Key Credential
+         Clone a Key Credential
          
          - parameter appId: (path)  
          - parameter keyId: (path)  
          - parameter targetAid: (query) Unique key of the target Application 
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func cloneApplicationKey(appId: String, keyId: String, targetAid: String) async throws -> OktaResponse<JsonWebKey> {
-            try await send(try cloneApplicationKeyURLRequest(appId: appId, keyId: keyId, targetAid: targetAid))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Clone Application Key Credential
-         
-         - parameter appId: (path)  
-         - parameter keyId: (path)  
-         - parameter targetAid: (query) Unique key of the target Application 
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func cloneApplicationKey(appId: String, keyId: String, targetAid: String) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
-            publish(try cloneApplicationKeyURLRequest(appId: appId, keyId: keyId, targetAid: targetAid))
-        }
-        #endif
-
-
-        internal func createApplicationURLRequest(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps", method: "POST", query: [
-                "activate": activate
-            ], headers: [
-                "oktaAccessGatewayAgent": oktaAccessGatewayAgent?.stringValue
-            ], body: application)
+            try await send(try request(to: "/api/v1/apps/{appId}/credentials/keys/{keyId}/clone".expanded(using: [
+                    "appId": appId, 
+                    "keyId": keyId
+                ]), method: "POST", query: [
+                    "targetAid": targetAid
+                ]))
         }
 
         /**
-         Add Application
-         
-         - parameter application: (body)  
-         - parameter activate: (query) Executes activation lifecycle operation when creating the app (optional, default to true)
-         - parameter oktaAccessGatewayAgent: (header)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil, completion: @escaping (Result<OktaResponse<Application>, Error>) -> Void) {
-            do {
-                send(try createApplicationURLRequest(application: application, activate: activate, oktaAccessGatewayAgent: oktaAccessGatewayAgent), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Add Application
+         Create an Application
          
          - parameter application: (body)  
          - parameter activate: (query) Executes activation lifecycle operation when creating the app (optional, default to true)
          - parameter oktaAccessGatewayAgent: (header)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) async throws -> OktaResponse<Application> {
-            try await send(try createApplicationURLRequest(application: application, activate: activate, oktaAccessGatewayAgent: oktaAccessGatewayAgent))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Add Application
-         
-         - parameter application: (body)  
-         - parameter activate: (query) Executes activation lifecycle operation when creating the app (optional, default to true)
-         - parameter oktaAccessGatewayAgent: (header)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) throws -> AnyPublisher<OktaResponse<Application>, Error> {
-            publish(try createApplicationURLRequest(application: application, activate: activate, oktaAccessGatewayAgent: oktaAccessGatewayAgent))
-        }
-        #endif
-
-
-        internal func createApplicationGroupAssignmentURLRequest(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/groups/{groupId}".expanded(using: [
-                "appId": appId, 
-                "groupId": groupId
-            ]), method: "PUT", body: applicationGroupAssignment)
+            try await send(try requestWithBody(to: "/api/v1/apps", method: "POST", query: [
+                    "activate": activate
+                ], headers: [
+                    "oktaAccessGatewayAgent": oktaAccessGatewayAgent?.stringValue
+                ], body: application))
         }
 
         /**
-         Assign Group to Application
-         
-         - parameter appId: (path)  
-         - parameter groupId: (path)  
-         - parameter applicationGroupAssignment: (body)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil, completion: @escaping (Result<OktaResponse<ApplicationGroupAssignment>, Error>) -> Void) {
-            do {
-                send(try createApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, applicationGroupAssignment: applicationGroupAssignment), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Assign Group to Application
+         Assign a Group
          
          - parameter appId: (path)  
          - parameter groupId: (path)  
          - parameter applicationGroupAssignment: (body)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
-            try await send(try createApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, applicationGroupAssignment: applicationGroupAssignment))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Assign Group to Application
-         
-         - parameter appId: (path)  
-         - parameter groupId: (path)  
-         - parameter applicationGroupAssignment: (body)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) throws -> AnyPublisher<OktaResponse<ApplicationGroupAssignment>, Error> {
-            publish(try createApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, applicationGroupAssignment: applicationGroupAssignment))
-        }
-        #endif
-
-
-        internal func deactivateApplicationURLRequest(appId: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/lifecycle/deactivate".expanded(using: [
-                "appId": appId
-            ]), method: "POST")
+            try await send(try requestWithBody(to: "/api/v1/apps/{appId}/groups/{groupId}".expanded(using: [
+                    "appId": appId, 
+                    "groupId": groupId
+                ]), method: "PUT", body: applicationGroupAssignment))
         }
 
         /**
-         Deactivate Application
-         
-         - parameter appId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func deactivateApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deactivateApplicationURLRequest(appId: appId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Deactivate Application
+         Deactivate an Application
          
          - parameter appId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func deactivateApplication(appId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deactivateApplicationURLRequest(appId: appId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Deactivate Application
-         
-         - parameter appId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deactivateApplication(appId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deactivateApplicationURLRequest(appId: appId))
-        }
-        #endif
-
-
-        internal func deleteApplicationURLRequest(appId: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}".expanded(using: [
-                "appId": appId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/apps/{appId}/lifecycle/deactivate".expanded(using: [
+                    "appId": appId
+                ]), method: "POST"))
         }
 
         /**
-         Delete Application
+         Deactivate the default Provisioning Connection for an Application
          
          - parameter appId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
          */
-        func deleteApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteApplicationURLRequest(appId: appId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
+        @discardableResult
+        func deactivateDefaultProvisioningConnectionForApplication(appId: String) async throws -> OktaResponse<Empty> {
+            try await send(try request(to: "/api/v1/apps/{appId}/connections/default/lifecycle/deactivate".expanded(using: [
+                    "appId": appId
+                ]), method: "POST"))
         }
 
-        #if swift(>=5.5.1) && !os(Linux)
         /**
-         Delete Application
+         Delete an Application
          
          - parameter appId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func deleteApplication(appId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deleteApplicationURLRequest(appId: appId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Delete Application
-         
-         - parameter appId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteApplication(appId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteApplicationURLRequest(appId: appId))
-        }
-        #endif
-
-
-        internal func deleteApplicationGroupAssignmentURLRequest(appId: String, groupId: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/groups/{groupId}".expanded(using: [
-                "appId": appId, 
-                "groupId": groupId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/apps/{appId}".expanded(using: [
+                    "appId": appId
+                ]), method: "DELETE"))
         }
 
         /**
-         Remove Group from Application
-         
-         - parameter appId: (path)  
-         - parameter groupId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func deleteApplicationGroupAssignment(appId: String, groupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Remove Group from Application
+         Unassign a Group
          
          - parameter appId: (path)  
          - parameter groupId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func deleteApplicationGroupAssignment(appId: String, groupId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deleteApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Remove Group from Application
-         
-         - parameter appId: (path)  
-         - parameter groupId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteApplicationGroupAssignment(appId: String, groupId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId))
-        }
-        #endif
-
-
-        internal func deleteApplicationUserURLRequest(appId: String, userId: String, sendEmail: Bool? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/users/{userId}".expanded(using: [
-                "appId": appId, 
-                "userId": userId
-            ]), method: "DELETE", query: [
-                "sendEmail": sendEmail
-            ])
+            try await send(try request(to: "/api/v1/apps/{appId}/groups/{groupId}".expanded(using: [
+                    "appId": appId, 
+                    "groupId": groupId
+                ]), method: "DELETE"))
         }
 
         /**
-         Remove User from Application
-         
-         - parameter appId: (path)  
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to false)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteApplicationUserURLRequest(appId: appId, userId: userId, sendEmail: sendEmail), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Remove User from Application
+         Unassign a User
          
          - parameter appId: (path)  
          - parameter userId: (path)  
          - parameter sendEmail: (query)  (optional, default to false)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
-            try await send(try deleteApplicationUserURLRequest(appId: appId, userId: userId, sendEmail: sendEmail))
+            try await send(try request(to: "/api/v1/apps/{appId}/users/{userId}".expanded(using: [
+                    "appId": appId, 
+                    "userId": userId
+                ]), method: "DELETE", query: [
+                    "sendEmail": sendEmail
+                ]))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Remove User from Application
+         Generate a Key Credential
          
          - parameter appId: (path)  
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to false)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteApplicationUserURLRequest(appId: appId, userId: userId, sendEmail: sendEmail))
-        }
-        #endif
-
-
-        internal func generateApplicationKeyURLRequest(appId: String, validityYears: Int? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/credentials/keys/generate".expanded(using: [
-                "appId": appId
-            ]), method: "POST", query: [
-                "validityYears": validityYears
-            ])
-        }
-
-        /**
-
-         - parameter appId: (path)  
-         - parameter validityYears: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func generateApplicationKey(appId: String, validityYears: Int? = nil, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
-            do {
-                send(try generateApplicationKeyURLRequest(appId: appId, validityYears: validityYears), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter appId: (path)  
          - parameter validityYears: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func generateApplicationKey(appId: String, validityYears: Int? = nil) async throws -> OktaResponse<JsonWebKey> {
-            try await send(try generateApplicationKeyURLRequest(appId: appId, validityYears: validityYears))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter appId: (path)  
-         - parameter validityYears: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func generateApplicationKey(appId: String, validityYears: Int? = nil) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
-            publish(try generateApplicationKeyURLRequest(appId: appId, validityYears: validityYears))
-        }
-        #endif
-
-
-        internal func generateCsrForApplicationURLRequest(appId: String, csrMetadata: CsrMetadata) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/credentials/csrs".expanded(using: [
-                "appId": appId
-            ]), method: "POST", body: csrMetadata)
+            try await send(try request(to: "/api/v1/apps/{appId}/credentials/keys/generate".expanded(using: [
+                    "appId": appId
+                ]), method: "POST", query: [
+                    "validityYears": validityYears
+                ]))
         }
 
         /**
-         Generate Certificate Signing Request for Application
+         Generate a Certificate Signing Request
          
          - parameter appId: (path)  
-         - parameter csrMetadata: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
+         - parameter metadata: (body)  
          */
-        func generateCsrForApplication(appId: String, csrMetadata: CsrMetadata, completion: @escaping (Result<OktaResponse<Csr>, Error>) -> Void) {
-            do {
-                send(try generateCsrForApplicationURLRequest(appId: appId, csrMetadata: csrMetadata), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Generate Certificate Signing Request for Application
-         
-         - parameter appId: (path)  
-         - parameter csrMetadata: (body)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func generateCsrForApplication(appId: String, csrMetadata: CsrMetadata) async throws -> OktaResponse<Csr> {
-            try await send(try generateCsrForApplicationURLRequest(appId: appId, csrMetadata: csrMetadata))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Generate Certificate Signing Request for Application
-         
-         - parameter appId: (path)  
-         - parameter csrMetadata: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func generateCsrForApplication(appId: String, csrMetadata: CsrMetadata) throws -> AnyPublisher<OktaResponse<Csr>, Error> {
-            publish(try generateCsrForApplicationURLRequest(appId: appId, csrMetadata: csrMetadata))
-        }
-        #endif
-
-
-        internal func getApplicationURLRequest(appId: String, expand: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}".expanded(using: [
-                "appId": appId
-            ]), method: "GET", query: [
-                "expand": expand
-            ])
+        func generateCsrForApplication(appId: String, metadata: CsrMetadata) async throws -> OktaResponse<Csr> {
+            try await send(try requestWithBody(to: "/api/v1/apps/{appId}/credentials/csrs".expanded(using: [
+                    "appId": appId
+                ]), method: "POST", body: metadata))
         }
 
         /**
-         Get Application
-         
-         - parameter appId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getApplication(appId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<Application>, Error>) -> Void) {
-            do {
-                send(try getApplicationURLRequest(appId: appId, expand: expand), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Application
+         Retrieve an Application
          
          - parameter appId: (path)  
          - parameter expand: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getApplication(appId: String, expand: String? = nil) async throws -> OktaResponse<Application> {
-            try await send(try getApplicationURLRequest(appId: appId, expand: expand))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Get Application
-         
-         - parameter appId: (path)  
-         - parameter expand: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getApplication(appId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<Application>, Error> {
-            publish(try getApplicationURLRequest(appId: appId, expand: expand))
-        }
-        #endif
-
-
-        internal func getApplicationGroupAssignmentURLRequest(appId: String, groupId: String, expand: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/groups/{groupId}".expanded(using: [
-                "appId": appId, 
-                "groupId": groupId
-            ]), method: "GET", query: [
-                "expand": expand
-            ])
+            try await send(try request(to: "/api/v1/apps/{appId}".expanded(using: [
+                    "appId": appId
+                ]), method: "GET", query: [
+                    "expand": expand
+                ]))
         }
 
         /**
-         Get Assigned Group for Application
-         
-         - parameter appId: (path)  
-         - parameter groupId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<ApplicationGroupAssignment>, Error>) -> Void) {
-            do {
-                send(try getApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, expand: expand), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Assigned Group for Application
+         Retrieve an Assigned Group
          
          - parameter appId: (path)  
          - parameter groupId: (path)  
          - parameter expand: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
-            try await send(try getApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, expand: expand))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Get Assigned Group for Application
-         
-         - parameter appId: (path)  
-         - parameter groupId: (path)  
-         - parameter expand: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<ApplicationGroupAssignment>, Error> {
-            publish(try getApplicationGroupAssignmentURLRequest(appId: appId, groupId: groupId, expand: expand))
-        }
-        #endif
-
-
-        internal func getApplicationKeyURLRequest(appId: String, keyId: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/credentials/keys/{keyId}".expanded(using: [
-                "appId": appId, 
-                "keyId": keyId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/apps/{appId}/groups/{groupId}".expanded(using: [
+                    "appId": appId, 
+                    "groupId": groupId
+                ]), method: "GET", query: [
+                    "expand": expand
+                ]))
         }
 
         /**
-         Get Key Credential for Application
-         
-         - parameter appId: (path)  
-         - parameter keyId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getApplicationKey(appId: String, keyId: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
-            do {
-                send(try getApplicationKeyURLRequest(appId: appId, keyId: keyId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Key Credential for Application
+         Retrieve a Key Credential
          
          - parameter appId: (path)  
          - parameter keyId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getApplicationKey(appId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
-            try await send(try getApplicationKeyURLRequest(appId: appId, keyId: keyId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Get Key Credential for Application
-         
-         - parameter appId: (path)  
-         - parameter keyId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getApplicationKey(appId: String, keyId: String) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
-            publish(try getApplicationKeyURLRequest(appId: appId, keyId: keyId))
-        }
-        #endif
-
-
-        internal func getApplicationUserURLRequest(appId: String, userId: String, expand: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/users/{userId}".expanded(using: [
-                "appId": appId, 
-                "userId": userId
-            ]), method: "GET", query: [
-                "expand": expand
-            ])
+            try await send(try request(to: "/api/v1/apps/{appId}/credentials/keys/{keyId}".expanded(using: [
+                    "appId": appId, 
+                    "keyId": keyId
+                ]), method: "GET"))
         }
 
         /**
-         Get Assigned User for Application
-         
-         - parameter appId: (path)  
-         - parameter userId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getApplicationUser(appId: String, userId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<AppUser>, Error>) -> Void) {
-            do {
-                send(try getApplicationUserURLRequest(appId: appId, userId: userId, expand: expand), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Assigned User for Application
+         Retrieve an Assigned User
          
          - parameter appId: (path)  
          - parameter userId: (path)  
          - parameter expand: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getApplicationUser(appId: String, userId: String, expand: String? = nil) async throws -> OktaResponse<AppUser> {
-            try await send(try getApplicationUserURLRequest(appId: appId, userId: userId, expand: expand))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Get Assigned User for Application
-         
-         - parameter appId: (path)  
-         - parameter userId: (path)  
-         - parameter expand: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getApplicationUser(appId: String, userId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<AppUser>, Error> {
-            publish(try getApplicationUserURLRequest(appId: appId, userId: userId, expand: expand))
-        }
-        #endif
-
-
-        internal func getCsrForApplicationURLRequest(appId: String, csrId: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/credentials/csrs/{csrId}".expanded(using: [
-                "appId": appId, 
-                "csrId": csrId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/apps/{appId}/users/{userId}".expanded(using: [
+                    "appId": appId, 
+                    "userId": userId
+                ]), method: "GET", query: [
+                    "expand": expand
+                ]))
         }
 
         /**
-         Get Certificate Signing Request
-         
-         - parameter appId: (path)  
-         - parameter csrId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getCsrForApplication(appId: String, csrId: String, completion: @escaping (Result<OktaResponse<Csr>, Error>) -> Void) {
-            do {
-                send(try getCsrForApplicationURLRequest(appId: appId, csrId: csrId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Certificate Signing Request
+         Retrieve a Certificate Signing Request
          
          - parameter appId: (path)  
          - parameter csrId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getCsrForApplication(appId: String, csrId: String) async throws -> OktaResponse<Csr> {
-            try await send(try getCsrForApplicationURLRequest(appId: appId, csrId: csrId))
+            try await send(try request(to: "/api/v1/apps/{appId}/credentials/csrs/{csrId}".expanded(using: [
+                    "appId": appId, 
+                    "csrId": csrId
+                ]), method: "GET"))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Get Certificate Signing Request
+         Retrieve the default Provisioning Connection
          
          - parameter appId: (path)  
-         - parameter csrId: (path)  
          */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getCsrForApplication(appId: String, csrId: String) throws -> AnyPublisher<OktaResponse<Csr>, Error> {
-            publish(try getCsrForApplicationURLRequest(appId: appId, csrId: csrId))
-        }
-        #endif
-
-
-        internal func getOAuth2TokenForApplicationURLRequest(appId: String, tokenId: String, expand: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/tokens/{tokenId}".expanded(using: [
-                "appId": appId, 
-                "tokenId": tokenId
-            ]), method: "GET", query: [
-                "expand": expand
-            ])
+        func getDefaultProvisioningConnectionForApplication(appId: String) async throws -> OktaResponse<ProvisioningConnection> {
+            try await send(try request(to: "/api/v1/apps/{appId}/connections/default".expanded(using: [
+                    "appId": appId
+                ]), method: "GET"))
         }
 
         /**
-
+         Retrieve a Feature
+         
          - parameter appId: (path)  
-         - parameter tokenId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
+         - parameter name: (path)  
          */
-        func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<OAuth2Token>, Error>) -> Void) {
-            do {
-                send(try getOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId, expand: expand), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
+        func getFeatureForApplication(appId: String, name: String) async throws -> OktaResponse<ApplicationFeature> {
+            try await send(try request(to: "/api/v1/apps/{appId}/features/{name}".expanded(using: [
+                    "appId": appId, 
+                    "name": name
+                ]), method: "GET"))
         }
 
-        #if swift(>=5.5.1) && !os(Linux)
         /**
-
+         Retrieve an OAuth 2.0 Token
+         
          - parameter appId: (path)  
          - parameter tokenId: (path)  
          - parameter expand: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2Token> {
-            try await send(try getOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId, expand: expand))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter appId: (path)  
-         - parameter tokenId: (path)  
-         - parameter expand: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<OAuth2Token>, Error> {
-            publish(try getOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId, expand: expand))
-        }
-        #endif
-
-
-        internal func getScopeConsentGrantURLRequest(appId: String, grantId: String, expand: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/grants/{grantId}".expanded(using: [
-                "appId": appId, 
-                "grantId": grantId
-            ]), method: "GET", query: [
-                "expand": expand
-            ])
+            try await send(try request(to: "/api/v1/apps/{appId}/tokens/{tokenId}".expanded(using: [
+                    "appId": appId, 
+                    "tokenId": tokenId
+                ]), method: "GET", query: [
+                    "expand": expand
+                ]))
         }
 
         /**
-
-         - parameter appId: (path)  
-         - parameter grantId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<OAuth2ScopeConsentGrant>, Error>) -> Void) {
-            do {
-                send(try getScopeConsentGrantURLRequest(appId: appId, grantId: grantId, expand: expand), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Retrieve a Scope Consent Grant
+         
          - parameter appId: (path)  
          - parameter grantId: (path)  
          - parameter expand: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
-            try await send(try getScopeConsentGrantURLRequest(appId: appId, grantId: grantId, expand: expand))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter appId: (path)  
-         - parameter grantId: (path)  
-         - parameter expand: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<OAuth2ScopeConsentGrant>, Error> {
-            publish(try getScopeConsentGrantURLRequest(appId: appId, grantId: grantId, expand: expand))
-        }
-        #endif
-
-
-        internal func grantConsentToScopeURLRequest(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/grants".expanded(using: [
-                "appId": appId
-            ]), method: "POST", body: oAuth2ScopeConsentGrant)
+            try await send(try request(to: "/api/v1/apps/{appId}/grants/{grantId}".expanded(using: [
+                    "appId": appId, 
+                    "grantId": grantId
+                ]), method: "GET", query: [
+                    "expand": expand
+                ]))
         }
 
         /**
-
-         - parameter appId: (path)  
-         - parameter oAuth2ScopeConsentGrant: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant, completion: @escaping (Result<OktaResponse<OAuth2ScopeConsentGrant>, Error>) -> Void) {
-            do {
-                send(try grantConsentToScopeURLRequest(appId: appId, oAuth2ScopeConsentGrant: oAuth2ScopeConsentGrant), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Grant Consent to Scope
+         
          - parameter appId: (path)  
          - parameter oAuth2ScopeConsentGrant: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
-            try await send(try grantConsentToScopeURLRequest(appId: appId, oAuth2ScopeConsentGrant: oAuth2ScopeConsentGrant))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter appId: (path)  
-         - parameter oAuth2ScopeConsentGrant: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) throws -> AnyPublisher<OktaResponse<OAuth2ScopeConsentGrant>, Error> {
-            publish(try grantConsentToScopeURLRequest(appId: appId, oAuth2ScopeConsentGrant: oAuth2ScopeConsentGrant))
-        }
-        #endif
-
-
-        internal func listApplicationGroupAssignmentsURLRequest(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/groups".expanded(using: [
-                "appId": appId
-            ]), method: "GET", query: [
-                "q": q, 
-                "after": after, 
-                "limit": limit, 
-                "expand": expand
-            ])
+            try await send(try requestWithBody(to: "/api/v1/apps/{appId}/grants".expanded(using: [
+                    "appId": appId
+                ]), method: "POST", body: oAuth2ScopeConsentGrant))
         }
 
         /**
-         List Groups Assigned to Application
-         
-         - parameter appId: (path)  
-         - parameter q: (query)  (optional)
-         - parameter after: (query) Specifies the pagination cursor for the next page of assignments (optional)
-         - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
-         - parameter expand: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[ApplicationGroupAssignment]>, Error>) -> Void) {
-            do {
-                send(try listApplicationGroupAssignmentsURLRequest(appId: appId, q: q, after: after, limit: limit, expand: expand), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Groups Assigned to Application
+         List all Assigned Groups
          
          - parameter appId: (path)  
          - parameter q: (query)  (optional)
@@ -1012,110 +348,30 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
          - parameter expand: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) async throws -> OktaResponse<[ApplicationGroupAssignment]> {
-            try await send(try listApplicationGroupAssignmentsURLRequest(appId: appId, q: q, after: after, limit: limit, expand: expand))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List Groups Assigned to Application
-         
-         - parameter appId: (path)  
-         - parameter q: (query)  (optional)
-         - parameter after: (query) Specifies the pagination cursor for the next page of assignments (optional)
-         - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
-         - parameter expand: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[ApplicationGroupAssignment]>, Error> {
-            publish(try listApplicationGroupAssignmentsURLRequest(appId: appId, q: q, after: after, limit: limit, expand: expand))
-        }
-        #endif
-
-
-        internal func listApplicationKeysURLRequest(appId: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/credentials/keys".expanded(using: [
-                "appId": appId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/apps/{appId}/groups".expanded(using: [
+                    "appId": appId
+                ]), method: "GET", query: [
+                    "q": q, 
+                    "after": after, 
+                    "limit": limit, 
+                    "expand": expand
+                ]))
         }
 
         /**
-         List Key Credentials for Application
-         
-         - parameter appId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listApplicationKeys(appId: String, completion: @escaping (Result<OktaResponse<[JsonWebKey]>, Error>) -> Void) {
-            do {
-                send(try listApplicationKeysURLRequest(appId: appId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Key Credentials for Application
+         List all Key Credentials
          
          - parameter appId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listApplicationKeys(appId: String) async throws -> OktaResponse<[JsonWebKey]> {
-            try await send(try listApplicationKeysURLRequest(appId: appId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List Key Credentials for Application
-         
-         - parameter appId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listApplicationKeys(appId: String) throws -> AnyPublisher<OktaResponse<[JsonWebKey]>, Error> {
-            publish(try listApplicationKeysURLRequest(appId: appId))
-        }
-        #endif
-
-
-        internal func listApplicationUsersURLRequest(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/users".expanded(using: [
-                "appId": appId
-            ]), method: "GET", query: [
-                "q": q, 
-                "queryScope": queryScope, 
-                "after": after, 
-                "limit": limit, 
-                "filter": filter, 
-                "expand": expand
-            ])
+            try await send(try request(to: "/api/v1/apps/{appId}/credentials/keys".expanded(using: [
+                    "appId": appId
+                ]), method: "GET"))
         }
 
         /**
-         List Users Assigned to Application
-         
-         - parameter appId: (path)  
-         - parameter q: (query)  (optional)
-         - parameter queryScope: (query)  (optional)
-         - parameter after: (query) specifies the pagination cursor for the next page of assignments (optional)
-         - parameter limit: (query) specifies the number of results for a page (optional, default to -1)
-         - parameter filter: (query)  (optional)
-         - parameter expand: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[AppUser]>, Error>) -> Void) {
-            do {
-                send(try listApplicationUsersURLRequest(appId: appId, q: q, queryScope: queryScope, after: after, limit: limit, filter: filter, expand: expand), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Users Assigned to Application
+         List all Assigned Users
          
          - parameter appId: (path)  
          - parameter q: (query)  (optional)
@@ -1125,64 +381,21 @@ public extension OktaClient {
          - parameter filter: (query)  (optional)
          - parameter expand: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) async throws -> OktaResponse<[AppUser]> {
-            try await send(try listApplicationUsersURLRequest(appId: appId, q: q, queryScope: queryScope, after: after, limit: limit, filter: filter, expand: expand))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List Users Assigned to Application
-         
-         - parameter appId: (path)  
-         - parameter q: (query)  (optional)
-         - parameter queryScope: (query)  (optional)
-         - parameter after: (query) specifies the pagination cursor for the next page of assignments (optional)
-         - parameter limit: (query) specifies the number of results for a page (optional, default to -1)
-         - parameter filter: (query)  (optional)
-         - parameter expand: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[AppUser]>, Error> {
-            publish(try listApplicationUsersURLRequest(appId: appId, q: q, queryScope: queryScope, after: after, limit: limit, filter: filter, expand: expand))
-        }
-        #endif
-
-
-        internal func listApplicationsURLRequest(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps", method: "GET", query: [
-                "q": q, 
-                "after": after, 
-                "limit": limit, 
-                "filter": filter, 
-                "expand": expand, 
-                "includeNonDeleted": includeNonDeleted
-            ])
+            try await send(try request(to: "/api/v1/apps/{appId}/users".expanded(using: [
+                    "appId": appId
+                ]), method: "GET", query: [
+                    "q": q, 
+                    "queryScope": queryScope, 
+                    "after": after, 
+                    "limit": limit, 
+                    "filter": filter, 
+                    "expand": expand
+                ]))
         }
 
         /**
-         List Applications
-         
-         - parameter q: (query)  (optional)
-         - parameter after: (query) Specifies the pagination cursor for the next page of apps (optional)
-         - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
-         - parameter filter: (query) Filters apps by status, user.id, group.id or credentials.signing.kid expression (optional)
-         - parameter expand: (query) Traverses users link relationship and optionally embeds Application User resource (optional)
-         - parameter includeNonDeleted: (query)  (optional, default to false)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil, completion: @escaping (Result<OktaResponse<[Application]>, Error>) -> Void) {
-            do {
-                send(try listApplicationsURLRequest(q: q, after: after, limit: limit, filter: filter, expand: expand, includeNonDeleted: includeNonDeleted), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Applications
+         List all Applications
          
          - parameter q: (query)  (optional)
          - parameter after: (query) Specifies the pagination cursor for the next page of apps (optional)
@@ -1191,510 +404,206 @@ public extension OktaClient {
          - parameter expand: (query) Traverses users link relationship and optionally embeds Application User resource (optional)
          - parameter includeNonDeleted: (query)  (optional, default to false)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) async throws -> OktaResponse<[Application]> {
-            try await send(try listApplicationsURLRequest(q: q, after: after, limit: limit, filter: filter, expand: expand, includeNonDeleted: includeNonDeleted))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List Applications
-         
-         - parameter q: (query)  (optional)
-         - parameter after: (query) Specifies the pagination cursor for the next page of apps (optional)
-         - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
-         - parameter filter: (query) Filters apps by status, user.id, group.id or credentials.signing.kid expression (optional)
-         - parameter expand: (query) Traverses users link relationship and optionally embeds Application User resource (optional)
-         - parameter includeNonDeleted: (query)  (optional, default to false)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) throws -> AnyPublisher<OktaResponse<[Application]>, Error> {
-            publish(try listApplicationsURLRequest(q: q, after: after, limit: limit, filter: filter, expand: expand, includeNonDeleted: includeNonDeleted))
-        }
-        #endif
-
-
-        internal func listCsrsForApplicationURLRequest(appId: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/credentials/csrs".expanded(using: [
-                "appId": appId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/apps", method: "GET", query: [
+                    "q": q, 
+                    "after": after, 
+                    "limit": limit, 
+                    "filter": filter, 
+                    "expand": expand, 
+                    "includeNonDeleted": includeNonDeleted
+                ]))
         }
 
         /**
-         List Certificate Signing Requests for Application
-         
-         - parameter appId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listCsrsForApplication(appId: String, completion: @escaping (Result<OktaResponse<[Csr]>, Error>) -> Void) {
-            do {
-                send(try listCsrsForApplicationURLRequest(appId: appId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Certificate Signing Requests for Application
+         List all Certificate Signing Requests
          
          - parameter appId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listCsrsForApplication(appId: String) async throws -> OktaResponse<[Csr]> {
-            try await send(try listCsrsForApplicationURLRequest(appId: appId))
+            try await send(try request(to: "/api/v1/apps/{appId}/credentials/csrs".expanded(using: [
+                    "appId": appId
+                ]), method: "GET"))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         List Certificate Signing Requests for Application
+         List all Features
          
          - parameter appId: (path)  
          */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listCsrsForApplication(appId: String) throws -> AnyPublisher<OktaResponse<[Csr]>, Error> {
-            publish(try listCsrsForApplicationURLRequest(appId: appId))
-        }
-        #endif
-
-
-        internal func listOAuth2TokensForApplicationURLRequest(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/tokens".expanded(using: [
-                "appId": appId
-            ]), method: "GET", query: [
-                "expand": expand, 
-                "after": after, 
-                "limit": limit
-            ])
+        func listFeaturesForApplication(appId: String) async throws -> OktaResponse<[ApplicationFeature]> {
+            try await send(try request(to: "/api/v1/apps/{appId}/features".expanded(using: [
+                    "appId": appId
+                ]), method: "GET"))
         }
 
         /**
-
-         - parameter appId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[OAuth2Token]>, Error>) -> Void) {
-            do {
-                send(try listOAuth2TokensForApplicationURLRequest(appId: appId, expand: expand, after: after, limit: limit), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         List all OAuth 2.0 Tokens
+         
          - parameter appId: (path)  
          - parameter expand: (query)  (optional)
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Token]> {
-            try await send(try listOAuth2TokensForApplicationURLRequest(appId: appId, expand: expand, after: after, limit: limit))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter appId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[OAuth2Token]>, Error> {
-            publish(try listOAuth2TokensForApplicationURLRequest(appId: appId, expand: expand, after: after, limit: limit))
-        }
-        #endif
-
-
-        internal func listScopeConsentGrantsURLRequest(appId: String, expand: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/grants".expanded(using: [
-                "appId": appId
-            ]), method: "GET", query: [
-                "expand": expand
-            ])
+            try await send(try request(to: "/api/v1/apps/{appId}/tokens".expanded(using: [
+                    "appId": appId
+                ]), method: "GET", query: [
+                    "expand": expand, 
+                    "after": after, 
+                    "limit": limit
+                ]))
         }
 
         /**
-
-         - parameter appId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listScopeConsentGrants(appId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<[OAuth2ScopeConsentGrant]>, Error>) -> Void) {
-            do {
-                send(try listScopeConsentGrantsURLRequest(appId: appId, expand: expand), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         List all Scope Consent Grants
+         
          - parameter appId: (path)  
          - parameter expand: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listScopeConsentGrants(appId: String, expand: String? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
-            try await send(try listScopeConsentGrantsURLRequest(appId: appId, expand: expand))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter appId: (path)  
-         - parameter expand: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listScopeConsentGrants(appId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[OAuth2ScopeConsentGrant]>, Error> {
-            publish(try listScopeConsentGrantsURLRequest(appId: appId, expand: expand))
-        }
-        #endif
-
-
-        internal func publishCsrFromApplicationURLRequest(appId: String, csrId: String, body: URL) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/credentials/csrs/{csrId}/lifecycle/publish".expanded(using: [
-                "appId": appId, 
-                "csrId": csrId
-            ]), method: "POST", body: body)
+            try await send(try request(to: "/api/v1/apps/{appId}/grants".expanded(using: [
+                    "appId": appId
+                ]), method: "GET", query: [
+                    "expand": expand
+                ]))
         }
 
         /**
-         Publish Certificate Signing Request
-         
-         - parameter appId: (path)  
-         - parameter csrId: (path)  
-         - parameter body: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func publishCsrFromApplication(appId: String, csrId: String, body: URL, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
-            do {
-                send(try publishCsrFromApplicationURLRequest(appId: appId, csrId: csrId, body: body), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Publish Certificate Signing Request
+         Publish a Certificate Signing Request
          
          - parameter appId: (path)  
          - parameter csrId: (path)  
          - parameter body: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func publishCsrFromApplication(appId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
-            try await send(try publishCsrFromApplicationURLRequest(appId: appId, csrId: csrId, body: body))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Publish Certificate Signing Request
-         
-         - parameter appId: (path)  
-         - parameter csrId: (path)  
-         - parameter body: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func publishCsrFromApplication(appId: String, csrId: String, body: URL) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
-            publish(try publishCsrFromApplicationURLRequest(appId: appId, csrId: csrId, body: body))
-        }
-        #endif
-
-
-        internal func revokeCsrFromApplicationURLRequest(appId: String, csrId: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/credentials/csrs/{csrId}".expanded(using: [
-                "appId": appId, 
-                "csrId": csrId
-            ]), method: "DELETE")
+            try await send(try requestWithBody(to: "/api/v1/apps/{appId}/credentials/csrs/{csrId}/lifecycle/publish".expanded(using: [
+                    "appId": appId, 
+                    "csrId": csrId
+                ]), method: "POST", body: body))
         }
 
         /**
-         Revoke Certificate Signing Request
-         
-         - parameter appId: (path)  
-         - parameter csrId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func revokeCsrFromApplication(appId: String, csrId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try revokeCsrFromApplicationURLRequest(appId: appId, csrId: csrId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Revoke Certificate Signing Request
+         Revoke a Certificate Signing Request
          
          - parameter appId: (path)  
          - parameter csrId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func revokeCsrFromApplication(appId: String, csrId: String) async throws -> OktaResponse<Empty> {
-            try await send(try revokeCsrFromApplicationURLRequest(appId: appId, csrId: csrId))
+            try await send(try request(to: "/api/v1/apps/{appId}/credentials/csrs/{csrId}".expanded(using: [
+                    "appId": appId, 
+                    "csrId": csrId
+                ]), method: "DELETE"))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Revoke Certificate Signing Request
+         Revoke an OAuth 2.0 Token
          
          - parameter appId: (path)  
-         - parameter csrId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func revokeCsrFromApplication(appId: String, csrId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try revokeCsrFromApplicationURLRequest(appId: appId, csrId: csrId))
-        }
-        #endif
-
-
-        internal func revokeOAuth2TokenForApplicationURLRequest(appId: String, tokenId: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/tokens/{tokenId}".expanded(using: [
-                "appId": appId, 
-                "tokenId": tokenId
-            ]), method: "DELETE")
-        }
-
-        /**
-
-         - parameter appId: (path)  
-         - parameter tokenId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func revokeOAuth2TokenForApplication(appId: String, tokenId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try revokeOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter appId: (path)  
          - parameter tokenId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func revokeOAuth2TokenForApplication(appId: String, tokenId: String) async throws -> OktaResponse<Empty> {
-            try await send(try revokeOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter appId: (path)  
-         - parameter tokenId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func revokeOAuth2TokenForApplication(appId: String, tokenId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try revokeOAuth2TokenForApplicationURLRequest(appId: appId, tokenId: tokenId))
-        }
-        #endif
-
-
-        internal func revokeOAuth2TokensForApplicationURLRequest(appId: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/tokens".expanded(using: [
-                "appId": appId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/apps/{appId}/tokens/{tokenId}".expanded(using: [
+                    "appId": appId, 
+                    "tokenId": tokenId
+                ]), method: "DELETE"))
         }
 
         /**
-
-         - parameter appId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func revokeOAuth2TokensForApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try revokeOAuth2TokensForApplicationURLRequest(appId: appId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Revoke all OAuth 2.0 Tokens
+         
          - parameter appId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func revokeOAuth2TokensForApplication(appId: String) async throws -> OktaResponse<Empty> {
-            try await send(try revokeOAuth2TokensForApplicationURLRequest(appId: appId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter appId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func revokeOAuth2TokensForApplication(appId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try revokeOAuth2TokensForApplicationURLRequest(appId: appId))
-        }
-        #endif
-
-
-        internal func revokeScopeConsentGrantURLRequest(appId: String, grantId: String) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/grants/{grantId}".expanded(using: [
-                "appId": appId, 
-                "grantId": grantId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/apps/{appId}/tokens".expanded(using: [
+                    "appId": appId
+                ]), method: "DELETE"))
         }
 
         /**
-
-         - parameter appId: (path)  
-         - parameter grantId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func revokeScopeConsentGrant(appId: String, grantId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try revokeScopeConsentGrantURLRequest(appId: appId, grantId: grantId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Revoke a Scope Consent Grant
+         
          - parameter appId: (path)  
          - parameter grantId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func revokeScopeConsentGrant(appId: String, grantId: String) async throws -> OktaResponse<Empty> {
-            try await send(try revokeScopeConsentGrantURLRequest(appId: appId, grantId: grantId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter appId: (path)  
-         - parameter grantId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func revokeScopeConsentGrant(appId: String, grantId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try revokeScopeConsentGrantURLRequest(appId: appId, grantId: grantId))
-        }
-        #endif
-
-
-        internal func updateApplicationURLRequest(appId: String, application: Application) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}".expanded(using: [
-                "appId": appId
-            ]), method: "PUT", body: application)
+            try await send(try request(to: "/api/v1/apps/{appId}/grants/{grantId}".expanded(using: [
+                    "appId": appId, 
+                    "grantId": grantId
+                ]), method: "DELETE"))
         }
 
         /**
-         Update Application
+         Update the default Provisioning Connection
          
          - parameter appId: (path)  
-         - parameter application: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
+         - parameter provisioningConnectionRequest: (body)  
+         - parameter activate: (query)  (optional)
          */
-        func updateApplication(appId: String, application: Application, completion: @escaping (Result<OktaResponse<Application>, Error>) -> Void) {
-            do {
-                send(try updateApplicationURLRequest(appId: appId, application: application), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
+        func setDefaultProvisioningConnectionForApplication(appId: String, provisioningConnectionRequest: ProvisioningConnectionRequest, activate: Bool? = nil) async throws -> OktaResponse<ProvisioningConnection> {
+            try await send(try requestWithBody(to: "/api/v1/apps/{appId}/connections/default".expanded(using: [
+                    "appId": appId
+                ]), method: "POST", query: [
+                    "activate": activate
+                ], body: provisioningConnectionRequest))
         }
 
-        #if swift(>=5.5.1) && !os(Linux)
         /**
-         Update Application
+         Replace an Application
          
          - parameter appId: (path)  
          - parameter application: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func updateApplication(appId: String, application: Application) async throws -> OktaResponse<Application> {
-            try await send(try updateApplicationURLRequest(appId: appId, application: application))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Update Application
-         
-         - parameter appId: (path)  
-         - parameter application: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateApplication(appId: String, application: Application) throws -> AnyPublisher<OktaResponse<Application>, Error> {
-            publish(try updateApplicationURLRequest(appId: appId, application: application))
-        }
-        #endif
-
-
-        internal func updateApplicationUserURLRequest(appId: String, userId: String, appUser: AppUser) throws -> URLRequest {
-            try request(to: "/api/v1/apps/{appId}/users/{userId}".expanded(using: [
-                "appId": appId, 
-                "userId": userId
-            ]), method: "POST", body: appUser)
+            try await send(try requestWithBody(to: "/api/v1/apps/{appId}".expanded(using: [
+                    "appId": appId
+                ]), method: "PUT", body: application))
         }
 
         /**
-         Update Application Profile for Assigned User
-         
-         - parameter appId: (path)  
-         - parameter userId: (path)  
-         - parameter appUser: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func updateApplicationUser(appId: String, userId: String, appUser: AppUser, completion: @escaping (Result<OktaResponse<AppUser>, Error>) -> Void) {
-            do {
-                send(try updateApplicationUserURLRequest(appId: appId, userId: userId, appUser: appUser), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Update Application Profile for Assigned User
+         Update an Application Profile for Assigned User
          
          - parameter appId: (path)  
          - parameter userId: (path)  
          - parameter appUser: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func updateApplicationUser(appId: String, userId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
-            try await send(try updateApplicationUserURLRequest(appId: appId, userId: userId, appUser: appUser))
+            try await send(try requestWithBody(to: "/api/v1/apps/{appId}/users/{userId}".expanded(using: [
+                    "appId": appId, 
+                    "userId": userId
+                ]), method: "POST", body: appUser))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Update Application Profile for Assigned User
+         Update a Feature
          
          - parameter appId: (path)  
-         - parameter userId: (path)  
-         - parameter appUser: (body)  
+         - parameter name: (path)  
+         - parameter capabilitiesObject: (body)  
          */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateApplicationUser(appId: String, userId: String, appUser: AppUser) throws -> AnyPublisher<OktaResponse<AppUser>, Error> {
-            publish(try updateApplicationUserURLRequest(appId: appId, userId: userId, appUser: appUser))
+        func updateFeatureForApplication(appId: String, name: String, capabilitiesObject: CapabilitiesObject) async throws -> OktaResponse<ApplicationFeature> {
+            try await send(try requestWithBody(to: "/api/v1/apps/{appId}/features/{name}".expanded(using: [
+                    "appId": appId, 
+                    "name": name
+                ]), method: "PUT", body: capabilitiesObject))
         }
-        #endif
+
+        /**
+         Upload a Logo
+         
+         - parameter appId: (path)  
+         - parameter file: (form)  
+         */
+        @discardableResult
+        func uploadApplicationLogo(appId: String, file: URL) async throws -> OktaResponse<Empty> {
+            try await send(try request(to: "/api/v1/apps/{appId}/logo".expanded(using: [
+                    "appId": appId
+                ]), method: "POST"))
+        }
 
     }
 }

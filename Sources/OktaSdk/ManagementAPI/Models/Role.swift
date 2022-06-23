@@ -18,20 +18,18 @@ import AnyCodable
 
 public struct Role: Codable, Hashable {
 
-    public var embedded: [String: AnyCodable]?
-    public var links: [String: AnyCodable]?
     public var assignmentType: RoleAssignmentType?
     public var created: Date?
     public var description: String?
     public var id: String?
     public var label: String?
     public var lastUpdated: Date?
-    public var status: RoleStatus?
+    public var status: LifecycleStatus?
     public var type: RoleType?
+    public var embedded: [String: AnyCodable]?
+    public var links: [String: AnyCodable]?
 
-    public init(embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil, assignmentType: RoleAssignmentType? = nil, created: Date? = nil, description: String? = nil, id: String? = nil, label: String? = nil, lastUpdated: Date? = nil, status: RoleStatus? = nil, type: RoleType? = nil) {
-        self.embedded = embedded
-        self.links = links
+    public init(assignmentType: RoleAssignmentType? = nil, created: Date? = nil, description: String? = nil, id: String? = nil, label: String? = nil, lastUpdated: Date? = nil, status: LifecycleStatus? = nil, type: RoleType? = nil, embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil) {
         self.assignmentType = assignmentType
         self.created = created
         self.description = description
@@ -40,10 +38,10 @@ public struct Role: Codable, Hashable {
         self.lastUpdated = lastUpdated
         self.status = status
         self.type = type
+        self.embedded = embedded
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case embedded = "_embedded"
-        case links = "_links"
         case assignmentType
         case created
         case description
@@ -52,14 +50,14 @@ public struct Role: Codable, Hashable {
         case lastUpdated
         case status
         case type
+        case embedded = "_embedded"
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(embedded, forKey: .embedded)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(assignmentType, forKey: .assignmentType)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(description, forKey: .description)
@@ -68,6 +66,8 @@ public struct Role: Codable, Hashable {
         try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
         try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(embedded, forKey: .embedded)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

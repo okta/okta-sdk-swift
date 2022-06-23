@@ -18,24 +18,27 @@ import AnyCodable
 
 public struct SchemeApplicationCredentials: Codable, Hashable {
 
+    public var signing: ApplicationCredentialsSigning?
+    public var userNameTemplate: ApplicationCredentialsUsernameTemplate?
     public var password: PasswordCredential?
     public var revealPassword: Bool?
     public var scheme: ApplicationCredentialsScheme?
-    public var signing: ApplicationCredentialsSigning?
     public var userName: String?
 
-    public init(password: PasswordCredential? = nil, revealPassword: Bool? = nil, scheme: ApplicationCredentialsScheme? = nil, signing: ApplicationCredentialsSigning? = nil, userName: String? = nil) {
+    public init(signing: ApplicationCredentialsSigning? = nil, userNameTemplate: ApplicationCredentialsUsernameTemplate? = nil, password: PasswordCredential? = nil, revealPassword: Bool? = nil, scheme: ApplicationCredentialsScheme? = nil, userName: String? = nil) {
+        self.signing = signing
+        self.userNameTemplate = userNameTemplate
         self.password = password
         self.revealPassword = revealPassword
         self.scheme = scheme
-        self.signing = signing
         self.userName = userName
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case signing
+        case userNameTemplate
         case password
         case revealPassword
         case scheme
-        case signing
         case userName
     }
 
@@ -43,10 +46,11 @@ public struct SchemeApplicationCredentials: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(signing, forKey: .signing)
+        try container.encodeIfPresent(userNameTemplate, forKey: .userNameTemplate)
         try container.encodeIfPresent(password, forKey: .password)
         try container.encodeIfPresent(revealPassword, forKey: .revealPassword)
         try container.encodeIfPresent(scheme, forKey: .scheme)
-        try container.encodeIfPresent(signing, forKey: .signing)
         try container.encodeIfPresent(userName, forKey: .userName)
     }
 

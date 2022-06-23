@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,152 +25,45 @@ public extension OktaClient {
     struct ProfileMappingAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func getProfileMappingURLRequest(mappingId: String) throws -> URLRequest {
-            try request(to: "/api/v1/mappings/{mappingId}".expanded(using: [
-                "mappingId": mappingId
-            ]), method: "GET")
-        }
-
         /**
-         Get Profile Mapping
-         
-         - parameter mappingId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getProfileMapping(mappingId: String, completion: @escaping (Result<OktaResponse<ProfileMapping>, Error>) -> Void) {
-            do {
-                send(try getProfileMappingURLRequest(mappingId: mappingId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Profile Mapping
+         Retrieve a Profile Mapping
          
          - parameter mappingId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getProfileMapping(mappingId: String) async throws -> OktaResponse<ProfileMapping> {
-            try await send(try getProfileMappingURLRequest(mappingId: mappingId))
+            try await send(try request(to: "/api/v1/mappings/{mappingId}".expanded(using: [
+                    "mappingId": mappingId
+                ]), method: "GET"))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Get Profile Mapping
+         List all Profile Mappings
          
-         - parameter mappingId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getProfileMapping(mappingId: String) throws -> AnyPublisher<OktaResponse<ProfileMapping>, Error> {
-            publish(try getProfileMappingURLRequest(mappingId: mappingId))
-        }
-        #endif
-
-
-        internal func listProfileMappingsURLRequest(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/mappings", method: "GET", query: [
-                "after": after, 
-                "limit": limit, 
-                "sourceId": sourceId, 
-                "targetId": targetId
-            ])
-        }
-
-        /**
-
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to -1)
-         - parameter sourceId: (query)  (optional)
-         - parameter targetId: (query)  (optional, default to "")
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil, completion: @escaping (Result<OktaResponse<[ProfileMapping]>, Error>) -> Void) {
-            do {
-                send(try listProfileMappingsURLRequest(after: after, limit: limit, sourceId: sourceId, targetId: targetId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to -1)
          - parameter sourceId: (query)  (optional)
          - parameter targetId: (query)  (optional, default to "")
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) async throws -> OktaResponse<[ProfileMapping]> {
-            try await send(try listProfileMappingsURLRequest(after: after, limit: limit, sourceId: sourceId, targetId: targetId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to -1)
-         - parameter sourceId: (query)  (optional)
-         - parameter targetId: (query)  (optional, default to "")
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) throws -> AnyPublisher<OktaResponse<[ProfileMapping]>, Error> {
-            publish(try listProfileMappingsURLRequest(after: after, limit: limit, sourceId: sourceId, targetId: targetId))
-        }
-        #endif
-
-
-        internal func updateProfileMappingURLRequest(mappingId: String, profileMapping: ProfileMapping) throws -> URLRequest {
-            try request(to: "/api/v1/mappings/{mappingId}".expanded(using: [
-                "mappingId": mappingId
-            ]), method: "POST", body: profileMapping)
+            try await send(try request(to: "/api/v1/mappings", method: "GET", query: [
+                    "after": after, 
+                    "limit": limit, 
+                    "sourceId": sourceId, 
+                    "targetId": targetId
+                ]))
         }
 
         /**
-         Update Profile Mapping
-         
-         - parameter mappingId: (path)  
-         - parameter profileMapping: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping, completion: @escaping (Result<OktaResponse<ProfileMapping>, Error>) -> Void) {
-            do {
-                send(try updateProfileMappingURLRequest(mappingId: mappingId, profileMapping: profileMapping), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Update Profile Mapping
+         Update a Profile Mapping
          
          - parameter mappingId: (path)  
          - parameter profileMapping: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) async throws -> OktaResponse<ProfileMapping> {
-            try await send(try updateProfileMappingURLRequest(mappingId: mappingId, profileMapping: profileMapping))
+            try await send(try requestWithBody(to: "/api/v1/mappings/{mappingId}".expanded(using: [
+                    "mappingId": mappingId
+                ]), method: "POST", body: profileMapping))
         }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Update Profile Mapping
-         
-         - parameter mappingId: (path)  
-         - parameter profileMapping: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) throws -> AnyPublisher<OktaResponse<ProfileMapping>, Error> {
-            publish(try updateProfileMappingURLRequest(mappingId: mappingId, profileMapping: profileMapping))
-        }
-        #endif
 
     }
 }

@@ -18,36 +18,36 @@ import AnyCodable
 
 public struct ApplicationSettings: Codable, Hashable {
 
-    public var app: AnyCodable?
+    public var identityStoreId: String?
     public var implicitAssignment: Bool?
     public var inlineHookId: String?
-    public var notifications: ApplicationSettingsNotifications?
     public var notes: ApplicationSettingsNotes?
+    public var notifications: ApplicationSettingsNotifications?
 
-    public init(app: AnyCodable? = nil, implicitAssignment: Bool? = nil, inlineHookId: String? = nil, notifications: ApplicationSettingsNotifications? = nil, notes: ApplicationSettingsNotes? = nil) {
-        self.app = app
+    public init(identityStoreId: String? = nil, implicitAssignment: Bool? = nil, inlineHookId: String? = nil, notes: ApplicationSettingsNotes? = nil, notifications: ApplicationSettingsNotifications? = nil) {
+        self.identityStoreId = identityStoreId
         self.implicitAssignment = implicitAssignment
         self.inlineHookId = inlineHookId
-        self.notifications = notifications
         self.notes = notes
+        self.notifications = notifications
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case app
+        case identityStoreId
         case implicitAssignment
         case inlineHookId
-        case notifications
         case notes
+        case notifications
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(app, forKey: .app)
+        try container.encodeIfPresent(identityStoreId, forKey: .identityStoreId)
         try container.encodeIfPresent(implicitAssignment, forKey: .implicitAssignment)
         try container.encodeIfPresent(inlineHookId, forKey: .inlineHookId)
-        try container.encodeIfPresent(notifications, forKey: .notifications)
         try container.encodeIfPresent(notes, forKey: .notes)
+        try container.encodeIfPresent(notifications, forKey: .notifications)
     }
 
 

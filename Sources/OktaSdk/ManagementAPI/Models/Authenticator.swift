@@ -18,52 +18,56 @@ import AnyCodable
 
 public struct Authenticator: Codable, Hashable {
 
-    public var links: [String: AnyCodable]?
     public var created: Date?
     public var id: String?
     public var key: String?
-    public var status: AuthenticatorStatus?
     public var lastUpdated: Date?
     public var name: String?
-    public var type: AuthenticatorType?
+    public var provider: AuthenticatorProvider?
     public var settings: AuthenticatorSettings?
+    public var status: AuthenticatorStatus?
+    public var type: AuthenticatorType?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, created: Date? = nil, id: String? = nil, key: String? = nil, status: AuthenticatorStatus? = nil, lastUpdated: Date? = nil, name: String? = nil, type: AuthenticatorType? = nil, settings: AuthenticatorSettings? = nil) {
-        self.links = links
+    public init(created: Date? = nil, id: String? = nil, key: String? = nil, lastUpdated: Date? = nil, name: String? = nil, provider: AuthenticatorProvider? = nil, settings: AuthenticatorSettings? = nil, status: AuthenticatorStatus? = nil, type: AuthenticatorType? = nil, links: [String: AnyCodable]? = nil) {
         self.created = created
         self.id = id
         self.key = key
-        self.status = status
         self.lastUpdated = lastUpdated
         self.name = name
-        self.type = type
+        self.provider = provider
         self.settings = settings
+        self.status = status
+        self.type = type
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case created
         case id
         case key
-        case status
         case lastUpdated
         case name
-        case type
+        case provider
         case settings
+        case status
+        case type
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(id, forKey: .id)
         try container.encodeIfPresent(key, forKey: .key)
-        try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
         try container.encodeIfPresent(name, forKey: .name)
-        try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(provider, forKey: .provider)
         try container.encodeIfPresent(settings, forKey: .settings)
+        try container.encodeIfPresent(status, forKey: .status)
+        try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

@@ -18,18 +18,14 @@ import AnyCodable
 
 public struct SocialAuthToken: Codable, Hashable {
 
-    public enum TokenType: String, Codable, CaseIterable {
-        case access = "ACCESS"
-        case refresh = "REFRESH"
-    }
     public var expiresAt: Date?
     public var id: String?
     public var scopes: [String]?
     public var token: String?
     public var tokenAuthScheme: String?
-    public var tokenType: TokenType?
+    public var tokenType: String?
 
-    public init(expiresAt: Date? = nil, id: String? = nil, scopes: [String]? = nil, token: String? = nil, tokenAuthScheme: String? = nil, tokenType: TokenType? = nil) {
+    public init(expiresAt: Date? = nil, id: String? = nil, scopes: [String]? = nil, token: String? = nil, tokenAuthScheme: String? = nil, tokenType: String? = nil) {
         self.expiresAt = expiresAt
         self.id = id
         self.scopes = scopes

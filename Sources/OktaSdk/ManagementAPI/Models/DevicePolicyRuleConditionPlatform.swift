@@ -18,21 +18,10 @@ import AnyCodable
 
 public struct DevicePolicyRuleConditionPlatform: Codable, Hashable {
 
-    public enum SupportedMDMFrameworks: String, Codable, CaseIterable {
-        case afw = "AFW"
-        case safe = "SAFE"
-        case native = "NATIVE"
-    }
-    public enum Types: String, Codable, CaseIterable {
-        case ios = "IOS"
-        case android = "ANDROID"
-        case osx = "OSX"
-        case windows = "WINDOWS"
-    }
-    public var supportedMDMFrameworks: [SupportedMDMFrameworks]?
-    public var types: [Types]?
+    public var supportedMDMFrameworks: [DevicePolicyMDMFramework]?
+    public var types: [DevicePolicyPlatformType]?
 
-    public init(supportedMDMFrameworks: [SupportedMDMFrameworks]? = nil, types: [Types]? = nil) {
+    public init(supportedMDMFrameworks: [DevicePolicyMDMFramework]? = nil, types: [DevicePolicyPlatformType]? = nil) {
         self.supportedMDMFrameworks = supportedMDMFrameworks
         self.types = types
     }

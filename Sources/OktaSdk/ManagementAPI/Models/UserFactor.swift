@@ -18,8 +18,6 @@ import AnyCodable
 
 public struct UserFactor: Codable, Hashable {
 
-    public var embedded: [String: AnyCodable]?
-    public var links: [String: AnyCodable]?
     public var created: Date?
     public var factorType: FactorType?
     public var id: String?
@@ -27,10 +25,10 @@ public struct UserFactor: Codable, Hashable {
     public var provider: FactorProvider?
     public var status: FactorStatus?
     public var verify: VerifyFactorRequest?
+    public var embedded: [String: AnyCodable]?
+    public var links: [String: AnyCodable]?
 
-    public init(embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil, created: Date? = nil, factorType: FactorType? = nil, id: String? = nil, lastUpdated: Date? = nil, provider: FactorProvider? = nil, status: FactorStatus? = nil, verify: VerifyFactorRequest? = nil) {
-        self.embedded = embedded
-        self.links = links
+    public init(created: Date? = nil, factorType: FactorType? = nil, id: String? = nil, lastUpdated: Date? = nil, provider: FactorProvider? = nil, status: FactorStatus? = nil, verify: VerifyFactorRequest? = nil, embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil) {
         self.created = created
         self.factorType = factorType
         self.id = id
@@ -38,10 +36,10 @@ public struct UserFactor: Codable, Hashable {
         self.provider = provider
         self.status = status
         self.verify = verify
+        self.embedded = embedded
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case embedded = "_embedded"
-        case links = "_links"
         case created
         case factorType
         case id
@@ -49,14 +47,14 @@ public struct UserFactor: Codable, Hashable {
         case provider
         case status
         case verify
+        case embedded = "_embedded"
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(embedded, forKey: .embedded)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(factorType, forKey: .factorType)
         try container.encodeIfPresent(id, forKey: .id)
@@ -64,6 +62,8 @@ public struct UserFactor: Codable, Hashable {
         try container.encodeIfPresent(provider, forKey: .provider)
         try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(verify, forKey: .verify)
+        try container.encodeIfPresent(embedded, forKey: .embedded)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

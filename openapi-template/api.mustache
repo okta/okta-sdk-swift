@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -33,85 +29,43 @@ public extension OktaClient {
 {{#operation}}
     {{#allParams}}
     {{#isEnum}}
-    /**
-     * enum for parameter {{paramName}}
-     */
-    {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} enum {{enumName}}_{{operationId}}: {{^isContainer}}{{{dataType}}}{{/isContainer}}{{#isContainer}}String{{/isContainer}}, CaseIterable {
-        {{#allowableValues}}
-        {{#enumVars}}
-        case {{name}} = {{{value}}}
-        {{/enumVars}}
-        {{/allowableValues}}
-    }
+        /**
+         enum for parameter {{paramName}}
+         */
+        {{#nonPublicApi}}internal{{/nonPublicApi}}{{^nonPublicApi}}public{{/nonPublicApi}} enum {{enumName}}_{{operationId}}: {{^isContainer}}{{{dataType}}}{{/isContainer}}{{#isContainer}}String{{/isContainer}}, CaseIterable {
+            {{#allowableValues}}
+            {{#enumVars}}
+            case {{name}} = {{{value}}}
+            {{/enumVars}}
+            {{/allowableValues}}
+        }
 
     {{/isEnum}}
     {{/allParams}}
-
-        internal func {{operationId}}URLRequest({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}) throws -> URLRequest {
-            try request(to: "{{{path}}}"{{#hasPathParams}}.expanded(using: [
-            {{#pathParams}}
-                "{{paramName}}": {{paramName}}{{^-last}}, {{/-last}}
-            {{/pathParams}}
-            ]){{/hasPathParams}}, method: "{{httpMethod}}"{{#hasQueryParams}}, query: [
-                {{#queryParams}}
-                "{{paramName}}": {{paramName}}{{^-last}}, {{/-last}}
-                {{/queryParams}}
-            ]{{/hasQueryParams}}{{#hasHeaderParams}}, headers: [
-                {{#headerParams}}
-                "{{paramName}}": {{paramName}}?.stringValue{{^-last}}, {{/-last}}
-                {{/headerParams}}
-            ]{{/hasHeaderParams}}{{#bodyParam}}, body: {{paramName}}{{/bodyParam}})
-        }
-
         /**
          {{#summary}}
          {{{summary}}}
          {{/summary}}{{#allParams}}
          - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{description}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        {{#isDeprecated}}
+         */{{#isDeprecated}}
         @available(*, deprecated, message: "This operation is deprecated.")
-        {{/isDeprecated}}
-        func {{operationId}}({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}{{#hasParams}}, {{/hasParams}}completion: @escaping (Result<OktaResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Empty{{/returnType}}>, Error>) -> Void) {
-            do {
-                send(try {{operationId}}URLRequest({{#allParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         {{#summary}}
-         {{{summary}}}
-         {{/summary}}{{#allParams}}
-         - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{description}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
-         */
-        {{#isDeprecated}}
-        @available(*, deprecated, message: "This operation is deprecated.")
-        {{/isDeprecated}}
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        {{/isDeprecated}}{{^returnType}}
+        @discardableResult{{/returnType}}
         func {{operationId}}({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}) async throws -> OktaResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Empty{{/returnType}}> {
-            try await send(try {{operationId}}URLRequest({{#allParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}))
+            try await send(try request{{#bodyParam}}WithBody{{/bodyParam}}(to: "{{{path}}}"{{#hasPathParams}}.expanded(using: [
+                {{#pathParams}}
+                    "{{paramName}}": {{paramName}}{{^-last}}, {{/-last}}
+                {{/pathParams}}
+                ]){{/hasPathParams}}, method: "{{httpMethod}}"{{#hasQueryParams}}, query: [
+                    {{#queryParams}}
+                    "{{paramName}}": {{paramName}}{{^-last}}, {{/-last}}
+                    {{/queryParams}}
+                ]{{/hasQueryParams}}{{#hasHeaderParams}}, headers: [
+                    {{#headerParams}}
+                    "{{paramName}}": {{paramName}}?.stringValue{{^-last}}, {{/-last}}
+                    {{/headerParams}}
+                ]{{/hasHeaderParams}}{{#bodyParam}}, body: {{paramName}}{{/bodyParam}}))
         }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         {{#summary}}
-         {{{summary}}}
-         {{/summary}}{{#allParams}}
-         - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{description}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
-         */
-        {{#isDeprecated}}
-        @available(*, deprecated, message: "This operation is deprecated.")
-        {{/isDeprecated}}
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func {{operationId}}({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}) throws -> AnyPublisher<OktaResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Empty{{/returnType}}>, Error> {
-            publish(try {{operationId}}URLRequest({{#allParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}))
-        }
-        #endif
 
 {{/operation}}
     }

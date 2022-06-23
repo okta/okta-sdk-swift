@@ -17,11 +17,11 @@ import Foundation
 import AnyCodable
 
 public enum ApplicationCredentialsScheme: String, Codable, CaseIterable, OktaClientArgument {
-    case sharedUsernameAndPassword = "SHARED_USERNAME_AND_PASSWORD"
-    case externalPasswordSync = "EXTERNAL_PASSWORD_SYNC"
-    case editUsernameAndPassword = "EDIT_USERNAME_AND_PASSWORD"
-    case editPasswordOnly = "EDIT_PASSWORD_ONLY"
     case adminSetsCredentials = "ADMIN_SETS_CREDENTIALS"
+    case editPasswordOnly = "EDIT_PASSWORD_ONLY"
+    case editUsernameAndPassword = "EDIT_USERNAME_AND_PASSWORD"
+    case externalPasswordSync = "EXTERNAL_PASSWORD_SYNC"
+    case sharedUsernameAndPassword = "SHARED_USERNAME_AND_PASSWORD"
 
     var stringValue: String { rawValue }
 }

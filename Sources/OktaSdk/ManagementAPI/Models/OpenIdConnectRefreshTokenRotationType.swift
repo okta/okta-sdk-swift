@@ -17,8 +17,8 @@ import Foundation
 import AnyCodable
 
 public enum OpenIdConnectRefreshTokenRotationType: String, Codable, CaseIterable, OktaClientArgument {
-    case rotate = "rotate"
-    case _static = "static"
+    case rotate = "ROTATE"
+    case _static = "STATIC"
 
     var stringValue: String { rawValue }
 }

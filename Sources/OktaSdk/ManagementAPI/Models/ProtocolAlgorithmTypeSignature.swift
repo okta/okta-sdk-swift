@@ -18,17 +18,10 @@ import AnyCodable
 
 public struct ProtocolAlgorithmTypeSignature: Codable, Hashable {
 
-    public enum Scope: String, Codable, CaseIterable {
-        case response = "RESPONSE"
-        case token = "TOKEN"
-        case any = "ANY"
-        case request = "REQUEST"
-        case _none = "NONE"
-    }
     public var algorithm: String?
-    public var scope: Scope?
+    public var scope: ProtocolAlgorithmTypeSignatureScope?
 
-    public init(algorithm: String? = nil, scope: Scope? = nil) {
+    public init(algorithm: String? = nil, scope: ProtocolAlgorithmTypeSignatureScope? = nil) {
         self.algorithm = algorithm
         self.scope = scope
     }

@@ -18,15 +18,11 @@ import AnyCodable
 
 public struct PolicyNetworkCondition: Codable, Hashable {
 
-    public enum Connection: String, Codable, CaseIterable {
-        case anywhere = "ANYWHERE"
-        case zone = "ZONE"
-    }
-    public var connection: Connection?
+    public var connection: PolicyNetworkConnection?
     public var exclude: [String]?
     public var include: [String]?
 
-    public init(connection: Connection? = nil, exclude: [String]? = nil, include: [String]? = nil) {
+    public init(connection: PolicyNetworkConnection? = nil, exclude: [String]? = nil, include: [String]? = nil) {
         self.connection = connection
         self.exclude = exclude
         self.include = include

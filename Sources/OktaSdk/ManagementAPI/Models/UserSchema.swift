@@ -18,39 +18,39 @@ import AnyCodable
 
 public struct UserSchema: Codable, Hashable {
 
-    public var id: String?
     public var schema: String?
-    public var name: String?
-    public var title: String?
-    public var lastUpdated: String?
     public var created: String?
     public var definitions: UserSchemaDefinitions?
-    public var type: String?
+    public var id: String?
+    public var lastUpdated: String?
+    public var name: String?
     public var properties: UserSchemaProperties?
+    public var title: String?
+    public var type: String?
     public var links: [String: AnyCodable]?
 
-    public init(id: String? = nil, schema: String? = nil, name: String? = nil, title: String? = nil, lastUpdated: String? = nil, created: String? = nil, definitions: UserSchemaDefinitions? = nil, type: String? = nil, properties: UserSchemaProperties? = nil, links: [String: AnyCodable]? = nil) {
-        self.id = id
+    public init(schema: String? = nil, created: String? = nil, definitions: UserSchemaDefinitions? = nil, id: String? = nil, lastUpdated: String? = nil, name: String? = nil, properties: UserSchemaProperties? = nil, title: String? = nil, type: String? = nil, links: [String: AnyCodable]? = nil) {
         self.schema = schema
-        self.name = name
-        self.title = title
-        self.lastUpdated = lastUpdated
         self.created = created
         self.definitions = definitions
-        self.type = type
+        self.id = id
+        self.lastUpdated = lastUpdated
+        self.name = name
         self.properties = properties
+        self.title = title
+        self.type = type
         self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case id
         case schema = "$schema"
-        case name
-        case title
-        case lastUpdated
         case created
         case definitions
-        case type
+        case id
+        case lastUpdated
+        case name
         case properties
+        case title
+        case type
         case links = "_links"
     }
 
@@ -58,15 +58,15 @@ public struct UserSchema: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(id, forKey: .id)
         try container.encodeIfPresent(schema, forKey: .schema)
-        try container.encodeIfPresent(name, forKey: .name)
-        try container.encodeIfPresent(title, forKey: .title)
-        try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(definitions, forKey: .definitions)
-        try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(id, forKey: .id)
+        try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
+        try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(properties, forKey: .properties)
+        try container.encodeIfPresent(title, forKey: .title)
+        try container.encodeIfPresent(type, forKey: .type)
         try container.encodeIfPresent(links, forKey: .links)
     }
 

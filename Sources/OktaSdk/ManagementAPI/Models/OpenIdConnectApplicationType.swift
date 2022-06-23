@@ -17,10 +17,10 @@ import Foundation
 import AnyCodable
 
 public enum OpenIdConnectApplicationType: String, Codable, CaseIterable, OktaClientArgument {
-    case web = "web"
-    case native = "native"
     case browser = "browser"
+    case native = "native"
     case service = "service"
+    case web = "web"
 
     var stringValue: String { rawValue }
 }

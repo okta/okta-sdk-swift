@@ -18,12 +18,6 @@ import AnyCodable
 
 public struct ModelProtocol: Codable, Hashable {
 
-    public enum ModelType: String, Codable, CaseIterable {
-        case saml2 = "SAML2"
-        case oidc = "OIDC"
-        case oauth2 = "OAUTH2"
-        case mtls = "MTLS"
-    }
     public var algorithms: ProtocolAlgorithms?
     public var credentials: IdentityProviderCredentials?
     public var endpoints: ProtocolEndpoints?
@@ -31,9 +25,9 @@ public struct ModelProtocol: Codable, Hashable {
     public var relayState: ProtocolRelayState?
     public var scopes: [String]?
     public var settings: ProtocolSettings?
-    public var type: ModelType?
+    public var type: ProtocolType?
 
-    public init(algorithms: ProtocolAlgorithms? = nil, credentials: IdentityProviderCredentials? = nil, endpoints: ProtocolEndpoints? = nil, issuer: ProtocolEndpoint? = nil, relayState: ProtocolRelayState? = nil, scopes: [String]? = nil, settings: ProtocolSettings? = nil, type: ModelType? = nil) {
+    public init(algorithms: ProtocolAlgorithms? = nil, credentials: IdentityProviderCredentials? = nil, endpoints: ProtocolEndpoints? = nil, issuer: ProtocolEndpoint? = nil, relayState: ProtocolRelayState? = nil, scopes: [String]? = nil, settings: ProtocolSettings? = nil, type: ProtocolType? = nil) {
         self.algorithms = algorithms
         self.credentials = credentials
         self.endpoints = endpoints

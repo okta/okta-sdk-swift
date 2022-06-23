@@ -18,23 +18,14 @@ import AnyCodable
 
 public struct OktaSignOnPolicyRuleSignonActions: Codable, Hashable {
 
-    public enum Access: String, Codable, CaseIterable {
-        case allow = "ALLOW"
-        case deny = "DENY"
-    }
-    public enum FactorPromptMode: String, Codable, CaseIterable {
-        case always = "ALWAYS"
-        case device = "DEVICE"
-        case session = "SESSION"
-    }
-    public var access: Access?
+    public var access: PolicyAccess?
     public var factorLifetime: Int?
-    public var factorPromptMode: FactorPromptMode?
+    public var factorPromptMode: OktaSignOnPolicyFactorPromptMode?
     public var rememberDeviceByDefault: Bool? = false
     public var requireFactor: Bool? = false
     public var session: OktaSignOnPolicyRuleSignonSessionActions?
 
-    public init(access: Access? = nil, factorLifetime: Int? = nil, factorPromptMode: FactorPromptMode? = nil, rememberDeviceByDefault: Bool? = false, requireFactor: Bool? = false, session: OktaSignOnPolicyRuleSignonSessionActions? = nil) {
+    public init(access: PolicyAccess? = nil, factorLifetime: Int? = nil, factorPromptMode: OktaSignOnPolicyFactorPromptMode? = nil, rememberDeviceByDefault: Bool? = false, requireFactor: Bool? = false, session: OktaSignOnPolicyRuleSignonSessionActions? = nil) {
         self.access = access
         self.factorLifetime = factorLifetime
         self.factorPromptMode = factorPromptMode

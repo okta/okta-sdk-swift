@@ -18,44 +18,44 @@ import AnyCodable
 
 public struct Feature: Codable, Hashable {
 
-    public var links: [String: AnyCodable]?
     public var description: String?
     public var id: String?
     public var name: String?
     public var stage: FeatureStage?
     public var status: EnabledStatus?
     public var type: FeatureType?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, description: String? = nil, id: String? = nil, name: String? = nil, stage: FeatureStage? = nil, status: EnabledStatus? = nil, type: FeatureType? = nil) {
-        self.links = links
+    public init(description: String? = nil, id: String? = nil, name: String? = nil, stage: FeatureStage? = nil, status: EnabledStatus? = nil, type: FeatureType? = nil, links: [String: AnyCodable]? = nil) {
         self.description = description
         self.id = id
         self.name = name
         self.stage = stage
         self.status = status
         self.type = type
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case description
         case id
         case name
         case stage
         case status
         case type
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(description, forKey: .description)
         try container.encodeIfPresent(id, forKey: .id)
         try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(stage, forKey: .stage)
         try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

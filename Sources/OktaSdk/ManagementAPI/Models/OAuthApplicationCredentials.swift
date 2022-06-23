@@ -18,12 +18,18 @@ import AnyCodable
 
 public struct OAuthApplicationCredentials: Codable, Hashable {
 
+    public var signing: ApplicationCredentialsSigning?
+    public var userNameTemplate: ApplicationCredentialsUsernameTemplate?
     public var oauthClient: ApplicationCredentialsOAuthClient?
 
-    public init(oauthClient: ApplicationCredentialsOAuthClient? = nil) {
+    public init(signing: ApplicationCredentialsSigning? = nil, userNameTemplate: ApplicationCredentialsUsernameTemplate? = nil, oauthClient: ApplicationCredentialsOAuthClient? = nil) {
+        self.signing = signing
+        self.userNameTemplate = userNameTemplate
         self.oauthClient = oauthClient
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case signing
+        case userNameTemplate
         case oauthClient
     }
 
@@ -31,6 +37,8 @@ public struct OAuthApplicationCredentials: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(signing, forKey: .signing)
+        try container.encodeIfPresent(userNameTemplate, forKey: .userNameTemplate)
         try container.encodeIfPresent(oauthClient, forKey: .oauthClient)
     }
 

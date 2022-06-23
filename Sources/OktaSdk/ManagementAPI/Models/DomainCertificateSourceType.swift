@@ -18,6 +18,7 @@ import AnyCodable
 
 public enum DomainCertificateSourceType: String, Codable, CaseIterable, OktaClientArgument {
     case manual = "MANUAL"
+    case oktaManaged = "OKTA_MANAGED"
 
     var stringValue: String { rawValue }
 }

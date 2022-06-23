@@ -17,8 +17,8 @@ import Foundation
 import AnyCodable
 
 public enum OAuth2ScopeConsentGrantSource: String, Codable, CaseIterable, OktaClientArgument {
-    case endUser = "END_USER"
     case admin = "ADMIN"
+    case endUser = "END_USER"
 
     var stringValue: String { rawValue }
 }

@@ -18,18 +18,13 @@ import AnyCodable
 
 public struct IdentityProviderCredentialsTrust: Codable, Hashable {
 
-    public enum Revocation: String, Codable, CaseIterable {
-        case crl = "CRL"
-        case deltaCrl = "DELTA_CRL"
-        case ocsp = "OCSP"
-    }
     public var audience: String?
     public var issuer: String?
     public var kid: String?
-    public var revocation: Revocation?
+    public var revocation: IdentityProviderCredentialsTrustRevocation?
     public var revocationCacheLifetime: Int?
 
-    public init(audience: String? = nil, issuer: String? = nil, kid: String? = nil, revocation: Revocation? = nil, revocationCacheLifetime: Int? = nil) {
+    public init(audience: String? = nil, issuer: String? = nil, kid: String? = nil, revocation: IdentityProviderCredentialsTrustRevocation? = nil, revocationCacheLifetime: Int? = nil) {
         self.audience = audience
         self.issuer = issuer
         self.kid = kid

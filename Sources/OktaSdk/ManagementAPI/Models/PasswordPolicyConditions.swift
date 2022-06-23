@@ -18,24 +18,100 @@ import AnyCodable
 
 public struct PasswordPolicyConditions: Codable, Hashable {
 
+    public var app: AppAndInstancePolicyRuleCondition?
+    public var apps: AppInstancePolicyRuleCondition?
+    public var authContext: PolicyRuleAuthContextCondition?
     public var authProvider: PasswordPolicyAuthenticationProviderCondition?
+    public var beforeScheduledAction: BeforeScheduledActionPolicyRuleCondition?
+    public var clients: ClientPolicyCondition?
+    public var context: ContextPolicyRuleCondition?
+    public var device: DevicePolicyRuleCondition?
+    public var grantTypes: GrantTypePolicyRuleCondition?
+    public var groups: GroupPolicyRuleCondition?
+    public var identityProvider: IdentityProviderPolicyRuleCondition?
+    public var mdmEnrollment: MDMEnrollmentPolicyRuleCondition?
+    public var network: PolicyNetworkCondition?
     public var people: PolicyPeopleCondition?
+    public var platform: PlatformPolicyRuleCondition?
+    public var risk: RiskPolicyRuleCondition?
+    public var riskScore: RiskScorePolicyRuleCondition?
+    public var scopes: OAuth2ScopesMediationPolicyRuleCondition?
+    public var userIdentifier: UserIdentifierPolicyRuleCondition?
+    public var users: UserPolicyRuleCondition?
+    public var userStatus: UserStatusPolicyRuleCondition?
 
-    public init(authProvider: PasswordPolicyAuthenticationProviderCondition? = nil, people: PolicyPeopleCondition? = nil) {
+    public init(app: AppAndInstancePolicyRuleCondition? = nil, apps: AppInstancePolicyRuleCondition? = nil, authContext: PolicyRuleAuthContextCondition? = nil, authProvider: PasswordPolicyAuthenticationProviderCondition? = nil, beforeScheduledAction: BeforeScheduledActionPolicyRuleCondition? = nil, clients: ClientPolicyCondition? = nil, context: ContextPolicyRuleCondition? = nil, device: DevicePolicyRuleCondition? = nil, grantTypes: GrantTypePolicyRuleCondition? = nil, groups: GroupPolicyRuleCondition? = nil, identityProvider: IdentityProviderPolicyRuleCondition? = nil, mdmEnrollment: MDMEnrollmentPolicyRuleCondition? = nil, network: PolicyNetworkCondition? = nil, people: PolicyPeopleCondition? = nil, platform: PlatformPolicyRuleCondition? = nil, risk: RiskPolicyRuleCondition? = nil, riskScore: RiskScorePolicyRuleCondition? = nil, scopes: OAuth2ScopesMediationPolicyRuleCondition? = nil, userIdentifier: UserIdentifierPolicyRuleCondition? = nil, users: UserPolicyRuleCondition? = nil, userStatus: UserStatusPolicyRuleCondition? = nil) {
+        self.app = app
+        self.apps = apps
+        self.authContext = authContext
         self.authProvider = authProvider
+        self.beforeScheduledAction = beforeScheduledAction
+        self.clients = clients
+        self.context = context
+        self.device = device
+        self.grantTypes = grantTypes
+        self.groups = groups
+        self.identityProvider = identityProvider
+        self.mdmEnrollment = mdmEnrollment
+        self.network = network
         self.people = people
+        self.platform = platform
+        self.risk = risk
+        self.riskScore = riskScore
+        self.scopes = scopes
+        self.userIdentifier = userIdentifier
+        self.users = users
+        self.userStatus = userStatus
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case app
+        case apps
+        case authContext
         case authProvider
+        case beforeScheduledAction
+        case clients
+        case context
+        case device
+        case grantTypes
+        case groups
+        case identityProvider
+        case mdmEnrollment
+        case network
         case people
+        case platform
+        case risk
+        case riskScore
+        case scopes
+        case userIdentifier
+        case users
+        case userStatus
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(app, forKey: .app)
+        try container.encodeIfPresent(apps, forKey: .apps)
+        try container.encodeIfPresent(authContext, forKey: .authContext)
         try container.encodeIfPresent(authProvider, forKey: .authProvider)
+        try container.encodeIfPresent(beforeScheduledAction, forKey: .beforeScheduledAction)
+        try container.encodeIfPresent(clients, forKey: .clients)
+        try container.encodeIfPresent(context, forKey: .context)
+        try container.encodeIfPresent(device, forKey: .device)
+        try container.encodeIfPresent(grantTypes, forKey: .grantTypes)
+        try container.encodeIfPresent(groups, forKey: .groups)
+        try container.encodeIfPresent(identityProvider, forKey: .identityProvider)
+        try container.encodeIfPresent(mdmEnrollment, forKey: .mdmEnrollment)
+        try container.encodeIfPresent(network, forKey: .network)
         try container.encodeIfPresent(people, forKey: .people)
+        try container.encodeIfPresent(platform, forKey: .platform)
+        try container.encodeIfPresent(risk, forKey: .risk)
+        try container.encodeIfPresent(riskScore, forKey: .riskScore)
+        try container.encodeIfPresent(scopes, forKey: .scopes)
+        try container.encodeIfPresent(userIdentifier, forKey: .userIdentifier)
+        try container.encodeIfPresent(users, forKey: .users)
+        try container.encodeIfPresent(userStatus, forKey: .userStatus)
     }
 
 

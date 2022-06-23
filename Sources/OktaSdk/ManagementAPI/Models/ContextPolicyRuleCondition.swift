@@ -18,12 +18,24 @@ import AnyCodable
 
 public struct ContextPolicyRuleCondition: Codable, Hashable {
 
+    public var migrated: Bool?
+    public var platform: DevicePolicyRuleConditionPlatform?
+    public var rooted: Bool?
+    public var trustLevel: DevicePolicyTrustLevel?
     public var expression: String?
 
-    public init(expression: String? = nil) {
+    public init(migrated: Bool? = nil, platform: DevicePolicyRuleConditionPlatform? = nil, rooted: Bool? = nil, trustLevel: DevicePolicyTrustLevel? = nil, expression: String? = nil) {
+        self.migrated = migrated
+        self.platform = platform
+        self.rooted = rooted
+        self.trustLevel = trustLevel
         self.expression = expression
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case migrated
+        case platform
+        case rooted
+        case trustLevel
         case expression
     }
 
@@ -31,6 +43,10 @@ public struct ContextPolicyRuleCondition: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(migrated, forKey: .migrated)
+        try container.encodeIfPresent(platform, forKey: .platform)
+        try container.encodeIfPresent(rooted, forKey: .rooted)
+        try container.encodeIfPresent(trustLevel, forKey: .trustLevel)
         try container.encodeIfPresent(expression, forKey: .expression)
     }
 

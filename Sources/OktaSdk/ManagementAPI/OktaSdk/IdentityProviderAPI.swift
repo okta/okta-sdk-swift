@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,1188 +25,316 @@ public extension OktaClient {
     struct IdentityProviderAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func activateIdentityProviderURLRequest(idpId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/lifecycle/activate".expanded(using: [
-                "idpId": idpId
-            ]), method: "POST")
-        }
-
         /**
-         Activate Identity Provider
-         
-         - parameter idpId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func activateIdentityProvider(idpId: String, completion: @escaping (Result<OktaResponse<IdentityProvider>, Error>) -> Void) {
-            do {
-                send(try activateIdentityProviderURLRequest(idpId: idpId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Activate Identity Provider
+         Activate an Identity Provider
          
          - parameter idpId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func activateIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
-            try await send(try activateIdentityProviderURLRequest(idpId: idpId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Activate Identity Provider
-         
-         - parameter idpId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func activateIdentityProvider(idpId: String) throws -> AnyPublisher<OktaResponse<IdentityProvider>, Error> {
-            publish(try activateIdentityProviderURLRequest(idpId: idpId))
-        }
-        #endif
-
-
-        internal func cloneIdentityProviderKeyURLRequest(idpId: String, keyId: String, targetIdpId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/credentials/keys/{keyId}/clone".expanded(using: [
-                "idpId": idpId, 
-                "keyId": keyId
-            ]), method: "POST", query: [
-                "targetIdpId": targetIdpId
-            ])
+            try await send(try request(to: "/api/v1/idps/{idpId}/lifecycle/activate".expanded(using: [
+                    "idpId": idpId
+                ]), method: "POST"))
         }
 
         /**
-         Clone Signing Key Credential for IdP
-         
-         - parameter idpId: (path)  
-         - parameter keyId: (path)  
-         - parameter targetIdpId: (query)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func cloneIdentityProviderKey(idpId: String, keyId: String, targetIdpId: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
-            do {
-                send(try cloneIdentityProviderKeyURLRequest(idpId: idpId, keyId: keyId, targetIdpId: targetIdpId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Clone Signing Key Credential for IdP
+         Clone a Signing Credential Key
          
          - parameter idpId: (path)  
          - parameter keyId: (path)  
          - parameter targetIdpId: (query)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func cloneIdentityProviderKey(idpId: String, keyId: String, targetIdpId: String) async throws -> OktaResponse<JsonWebKey> {
-            try await send(try cloneIdentityProviderKeyURLRequest(idpId: idpId, keyId: keyId, targetIdpId: targetIdpId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Clone Signing Key Credential for IdP
-         
-         - parameter idpId: (path)  
-         - parameter keyId: (path)  
-         - parameter targetIdpId: (query)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func cloneIdentityProviderKey(idpId: String, keyId: String, targetIdpId: String) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
-            publish(try cloneIdentityProviderKeyURLRequest(idpId: idpId, keyId: keyId, targetIdpId: targetIdpId))
-        }
-        #endif
-
-
-        internal func createIdentityProviderURLRequest(identityProvider: IdentityProvider) throws -> URLRequest {
-            try request(to: "/api/v1/idps", method: "POST", body: identityProvider)
+            try await send(try request(to: "/api/v1/idps/{idpId}/credentials/keys/{keyId}/clone".expanded(using: [
+                    "idpId": idpId, 
+                    "keyId": keyId
+                ]), method: "POST", query: [
+                    "targetIdpId": targetIdpId
+                ]))
         }
 
         /**
-         Add Identity Provider
-         
-         - parameter identityProvider: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func createIdentityProvider(identityProvider: IdentityProvider, completion: @escaping (Result<OktaResponse<IdentityProvider>, Error>) -> Void) {
-            do {
-                send(try createIdentityProviderURLRequest(identityProvider: identityProvider), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Add Identity Provider
+         Create an Identity Provider
          
          - parameter identityProvider: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func createIdentityProvider(identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
-            try await send(try createIdentityProviderURLRequest(identityProvider: identityProvider))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Add Identity Provider
-         
-         - parameter identityProvider: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createIdentityProvider(identityProvider: IdentityProvider) throws -> AnyPublisher<OktaResponse<IdentityProvider>, Error> {
-            publish(try createIdentityProviderURLRequest(identityProvider: identityProvider))
-        }
-        #endif
-
-
-        internal func createIdentityProviderKeyURLRequest(jsonWebKey: JsonWebKey) throws -> URLRequest {
-            try request(to: "/api/v1/idps/credentials/keys", method: "POST", body: jsonWebKey)
+            try await send(try requestWithBody(to: "/api/v1/idps", method: "POST", body: identityProvider))
         }
 
         /**
-         Add X.509 Certificate Public Key
-         
-         - parameter jsonWebKey: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func createIdentityProviderKey(jsonWebKey: JsonWebKey, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
-            do {
-                send(try createIdentityProviderKeyURLRequest(jsonWebKey: jsonWebKey), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Add X.509 Certificate Public Key
+         Create an X.509 Certificate Public Key
          
          - parameter jsonWebKey: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func createIdentityProviderKey(jsonWebKey: JsonWebKey) async throws -> OktaResponse<JsonWebKey> {
-            try await send(try createIdentityProviderKeyURLRequest(jsonWebKey: jsonWebKey))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Add X.509 Certificate Public Key
-         
-         - parameter jsonWebKey: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func createIdentityProviderKey(jsonWebKey: JsonWebKey) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
-            publish(try createIdentityProviderKeyURLRequest(jsonWebKey: jsonWebKey))
-        }
-        #endif
-
-
-        internal func deactivateIdentityProviderURLRequest(idpId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/lifecycle/deactivate".expanded(using: [
-                "idpId": idpId
-            ]), method: "POST")
+            try await send(try requestWithBody(to: "/api/v1/idps/credentials/keys", method: "POST", body: jsonWebKey))
         }
 
         /**
-         Deactivate Identity Provider
-         
-         - parameter idpId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func deactivateIdentityProvider(idpId: String, completion: @escaping (Result<OktaResponse<IdentityProvider>, Error>) -> Void) {
-            do {
-                send(try deactivateIdentityProviderURLRequest(idpId: idpId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Deactivate Identity Provider
+         Deactivate an Identity Provider
          
          - parameter idpId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func deactivateIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
-            try await send(try deactivateIdentityProviderURLRequest(idpId: idpId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Deactivate Identity Provider
-         
-         - parameter idpId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deactivateIdentityProvider(idpId: String) throws -> AnyPublisher<OktaResponse<IdentityProvider>, Error> {
-            publish(try deactivateIdentityProviderURLRequest(idpId: idpId))
-        }
-        #endif
-
-
-        internal func deleteIdentityProviderURLRequest(idpId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}".expanded(using: [
-                "idpId": idpId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/idps/{idpId}/lifecycle/deactivate".expanded(using: [
+                    "idpId": idpId
+                ]), method: "POST"))
         }
 
         /**
-         Delete Identity Provider
-         
-         - parameter idpId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func deleteIdentityProvider(idpId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteIdentityProviderURLRequest(idpId: idpId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Delete Identity Provider
+         Delete an Identity Provider
          
          - parameter idpId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func deleteIdentityProvider(idpId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deleteIdentityProviderURLRequest(idpId: idpId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Delete Identity Provider
-         
-         - parameter idpId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteIdentityProvider(idpId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteIdentityProviderURLRequest(idpId: idpId))
-        }
-        #endif
-
-
-        internal func deleteIdentityProviderKeyURLRequest(keyId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/credentials/keys/{keyId}".expanded(using: [
-                "keyId": keyId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/idps/{idpId}".expanded(using: [
+                    "idpId": idpId
+                ]), method: "DELETE"))
         }
 
         /**
-         Delete Key
-         
-         - parameter keyId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func deleteIdentityProviderKey(keyId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteIdentityProviderKeyURLRequest(keyId: keyId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Delete Key
+         Delete a Signing Credential Key
          
          - parameter keyId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func deleteIdentityProviderKey(keyId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deleteIdentityProviderKeyURLRequest(keyId: keyId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Delete Key
-         
-         - parameter keyId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func deleteIdentityProviderKey(keyId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteIdentityProviderKeyURLRequest(keyId: keyId))
-        }
-        #endif
-
-
-        internal func generateCsrForIdentityProviderURLRequest(idpId: String, csrMetadata: CsrMetadata) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/credentials/csrs".expanded(using: [
-                "idpId": idpId
-            ]), method: "POST", body: csrMetadata)
+            try await send(try request(to: "/api/v1/idps/credentials/keys/{keyId}".expanded(using: [
+                    "keyId": keyId
+                ]), method: "DELETE"))
         }
 
         /**
-         Generate Certificate Signing Request for IdP
+         Generate a Certificate Signing Request
          
          - parameter idpId: (path)  
-         - parameter csrMetadata: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
+         - parameter metadata: (body)  
          */
-        func generateCsrForIdentityProvider(idpId: String, csrMetadata: CsrMetadata, completion: @escaping (Result<OktaResponse<Csr>, Error>) -> Void) {
-            do {
-                send(try generateCsrForIdentityProviderURLRequest(idpId: idpId, csrMetadata: csrMetadata), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Generate Certificate Signing Request for IdP
-         
-         - parameter idpId: (path)  
-         - parameter csrMetadata: (body)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        func generateCsrForIdentityProvider(idpId: String, csrMetadata: CsrMetadata) async throws -> OktaResponse<Csr> {
-            try await send(try generateCsrForIdentityProviderURLRequest(idpId: idpId, csrMetadata: csrMetadata))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Generate Certificate Signing Request for IdP
-         
-         - parameter idpId: (path)  
-         - parameter csrMetadata: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func generateCsrForIdentityProvider(idpId: String, csrMetadata: CsrMetadata) throws -> AnyPublisher<OktaResponse<Csr>, Error> {
-            publish(try generateCsrForIdentityProviderURLRequest(idpId: idpId, csrMetadata: csrMetadata))
-        }
-        #endif
-
-
-        internal func generateIdentityProviderSigningKeyURLRequest(idpId: String, validityYears: Int) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/credentials/keys/generate".expanded(using: [
-                "idpId": idpId
-            ]), method: "POST", query: [
-                "validityYears": validityYears
-            ])
+        func generateCsrForIdentityProvider(idpId: String, metadata: CsrMetadata) async throws -> OktaResponse<Csr> {
+            try await send(try requestWithBody(to: "/api/v1/idps/{idpId}/credentials/csrs".expanded(using: [
+                    "idpId": idpId
+                ]), method: "POST", body: metadata))
         }
 
         /**
-         Generate New IdP Signing Key Credential
-         
-         - parameter idpId: (path)  
-         - parameter validityYears: (query) expiry of the IdP Key Credential 
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func generateIdentityProviderSigningKey(idpId: String, validityYears: Int, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
-            do {
-                send(try generateIdentityProviderSigningKeyURLRequest(idpId: idpId, validityYears: validityYears), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Generate New IdP Signing Key Credential
+         Generate a new Signing Credential Key
          
          - parameter idpId: (path)  
          - parameter validityYears: (query) expiry of the IdP Key Credential 
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func generateIdentityProviderSigningKey(idpId: String, validityYears: Int) async throws -> OktaResponse<JsonWebKey> {
-            try await send(try generateIdentityProviderSigningKeyURLRequest(idpId: idpId, validityYears: validityYears))
+            try await send(try request(to: "/api/v1/idps/{idpId}/credentials/keys/generate".expanded(using: [
+                    "idpId": idpId
+                ]), method: "POST", query: [
+                    "validityYears": validityYears
+                ]))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Generate New IdP Signing Key Credential
+         Retrieve a Certificate Signing Request
          
          - parameter idpId: (path)  
-         - parameter validityYears: (query) expiry of the IdP Key Credential 
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func generateIdentityProviderSigningKey(idpId: String, validityYears: Int) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
-            publish(try generateIdentityProviderSigningKeyURLRequest(idpId: idpId, validityYears: validityYears))
-        }
-        #endif
-
-
-        internal func getCsrForIdentityProviderURLRequest(idpId: String, csrId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/credentials/csrs/{csrId}".expanded(using: [
-                "idpId": idpId, 
-                "csrId": csrId
-            ]), method: "GET")
-        }
-
-        /**
-
-         - parameter idpId: (path)  
-         - parameter csrId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getCsrForIdentityProvider(idpId: String, csrId: String, completion: @escaping (Result<OktaResponse<Csr>, Error>) -> Void) {
-            do {
-                send(try getCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter idpId: (path)  
          - parameter csrId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getCsrForIdentityProvider(idpId: String, csrId: String) async throws -> OktaResponse<Csr> {
-            try await send(try getCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter idpId: (path)  
-         - parameter csrId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getCsrForIdentityProvider(idpId: String, csrId: String) throws -> AnyPublisher<OktaResponse<Csr>, Error> {
-            publish(try getCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId))
-        }
-        #endif
-
-
-        internal func getIdentityProviderURLRequest(idpId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}".expanded(using: [
-                "idpId": idpId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/idps/{idpId}/credentials/csrs/{csrId}".expanded(using: [
+                    "idpId": idpId, 
+                    "csrId": csrId
+                ]), method: "GET"))
         }
 
         /**
-         Get Identity Provider
-         
-         - parameter idpId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getIdentityProvider(idpId: String, completion: @escaping (Result<OktaResponse<IdentityProvider>, Error>) -> Void) {
-            do {
-                send(try getIdentityProviderURLRequest(idpId: idpId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Identity Provider
+         Retrieve an Identity Provider
          
          - parameter idpId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
-            try await send(try getIdentityProviderURLRequest(idpId: idpId))
+            try await send(try request(to: "/api/v1/idps/{idpId}".expanded(using: [
+                    "idpId": idpId
+                ]), method: "GET"))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Get Identity Provider
+         Retrieve a User
          
          - parameter idpId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getIdentityProvider(idpId: String) throws -> AnyPublisher<OktaResponse<IdentityProvider>, Error> {
-            publish(try getIdentityProviderURLRequest(idpId: idpId))
-        }
-        #endif
-
-
-        internal func getIdentityProviderApplicationUserURLRequest(idpId: String, userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/users/{userId}".expanded(using: [
-                "idpId": idpId, 
-                "userId": userId
-            ]), method: "GET")
-        }
-
-        /**
-
-         - parameter idpId: (path)  
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getIdentityProviderApplicationUser(idpId: String, userId: String, completion: @escaping (Result<OktaResponse<IdentityProviderApplicationUser>, Error>) -> Void) {
-            do {
-                send(try getIdentityProviderApplicationUserURLRequest(idpId: idpId, userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter idpId: (path)  
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getIdentityProviderApplicationUser(idpId: String, userId: String) async throws -> OktaResponse<IdentityProviderApplicationUser> {
-            try await send(try getIdentityProviderApplicationUserURLRequest(idpId: idpId, userId: userId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter idpId: (path)  
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getIdentityProviderApplicationUser(idpId: String, userId: String) throws -> AnyPublisher<OktaResponse<IdentityProviderApplicationUser>, Error> {
-            publish(try getIdentityProviderApplicationUserURLRequest(idpId: idpId, userId: userId))
-        }
-        #endif
-
-
-        internal func getIdentityProviderKeyURLRequest(keyId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/credentials/keys/{keyId}".expanded(using: [
-                "keyId": keyId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/idps/{idpId}/users/{userId}".expanded(using: [
+                    "idpId": idpId, 
+                    "userId": userId
+                ]), method: "GET"))
         }
 
         /**
-         Get Key
-         
-         - parameter keyId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getIdentityProviderKey(keyId: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
-            do {
-                send(try getIdentityProviderKeyURLRequest(keyId: keyId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Key
+         Retrieve an Credential Key
          
          - parameter keyId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getIdentityProviderKey(keyId: String) async throws -> OktaResponse<JsonWebKey> {
-            try await send(try getIdentityProviderKeyURLRequest(keyId: keyId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Get Key
-         
-         - parameter keyId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getIdentityProviderKey(keyId: String) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
-            publish(try getIdentityProviderKeyURLRequest(keyId: keyId))
-        }
-        #endif
-
-
-        internal func getIdentityProviderSigningKeyURLRequest(idpId: String, keyId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/credentials/keys/{keyId}".expanded(using: [
-                "idpId": idpId, 
-                "keyId": keyId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/idps/credentials/keys/{keyId}".expanded(using: [
+                    "keyId": keyId
+                ]), method: "GET"))
         }
 
         /**
-         Get Signing Key Credential for IdP
-         
-         - parameter idpId: (path)  
-         - parameter keyId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func getIdentityProviderSigningKey(idpId: String, keyId: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
-            do {
-                send(try getIdentityProviderSigningKeyURLRequest(idpId: idpId, keyId: keyId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Signing Key Credential for IdP
+         Retrieve a Signing Credential Key
          
          - parameter idpId: (path)  
          - parameter keyId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func getIdentityProviderSigningKey(idpId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
-            try await send(try getIdentityProviderSigningKeyURLRequest(idpId: idpId, keyId: keyId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Get Signing Key Credential for IdP
-         
-         - parameter idpId: (path)  
-         - parameter keyId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func getIdentityProviderSigningKey(idpId: String, keyId: String) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
-            publish(try getIdentityProviderSigningKeyURLRequest(idpId: idpId, keyId: keyId))
-        }
-        #endif
-
-
-        internal func linkUserToIdentityProviderURLRequest(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/users/{userId}".expanded(using: [
-                "idpId": idpId, 
-                "userId": userId
-            ]), method: "POST", body: userIdentityProviderLinkRequest)
+            try await send(try request(to: "/api/v1/idps/{idpId}/credentials/keys/{keyId}".expanded(using: [
+                    "idpId": idpId, 
+                    "keyId": keyId
+                ]), method: "GET"))
         }
 
         /**
-         Link a user to a Social IdP without a transaction
-         
-         - parameter idpId: (path)  
-         - parameter userId: (path)  
-         - parameter userIdentityProviderLinkRequest: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func linkUserToIdentityProvider(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest, completion: @escaping (Result<OktaResponse<IdentityProviderApplicationUser>, Error>) -> Void) {
-            do {
-                send(try linkUserToIdentityProviderURLRequest(idpId: idpId, userId: userId, userIdentityProviderLinkRequest: userIdentityProviderLinkRequest), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Link a user to a Social IdP without a transaction
+         Link a User to a Social IdP
          
          - parameter idpId: (path)  
          - parameter userId: (path)  
          - parameter userIdentityProviderLinkRequest: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func linkUserToIdentityProvider(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest) async throws -> OktaResponse<IdentityProviderApplicationUser> {
-            try await send(try linkUserToIdentityProviderURLRequest(idpId: idpId, userId: userId, userIdentityProviderLinkRequest: userIdentityProviderLinkRequest))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Link a user to a Social IdP without a transaction
-         
-         - parameter idpId: (path)  
-         - parameter userId: (path)  
-         - parameter userIdentityProviderLinkRequest: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func linkUserToIdentityProvider(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest) throws -> AnyPublisher<OktaResponse<IdentityProviderApplicationUser>, Error> {
-            publish(try linkUserToIdentityProviderURLRequest(idpId: idpId, userId: userId, userIdentityProviderLinkRequest: userIdentityProviderLinkRequest))
-        }
-        #endif
-
-
-        internal func listCsrsForIdentityProviderURLRequest(idpId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/credentials/csrs".expanded(using: [
-                "idpId": idpId
-            ]), method: "GET")
+            try await send(try requestWithBody(to: "/api/v1/idps/{idpId}/users/{userId}".expanded(using: [
+                    "idpId": idpId, 
+                    "userId": userId
+                ]), method: "POST", body: userIdentityProviderLinkRequest))
         }
 
         /**
-         List Certificate Signing Requests for IdP
-         
-         - parameter idpId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listCsrsForIdentityProvider(idpId: String, completion: @escaping (Result<OktaResponse<[Csr]>, Error>) -> Void) {
-            do {
-                send(try listCsrsForIdentityProviderURLRequest(idpId: idpId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Certificate Signing Requests for IdP
+         List all Certificate Signing Requests
          
          - parameter idpId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listCsrsForIdentityProvider(idpId: String) async throws -> OktaResponse<[Csr]> {
-            try await send(try listCsrsForIdentityProviderURLRequest(idpId: idpId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List Certificate Signing Requests for IdP
-         
-         - parameter idpId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listCsrsForIdentityProvider(idpId: String) throws -> AnyPublisher<OktaResponse<[Csr]>, Error> {
-            publish(try listCsrsForIdentityProviderURLRequest(idpId: idpId))
-        }
-        #endif
-
-
-        internal func listIdentityProviderApplicationUsersURLRequest(idpId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/users".expanded(using: [
-                "idpId": idpId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/idps/{idpId}/credentials/csrs".expanded(using: [
+                    "idpId": idpId
+                ]), method: "GET"))
         }
 
         /**
-         Find Users
-         
-         - parameter idpId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listIdentityProviderApplicationUsers(idpId: String, completion: @escaping (Result<OktaResponse<[IdentityProviderApplicationUser]>, Error>) -> Void) {
-            do {
-                send(try listIdentityProviderApplicationUsersURLRequest(idpId: idpId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Find Users
+         List all Users
          
          - parameter idpId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listIdentityProviderApplicationUsers(idpId: String) async throws -> OktaResponse<[IdentityProviderApplicationUser]> {
-            try await send(try listIdentityProviderApplicationUsersURLRequest(idpId: idpId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Find Users
-         
-         - parameter idpId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listIdentityProviderApplicationUsers(idpId: String) throws -> AnyPublisher<OktaResponse<[IdentityProviderApplicationUser]>, Error> {
-            publish(try listIdentityProviderApplicationUsersURLRequest(idpId: idpId))
-        }
-        #endif
-
-
-        internal func listIdentityProviderKeysURLRequest(after: String? = nil, limit: Int? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/idps/credentials/keys", method: "GET", query: [
-                "after": after, 
-                "limit": limit
-            ])
+            try await send(try request(to: "/api/v1/idps/{idpId}/users".expanded(using: [
+                    "idpId": idpId
+                ]), method: "GET"))
         }
 
         /**
-         List Keys
-         
-         - parameter after: (query) Specifies the pagination cursor for the next page of keys (optional)
-         - parameter limit: (query) Specifies the number of key results in a page (optional, default to 20)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listIdentityProviderKeys(after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[JsonWebKey]>, Error>) -> Void) {
-            do {
-                send(try listIdentityProviderKeysURLRequest(after: after, limit: limit), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Keys
+         List all Credential Keys
          
          - parameter after: (query) Specifies the pagination cursor for the next page of keys (optional)
          - parameter limit: (query) Specifies the number of key results in a page (optional, default to 20)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listIdentityProviderKeys(after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[JsonWebKey]> {
-            try await send(try listIdentityProviderKeysURLRequest(after: after, limit: limit))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List Keys
-         
-         - parameter after: (query) Specifies the pagination cursor for the next page of keys (optional)
-         - parameter limit: (query) Specifies the number of key results in a page (optional, default to 20)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listIdentityProviderKeys(after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[JsonWebKey]>, Error> {
-            publish(try listIdentityProviderKeysURLRequest(after: after, limit: limit))
-        }
-        #endif
-
-
-        internal func listIdentityProviderSigningKeysURLRequest(idpId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/credentials/keys".expanded(using: [
-                "idpId": idpId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/idps/credentials/keys", method: "GET", query: [
+                    "after": after, 
+                    "limit": limit
+                ]))
         }
 
         /**
-         List Signing Key Credentials for IdP
-         
-         - parameter idpId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listIdentityProviderSigningKeys(idpId: String, completion: @escaping (Result<OktaResponse<[JsonWebKey]>, Error>) -> Void) {
-            do {
-                send(try listIdentityProviderSigningKeysURLRequest(idpId: idpId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Signing Key Credentials for IdP
+         List all Signing Credential Keys
          
          - parameter idpId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listIdentityProviderSigningKeys(idpId: String) async throws -> OktaResponse<[JsonWebKey]> {
-            try await send(try listIdentityProviderSigningKeysURLRequest(idpId: idpId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List Signing Key Credentials for IdP
-         
-         - parameter idpId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listIdentityProviderSigningKeys(idpId: String) throws -> AnyPublisher<OktaResponse<[JsonWebKey]>, Error> {
-            publish(try listIdentityProviderSigningKeysURLRequest(idpId: idpId))
-        }
-        #endif
-
-
-        internal func listIdentityProvidersURLRequest(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/idps", method: "GET", query: [
-                "q": q, 
-                "after": after, 
-                "limit": limit, 
-                "type": type
-            ])
+            try await send(try request(to: "/api/v1/idps/{idpId}/credentials/keys".expanded(using: [
+                    "idpId": idpId
+                ]), method: "GET"))
         }
 
         /**
-         List Identity Providers
-         
-         - parameter q: (query) Searches the name property of IdPs for matching value (optional)
-         - parameter after: (query) Specifies the pagination cursor for the next page of IdPs (optional)
-         - parameter limit: (query) Specifies the number of IdP results in a page (optional, default to 20)
-         - parameter type: (query) Filters IdPs by type (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listIdentityProviders(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil, completion: @escaping (Result<OktaResponse<[IdentityProvider]>, Error>) -> Void) {
-            do {
-                send(try listIdentityProvidersURLRequest(q: q, after: after, limit: limit, type: type), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Identity Providers
+         List all Identity Providers
          
          - parameter q: (query) Searches the name property of IdPs for matching value (optional)
          - parameter after: (query) Specifies the pagination cursor for the next page of IdPs (optional)
          - parameter limit: (query) Specifies the number of IdP results in a page (optional, default to 20)
          - parameter type: (query) Filters IdPs by type (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listIdentityProviders(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil) async throws -> OktaResponse<[IdentityProvider]> {
-            try await send(try listIdentityProvidersURLRequest(q: q, after: after, limit: limit, type: type))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List Identity Providers
-         
-         - parameter q: (query) Searches the name property of IdPs for matching value (optional)
-         - parameter after: (query) Specifies the pagination cursor for the next page of IdPs (optional)
-         - parameter limit: (query) Specifies the number of IdP results in a page (optional, default to 20)
-         - parameter type: (query) Filters IdPs by type (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listIdentityProviders(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil) throws -> AnyPublisher<OktaResponse<[IdentityProvider]>, Error> {
-            publish(try listIdentityProvidersURLRequest(q: q, after: after, limit: limit, type: type))
-        }
-        #endif
-
-
-        internal func listSocialAuthTokensURLRequest(idpId: String, userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/users/{userId}/credentials/tokens".expanded(using: [
-                "idpId": idpId, 
-                "userId": userId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/idps", method: "GET", query: [
+                    "q": q, 
+                    "after": after, 
+                    "limit": limit, 
+                    "type": type
+                ]))
         }
 
         /**
-         Social Authentication Token Operation
-         
-         - parameter idpId: (path)  
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func listSocialAuthTokens(idpId: String, userId: String, completion: @escaping (Result<OktaResponse<[SocialAuthToken]>, Error>) -> Void) {
-            do {
-                send(try listSocialAuthTokensURLRequest(idpId: idpId, userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Social Authentication Token Operation
+         List all Tokens from a OIDC Identity Provider
          
          - parameter idpId: (path)  
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func listSocialAuthTokens(idpId: String, userId: String) async throws -> OktaResponse<[SocialAuthToken]> {
-            try await send(try listSocialAuthTokensURLRequest(idpId: idpId, userId: userId))
+            try await send(try request(to: "/api/v1/idps/{idpId}/users/{userId}/credentials/tokens".expanded(using: [
+                    "idpId": idpId, 
+                    "userId": userId
+                ]), method: "GET"))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Social Authentication Token Operation
+         Publish a Certificate Signing Request
          
          - parameter idpId: (path)  
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func listSocialAuthTokens(idpId: String, userId: String) throws -> AnyPublisher<OktaResponse<[SocialAuthToken]>, Error> {
-            publish(try listSocialAuthTokensURLRequest(idpId: idpId, userId: userId))
-        }
-        #endif
-
-
-        internal func publishCsrForIdentityProviderURLRequest(idpId: String, csrId: String, body: URL) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/credentials/csrs/{csrId}/lifecycle/publish".expanded(using: [
-                "idpId": idpId, 
-                "csrId": csrId
-            ]), method: "POST", body: body)
-        }
-
-        /**
-
-         - parameter idpId: (path)  
-         - parameter csrId: (path)  
-         - parameter body: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func publishCsrForIdentityProvider(idpId: String, csrId: String, body: URL, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
-            do {
-                send(try publishCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId, body: body), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter idpId: (path)  
          - parameter csrId: (path)  
          - parameter body: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func publishCsrForIdentityProvider(idpId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
-            try await send(try publishCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId, body: body))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter idpId: (path)  
-         - parameter csrId: (path)  
-         - parameter body: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func publishCsrForIdentityProvider(idpId: String, csrId: String, body: URL) throws -> AnyPublisher<OktaResponse<JsonWebKey>, Error> {
-            publish(try publishCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId, body: body))
-        }
-        #endif
-
-
-        internal func revokeCsrForIdentityProviderURLRequest(idpId: String, csrId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/credentials/csrs/{csrId}".expanded(using: [
-                "idpId": idpId, 
-                "csrId": csrId
-            ]), method: "DELETE")
+            try await send(try requestWithBody(to: "/api/v1/idps/{idpId}/credentials/csrs/{csrId}/lifecycle/publish".expanded(using: [
+                    "idpId": idpId, 
+                    "csrId": csrId
+                ]), method: "POST", body: body))
         }
 
         /**
-
-         - parameter idpId: (path)  
-         - parameter csrId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func revokeCsrForIdentityProvider(idpId: String, csrId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try revokeCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Revoke a Certificate Signing Request
+         
          - parameter idpId: (path)  
          - parameter csrId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func revokeCsrForIdentityProvider(idpId: String, csrId: String) async throws -> OktaResponse<Empty> {
-            try await send(try revokeCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter idpId: (path)  
-         - parameter csrId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func revokeCsrForIdentityProvider(idpId: String, csrId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try revokeCsrForIdentityProviderURLRequest(idpId: idpId, csrId: csrId))
-        }
-        #endif
-
-
-        internal func unlinkUserFromIdentityProviderURLRequest(idpId: String, userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}/users/{userId}".expanded(using: [
-                "idpId": idpId, 
-                "userId": userId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/idps/{idpId}/credentials/csrs/{csrId}".expanded(using: [
+                    "idpId": idpId, 
+                    "csrId": csrId
+                ]), method: "DELETE"))
         }
 
         /**
-         Unlink User from IdP
-         
-         - parameter idpId: (path)  
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func unlinkUserFromIdentityProvider(idpId: String, userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try unlinkUserFromIdentityProviderURLRequest(idpId: idpId, userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Unlink User from IdP
+         Unlink a User from IdP
          
          - parameter idpId: (path)  
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         func unlinkUserFromIdentityProvider(idpId: String, userId: String) async throws -> OktaResponse<Empty> {
-            try await send(try unlinkUserFromIdentityProviderURLRequest(idpId: idpId, userId: userId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Unlink User from IdP
-         
-         - parameter idpId: (path)  
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func unlinkUserFromIdentityProvider(idpId: String, userId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try unlinkUserFromIdentityProviderURLRequest(idpId: idpId, userId: userId))
-        }
-        #endif
-
-
-        internal func updateIdentityProviderURLRequest(idpId: String, identityProvider: IdentityProvider) throws -> URLRequest {
-            try request(to: "/api/v1/idps/{idpId}".expanded(using: [
-                "idpId": idpId
-            ]), method: "PUT", body: identityProvider)
+            try await send(try request(to: "/api/v1/idps/{idpId}/users/{userId}".expanded(using: [
+                    "idpId": idpId, 
+                    "userId": userId
+                ]), method: "DELETE"))
         }
 
         /**
-         Update Identity Provider
-         
-         - parameter idpId: (path)  
-         - parameter identityProvider: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        func updateIdentityProvider(idpId: String, identityProvider: IdentityProvider, completion: @escaping (Result<OktaResponse<IdentityProvider>, Error>) -> Void) {
-            do {
-                send(try updateIdentityProviderURLRequest(idpId: idpId, identityProvider: identityProvider), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Update Identity Provider
+         Replace an Identity Provider
          
          - parameter idpId: (path)  
          - parameter identityProvider: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         func updateIdentityProvider(idpId: String, identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
-            try await send(try updateIdentityProviderURLRequest(idpId: idpId, identityProvider: identityProvider))
+            try await send(try requestWithBody(to: "/api/v1/idps/{idpId}".expanded(using: [
+                    "idpId": idpId
+                ]), method: "PUT", body: identityProvider))
         }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Update Identity Provider
-         
-         - parameter idpId: (path)  
-         - parameter identityProvider: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        func updateIdentityProvider(idpId: String, identityProvider: IdentityProvider) throws -> AnyPublisher<OktaResponse<IdentityProvider>, Error> {
-            publish(try updateIdentityProviderURLRequest(idpId: idpId, identityProvider: identityProvider))
-        }
-        #endif
 
     }
 }

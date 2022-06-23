@@ -18,13 +18,9 @@ import AnyCodable
 
 public struct PasswordPolicyRecoveryFactorSettings: Codable, Hashable {
 
-    public enum Status: String, Codable, CaseIterable {
-        case active = "ACTIVE"
-        case inactive = "INACTIVE"
-    }
-    public var status: Status? = .inactive
+    public var status: LifecycleStatus?
 
-    public init(status: Status? = .inactive) {
+    public init(status: LifecycleStatus? = nil) {
         self.status = status
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {

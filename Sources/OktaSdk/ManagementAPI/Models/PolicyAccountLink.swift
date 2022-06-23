@@ -18,14 +18,10 @@ import AnyCodable
 
 public struct PolicyAccountLink: Codable, Hashable {
 
-    public enum Action: String, Codable, CaseIterable {
-        case auto = "AUTO"
-        case disabled = "DISABLED"
-    }
-    public var action: Action?
+    public var action: PolicyAccountLinkAction?
     public var filter: PolicyAccountLinkFilter?
 
-    public init(action: Action? = nil, filter: PolicyAccountLinkFilter? = nil) {
+    public init(action: PolicyAccountLinkAction? = nil, filter: PolicyAccountLinkFilter? = nil) {
         self.action = action
         self.filter = filter
     }

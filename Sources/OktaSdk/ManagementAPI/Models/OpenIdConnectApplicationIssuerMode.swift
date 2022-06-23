@@ -18,6 +18,7 @@ import AnyCodable
 
 public enum OpenIdConnectApplicationIssuerMode: String, Codable, CaseIterable, OktaClientArgument {
     case customUrl = "CUSTOM_URL"
+    case _dynamic = "DYNAMIC"
     case orgUrl = "ORG_URL"
 
     var stringValue: String { rawValue }

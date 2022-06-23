@@ -17,11 +17,11 @@ import Foundation
 import AnyCodable
 
 public enum InlineHookType: String, Codable, CaseIterable, OktaClientArgument {
-    case oauth2TokensTransform = "com.okta.oauth2.tokens.transform"
-    case importTransform = "com.okta.import.transform"
-    case samlTokensTransform = "com.okta.saml.tokens.transform"
-    case userPreRegistration = "com.okta.user.pre-registration"
-    case userCredentialPasswordImport = "com.okta.user.credential.password.import"
+    case importPeriodTransform = "com.okta.import.transform"
+    case oauth2PeriodTokensPeriodTransform = "com.okta.oauth2.tokens.transform"
+    case samlPeriodTokensPeriodTransform = "com.okta.saml.tokens.transform"
+    case userPeriodCredentialPeriodPasswordPeriodImport = "com.okta.user.credential.password.import"
+    case userPeriodPreRegistration = "com.okta.user.pre-registration"
 
     var stringValue: String { rawValue }
 }

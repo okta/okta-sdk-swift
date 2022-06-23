@@ -18,44 +18,44 @@ import AnyCodable
 
 public struct IdentityProviderApplicationUser: Codable, Hashable {
 
-    public var embedded: [String: AnyCodable]?
-    public var links: [String: AnyCodable]?
     public var created: String?
     public var externalId: String?
     public var id: String?
     public var lastUpdated: String?
     public var profile: [String: AnyCodable]?
+    public var embedded: [String: AnyCodable]?
+    public var links: [String: AnyCodable]?
 
-    public init(embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil, created: String? = nil, externalId: String? = nil, id: String? = nil, lastUpdated: String? = nil, profile: [String: AnyCodable]? = nil) {
-        self.embedded = embedded
-        self.links = links
+    public init(created: String? = nil, externalId: String? = nil, id: String? = nil, lastUpdated: String? = nil, profile: [String: AnyCodable]? = nil, embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil) {
         self.created = created
         self.externalId = externalId
         self.id = id
         self.lastUpdated = lastUpdated
         self.profile = profile
+        self.embedded = embedded
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case embedded = "_embedded"
-        case links = "_links"
         case created
         case externalId
         case id
         case lastUpdated
         case profile
+        case embedded = "_embedded"
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(embedded, forKey: .embedded)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(externalId, forKey: .externalId)
         try container.encodeIfPresent(id, forKey: .id)
         try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
         try container.encodeIfPresent(profile, forKey: .profile)
+        try container.encodeIfPresent(embedded, forKey: .embedded)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

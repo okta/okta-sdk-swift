@@ -18,16 +18,10 @@ import AnyCodable
 
 public struct PlatformConditionEvaluatorPlatform: Codable, Hashable {
 
-    public enum ModelType: String, Codable, CaseIterable {
-        case desktop = "DESKTOP"
-        case mobile = "MOBILE"
-        case other = "OTHER"
-        case any = "ANY"
-    }
     public var os: PlatformConditionEvaluatorPlatformOperatingSystem?
-    public var type: ModelType?
+    public var type: PolicyPlatformType?
 
-    public init(os: PlatformConditionEvaluatorPlatformOperatingSystem? = nil, type: ModelType? = nil) {
+    public init(os: PlatformConditionEvaluatorPlatformOperatingSystem? = nil, type: PolicyPlatformType? = nil) {
         self.os = os
         self.type = type
     }

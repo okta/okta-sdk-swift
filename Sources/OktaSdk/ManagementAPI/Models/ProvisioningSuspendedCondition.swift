@@ -18,13 +18,9 @@ import AnyCodable
 
 public struct ProvisioningSuspendedCondition: Codable, Hashable {
 
-    public enum Action: String, Codable, CaseIterable {
-        case _none = "NONE"
-        case unsuspend = "UNSUSPEND"
-    }
-    public var action: Action?
+    public var action: ProvisioningSuspendedAction?
 
-    public init(action: Action? = nil) {
+    public init(action: ProvisioningSuspendedAction? = nil) {
         self.action = action
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {

@@ -18,13 +18,9 @@ import AnyCodable
 
 public struct PolicyRuleAuthContextCondition: Codable, Hashable {
 
-    public enum AuthType: String, Codable, CaseIterable {
-        case any = "ANY"
-        case radius = "RADIUS"
-    }
-    public var authType: AuthType?
+    public var authType: PolicyRuleAuthContextType?
 
-    public init(authType: AuthType? = nil) {
+    public init(authType: PolicyRuleAuthContextType? = nil) {
         self.authType = authType
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {

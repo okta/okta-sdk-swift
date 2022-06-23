@@ -17,13 +17,13 @@ import Foundation
 import AnyCodable
 
 public enum FactorStatus: String, Codable, CaseIterable, OktaClientArgument {
-    case pendingActivation = "PENDING_ACTIVATION"
     case active = "ACTIVE"
+    case disabled = "DISABLED"
+    case enrolled = "ENROLLED"
+    case expired = "EXPIRED"
     case inactive = "INACTIVE"
     case notSetup = "NOT_SETUP"
-    case enrolled = "ENROLLED"
-    case disabled = "DISABLED"
-    case expired = "EXPIRED"
+    case pendingActivation = "PENDING_ACTIVATION"
 
     var stringValue: String { rawValue }
 }

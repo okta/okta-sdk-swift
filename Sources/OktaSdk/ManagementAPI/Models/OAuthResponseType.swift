@@ -18,8 +18,8 @@ import AnyCodable
 
 public enum OAuthResponseType: String, Codable, CaseIterable, OktaClientArgument {
     case code = "code"
-    case token = "token"
     case idToken = "id_token"
+    case token = "token"
 
     var stringValue: String { rawValue }
 }

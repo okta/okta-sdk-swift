@@ -18,15 +18,6 @@ import AnyCodable
 
 public struct EventHook: Codable, Hashable {
 
-    public enum Status: String, Codable, CaseIterable {
-        case active = "ACTIVE"
-        case inactive = "INACTIVE"
-    }
-    public enum VerificationStatus: String, Codable, CaseIterable {
-        case unverified = "UNVERIFIED"
-        case verified = "VERIFIED"
-    }
-    public var links: [String: AnyCodable]?
     public var channel: EventHookChannel?
     public var created: Date?
     public var createdBy: String?
@@ -34,11 +25,11 @@ public struct EventHook: Codable, Hashable {
     public var id: String?
     public var lastUpdated: Date?
     public var name: String?
-    public var status: Status?
-    public var verificationStatus: VerificationStatus?
+    public var status: LifecycleStatus?
+    public var verificationStatus: EventHookVerificationStatus?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, channel: EventHookChannel? = nil, created: Date? = nil, createdBy: String? = nil, events: EventSubscriptions? = nil, id: String? = nil, lastUpdated: Date? = nil, name: String? = nil, status: Status? = nil, verificationStatus: VerificationStatus? = nil) {
-        self.links = links
+    public init(channel: EventHookChannel? = nil, created: Date? = nil, createdBy: String? = nil, events: EventSubscriptions? = nil, id: String? = nil, lastUpdated: Date? = nil, name: String? = nil, status: LifecycleStatus? = nil, verificationStatus: EventHookVerificationStatus? = nil, links: [String: AnyCodable]? = nil) {
         self.channel = channel
         self.created = created
         self.createdBy = createdBy
@@ -48,9 +39,9 @@ public struct EventHook: Codable, Hashable {
         self.name = name
         self.status = status
         self.verificationStatus = verificationStatus
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case channel
         case created
         case createdBy
@@ -60,13 +51,13 @@ public struct EventHook: Codable, Hashable {
         case name
         case status
         case verificationStatus
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(channel, forKey: .channel)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(createdBy, forKey: .createdBy)
@@ -76,6 +67,7 @@ public struct EventHook: Codable, Hashable {
         try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(verificationStatus, forKey: .verificationStatus)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

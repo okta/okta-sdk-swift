@@ -18,12 +18,39 @@ import AnyCodable
 
 public struct TotpUserFactor: Codable, Hashable {
 
+    public var created: Date?
+    public var factorType: FactorType?
+    public var id: String?
+    public var lastUpdated: Date?
+    public var provider: FactorProvider?
+    public var status: FactorStatus?
+    public var verify: VerifyFactorRequest?
+    public var embedded: [String: AnyCodable]?
+    public var links: [String: AnyCodable]?
     public var profile: TotpUserFactorProfile?
 
-    public init(profile: TotpUserFactorProfile? = nil) {
+    public init(created: Date? = nil, factorType: FactorType? = nil, id: String? = nil, lastUpdated: Date? = nil, provider: FactorProvider? = nil, status: FactorStatus? = nil, verify: VerifyFactorRequest? = nil, embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil, profile: TotpUserFactorProfile? = nil) {
+        self.created = created
+        self.factorType = factorType
+        self.id = id
+        self.lastUpdated = lastUpdated
+        self.provider = provider
+        self.status = status
+        self.verify = verify
+        self.embedded = embedded
+        self.links = links
         self.profile = profile
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case created
+        case factorType
+        case id
+        case lastUpdated
+        case provider
+        case status
+        case verify
+        case embedded = "_embedded"
+        case links = "_links"
         case profile
     }
 
@@ -31,6 +58,15 @@ public struct TotpUserFactor: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(created, forKey: .created)
+        try container.encodeIfPresent(factorType, forKey: .factorType)
+        try container.encodeIfPresent(id, forKey: .id)
+        try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
+        try container.encodeIfPresent(provider, forKey: .provider)
+        try container.encodeIfPresent(status, forKey: .status)
+        try container.encodeIfPresent(verify, forKey: .verify)
+        try container.encodeIfPresent(embedded, forKey: .embedded)
+        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(profile, forKey: .profile)
     }
 

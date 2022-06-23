@@ -18,19 +18,55 @@ import AnyCodable
 
 public struct IdentityProviderPolicy: Codable, Hashable {
 
+    public var created: Date?
+    public var description: String?
+    public var id: String?
+    public var lastUpdated: Date?
+    public var name: String?
+    public var priority: Int?
+    public var status: LifecycleStatus?
+    public var system: Bool?
+    public var type: PolicyType?
+    public var embedded: [String: AnyCodable]?
+    public var links: [String: AnyCodable]?
     public var accountLink: PolicyAccountLink?
+    public var conditions: PolicyRuleConditions?
     public var maxClockSkew: Int?
     public var provisioning: Provisioning?
     public var subject: PolicySubject?
 
-    public init(accountLink: PolicyAccountLink? = nil, maxClockSkew: Int? = nil, provisioning: Provisioning? = nil, subject: PolicySubject? = nil) {
+    public init(created: Date? = nil, description: String? = nil, id: String? = nil, lastUpdated: Date? = nil, name: String? = nil, priority: Int? = nil, status: LifecycleStatus? = nil, system: Bool? = nil, type: PolicyType? = nil, embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil, accountLink: PolicyAccountLink? = nil, conditions: PolicyRuleConditions? = nil, maxClockSkew: Int? = nil, provisioning: Provisioning? = nil, subject: PolicySubject? = nil) {
+        self.created = created
+        self.description = description
+        self.id = id
+        self.lastUpdated = lastUpdated
+        self.name = name
+        self.priority = priority
+        self.status = status
+        self.system = system
+        self.type = type
+        self.embedded = embedded
+        self.links = links
         self.accountLink = accountLink
+        self.conditions = conditions
         self.maxClockSkew = maxClockSkew
         self.provisioning = provisioning
         self.subject = subject
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case created
+        case description
+        case id
+        case lastUpdated
+        case name
+        case priority
+        case status
+        case system
+        case type
+        case embedded = "_embedded"
+        case links = "_links"
         case accountLink
+        case conditions
         case maxClockSkew
         case provisioning
         case subject
@@ -40,7 +76,19 @@ public struct IdentityProviderPolicy: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(created, forKey: .created)
+        try container.encodeIfPresent(description, forKey: .description)
+        try container.encodeIfPresent(id, forKey: .id)
+        try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
+        try container.encodeIfPresent(name, forKey: .name)
+        try container.encodeIfPresent(priority, forKey: .priority)
+        try container.encodeIfPresent(status, forKey: .status)
+        try container.encodeIfPresent(system, forKey: .system)
+        try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(embedded, forKey: .embedded)
+        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(accountLink, forKey: .accountLink)
+        try container.encodeIfPresent(conditions, forKey: .conditions)
         try container.encodeIfPresent(maxClockSkew, forKey: .maxClockSkew)
         try container.encodeIfPresent(provisioning, forKey: .provisioning)
         try container.encodeIfPresent(subject, forKey: .subject)

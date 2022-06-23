@@ -19,15 +19,27 @@ import AnyCodable
 public struct AuthenticatorSettings: Codable, Hashable {
 
     public var allowedFor: AllowedForEnum?
+    public var appInstanceId: String?
+    public var channelBinding: ChannelBinding?
+    public var compliance: Compliance?
     public var tokenLifetimeInMinutes: Int?
+    public var userVerification: UserVerificationEnum?
 
-    public init(allowedFor: AllowedForEnum? = nil, tokenLifetimeInMinutes: Int? = nil) {
+    public init(allowedFor: AllowedForEnum? = nil, appInstanceId: String? = nil, channelBinding: ChannelBinding? = nil, compliance: Compliance? = nil, tokenLifetimeInMinutes: Int? = nil, userVerification: UserVerificationEnum? = nil) {
         self.allowedFor = allowedFor
+        self.appInstanceId = appInstanceId
+        self.channelBinding = channelBinding
+        self.compliance = compliance
         self.tokenLifetimeInMinutes = tokenLifetimeInMinutes
+        self.userVerification = userVerification
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case allowedFor
+        case appInstanceId
+        case channelBinding
+        case compliance
         case tokenLifetimeInMinutes
+        case userVerification
     }
 
     // Encodable protocol methods
@@ -35,7 +47,11 @@ public struct AuthenticatorSettings: Codable, Hashable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(allowedFor, forKey: .allowedFor)
+        try container.encodeIfPresent(appInstanceId, forKey: .appInstanceId)
+        try container.encodeIfPresent(channelBinding, forKey: .channelBinding)
+        try container.encodeIfPresent(compliance, forKey: .compliance)
         try container.encodeIfPresent(tokenLifetimeInMinutes, forKey: .tokenLifetimeInMinutes)
+        try container.encodeIfPresent(userVerification, forKey: .userVerification)
     }
 
 

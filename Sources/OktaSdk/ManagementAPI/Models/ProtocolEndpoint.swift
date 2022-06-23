@@ -18,20 +18,12 @@ import AnyCodable
 
 public struct ProtocolEndpoint: Codable, Hashable {
 
-    public enum Binding: String, Codable, CaseIterable {
-        case post = "HTTP-POST"
-        case redirect = "HTTP-REDIRECT"
-    }
-    public enum ModelType: String, Codable, CaseIterable {
-        case instance = "INSTANCE"
-        case org = "ORG"
-    }
-    public var binding: Binding?
+    public var binding: ProtocolEndpointBinding?
     public var destination: String?
-    public var type: ModelType?
+    public var type: ProtocolEndpointType?
     public var url: String?
 
-    public init(binding: Binding? = nil, destination: String? = nil, type: ModelType? = nil, url: String? = nil) {
+    public init(binding: ProtocolEndpointBinding? = nil, destination: String? = nil, type: ProtocolEndpointType? = nil, url: String? = nil) {
         self.binding = binding
         self.destination = destination
         self.type = type

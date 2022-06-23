@@ -18,14 +18,10 @@ import AnyCodable
 
 public struct PlatformConditionEvaluatorPlatformOperatingSystemVersion: Codable, Hashable {
 
-    public enum MatchType: String, Codable, CaseIterable {
-        case expression = "EXPRESSION"
-        case semver = "SEMVER"
-    }
-    public var matchType: MatchType?
+    public var matchType: PlatformConditionOperatingSystemVersionMatchType?
     public var value: String?
 
-    public init(matchType: MatchType? = nil, value: String? = nil) {
+    public init(matchType: PlatformConditionOperatingSystemVersionMatchType? = nil, value: String? = nil) {
         self.matchType = matchType
         self.value = value
     }

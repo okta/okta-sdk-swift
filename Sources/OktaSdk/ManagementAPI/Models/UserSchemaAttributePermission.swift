@@ -18,24 +18,24 @@ import AnyCodable
 
 public struct UserSchemaAttributePermission: Codable, Hashable {
 
-    public var principal: String?
     public var action: String?
+    public var principal: String?
 
-    public init(principal: String? = nil, action: String? = nil) {
-        self.principal = principal
+    public init(action: String? = nil, principal: String? = nil) {
         self.action = action
+        self.principal = principal
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case principal
         case action
+        case principal
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(principal, forKey: .principal)
         try container.encodeIfPresent(action, forKey: .action)
+        try container.encodeIfPresent(principal, forKey: .principal)
     }
 
 

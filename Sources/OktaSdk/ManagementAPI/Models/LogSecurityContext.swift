@@ -21,22 +21,22 @@ public struct LogSecurityContext: Codable, Hashable {
     public var asNumber: Int?
     public var asOrg: String?
     public var domain: String?
-    public var isProxy: Bool?
     public var isp: String?
+    public var isProxy: Bool?
 
-    public init(asNumber: Int? = nil, asOrg: String? = nil, domain: String? = nil, isProxy: Bool? = nil, isp: String? = nil) {
+    public init(asNumber: Int? = nil, asOrg: String? = nil, domain: String? = nil, isp: String? = nil, isProxy: Bool? = nil) {
         self.asNumber = asNumber
         self.asOrg = asOrg
         self.domain = domain
-        self.isProxy = isProxy
         self.isp = isp
+        self.isProxy = isProxy
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case asNumber
         case asOrg
         case domain
-        case isProxy
         case isp
+        case isProxy
     }
 
     // Encodable protocol methods
@@ -46,8 +46,8 @@ public struct LogSecurityContext: Codable, Hashable {
         try container.encodeIfPresent(asNumber, forKey: .asNumber)
         try container.encodeIfPresent(asOrg, forKey: .asOrg)
         try container.encodeIfPresent(domain, forKey: .domain)
-        try container.encodeIfPresent(isProxy, forKey: .isProxy)
         try container.encodeIfPresent(isp, forKey: .isp)
+        try container.encodeIfPresent(isProxy, forKey: .isProxy)
     }
 
 
