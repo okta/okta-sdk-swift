@@ -54,7 +54,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getLogs(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil, completion: @escaping (Result<OktaResponse<[LogEvent]>, Error>) -> Void) {
+        func getLogs(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil, completion: @escaping (Result<OktaResponse<[LogEvent]>, Error>) -> Void) {
             do {
                 send(try getLogsURLRequest(since: since, until: until, filter: filter, q: q, limit: limit, sortOrder: sortOrder, after: after), completion: completion)
             } catch {
@@ -75,7 +75,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getLogs(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil) async throws -> OktaResponse<[LogEvent]> {
+        func getLogs(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil) async throws -> OktaResponse<[LogEvent]> {
             try await send(try getLogsURLRequest(since: since, until: until, filter: filter, q: q, limit: limit, sortOrder: sortOrder, after: after))
         }
         #endif
@@ -93,7 +93,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getLogs(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil) throws -> AnyPublisher<OktaResponse<[LogEvent]>, Error> {
+        func getLogs(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil) throws -> AnyPublisher<OktaResponse<[LogEvent]>, Error> {
             publish(try getLogsURLRequest(since: since, until: until, filter: filter, q: q, limit: limit, sortOrder: sortOrder, after: after))
         }
         #endif

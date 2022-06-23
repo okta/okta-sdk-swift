@@ -39,7 +39,7 @@ public extension OktaClient {
          - parameter linkedObject: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func addLinkedObjectDefinition(linkedObject: LinkedObject, completion: @escaping (Result<OktaResponse<LinkedObject>, Error>) -> Void) {
+        func addLinkedObjectDefinition(linkedObject: LinkedObject, completion: @escaping (Result<OktaResponse<LinkedObject>, Error>) -> Void) {
             do {
                 send(try addLinkedObjectDefinitionURLRequest(linkedObject: linkedObject), completion: completion)
             } catch {
@@ -53,7 +53,7 @@ public extension OktaClient {
          - parameter linkedObject: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func addLinkedObjectDefinition(linkedObject: LinkedObject) async throws -> OktaResponse<LinkedObject> {
+        func addLinkedObjectDefinition(linkedObject: LinkedObject) async throws -> OktaResponse<LinkedObject> {
             try await send(try addLinkedObjectDefinitionURLRequest(linkedObject: linkedObject))
         }
         #endif
@@ -64,7 +64,7 @@ public extension OktaClient {
          - parameter linkedObject: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func addLinkedObjectDefinition(linkedObject: LinkedObject) throws -> AnyPublisher<OktaResponse<LinkedObject>, Error> {
+        func addLinkedObjectDefinition(linkedObject: LinkedObject) throws -> AnyPublisher<OktaResponse<LinkedObject>, Error> {
             publish(try addLinkedObjectDefinitionURLRequest(linkedObject: linkedObject))
         }
         #endif
@@ -81,7 +81,7 @@ public extension OktaClient {
          - parameter linkedObjectName: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func deleteLinkedObjectDefinition(linkedObjectName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func deleteLinkedObjectDefinition(linkedObjectName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deleteLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName), completion: completion)
             } catch {
@@ -95,7 +95,7 @@ public extension OktaClient {
          - parameter linkedObjectName: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func deleteLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<Empty> {
+        func deleteLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName))
         }
         #endif
@@ -106,7 +106,7 @@ public extension OktaClient {
          - parameter linkedObjectName: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deleteLinkedObjectDefinition(linkedObjectName: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func deleteLinkedObjectDefinition(linkedObjectName: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deleteLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName))
         }
         #endif
@@ -123,7 +123,7 @@ public extension OktaClient {
          - parameter linkedObjectName: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getLinkedObjectDefinition(linkedObjectName: String, completion: @escaping (Result<OktaResponse<LinkedObject>, Error>) -> Void) {
+        func getLinkedObjectDefinition(linkedObjectName: String, completion: @escaping (Result<OktaResponse<LinkedObject>, Error>) -> Void) {
             do {
                 send(try getLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName), completion: completion)
             } catch {
@@ -137,7 +137,7 @@ public extension OktaClient {
          - parameter linkedObjectName: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<LinkedObject> {
+        func getLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<LinkedObject> {
             try await send(try getLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName))
         }
         #endif
@@ -148,7 +148,7 @@ public extension OktaClient {
          - parameter linkedObjectName: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getLinkedObjectDefinition(linkedObjectName: String) throws -> AnyPublisher<OktaResponse<LinkedObject>, Error> {
+        func getLinkedObjectDefinition(linkedObjectName: String) throws -> AnyPublisher<OktaResponse<LinkedObject>, Error> {
             publish(try getLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName))
         }
         #endif
@@ -162,7 +162,7 @@ public extension OktaClient {
 
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func listLinkedObjectDefinitions(completion: @escaping (Result<OktaResponse<[LinkedObject]>, Error>) -> Void) {
+        func listLinkedObjectDefinitions(completion: @escaping (Result<OktaResponse<[LinkedObject]>, Error>) -> Void) {
             do {
                 send(try listLinkedObjectDefinitionsURLRequest(), completion: completion)
             } catch {
@@ -175,7 +175,7 @@ public extension OktaClient {
 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listLinkedObjectDefinitions() async throws -> OktaResponse<[LinkedObject]> {
+        func listLinkedObjectDefinitions() async throws -> OktaResponse<[LinkedObject]> {
             try await send(try listLinkedObjectDefinitionsURLRequest())
         }
         #endif
@@ -185,7 +185,7 @@ public extension OktaClient {
 
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listLinkedObjectDefinitions() throws -> AnyPublisher<OktaResponse<[LinkedObject]>, Error> {
+        func listLinkedObjectDefinitions() throws -> AnyPublisher<OktaResponse<[LinkedObject]>, Error> {
             publish(try listLinkedObjectDefinitionsURLRequest())
         }
         #endif

@@ -38,7 +38,7 @@ public extension OktaClient {
 
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getCurrentConfiguration(completion: @escaping (Result<OktaResponse<ThreatInsightConfiguration>, Error>) -> Void) {
+        func getCurrentConfiguration(completion: @escaping (Result<OktaResponse<ThreatInsightConfiguration>, Error>) -> Void) {
             do {
                 send(try getCurrentConfigurationURLRequest(), completion: completion)
             } catch {
@@ -51,7 +51,7 @@ public extension OktaClient {
 
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getCurrentConfiguration() async throws -> OktaResponse<ThreatInsightConfiguration> {
+        func getCurrentConfiguration() async throws -> OktaResponse<ThreatInsightConfiguration> {
             try await send(try getCurrentConfigurationURLRequest())
         }
         #endif
@@ -61,7 +61,7 @@ public extension OktaClient {
 
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getCurrentConfiguration() throws -> AnyPublisher<OktaResponse<ThreatInsightConfiguration>, Error> {
+        func getCurrentConfiguration() throws -> AnyPublisher<OktaResponse<ThreatInsightConfiguration>, Error> {
             publish(try getCurrentConfigurationURLRequest())
         }
         #endif
@@ -76,7 +76,7 @@ public extension OktaClient {
          - parameter threatInsightConfiguration: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration, completion: @escaping (Result<OktaResponse<ThreatInsightConfiguration>, Error>) -> Void) {
+        func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration, completion: @escaping (Result<OktaResponse<ThreatInsightConfiguration>, Error>) -> Void) {
             do {
                 send(try updateConfigurationURLRequest(threatInsightConfiguration: threatInsightConfiguration), completion: completion)
             } catch {
@@ -90,7 +90,7 @@ public extension OktaClient {
          - parameter threatInsightConfiguration: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration) async throws -> OktaResponse<ThreatInsightConfiguration> {
+        func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration) async throws -> OktaResponse<ThreatInsightConfiguration> {
             try await send(try updateConfigurationURLRequest(threatInsightConfiguration: threatInsightConfiguration))
         }
         #endif
@@ -101,7 +101,7 @@ public extension OktaClient {
          - parameter threatInsightConfiguration: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration) throws -> AnyPublisher<OktaResponse<ThreatInsightConfiguration>, Error> {
+        func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration) throws -> AnyPublisher<OktaResponse<ThreatInsightConfiguration>, Error> {
             publish(try updateConfigurationURLRequest(threatInsightConfiguration: threatInsightConfiguration))
         }
         #endif

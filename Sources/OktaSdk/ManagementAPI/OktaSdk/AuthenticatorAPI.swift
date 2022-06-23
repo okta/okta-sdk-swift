@@ -42,7 +42,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func activateAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func activateAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try activateAuthenticatorURLRequest(authenticatorId: authenticatorId), completion: completion)
             } catch {
@@ -57,7 +57,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func activateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Empty> {
+        func activateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
         #endif
@@ -69,7 +69,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func activateAuthenticator(authenticatorId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func activateAuthenticator(authenticatorId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try activateAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
         #endif
@@ -87,7 +87,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func deactivateAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func deactivateAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deactivateAuthenticatorURLRequest(authenticatorId: authenticatorId), completion: completion)
             } catch {
@@ -102,7 +102,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func deactivateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Empty> {
+        func deactivateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
         #endif
@@ -114,7 +114,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deactivateAuthenticator(authenticatorId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func deactivateAuthenticator(authenticatorId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deactivateAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
         #endif
@@ -132,7 +132,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Authenticator>, Error>) -> Void) {
+        func getAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Authenticator>, Error>) -> Void) {
             do {
                 send(try getAuthenticatorURLRequest(authenticatorId: authenticatorId), completion: completion)
             } catch {
@@ -147,7 +147,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
+        func getAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
             try await send(try getAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
         #endif
@@ -159,7 +159,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getAuthenticator(authenticatorId: String) throws -> AnyPublisher<OktaResponse<Authenticator>, Error> {
+        func getAuthenticator(authenticatorId: String) throws -> AnyPublisher<OktaResponse<Authenticator>, Error> {
             publish(try getAuthenticatorURLRequest(authenticatorId: authenticatorId))
         }
         #endif
@@ -174,7 +174,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func listAuthenticators(completion: @escaping (Result<OktaResponse<[Authenticator]>, Error>) -> Void) {
+        func listAuthenticators(completion: @escaping (Result<OktaResponse<[Authenticator]>, Error>) -> Void) {
             do {
                 send(try listAuthenticatorsURLRequest(), completion: completion)
             } catch {
@@ -188,7 +188,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listAuthenticators() async throws -> OktaResponse<[Authenticator]> {
+        func listAuthenticators() async throws -> OktaResponse<[Authenticator]> {
             try await send(try listAuthenticatorsURLRequest())
         }
         #endif
@@ -199,7 +199,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listAuthenticators() throws -> AnyPublisher<OktaResponse<[Authenticator]>, Error> {
+        func listAuthenticators() throws -> AnyPublisher<OktaResponse<[Authenticator]>, Error> {
             publish(try listAuthenticatorsURLRequest())
         }
         #endif

@@ -42,7 +42,7 @@ public extension OktaClient {
          - parameter appInstanceId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getApplicationUserSchema(appInstanceId: String, completion: @escaping (Result<OktaResponse<UserSchema>, Error>) -> Void) {
+        func getApplicationUserSchema(appInstanceId: String, completion: @escaping (Result<OktaResponse<UserSchema>, Error>) -> Void) {
             do {
                 send(try getApplicationUserSchemaURLRequest(appInstanceId: appInstanceId), completion: completion)
             } catch {
@@ -57,7 +57,7 @@ public extension OktaClient {
          - parameter appInstanceId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getApplicationUserSchema(appInstanceId: String) async throws -> OktaResponse<UserSchema> {
+        func getApplicationUserSchema(appInstanceId: String) async throws -> OktaResponse<UserSchema> {
             try await send(try getApplicationUserSchemaURLRequest(appInstanceId: appInstanceId))
         }
         #endif
@@ -69,7 +69,7 @@ public extension OktaClient {
          - parameter appInstanceId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getApplicationUserSchema(appInstanceId: String) throws -> AnyPublisher<OktaResponse<UserSchema>, Error> {
+        func getApplicationUserSchema(appInstanceId: String) throws -> AnyPublisher<OktaResponse<UserSchema>, Error> {
             publish(try getApplicationUserSchemaURLRequest(appInstanceId: appInstanceId))
         }
         #endif
@@ -87,7 +87,7 @@ public extension OktaClient {
          - parameter schemaId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getUserSchema(schemaId: String, completion: @escaping (Result<OktaResponse<UserSchema>, Error>) -> Void) {
+        func getUserSchema(schemaId: String, completion: @escaping (Result<OktaResponse<UserSchema>, Error>) -> Void) {
             do {
                 send(try getUserSchemaURLRequest(schemaId: schemaId), completion: completion)
             } catch {
@@ -102,7 +102,7 @@ public extension OktaClient {
          - parameter schemaId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getUserSchema(schemaId: String) async throws -> OktaResponse<UserSchema> {
+        func getUserSchema(schemaId: String) async throws -> OktaResponse<UserSchema> {
             try await send(try getUserSchemaURLRequest(schemaId: schemaId))
         }
         #endif
@@ -114,7 +114,7 @@ public extension OktaClient {
          - parameter schemaId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getUserSchema(schemaId: String) throws -> AnyPublisher<OktaResponse<UserSchema>, Error> {
+        func getUserSchema(schemaId: String) throws -> AnyPublisher<OktaResponse<UserSchema>, Error> {
             publish(try getUserSchemaURLRequest(schemaId: schemaId))
         }
         #endif
@@ -133,7 +133,7 @@ public extension OktaClient {
          - parameter userSchema: (body)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func updateApplicationUserProfile(appInstanceId: String, userSchema: UserSchema? = nil, completion: @escaping (Result<OktaResponse<UserSchema>, Error>) -> Void) {
+        func updateApplicationUserProfile(appInstanceId: String, userSchema: UserSchema? = nil, completion: @escaping (Result<OktaResponse<UserSchema>, Error>) -> Void) {
             do {
                 send(try updateApplicationUserProfileURLRequest(appInstanceId: appInstanceId, userSchema: userSchema), completion: completion)
             } catch {
@@ -149,7 +149,7 @@ public extension OktaClient {
          - parameter userSchema: (body)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func updateApplicationUserProfile(appInstanceId: String, userSchema: UserSchema? = nil) async throws -> OktaResponse<UserSchema> {
+        func updateApplicationUserProfile(appInstanceId: String, userSchema: UserSchema? = nil) async throws -> OktaResponse<UserSchema> {
             try await send(try updateApplicationUserProfileURLRequest(appInstanceId: appInstanceId, userSchema: userSchema))
         }
         #endif
@@ -162,7 +162,7 @@ public extension OktaClient {
          - parameter userSchema: (body)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func updateApplicationUserProfile(appInstanceId: String, userSchema: UserSchema? = nil) throws -> AnyPublisher<OktaResponse<UserSchema>, Error> {
+        func updateApplicationUserProfile(appInstanceId: String, userSchema: UserSchema? = nil) throws -> AnyPublisher<OktaResponse<UserSchema>, Error> {
             publish(try updateApplicationUserProfileURLRequest(appInstanceId: appInstanceId, userSchema: userSchema))
         }
         #endif
@@ -180,7 +180,7 @@ public extension OktaClient {
          - parameter userSchema: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func updateUserProfile(schemaId: String, userSchema: UserSchema, completion: @escaping (Result<OktaResponse<UserSchema>, Error>) -> Void) {
+        func updateUserProfile(schemaId: String, userSchema: UserSchema, completion: @escaping (Result<OktaResponse<UserSchema>, Error>) -> Void) {
             do {
                 send(try updateUserProfileURLRequest(schemaId: schemaId, userSchema: userSchema), completion: completion)
             } catch {
@@ -195,7 +195,7 @@ public extension OktaClient {
          - parameter userSchema: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func updateUserProfile(schemaId: String, userSchema: UserSchema) async throws -> OktaResponse<UserSchema> {
+        func updateUserProfile(schemaId: String, userSchema: UserSchema) async throws -> OktaResponse<UserSchema> {
             try await send(try updateUserProfileURLRequest(schemaId: schemaId, userSchema: userSchema))
         }
         #endif
@@ -207,7 +207,7 @@ public extension OktaClient {
          - parameter userSchema: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func updateUserProfile(schemaId: String, userSchema: UserSchema) throws -> AnyPublisher<OktaResponse<UserSchema>, Error> {
+        func updateUserProfile(schemaId: String, userSchema: UserSchema) throws -> AnyPublisher<OktaResponse<UserSchema>, Error> {
             publish(try updateUserProfileURLRequest(schemaId: schemaId, userSchema: userSchema))
         }
         #endif

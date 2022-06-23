@@ -39,7 +39,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getGroupSchema(completion: @escaping (Result<OktaResponse<GroupSchema>, Error>) -> Void) {
+        func getGroupSchema(completion: @escaping (Result<OktaResponse<GroupSchema>, Error>) -> Void) {
             do {
                 send(try getGroupSchemaURLRequest(), completion: completion)
             } catch {
@@ -53,7 +53,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getGroupSchema() async throws -> OktaResponse<GroupSchema> {
+        func getGroupSchema() async throws -> OktaResponse<GroupSchema> {
             try await send(try getGroupSchemaURLRequest())
         }
         #endif
@@ -64,7 +64,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getGroupSchema() throws -> AnyPublisher<OktaResponse<GroupSchema>, Error> {
+        func getGroupSchema() throws -> AnyPublisher<OktaResponse<GroupSchema>, Error> {
             publish(try getGroupSchemaURLRequest())
         }
         #endif
@@ -80,7 +80,7 @@ public extension OktaClient {
          - parameter groupSchema: (body)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func updateGroupSchema(groupSchema: GroupSchema? = nil, completion: @escaping (Result<OktaResponse<GroupSchema>, Error>) -> Void) {
+        func updateGroupSchema(groupSchema: GroupSchema? = nil, completion: @escaping (Result<OktaResponse<GroupSchema>, Error>) -> Void) {
             do {
                 send(try updateGroupSchemaURLRequest(groupSchema: groupSchema), completion: completion)
             } catch {
@@ -95,7 +95,7 @@ public extension OktaClient {
          - parameter groupSchema: (body)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func updateGroupSchema(groupSchema: GroupSchema? = nil) async throws -> OktaResponse<GroupSchema> {
+        func updateGroupSchema(groupSchema: GroupSchema? = nil) async throws -> OktaResponse<GroupSchema> {
             try await send(try updateGroupSchemaURLRequest(groupSchema: groupSchema))
         }
         #endif
@@ -107,7 +107,7 @@ public extension OktaClient {
          - parameter groupSchema: (body)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func updateGroupSchema(groupSchema: GroupSchema? = nil) throws -> AnyPublisher<OktaResponse<GroupSchema>, Error> {
+        func updateGroupSchema(groupSchema: GroupSchema? = nil) throws -> AnyPublisher<OktaResponse<GroupSchema>, Error> {
             publish(try updateGroupSchemaURLRequest(groupSchema: groupSchema))
         }
         #endif

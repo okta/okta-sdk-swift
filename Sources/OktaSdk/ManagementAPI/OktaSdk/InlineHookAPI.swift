@@ -41,7 +41,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func activateInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
+        func activateInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
             do {
                 send(try activateInlineHookURLRequest(inlineHookId: inlineHookId), completion: completion)
             } catch {
@@ -55,7 +55,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func activateInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
+        func activateInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
             try await send(try activateInlineHookURLRequest(inlineHookId: inlineHookId))
         }
         #endif
@@ -66,7 +66,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func activateInlineHook(inlineHookId: String) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
+        func activateInlineHook(inlineHookId: String) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
             publish(try activateInlineHookURLRequest(inlineHookId: inlineHookId))
         }
         #endif
@@ -81,7 +81,7 @@ public extension OktaClient {
          - parameter inlineHook: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func createInlineHook(inlineHook: InlineHook, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
+        func createInlineHook(inlineHook: InlineHook, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
             do {
                 send(try createInlineHookURLRequest(inlineHook: inlineHook), completion: completion)
             } catch {
@@ -95,7 +95,7 @@ public extension OktaClient {
          - parameter inlineHook: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func createInlineHook(inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
+        func createInlineHook(inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
             try await send(try createInlineHookURLRequest(inlineHook: inlineHook))
         }
         #endif
@@ -106,7 +106,7 @@ public extension OktaClient {
          - parameter inlineHook: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func createInlineHook(inlineHook: InlineHook) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
+        func createInlineHook(inlineHook: InlineHook) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
             publish(try createInlineHookURLRequest(inlineHook: inlineHook))
         }
         #endif
@@ -123,7 +123,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func deactivateInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
+        func deactivateInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
             do {
                 send(try deactivateInlineHookURLRequest(inlineHookId: inlineHookId), completion: completion)
             } catch {
@@ -137,7 +137,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func deactivateInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
+        func deactivateInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
             try await send(try deactivateInlineHookURLRequest(inlineHookId: inlineHookId))
         }
         #endif
@@ -148,7 +148,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deactivateInlineHook(inlineHookId: String) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
+        func deactivateInlineHook(inlineHookId: String) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
             publish(try deactivateInlineHookURLRequest(inlineHookId: inlineHookId))
         }
         #endif
@@ -165,7 +165,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func deleteInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func deleteInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deleteInlineHookURLRequest(inlineHookId: inlineHookId), completion: completion)
             } catch {
@@ -179,7 +179,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func deleteInlineHook(inlineHookId: String) async throws -> OktaResponse<Empty> {
+        func deleteInlineHook(inlineHookId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteInlineHookURLRequest(inlineHookId: inlineHookId))
         }
         #endif
@@ -190,7 +190,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deleteInlineHook(inlineHookId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func deleteInlineHook(inlineHookId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deleteInlineHookURLRequest(inlineHookId: inlineHookId))
         }
         #endif
@@ -208,7 +208,7 @@ public extension OktaClient {
          - parameter body: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func executeInlineHook(inlineHookId: String, body: AnyCodable, completion: @escaping (Result<OktaResponse<InlineHookResponse>, Error>) -> Void) {
+        func executeInlineHook(inlineHookId: String, body: AnyCodable, completion: @escaping (Result<OktaResponse<InlineHookResponse>, Error>) -> Void) {
             do {
                 send(try executeInlineHookURLRequest(inlineHookId: inlineHookId, body: body), completion: completion)
             } catch {
@@ -223,7 +223,7 @@ public extension OktaClient {
          - parameter body: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func executeInlineHook(inlineHookId: String, body: AnyCodable) async throws -> OktaResponse<InlineHookResponse> {
+        func executeInlineHook(inlineHookId: String, body: AnyCodable) async throws -> OktaResponse<InlineHookResponse> {
             try await send(try executeInlineHookURLRequest(inlineHookId: inlineHookId, body: body))
         }
         #endif
@@ -235,7 +235,7 @@ public extension OktaClient {
          - parameter body: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func executeInlineHook(inlineHookId: String, body: AnyCodable) throws -> AnyPublisher<OktaResponse<InlineHookResponse>, Error> {
+        func executeInlineHook(inlineHookId: String, body: AnyCodable) throws -> AnyPublisher<OktaResponse<InlineHookResponse>, Error> {
             publish(try executeInlineHookURLRequest(inlineHookId: inlineHookId, body: body))
         }
         #endif
@@ -252,7 +252,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
+        func getInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
             do {
                 send(try getInlineHookURLRequest(inlineHookId: inlineHookId), completion: completion)
             } catch {
@@ -266,7 +266,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
+        func getInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
             try await send(try getInlineHookURLRequest(inlineHookId: inlineHookId))
         }
         #endif
@@ -277,7 +277,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getInlineHook(inlineHookId: String) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
+        func getInlineHook(inlineHookId: String) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
             publish(try getInlineHookURLRequest(inlineHookId: inlineHookId))
         }
         #endif
@@ -294,7 +294,7 @@ public extension OktaClient {
          - parameter type: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func listInlineHooks(type: String? = nil, completion: @escaping (Result<OktaResponse<[InlineHook]>, Error>) -> Void) {
+        func listInlineHooks(type: String? = nil, completion: @escaping (Result<OktaResponse<[InlineHook]>, Error>) -> Void) {
             do {
                 send(try listInlineHooksURLRequest(type: type), completion: completion)
             } catch {
@@ -308,7 +308,7 @@ public extension OktaClient {
          - parameter type: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listInlineHooks(type: String? = nil) async throws -> OktaResponse<[InlineHook]> {
+        func listInlineHooks(type: String? = nil) async throws -> OktaResponse<[InlineHook]> {
             try await send(try listInlineHooksURLRequest(type: type))
         }
         #endif
@@ -319,7 +319,7 @@ public extension OktaClient {
          - parameter type: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listInlineHooks(type: String? = nil) throws -> AnyPublisher<OktaResponse<[InlineHook]>, Error> {
+        func listInlineHooks(type: String? = nil) throws -> AnyPublisher<OktaResponse<[InlineHook]>, Error> {
             publish(try listInlineHooksURLRequest(type: type))
         }
         #endif
@@ -337,7 +337,7 @@ public extension OktaClient {
          - parameter inlineHook: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func updateInlineHook(inlineHookId: String, inlineHook: InlineHook, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
+        func updateInlineHook(inlineHookId: String, inlineHook: InlineHook, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
             do {
                 send(try updateInlineHookURLRequest(inlineHookId: inlineHookId, inlineHook: inlineHook), completion: completion)
             } catch {
@@ -352,7 +352,7 @@ public extension OktaClient {
          - parameter inlineHook: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func updateInlineHook(inlineHookId: String, inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
+        func updateInlineHook(inlineHookId: String, inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
             try await send(try updateInlineHookURLRequest(inlineHookId: inlineHookId, inlineHook: inlineHook))
         }
         #endif
@@ -364,7 +364,7 @@ public extension OktaClient {
          - parameter inlineHook: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func updateInlineHook(inlineHookId: String, inlineHook: InlineHook) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
+        func updateInlineHook(inlineHookId: String, inlineHook: InlineHook) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
             publish(try updateInlineHookURLRequest(inlineHookId: inlineHookId, inlineHook: inlineHook))
         }
         #endif

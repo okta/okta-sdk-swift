@@ -40,7 +40,7 @@ public extension OktaClient {
          - parameter createSessionRequest: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func createSession(createSessionRequest: CreateSessionRequest, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
+        func createSession(createSessionRequest: CreateSessionRequest, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
             do {
                 send(try createSessionURLRequest(createSessionRequest: createSessionRequest), completion: completion)
             } catch {
@@ -55,7 +55,7 @@ public extension OktaClient {
          - parameter createSessionRequest: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func createSession(createSessionRequest: CreateSessionRequest) async throws -> OktaResponse<Session> {
+        func createSession(createSessionRequest: CreateSessionRequest) async throws -> OktaResponse<Session> {
             try await send(try createSessionURLRequest(createSessionRequest: createSessionRequest))
         }
         #endif
@@ -67,7 +67,7 @@ public extension OktaClient {
          - parameter createSessionRequest: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func createSession(createSessionRequest: CreateSessionRequest) throws -> AnyPublisher<OktaResponse<Session>, Error> {
+        func createSession(createSessionRequest: CreateSessionRequest) throws -> AnyPublisher<OktaResponse<Session>, Error> {
             publish(try createSessionURLRequest(createSessionRequest: createSessionRequest))
         }
         #endif
@@ -85,7 +85,7 @@ public extension OktaClient {
          - parameter sessionId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func endSession(sessionId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func endSession(sessionId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try endSessionURLRequest(sessionId: sessionId), completion: completion)
             } catch {
@@ -100,7 +100,7 @@ public extension OktaClient {
          - parameter sessionId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func endSession(sessionId: String) async throws -> OktaResponse<Empty> {
+        func endSession(sessionId: String) async throws -> OktaResponse<Empty> {
             try await send(try endSessionURLRequest(sessionId: sessionId))
         }
         #endif
@@ -112,7 +112,7 @@ public extension OktaClient {
          - parameter sessionId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func endSession(sessionId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func endSession(sessionId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try endSessionURLRequest(sessionId: sessionId))
         }
         #endif
@@ -130,7 +130,7 @@ public extension OktaClient {
          - parameter sessionId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getSession(sessionId: String, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
+        func getSession(sessionId: String, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
             do {
                 send(try getSessionURLRequest(sessionId: sessionId), completion: completion)
             } catch {
@@ -145,7 +145,7 @@ public extension OktaClient {
          - parameter sessionId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getSession(sessionId: String) async throws -> OktaResponse<Session> {
+        func getSession(sessionId: String) async throws -> OktaResponse<Session> {
             try await send(try getSessionURLRequest(sessionId: sessionId))
         }
         #endif
@@ -157,7 +157,7 @@ public extension OktaClient {
          - parameter sessionId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getSession(sessionId: String) throws -> AnyPublisher<OktaResponse<Session>, Error> {
+        func getSession(sessionId: String) throws -> AnyPublisher<OktaResponse<Session>, Error> {
             publish(try getSessionURLRequest(sessionId: sessionId))
         }
         #endif
@@ -175,7 +175,7 @@ public extension OktaClient {
          - parameter sessionId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func refreshSession(sessionId: String, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
+        func refreshSession(sessionId: String, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
             do {
                 send(try refreshSessionURLRequest(sessionId: sessionId), completion: completion)
             } catch {
@@ -190,7 +190,7 @@ public extension OktaClient {
          - parameter sessionId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func refreshSession(sessionId: String) async throws -> OktaResponse<Session> {
+        func refreshSession(sessionId: String) async throws -> OktaResponse<Session> {
             try await send(try refreshSessionURLRequest(sessionId: sessionId))
         }
         #endif
@@ -202,7 +202,7 @@ public extension OktaClient {
          - parameter sessionId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func refreshSession(sessionId: String) throws -> AnyPublisher<OktaResponse<Session>, Error> {
+        func refreshSession(sessionId: String) throws -> AnyPublisher<OktaResponse<Session>, Error> {
             publish(try refreshSessionURLRequest(sessionId: sessionId))
         }
         #endif

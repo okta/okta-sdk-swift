@@ -43,7 +43,7 @@ public extension OktaClient {
          - parameter domainCertificate: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func createCertificate(domainId: String, domainCertificate: DomainCertificate, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func createCertificate(domainId: String, domainCertificate: DomainCertificate, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try createCertificateURLRequest(domainId: domainId, domainCertificate: domainCertificate), completion: completion)
             } catch {
@@ -59,7 +59,7 @@ public extension OktaClient {
          - parameter domainCertificate: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func createCertificate(domainId: String, domainCertificate: DomainCertificate) async throws -> OktaResponse<Empty> {
+        func createCertificate(domainId: String, domainCertificate: DomainCertificate) async throws -> OktaResponse<Empty> {
             try await send(try createCertificateURLRequest(domainId: domainId, domainCertificate: domainCertificate))
         }
         #endif
@@ -72,7 +72,7 @@ public extension OktaClient {
          - parameter domainCertificate: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func createCertificate(domainId: String, domainCertificate: DomainCertificate) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func createCertificate(domainId: String, domainCertificate: DomainCertificate) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try createCertificateURLRequest(domainId: domainId, domainCertificate: domainCertificate))
         }
         #endif
@@ -88,7 +88,7 @@ public extension OktaClient {
          - parameter domain: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func createDomain(domain: Domain, completion: @escaping (Result<OktaResponse<DomainResponse>, Error>) -> Void) {
+        func createDomain(domain: Domain, completion: @escaping (Result<OktaResponse<DomainResponse>, Error>) -> Void) {
             do {
                 send(try createDomainURLRequest(domain: domain), completion: completion)
             } catch {
@@ -103,7 +103,7 @@ public extension OktaClient {
          - parameter domain: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func createDomain(domain: Domain) async throws -> OktaResponse<DomainResponse> {
+        func createDomain(domain: Domain) async throws -> OktaResponse<DomainResponse> {
             try await send(try createDomainURLRequest(domain: domain))
         }
         #endif
@@ -115,7 +115,7 @@ public extension OktaClient {
          - parameter domain: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func createDomain(domain: Domain) throws -> AnyPublisher<OktaResponse<DomainResponse>, Error> {
+        func createDomain(domain: Domain) throws -> AnyPublisher<OktaResponse<DomainResponse>, Error> {
             publish(try createDomainURLRequest(domain: domain))
         }
         #endif
@@ -133,7 +133,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func deleteDomain(domainId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func deleteDomain(domainId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deleteDomainURLRequest(domainId: domainId), completion: completion)
             } catch {
@@ -148,7 +148,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func deleteDomain(domainId: String) async throws -> OktaResponse<Empty> {
+        func deleteDomain(domainId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteDomainURLRequest(domainId: domainId))
         }
         #endif
@@ -160,7 +160,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deleteDomain(domainId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func deleteDomain(domainId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deleteDomainURLRequest(domainId: domainId))
         }
         #endif
@@ -178,7 +178,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getDomain(domainId: String, completion: @escaping (Result<OktaResponse<DomainResponse>, Error>) -> Void) {
+        func getDomain(domainId: String, completion: @escaping (Result<OktaResponse<DomainResponse>, Error>) -> Void) {
             do {
                 send(try getDomainURLRequest(domainId: domainId), completion: completion)
             } catch {
@@ -193,7 +193,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
+        func getDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
             try await send(try getDomainURLRequest(domainId: domainId))
         }
         #endif
@@ -205,7 +205,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getDomain(domainId: String) throws -> AnyPublisher<OktaResponse<DomainResponse>, Error> {
+        func getDomain(domainId: String) throws -> AnyPublisher<OktaResponse<DomainResponse>, Error> {
             publish(try getDomainURLRequest(domainId: domainId))
         }
         #endif
@@ -220,7 +220,7 @@ public extension OktaClient {
          
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func listDomains(completion: @escaping (Result<OktaResponse<DomainListResponse>, Error>) -> Void) {
+        func listDomains(completion: @escaping (Result<OktaResponse<DomainListResponse>, Error>) -> Void) {
             do {
                 send(try listDomainsURLRequest(), completion: completion)
             } catch {
@@ -234,7 +234,7 @@ public extension OktaClient {
          
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listDomains() async throws -> OktaResponse<DomainListResponse> {
+        func listDomains() async throws -> OktaResponse<DomainListResponse> {
             try await send(try listDomainsURLRequest())
         }
         #endif
@@ -245,7 +245,7 @@ public extension OktaClient {
          
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listDomains() throws -> AnyPublisher<OktaResponse<DomainListResponse>, Error> {
+        func listDomains() throws -> AnyPublisher<OktaResponse<DomainListResponse>, Error> {
             publish(try listDomainsURLRequest())
         }
         #endif
@@ -263,7 +263,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func verifyDomain(domainId: String, completion: @escaping (Result<OktaResponse<DomainResponse>, Error>) -> Void) {
+        func verifyDomain(domainId: String, completion: @escaping (Result<OktaResponse<DomainResponse>, Error>) -> Void) {
             do {
                 send(try verifyDomainURLRequest(domainId: domainId), completion: completion)
             } catch {
@@ -278,7 +278,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func verifyDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
+        func verifyDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
             try await send(try verifyDomainURLRequest(domainId: domainId))
         }
         #endif
@@ -290,7 +290,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func verifyDomain(domainId: String) throws -> AnyPublisher<OktaResponse<DomainResponse>, Error> {
+        func verifyDomain(domainId: String) throws -> AnyPublisher<OktaResponse<DomainResponse>, Error> {
             publish(try verifyDomainURLRequest(domainId: domainId))
         }
         #endif

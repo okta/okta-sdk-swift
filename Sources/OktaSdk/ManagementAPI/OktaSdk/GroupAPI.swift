@@ -42,7 +42,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func activateGroupRule(ruleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func activateGroupRule(ruleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try activateGroupRuleURLRequest(ruleId: ruleId), completion: completion)
             } catch {
@@ -57,7 +57,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func activateGroupRule(ruleId: String) async throws -> OktaResponse<Empty> {
+        func activateGroupRule(ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try activateGroupRuleURLRequest(ruleId: ruleId))
         }
         #endif
@@ -69,7 +69,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func activateGroupRule(ruleId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func activateGroupRule(ruleId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try activateGroupRuleURLRequest(ruleId: ruleId))
         }
         #endif
@@ -93,7 +93,7 @@ public extension OktaClient {
          - parameter applicationId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func addApplicationInstanceTargetToAppAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func addApplicationInstanceTargetToAppAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try addApplicationInstanceTargetToAppAdminRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId), completion: completion)
             } catch {
@@ -111,7 +111,7 @@ public extension OktaClient {
          - parameter applicationId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func addApplicationInstanceTargetToAppAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
+        func addApplicationInstanceTargetToAppAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
             try await send(try addApplicationInstanceTargetToAppAdminRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId))
         }
         #endif
@@ -126,7 +126,7 @@ public extension OktaClient {
          - parameter applicationId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func addApplicationInstanceTargetToAppAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func addApplicationInstanceTargetToAppAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try addApplicationInstanceTargetToAppAdminRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId))
         }
         #endif
@@ -147,7 +147,7 @@ public extension OktaClient {
          - parameter appName: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func addApplicationTargetToAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func addApplicationTargetToAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try addApplicationTargetToAdminRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName), completion: completion)
             } catch {
@@ -163,7 +163,7 @@ public extension OktaClient {
          - parameter appName: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func addApplicationTargetToAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
+        func addApplicationTargetToAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
             try await send(try addApplicationTargetToAdminRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName))
         }
         #endif
@@ -176,7 +176,7 @@ public extension OktaClient {
          - parameter appName: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func addApplicationTargetToAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func addApplicationTargetToAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try addApplicationTargetToAdminRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName))
         }
         #endif
@@ -198,7 +198,7 @@ public extension OktaClient {
          - parameter targetGroupId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func addGroupTargetToGroupAdministratorRoleForGroup(groupId: String, roleId: String, targetGroupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func addGroupTargetToGroupAdministratorRoleForGroup(groupId: String, roleId: String, targetGroupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try addGroupTargetToGroupAdministratorRoleForGroupURLRequest(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId), completion: completion)
             } catch {
@@ -215,7 +215,7 @@ public extension OktaClient {
          - parameter targetGroupId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func addGroupTargetToGroupAdministratorRoleForGroup(groupId: String, roleId: String, targetGroupId: String) async throws -> OktaResponse<Empty> {
+        func addGroupTargetToGroupAdministratorRoleForGroup(groupId: String, roleId: String, targetGroupId: String) async throws -> OktaResponse<Empty> {
             try await send(try addGroupTargetToGroupAdministratorRoleForGroupURLRequest(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId))
         }
         #endif
@@ -229,7 +229,7 @@ public extension OktaClient {
          - parameter targetGroupId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func addGroupTargetToGroupAdministratorRoleForGroup(groupId: String, roleId: String, targetGroupId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func addGroupTargetToGroupAdministratorRoleForGroup(groupId: String, roleId: String, targetGroupId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try addGroupTargetToGroupAdministratorRoleForGroupURLRequest(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId))
         }
         #endif
@@ -249,7 +249,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func addUserToGroup(groupId: String, userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func addUserToGroup(groupId: String, userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try addUserToGroupURLRequest(groupId: groupId, userId: userId), completion: completion)
             } catch {
@@ -265,7 +265,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func addUserToGroup(groupId: String, userId: String) async throws -> OktaResponse<Empty> {
+        func addUserToGroup(groupId: String, userId: String) async throws -> OktaResponse<Empty> {
             try await send(try addUserToGroupURLRequest(groupId: groupId, userId: userId))
         }
         #endif
@@ -278,7 +278,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func addUserToGroup(groupId: String, userId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func addUserToGroup(groupId: String, userId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try addUserToGroupURLRequest(groupId: groupId, userId: userId))
         }
         #endif
@@ -299,7 +299,7 @@ public extension OktaClient {
          - parameter disableNotifications: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func assignRoleToGroup(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil, completion: @escaping (Result<OktaResponse<Role>, Error>) -> Void) {
+        func assignRoleToGroup(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil, completion: @escaping (Result<OktaResponse<Role>, Error>) -> Void) {
             do {
                 send(try assignRoleToGroupURLRequest(groupId: groupId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications), completion: completion)
             } catch {
@@ -315,7 +315,7 @@ public extension OktaClient {
          - parameter disableNotifications: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func assignRoleToGroup(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) async throws -> OktaResponse<Role> {
+        func assignRoleToGroup(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) async throws -> OktaResponse<Role> {
             try await send(try assignRoleToGroupURLRequest(groupId: groupId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications))
         }
         #endif
@@ -328,7 +328,7 @@ public extension OktaClient {
          - parameter disableNotifications: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func assignRoleToGroup(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) throws -> AnyPublisher<OktaResponse<Role>, Error> {
+        func assignRoleToGroup(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) throws -> AnyPublisher<OktaResponse<Role>, Error> {
             publish(try assignRoleToGroupURLRequest(groupId: groupId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications))
         }
         #endif
@@ -344,7 +344,7 @@ public extension OktaClient {
          - parameter group: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func createGroup(group: Group, completion: @escaping (Result<OktaResponse<Group>, Error>) -> Void) {
+        func createGroup(group: Group, completion: @escaping (Result<OktaResponse<Group>, Error>) -> Void) {
             do {
                 send(try createGroupURLRequest(group: group), completion: completion)
             } catch {
@@ -359,7 +359,7 @@ public extension OktaClient {
          - parameter group: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func createGroup(group: Group) async throws -> OktaResponse<Group> {
+        func createGroup(group: Group) async throws -> OktaResponse<Group> {
             try await send(try createGroupURLRequest(group: group))
         }
         #endif
@@ -371,7 +371,7 @@ public extension OktaClient {
          - parameter group: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func createGroup(group: Group) throws -> AnyPublisher<OktaResponse<Group>, Error> {
+        func createGroup(group: Group) throws -> AnyPublisher<OktaResponse<Group>, Error> {
             publish(try createGroupURLRequest(group: group))
         }
         #endif
@@ -387,7 +387,7 @@ public extension OktaClient {
          - parameter groupRule: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func createGroupRule(groupRule: GroupRule, completion: @escaping (Result<OktaResponse<GroupRule>, Error>) -> Void) {
+        func createGroupRule(groupRule: GroupRule, completion: @escaping (Result<OktaResponse<GroupRule>, Error>) -> Void) {
             do {
                 send(try createGroupRuleURLRequest(groupRule: groupRule), completion: completion)
             } catch {
@@ -402,7 +402,7 @@ public extension OktaClient {
          - parameter groupRule: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func createGroupRule(groupRule: GroupRule) async throws -> OktaResponse<GroupRule> {
+        func createGroupRule(groupRule: GroupRule) async throws -> OktaResponse<GroupRule> {
             try await send(try createGroupRuleURLRequest(groupRule: groupRule))
         }
         #endif
@@ -414,7 +414,7 @@ public extension OktaClient {
          - parameter groupRule: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func createGroupRule(groupRule: GroupRule) throws -> AnyPublisher<OktaResponse<GroupRule>, Error> {
+        func createGroupRule(groupRule: GroupRule) throws -> AnyPublisher<OktaResponse<GroupRule>, Error> {
             publish(try createGroupRuleURLRequest(groupRule: groupRule))
         }
         #endif
@@ -432,7 +432,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func deactivateGroupRule(ruleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func deactivateGroupRule(ruleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deactivateGroupRuleURLRequest(ruleId: ruleId), completion: completion)
             } catch {
@@ -447,7 +447,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func deactivateGroupRule(ruleId: String) async throws -> OktaResponse<Empty> {
+        func deactivateGroupRule(ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try deactivateGroupRuleURLRequest(ruleId: ruleId))
         }
         #endif
@@ -459,7 +459,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deactivateGroupRule(ruleId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func deactivateGroupRule(ruleId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deactivateGroupRuleURLRequest(ruleId: ruleId))
         }
         #endif
@@ -477,7 +477,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func deleteGroup(groupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func deleteGroup(groupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deleteGroupURLRequest(groupId: groupId), completion: completion)
             } catch {
@@ -492,7 +492,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func deleteGroup(groupId: String) async throws -> OktaResponse<Empty> {
+        func deleteGroup(groupId: String) async throws -> OktaResponse<Empty> {
             try await send(try deleteGroupURLRequest(groupId: groupId))
         }
         #endif
@@ -504,7 +504,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deleteGroup(groupId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func deleteGroup(groupId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deleteGroupURLRequest(groupId: groupId))
         }
         #endif
@@ -525,7 +525,7 @@ public extension OktaClient {
          - parameter removeUsers: (query) Indicates whether to keep or remove users from groups assigned by this rule. (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func deleteGroupRule(ruleId: String, removeUsers: Bool? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func deleteGroupRule(ruleId: String, removeUsers: Bool? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try deleteGroupRuleURLRequest(ruleId: ruleId, removeUsers: removeUsers), completion: completion)
             } catch {
@@ -541,7 +541,7 @@ public extension OktaClient {
          - parameter removeUsers: (query) Indicates whether to keep or remove users from groups assigned by this rule. (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func deleteGroupRule(ruleId: String, removeUsers: Bool? = nil) async throws -> OktaResponse<Empty> {
+        func deleteGroupRule(ruleId: String, removeUsers: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try deleteGroupRuleURLRequest(ruleId: ruleId, removeUsers: removeUsers))
         }
         #endif
@@ -554,7 +554,7 @@ public extension OktaClient {
          - parameter removeUsers: (query) Indicates whether to keep or remove users from groups assigned by this rule. (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deleteGroupRule(ruleId: String, removeUsers: Bool? = nil) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func deleteGroupRule(ruleId: String, removeUsers: Bool? = nil) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try deleteGroupRuleURLRequest(ruleId: ruleId, removeUsers: removeUsers))
         }
         #endif
@@ -572,7 +572,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getGroup(groupId: String, completion: @escaping (Result<OktaResponse<Group>, Error>) -> Void) {
+        func getGroup(groupId: String, completion: @escaping (Result<OktaResponse<Group>, Error>) -> Void) {
             do {
                 send(try getGroupURLRequest(groupId: groupId), completion: completion)
             } catch {
@@ -587,7 +587,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getGroup(groupId: String) async throws -> OktaResponse<Group> {
+        func getGroup(groupId: String) async throws -> OktaResponse<Group> {
             try await send(try getGroupURLRequest(groupId: groupId))
         }
         #endif
@@ -599,7 +599,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getGroup(groupId: String) throws -> AnyPublisher<OktaResponse<Group>, Error> {
+        func getGroup(groupId: String) throws -> AnyPublisher<OktaResponse<Group>, Error> {
             publish(try getGroupURLRequest(groupId: groupId))
         }
         #endif
@@ -620,7 +620,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getGroupRule(ruleId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<GroupRule>, Error>) -> Void) {
+        func getGroupRule(ruleId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<GroupRule>, Error>) -> Void) {
             do {
                 send(try getGroupRuleURLRequest(ruleId: ruleId, expand: expand), completion: completion)
             } catch {
@@ -636,7 +636,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getGroupRule(ruleId: String, expand: String? = nil) async throws -> OktaResponse<GroupRule> {
+        func getGroupRule(ruleId: String, expand: String? = nil) async throws -> OktaResponse<GroupRule> {
             try await send(try getGroupRuleURLRequest(ruleId: ruleId, expand: expand))
         }
         #endif
@@ -649,7 +649,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getGroupRule(ruleId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<GroupRule>, Error> {
+        func getGroupRule(ruleId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<GroupRule>, Error> {
             publish(try getGroupRuleURLRequest(ruleId: ruleId, expand: expand))
         }
         #endif
@@ -668,7 +668,7 @@ public extension OktaClient {
          - parameter roleId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func getRole(groupId: String, roleId: String, completion: @escaping (Result<OktaResponse<Role>, Error>) -> Void) {
+        func getRole(groupId: String, roleId: String, completion: @escaping (Result<OktaResponse<Role>, Error>) -> Void) {
             do {
                 send(try getRoleURLRequest(groupId: groupId, roleId: roleId), completion: completion)
             } catch {
@@ -683,7 +683,7 @@ public extension OktaClient {
          - parameter roleId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func getRole(groupId: String, roleId: String) async throws -> OktaResponse<Role> {
+        func getRole(groupId: String, roleId: String) async throws -> OktaResponse<Role> {
             try await send(try getRoleURLRequest(groupId: groupId, roleId: roleId))
         }
         #endif
@@ -695,7 +695,7 @@ public extension OktaClient {
          - parameter roleId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getRole(groupId: String, roleId: String) throws -> AnyPublisher<OktaResponse<Role>, Error> {
+        func getRole(groupId: String, roleId: String) throws -> AnyPublisher<OktaResponse<Role>, Error> {
             publish(try getRoleURLRequest(groupId: groupId, roleId: roleId))
         }
         #endif
@@ -719,7 +719,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to 20)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func listApplicationTargetsForApplicationAdministratorRoleForGroup(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[CatalogApplication]>, Error>) -> Void) {
+        func listApplicationTargetsForApplicationAdministratorRoleForGroup(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[CatalogApplication]>, Error>) -> Void) {
             do {
                 send(try listApplicationTargetsForApplicationAdministratorRoleForGroupURLRequest(groupId: groupId, roleId: roleId, after: after, limit: limit), completion: completion)
             } catch {
@@ -736,7 +736,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to 20)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listApplicationTargetsForApplicationAdministratorRoleForGroup(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[CatalogApplication]> {
+        func listApplicationTargetsForApplicationAdministratorRoleForGroup(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[CatalogApplication]> {
             try await send(try listApplicationTargetsForApplicationAdministratorRoleForGroupURLRequest(groupId: groupId, roleId: roleId, after: after, limit: limit))
         }
         #endif
@@ -750,7 +750,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to 20)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listApplicationTargetsForApplicationAdministratorRoleForGroup(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[CatalogApplication]>, Error> {
+        func listApplicationTargetsForApplicationAdministratorRoleForGroup(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[CatalogApplication]>, Error> {
             publish(try listApplicationTargetsForApplicationAdministratorRoleForGroupURLRequest(groupId: groupId, roleId: roleId, after: after, limit: limit))
         }
         #endif
@@ -773,7 +773,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of app results for a page (optional, default to 20)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[Application]>, Error>) -> Void) {
+        func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[Application]>, Error>) -> Void) {
             do {
                 send(try listAssignedApplicationsForGroupURLRequest(groupId: groupId, after: after, limit: limit), completion: completion)
             } catch {
@@ -790,7 +790,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of app results for a page (optional, default to 20)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[Application]> {
+        func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[Application]> {
             try await send(try listAssignedApplicationsForGroupURLRequest(groupId: groupId, after: after, limit: limit))
         }
         #endif
@@ -804,7 +804,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of app results for a page (optional, default to 20)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[Application]>, Error> {
+        func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[Application]>, Error> {
             publish(try listAssignedApplicationsForGroupURLRequest(groupId: groupId, after: after, limit: limit))
         }
         #endif
@@ -824,7 +824,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func listGroupAssignedRoles(groupId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<[Role]>, Error>) -> Void) {
+        func listGroupAssignedRoles(groupId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<[Role]>, Error>) -> Void) {
             do {
                 send(try listGroupAssignedRolesURLRequest(groupId: groupId, expand: expand), completion: completion)
             } catch {
@@ -839,7 +839,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listGroupAssignedRoles(groupId: String, expand: String? = nil) async throws -> OktaResponse<[Role]> {
+        func listGroupAssignedRoles(groupId: String, expand: String? = nil) async throws -> OktaResponse<[Role]> {
             try await send(try listGroupAssignedRolesURLRequest(groupId: groupId, expand: expand))
         }
         #endif
@@ -851,7 +851,7 @@ public extension OktaClient {
          - parameter expand: (query)  (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listGroupAssignedRoles(groupId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[Role]>, Error> {
+        func listGroupAssignedRoles(groupId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[Role]>, Error> {
             publish(try listGroupAssignedRolesURLRequest(groupId: groupId, expand: expand))
         }
         #endif
@@ -875,7 +875,7 @@ public extension OktaClient {
          - parameter expand: (query) If specified as &#x60;groupIdToGroupNameMap&#x60;, then show group names (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func listGroupRules(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[GroupRule]>, Error>) -> Void) {
+        func listGroupRules(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[GroupRule]>, Error>) -> Void) {
             do {
                 send(try listGroupRulesURLRequest(limit: limit, after: after, search: search, expand: expand), completion: completion)
             } catch {
@@ -893,7 +893,7 @@ public extension OktaClient {
          - parameter expand: (query) If specified as &#x60;groupIdToGroupNameMap&#x60;, then show group names (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listGroupRules(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil) async throws -> OktaResponse<[GroupRule]> {
+        func listGroupRules(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil) async throws -> OktaResponse<[GroupRule]> {
             try await send(try listGroupRulesURLRequest(limit: limit, after: after, search: search, expand: expand))
         }
         #endif
@@ -908,7 +908,7 @@ public extension OktaClient {
          - parameter expand: (query) If specified as &#x60;groupIdToGroupNameMap&#x60;, then show group names (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listGroupRules(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[GroupRule]>, Error> {
+        func listGroupRules(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[GroupRule]>, Error> {
             publish(try listGroupRulesURLRequest(limit: limit, after: after, search: search, expand: expand))
         }
         #endif
@@ -933,7 +933,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to 20)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func listGroupTargetsForGroupRole(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[Group]>, Error>) -> Void) {
+        func listGroupTargetsForGroupRole(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[Group]>, Error>) -> Void) {
             do {
                 send(try listGroupTargetsForGroupRoleURLRequest(groupId: groupId, roleId: roleId, after: after, limit: limit), completion: completion)
             } catch {
@@ -951,7 +951,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to 20)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listGroupTargetsForGroupRole(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[Group]> {
+        func listGroupTargetsForGroupRole(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[Group]> {
             try await send(try listGroupTargetsForGroupRoleURLRequest(groupId: groupId, roleId: roleId, after: after, limit: limit))
         }
         #endif
@@ -966,7 +966,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to 20)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listGroupTargetsForGroupRole(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[Group]>, Error> {
+        func listGroupTargetsForGroupRole(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[Group]>, Error> {
             publish(try listGroupTargetsForGroupRoleURLRequest(groupId: groupId, roleId: roleId, after: after, limit: limit))
         }
         #endif
@@ -989,7 +989,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of user results in a page (optional, default to 1000)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func listGroupUsers(groupId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[User]>, Error>) -> Void) {
+        func listGroupUsers(groupId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[User]>, Error>) -> Void) {
             do {
                 send(try listGroupUsersURLRequest(groupId: groupId, after: after, limit: limit), completion: completion)
             } catch {
@@ -1006,7 +1006,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of user results in a page (optional, default to 1000)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listGroupUsers(groupId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[User]> {
+        func listGroupUsers(groupId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[User]> {
             try await send(try listGroupUsersURLRequest(groupId: groupId, after: after, limit: limit))
         }
         #endif
@@ -1020,7 +1020,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of user results in a page (optional, default to 1000)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listGroupUsers(groupId: String, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[User]>, Error> {
+        func listGroupUsers(groupId: String, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[User]>, Error> {
             publish(try listGroupUsersURLRequest(groupId: groupId, after: after, limit: limit))
         }
         #endif
@@ -1046,7 +1046,7 @@ public extension OktaClient {
          - parameter expand: (query) If specified, it causes additional metadata to be included in the response. (optional)
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func listGroups(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[Group]>, Error>) -> Void) {
+        func listGroups(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[Group]>, Error>) -> Void) {
             do {
                 send(try listGroupsURLRequest(q: q, search: search, after: after, limit: limit, expand: expand), completion: completion)
             } catch {
@@ -1065,7 +1065,7 @@ public extension OktaClient {
          - parameter expand: (query) If specified, it causes additional metadata to be included in the response. (optional)
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listGroups(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) async throws -> OktaResponse<[Group]> {
+        func listGroups(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) async throws -> OktaResponse<[Group]> {
             try await send(try listGroupsURLRequest(q: q, search: search, after: after, limit: limit, expand: expand))
         }
         #endif
@@ -1081,7 +1081,7 @@ public extension OktaClient {
          - parameter expand: (query) If specified, it causes additional metadata to be included in the response. (optional)
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listGroups(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[Group]>, Error> {
+        func listGroups(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[Group]>, Error> {
             publish(try listGroupsURLRequest(q: q, search: search, after: after, limit: limit, expand: expand))
         }
         #endif
@@ -1105,7 +1105,7 @@ public extension OktaClient {
          - parameter applicationId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func removeApplicationTargetFromAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func removeApplicationTargetFromAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try removeApplicationTargetFromAdministratorRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId), completion: completion)
             } catch {
@@ -1123,7 +1123,7 @@ public extension OktaClient {
          - parameter applicationId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func removeApplicationTargetFromAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
+        func removeApplicationTargetFromAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
             try await send(try removeApplicationTargetFromAdministratorRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId))
         }
         #endif
@@ -1138,7 +1138,7 @@ public extension OktaClient {
          - parameter applicationId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func removeApplicationTargetFromAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func removeApplicationTargetFromAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try removeApplicationTargetFromAdministratorRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName, applicationId: applicationId))
         }
         #endif
@@ -1159,7 +1159,7 @@ public extension OktaClient {
          - parameter appName: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try removeApplicationTargetFromApplicationAdministratorRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName), completion: completion)
             } catch {
@@ -1175,7 +1175,7 @@ public extension OktaClient {
          - parameter appName: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
+        func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
             try await send(try removeApplicationTargetFromApplicationAdministratorRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName))
         }
         #endif
@@ -1188,7 +1188,7 @@ public extension OktaClient {
          - parameter appName: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try removeApplicationTargetFromApplicationAdministratorRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, appName: appName))
         }
         #endif
@@ -1210,7 +1210,7 @@ public extension OktaClient {
          - parameter targetGroupId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func removeGroupTargetFromGroupAdministratorRoleGivenToGroup(groupId: String, roleId: String, targetGroupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func removeGroupTargetFromGroupAdministratorRoleGivenToGroup(groupId: String, roleId: String, targetGroupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try removeGroupTargetFromGroupAdministratorRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId), completion: completion)
             } catch {
@@ -1227,7 +1227,7 @@ public extension OktaClient {
          - parameter targetGroupId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func removeGroupTargetFromGroupAdministratorRoleGivenToGroup(groupId: String, roleId: String, targetGroupId: String) async throws -> OktaResponse<Empty> {
+        func removeGroupTargetFromGroupAdministratorRoleGivenToGroup(groupId: String, roleId: String, targetGroupId: String) async throws -> OktaResponse<Empty> {
             try await send(try removeGroupTargetFromGroupAdministratorRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId))
         }
         #endif
@@ -1241,7 +1241,7 @@ public extension OktaClient {
          - parameter targetGroupId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func removeGroupTargetFromGroupAdministratorRoleGivenToGroup(groupId: String, roleId: String, targetGroupId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func removeGroupTargetFromGroupAdministratorRoleGivenToGroup(groupId: String, roleId: String, targetGroupId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try removeGroupTargetFromGroupAdministratorRoleGivenToGroupURLRequest(groupId: groupId, roleId: roleId, targetGroupId: targetGroupId))
         }
         #endif
@@ -1260,7 +1260,7 @@ public extension OktaClient {
          - parameter roleId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func removeRoleFromGroup(groupId: String, roleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func removeRoleFromGroup(groupId: String, roleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try removeRoleFromGroupURLRequest(groupId: groupId, roleId: roleId), completion: completion)
             } catch {
@@ -1275,7 +1275,7 @@ public extension OktaClient {
          - parameter roleId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func removeRoleFromGroup(groupId: String, roleId: String) async throws -> OktaResponse<Empty> {
+        func removeRoleFromGroup(groupId: String, roleId: String) async throws -> OktaResponse<Empty> {
             try await send(try removeRoleFromGroupURLRequest(groupId: groupId, roleId: roleId))
         }
         #endif
@@ -1287,7 +1287,7 @@ public extension OktaClient {
          - parameter roleId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func removeRoleFromGroup(groupId: String, roleId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func removeRoleFromGroup(groupId: String, roleId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try removeRoleFromGroupURLRequest(groupId: groupId, roleId: roleId))
         }
         #endif
@@ -1307,7 +1307,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func removeUserFromGroup(groupId: String, userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+        func removeUserFromGroup(groupId: String, userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
             do {
                 send(try removeUserFromGroupURLRequest(groupId: groupId, userId: userId), completion: completion)
             } catch {
@@ -1323,7 +1323,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func removeUserFromGroup(groupId: String, userId: String) async throws -> OktaResponse<Empty> {
+        func removeUserFromGroup(groupId: String, userId: String) async throws -> OktaResponse<Empty> {
             try await send(try removeUserFromGroupURLRequest(groupId: groupId, userId: userId))
         }
         #endif
@@ -1336,7 +1336,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func removeUserFromGroup(groupId: String, userId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
+        func removeUserFromGroup(groupId: String, userId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
             publish(try removeUserFromGroupURLRequest(groupId: groupId, userId: userId))
         }
         #endif
@@ -1355,7 +1355,7 @@ public extension OktaClient {
          - parameter group: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func updateGroup(groupId: String, group: Group, completion: @escaping (Result<OktaResponse<Group>, Error>) -> Void) {
+        func updateGroup(groupId: String, group: Group, completion: @escaping (Result<OktaResponse<Group>, Error>) -> Void) {
             do {
                 send(try updateGroupURLRequest(groupId: groupId, group: group), completion: completion)
             } catch {
@@ -1371,7 +1371,7 @@ public extension OktaClient {
          - parameter group: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func updateGroup(groupId: String, group: Group) async throws -> OktaResponse<Group> {
+        func updateGroup(groupId: String, group: Group) async throws -> OktaResponse<Group> {
             try await send(try updateGroupURLRequest(groupId: groupId, group: group))
         }
         #endif
@@ -1384,7 +1384,7 @@ public extension OktaClient {
          - parameter group: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func updateGroup(groupId: String, group: Group) throws -> AnyPublisher<OktaResponse<Group>, Error> {
+        func updateGroup(groupId: String, group: Group) throws -> AnyPublisher<OktaResponse<Group>, Error> {
             publish(try updateGroupURLRequest(groupId: groupId, group: group))
         }
         #endif
@@ -1402,7 +1402,7 @@ public extension OktaClient {
          - parameter groupRule: (body)  
          - parameter completion: completion handler to receive the data and the error objects
          */
-        public func updateGroupRule(ruleId: String, groupRule: GroupRule, completion: @escaping (Result<OktaResponse<GroupRule>, Error>) -> Void) {
+        func updateGroupRule(ruleId: String, groupRule: GroupRule, completion: @escaping (Result<OktaResponse<GroupRule>, Error>) -> Void) {
             do {
                 send(try updateGroupRuleURLRequest(ruleId: ruleId, groupRule: groupRule), completion: completion)
             } catch {
@@ -1417,7 +1417,7 @@ public extension OktaClient {
          - parameter groupRule: (body)  
          */
         @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func updateGroupRule(ruleId: String, groupRule: GroupRule) async throws -> OktaResponse<GroupRule> {
+        func updateGroupRule(ruleId: String, groupRule: GroupRule) async throws -> OktaResponse<GroupRule> {
             try await send(try updateGroupRuleURLRequest(ruleId: ruleId, groupRule: groupRule))
         }
         #endif
@@ -1429,7 +1429,7 @@ public extension OktaClient {
          - parameter groupRule: (body)  
          */
         @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func updateGroupRule(ruleId: String, groupRule: GroupRule) throws -> AnyPublisher<OktaResponse<GroupRule>, Error> {
+        func updateGroupRule(ruleId: String, groupRule: GroupRule) throws -> AnyPublisher<OktaResponse<GroupRule>, Error> {
             publish(try updateGroupRuleURLRequest(ruleId: ruleId, groupRule: groupRule))
         }
         #endif
