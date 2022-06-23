@@ -25,15 +25,15 @@ extension String: OktaClientArgument {
 }
 
 extension Int: OktaClientArgument {
-    var stringValue: String { "\(self)"}
+    var stringValue: String { "\(self)" }
 }
 
 extension Double: OktaClientArgument {
-    var stringValue: String { "\(self)"}
+    var stringValue: String { "\(self)" }
 }
 
 extension Bool: OktaClientArgument {
-    var stringValue: String { "\(self)"}
+    var stringValue: String { "\(self)" }
 }
 
 extension Date: OktaClientArgument {
@@ -61,12 +61,12 @@ internal protocol OktaClientAPI {
 
     func request(to path: String,
                  method: String,
-                 query: [String:OktaClientArgument?]?,
-                 headers: [String:OktaClientArgument?]?) throws -> URLRequest
+                 query: [String: OktaClientArgument?]?,
+                 headers: [String: OktaClientArgument?]?) throws -> URLRequest
     func requestWithBody<T: Encodable>(to path: String,
                                        method: String,
-                                       query: [String:OktaClientArgument?]?,
-                                       headers: [String:OktaClientArgument?]?,
+                                       query: [String: OktaClientArgument?]?,
+                                       headers: [String: OktaClientArgument?]?,
                                        body: T?) throws -> URLRequest
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T>
 }
@@ -81,7 +81,7 @@ extension OktaClientAPI {
             throw OktaClientError.statusCode(httpResponse.statusCode)
         }
         
-        var links: [OktaResponse<T>.Link:URL] = [:]
+        var links: [OktaResponse<T>.Link: URL] = [:]
         if let linkHeader = httpResponse.allHeaderFields["Link"] as? String,
            let matches = linkRegex?.matches(in: linkHeader, options: [], range: NSMakeRange(0, linkHeader.count))
         {
@@ -99,8 +99,10 @@ extension OktaClientAPI {
         }
         
         // Ensure empty data responses from DELETE operations can be handled by JSONDecoder
+        // swiftlint:disable force_unwrapping
         let parseData = data.isEmpty ? "{}".data(using: .utf8)! : data
-        
+        // swiftlint:enable force_unwrapping
+
         return OktaResponse(result: try CodableHelper.jsonDecoder.decode(T.self, from: parseData),
                             links: links,
                             rateInfo: OktaResponse.RateLimit(with: httpResponse.allHeaderFields),
@@ -109,8 +111,8 @@ extension OktaClientAPI {
 
     func request(to path: String,
                  method: String,
-                 query: [String:OktaClientArgument?]? = nil,
-                 headers: [String:OktaClientArgument?]? = nil) throws -> URLRequest
+                 query: [String: OktaClientArgument?]? = nil,
+                 headers: [String: OktaClientArgument?]? = nil) throws -> URLRequest
     {
         guard let url = URL(string: path, relativeTo: context.baseURL) else {
             throw OktaClientError.invalidUrl
@@ -141,8 +143,8 @@ extension OktaClientAPI {
 
     func requestWithBody<T: Encodable>(to path: String,
                                        method: String = "GET",
-                                       query: [String:OktaClientArgument?]? = nil,
-                                       headers: [String:OktaClientArgument?]? = nil,
+                                       query: [String: OktaClientArgument?]? = nil,
+                                       headers: [String: OktaClientArgument?]? = nil,
                                        body: T?) throws -> URLRequest
     {
         var result = try request(to: path, method: method, query: query, headers: headers)

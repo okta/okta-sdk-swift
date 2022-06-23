@@ -6,8 +6,8 @@ let package = Package(
     name: "OktaSdk",
     platforms: [
         .iOS(.v15),
-        .macOS(.v10_11),
-        .tvOS(.v13)
+        .macOS(.v12),
+        .tvOS(.v15)
     ],
     products: [
         .library(

@@ -82,9 +82,11 @@ open class OktaClient: OktaClientAPI {
         }
         
         self.configuration = configuration
+        // swiftlint:disable force_unwrapping
         self.context = .init(baseURL: URL(string: "\(configuration.basePath)/api/")!,
                              session: urlSession,
                              userAgent: userAgent ?? .userAgent)
+        // swiftlint:enable force_unwrapping
     }
     
     internal func fetchURLRequest<T>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) throws -> URLRequest {
@@ -132,7 +134,7 @@ extension OktaClient {
             "https://\(domain)"
         }
         
-        internal var customHeaders: [String:String] {
+        internal var customHeaders: [String: String] {
             [
                 "Accept": "application/json",
                 "Content-Type": "application/json",
