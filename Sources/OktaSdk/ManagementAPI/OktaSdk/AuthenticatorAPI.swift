@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter authenticatorId: (path)  
          */
-        func activateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
+        public func activateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
             try await send(try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/activate".expanded(using: [
                     "authenticatorId": authenticatorId
                 ]), method: "POST"))
@@ -41,7 +41,7 @@ public extension OktaClient {
          
          - parameter authenticatorId: (path)  
          */
-        func deactivateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
+        public func deactivateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
             try await send(try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/deactivate".expanded(using: [
                     "authenticatorId": authenticatorId
                 ]), method: "POST"))
@@ -52,7 +52,7 @@ public extension OktaClient {
          
          - parameter authenticatorId: (path)  
          */
-        func getAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
+        public func getAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
             try await send(try request(to: "/api/v1/authenticators/{authenticatorId}".expanded(using: [
                     "authenticatorId": authenticatorId
                 ]), method: "GET"))
@@ -62,7 +62,7 @@ public extension OktaClient {
          List all Authenticators
          
          */
-        func listAuthenticators() async throws -> OktaResponse<[Authenticator]> {
+        public func listAuthenticators() async throws -> OktaResponse<[Authenticator]> {
             try await send(try request(to: "/api/v1/authenticators", method: "GET"))
         }
 
@@ -72,7 +72,7 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          - parameter authenticator: (body)  
          */
-        func updateAuthenticator(authenticatorId: String, authenticator: Authenticator) async throws -> OktaResponse<Authenticator> {
+        public func updateAuthenticator(authenticatorId: String, authenticator: Authenticator) async throws -> OktaResponse<Authenticator> {
             try await send(try requestWithBody(to: "/api/v1/authenticators/{authenticatorId}".expanded(using: [
                     "authenticatorId": authenticatorId
                 ]), method: "PUT", body: authenticator))

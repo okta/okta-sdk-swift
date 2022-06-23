@@ -31,7 +31,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter sendEmail: (query) Sends an activation email to the user if true 
          */
-        func activateUser(userId: String, sendEmail: Bool) async throws -> OktaResponse<UserActivationToken> {
+        public func activateUser(userId: String, sendEmail: Bool) async throws -> OktaResponse<UserActivationToken> {
             try await send(try request(to: "/api/v1/users/{userId}/lifecycle/activate".expanded(using: [
                     "userId": userId
                 ]), method: "POST", query: [
@@ -46,7 +46,7 @@ public extension OktaClient {
          - parameter roleId: (path)  
          */
         @discardableResult
-        func addAllAppsAsTargetToRole(userId: String, roleId: String) async throws -> OktaResponse<Empty> {
+        public func addAllAppsAsTargetToRole(userId: String, roleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps".expanded(using: [
                     "userId": userId, 
                     "roleId": roleId
@@ -61,7 +61,7 @@ public extension OktaClient {
          - parameter appName: (path)  
          */
         @discardableResult
-        func addApplicationTargetToAdminRoleForUser(userId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
+        public func addApplicationTargetToAdminRoleForUser(userId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}".expanded(using: [
                     "userId": userId, 
                     "roleId": roleId, 
@@ -78,7 +78,7 @@ public extension OktaClient {
          - parameter applicationId: (path)  
          */
         @discardableResult
-        func addApplicationTargetToAppAdminRoleForUser(userId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
+        public func addApplicationTargetToAppAdminRoleForUser(userId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}".expanded(using: [
                     "userId": userId, 
                     "roleId": roleId, 
@@ -95,7 +95,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          */
         @discardableResult
-        func addGroupTargetToRole(userId: String, roleId: String, groupId: String) async throws -> OktaResponse<Empty> {
+        public func addGroupTargetToRole(userId: String, roleId: String, groupId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/groups/{groupId}".expanded(using: [
                     "userId": userId, 
                     "roleId": roleId, 
@@ -110,7 +110,7 @@ public extension OktaClient {
          - parameter assignRoleRequest: (body)  
          - parameter disableNotifications: (query)  (optional)
          */
-        func assignRoleToUser(userId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: Bool? = nil) async throws -> OktaResponse<Role> {
+        public func assignRoleToUser(userId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: Bool? = nil) async throws -> OktaResponse<Role> {
             try await send(try requestWithBody(to: "/api/v1/users/{userId}/roles".expanded(using: [
                     "userId": userId
                 ]), method: "POST", query: [
@@ -125,7 +125,7 @@ public extension OktaClient {
          - parameter changePasswordRequest: (body)  
          - parameter strict: (query)  (optional)
          */
-        func changePassword(userId: String, changePasswordRequest: ChangePasswordRequest, strict: Bool? = nil) async throws -> OktaResponse<UserCredentials> {
+        public func changePassword(userId: String, changePasswordRequest: ChangePasswordRequest, strict: Bool? = nil) async throws -> OktaResponse<UserCredentials> {
             try await send(try requestWithBody(to: "/api/v1/users/{userId}/credentials/change_password".expanded(using: [
                     "userId": userId
                 ]), method: "POST", query: [
@@ -139,7 +139,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter userCredentials: (body)  
          */
-        func changeRecoveryQuestion(userId: String, userCredentials: UserCredentials) async throws -> OktaResponse<UserCredentials> {
+        public func changeRecoveryQuestion(userId: String, userCredentials: UserCredentials) async throws -> OktaResponse<UserCredentials> {
             try await send(try requestWithBody(to: "/api/v1/users/{userId}/credentials/change_recovery_question".expanded(using: [
                     "userId": userId
                 ]), method: "POST", body: userCredentials))
@@ -152,7 +152,7 @@ public extension OktaClient {
          - parameter oauthTokens: (query) Revoke issued OpenID Connect and OAuth refresh and access tokens (optional, default to false)
          */
         @discardableResult
-        func clearUserSessions(userId: String, oauthTokens: Bool? = nil) async throws -> OktaResponse<Empty> {
+        public func clearUserSessions(userId: String, oauthTokens: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/sessions".expanded(using: [
                     "userId": userId
                 ]), method: "DELETE", query: [
@@ -168,7 +168,7 @@ public extension OktaClient {
          - parameter provider: (query) Indicates whether to create a user with a specified authentication provider (optional, default to false)
          - parameter nextLogin: (query) With activate&#x3D;true, set nextLogin to \&quot;changePassword\&quot; to have the password be EXPIRED, so user must change it the next time they log in. (optional)
          */
-        func createUser(body: CreateUserRequest, activate: Bool? = nil, provider: Bool? = nil, nextLogin: UserNextLogin? = nil) async throws -> OktaResponse<User> {
+        public func createUser(body: CreateUserRequest, activate: Bool? = nil, provider: Bool? = nil, nextLogin: UserNextLogin? = nil) async throws -> OktaResponse<User> {
             try await send(try requestWithBody(to: "/api/v1/users", method: "POST", query: [
                     "activate": activate, 
                     "provider": provider, 
@@ -183,7 +183,7 @@ public extension OktaClient {
          - parameter sendEmail: (query)  (optional, default to false)
          */
         @discardableResult
-        func deactivateOrDeleteUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
+        public func deactivateOrDeleteUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}".expanded(using: [
                     "userId": userId
                 ]), method: "DELETE", query: [
@@ -198,7 +198,7 @@ public extension OktaClient {
          - parameter sendEmail: (query)  (optional, default to false)
          */
         @discardableResult
-        func deactivateUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
+        public func deactivateUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/lifecycle/deactivate".expanded(using: [
                     "userId": userId
                 ]), method: "POST", query: [
@@ -211,7 +211,7 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          */
-        func expirePassword(userId: String) async throws -> OktaResponse<User> {
+        public func expirePassword(userId: String) async throws -> OktaResponse<User> {
             try await send(try request(to: "/api/v1/users/{userId}/lifecycle/expire_password".expanded(using: [
                     "userId": userId
                 ]), method: "POST"))
@@ -222,7 +222,7 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          */
-        func expirePasswordAndGetTemporaryPassword(userId: String) async throws -> OktaResponse<TempPassword> {
+        public func expirePasswordAndGetTemporaryPassword(userId: String) async throws -> OktaResponse<TempPassword> {
             try await send(try request(to: "/api/v1/users/{userId}/lifecycle/expire_password_with_temp_password".expanded(using: [
                     "userId": userId
                 ]), method: "POST"))
@@ -234,7 +234,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter sendEmail: (query)  (optional, default to true)
          */
-        func forgotPassword(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<ForgotPasswordResponse> {
+        public func forgotPassword(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<ForgotPasswordResponse> {
             try await send(try request(to: "/api/v1/users/{userId}/credentials/forgot_password".expanded(using: [
                     "userId": userId
                 ]), method: "POST", query: [
@@ -249,7 +249,7 @@ public extension OktaClient {
          - parameter userCredentials: (body)  
          - parameter sendEmail: (query)  (optional, default to true)
          */
-        func forgotPasswordSetNewPassword(userId: String, userCredentials: UserCredentials, sendEmail: Bool? = nil) async throws -> OktaResponse<UserCredentials> {
+        public func forgotPasswordSetNewPassword(userId: String, userCredentials: UserCredentials, sendEmail: Bool? = nil) async throws -> OktaResponse<UserCredentials> {
             try await send(try requestWithBody(to: "/api/v1/users/{userId}/credentials/forgot_password_recovery_question".expanded(using: [
                     "userId": userId
                 ]), method: "POST", query: [
@@ -265,7 +265,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to -1)
          */
-        func getLinkedObjectsForUser(userId: String, relationshipName: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[AnyCodable]> {
+        public func getLinkedObjectsForUser(userId: String, relationshipName: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[AnyCodable]> {
             try await send(try request(to: "/api/v1/users/{userId}/linkedObjects/{relationshipName}".expanded(using: [
                     "userId": userId, 
                     "relationshipName": relationshipName
@@ -285,7 +285,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to 20)
          - parameter after: (query)  (optional)
          */
-        func getRefreshTokenForUserAndClient(userId: String, clientId: String, tokenId: String, expand: String? = nil, limit: Int? = nil, after: String? = nil) async throws -> OktaResponse<OAuth2RefreshToken> {
+        public func getRefreshTokenForUserAndClient(userId: String, clientId: String, tokenId: String, expand: String? = nil, limit: Int? = nil, after: String? = nil) async throws -> OktaResponse<OAuth2RefreshToken> {
             try await send(try request(to: "/api/v1/users/{userId}/clients/{clientId}/tokens/{tokenId}".expanded(using: [
                     "userId": userId, 
                     "clientId": clientId, 
@@ -302,7 +302,7 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          */
-        func getUser(userId: String) async throws -> OktaResponse<User> {
+        public func getUser(userId: String) async throws -> OktaResponse<User> {
             try await send(try request(to: "/api/v1/users/{userId}".expanded(using: [
                     "userId": userId
                 ]), method: "GET"))
@@ -315,7 +315,7 @@ public extension OktaClient {
          - parameter grantId: (path)  
          - parameter expand: (query)  (optional)
          */
-        func getUserGrant(userId: String, grantId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
+        public func getUserGrant(userId: String, grantId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
             try await send(try request(to: "/api/v1/users/{userId}/grants/{grantId}".expanded(using: [
                     "userId": userId, 
                     "grantId": grantId
@@ -330,7 +330,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter roleId: (path)  
          */
-        func getUserRole(userId: String, roleId: String) async throws -> OktaResponse<Role> {
+        public func getUserRole(userId: String, roleId: String) async throws -> OktaResponse<Role> {
             try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}".expanded(using: [
                     "userId": userId, 
                     "roleId": roleId
@@ -342,7 +342,7 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          */
-        func listAppLinks(userId: String) async throws -> OktaResponse<[AppLink]> {
+        public func listAppLinks(userId: String) async throws -> OktaResponse<[AppLink]> {
             try await send(try request(to: "/api/v1/users/{userId}/appLinks".expanded(using: [
                     "userId": userId
                 ]), method: "GET"))
@@ -356,7 +356,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        func listApplicationTargetsForApplicationAdministratorRoleForUser(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[CatalogApplication]> {
+        public func listApplicationTargetsForApplicationAdministratorRoleForUser(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[CatalogApplication]> {
             try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps".expanded(using: [
                     "userId": userId, 
                     "roleId": roleId
@@ -372,7 +372,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter expand: (query)  (optional)
          */
-        func listAssignedRolesForUser(userId: String, expand: String? = nil) async throws -> OktaResponse<[Role]> {
+        public func listAssignedRolesForUser(userId: String, expand: String? = nil) async throws -> OktaResponse<[Role]> {
             try await send(try request(to: "/api/v1/users/{userId}/roles".expanded(using: [
                     "userId": userId
                 ]), method: "GET", query: [
@@ -389,7 +389,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        func listGrantsForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
+        public func listGrantsForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
             try await send(try request(to: "/api/v1/users/{userId}/clients/{clientId}/grants".expanded(using: [
                     "userId": userId, 
                     "clientId": clientId
@@ -408,7 +408,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        func listGroupTargetsForRole(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[Group]> {
+        public func listGroupTargetsForRole(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[Group]> {
             try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/groups".expanded(using: [
                     "userId": userId, 
                     "roleId": roleId
@@ -427,7 +427,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        func listRefreshTokensForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2RefreshToken]> {
+        public func listRefreshTokensForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2RefreshToken]> {
             try await send(try request(to: "/api/v1/users/{userId}/clients/{clientId}/tokens".expanded(using: [
                     "userId": userId, 
                     "clientId": clientId
@@ -443,7 +443,7 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          */
-        func listUserClients(userId: String) async throws -> OktaResponse<[OAuth2Client]> {
+        public func listUserClients(userId: String) async throws -> OktaResponse<[OAuth2Client]> {
             try await send(try request(to: "/api/v1/users/{userId}/clients".expanded(using: [
                     "userId": userId
                 ]), method: "GET"))
@@ -458,7 +458,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        func listUserGrants(userId: String, scopeId: String? = nil, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
+        public func listUserGrants(userId: String, scopeId: String? = nil, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
             try await send(try request(to: "/api/v1/users/{userId}/grants".expanded(using: [
                     "userId": userId
                 ]), method: "GET", query: [
@@ -474,7 +474,7 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          */
-        func listUserGroups(userId: String) async throws -> OktaResponse<[Group]> {
+        public func listUserGroups(userId: String) async throws -> OktaResponse<[Group]> {
             try await send(try request(to: "/api/v1/users/{userId}/groups".expanded(using: [
                     "userId": userId
                 ]), method: "GET"))
@@ -485,7 +485,7 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          */
-        func listUserIdentityProviders(userId: String) async throws -> OktaResponse<[IdentityProvider]> {
+        public func listUserIdentityProviders(userId: String) async throws -> OktaResponse<[IdentityProvider]> {
             try await send(try request(to: "/api/v1/users/{userId}/idps".expanded(using: [
                     "userId": userId
                 ]), method: "GET"))
@@ -502,7 +502,7 @@ public extension OktaClient {
          - parameter sortBy: (query)  (optional)
          - parameter sortOrder: (query)  (optional)
          */
-        func listUsers(after: String? = nil, q: String? = nil, limit: Int? = nil, filter: String? = nil, search: String? = nil, sortBy: String? = nil, sortOrder: String? = nil) async throws -> OktaResponse<[User]> {
+        public func listUsers(after: String? = nil, q: String? = nil, limit: Int? = nil, filter: String? = nil, search: String? = nil, sortBy: String? = nil, sortOrder: String? = nil) async throws -> OktaResponse<[User]> {
             try await send(try request(to: "/api/v1/users", method: "GET", query: [
                     "after": after, 
                     "q": q, 
@@ -521,7 +521,7 @@ public extension OktaClient {
          - parameter user: (body)  
          - parameter strict: (query)  (optional)
          */
-        func partialUpdateUser(userId: String, user: UpdateUserRequest, strict: Bool? = nil) async throws -> OktaResponse<User> {
+        public func partialUpdateUser(userId: String, user: UpdateUserRequest, strict: Bool? = nil) async throws -> OktaResponse<User> {
             try await send(try requestWithBody(to: "/api/v1/users/{userId}".expanded(using: [
                     "userId": userId
                 ]), method: "POST", query: [
@@ -535,7 +535,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter sendEmail: (query) Sends an activation email to the user if true (optional, default to false)
          */
-        func reactivateUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<UserActivationToken> {
+        public func reactivateUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<UserActivationToken> {
             try await send(try request(to: "/api/v1/users/{userId}/lifecycle/reactivate".expanded(using: [
                     "userId": userId
                 ]), method: "POST", query: [
@@ -552,7 +552,7 @@ public extension OktaClient {
          - parameter applicationId: (path)  
          */
         @discardableResult
-        func removeApplicationTargetFromAdministratorRoleForUser(userId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
+        public func removeApplicationTargetFromAdministratorRoleForUser(userId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}".expanded(using: [
                     "userId": userId, 
                     "roleId": roleId, 
@@ -569,7 +569,7 @@ public extension OktaClient {
          - parameter appName: (path)  
          */
         @discardableResult
-        func removeApplicationTargetFromApplicationAdministratorRoleForUser(userId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
+        public func removeApplicationTargetFromApplicationAdministratorRoleForUser(userId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}".expanded(using: [
                     "userId": userId, 
                     "roleId": roleId, 
@@ -585,7 +585,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          */
         @discardableResult
-        func removeGroupTargetFromRole(userId: String, roleId: String, groupId: String) async throws -> OktaResponse<Empty> {
+        public func removeGroupTargetFromRole(userId: String, roleId: String, groupId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/groups/{groupId}".expanded(using: [
                     "userId": userId, 
                     "roleId": roleId, 
@@ -600,7 +600,7 @@ public extension OktaClient {
          - parameter relationshipName: (path)  
          */
         @discardableResult
-        func removeLinkedObjectForUser(userId: String, relationshipName: String) async throws -> OktaResponse<Empty> {
+        public func removeLinkedObjectForUser(userId: String, relationshipName: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/linkedObjects/{relationshipName}".expanded(using: [
                     "userId": userId, 
                     "relationshipName": relationshipName
@@ -614,7 +614,7 @@ public extension OktaClient {
          - parameter roleId: (path)  
          */
         @discardableResult
-        func removeRoleFromUser(userId: String, roleId: String) async throws -> OktaResponse<Empty> {
+        public func removeRoleFromUser(userId: String, roleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}".expanded(using: [
                     "userId": userId, 
                     "roleId": roleId
@@ -627,7 +627,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @discardableResult
-        func resetFactors(userId: String) async throws -> OktaResponse<Empty> {
+        public func resetFactors(userId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/lifecycle/reset_factors".expanded(using: [
                     "userId": userId
                 ]), method: "POST"))
@@ -639,7 +639,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter sendEmail: (query)  
          */
-        func resetPassword(userId: String, sendEmail: Bool) async throws -> OktaResponse<ResetPasswordToken> {
+        public func resetPassword(userId: String, sendEmail: Bool) async throws -> OktaResponse<ResetPasswordToken> {
             try await send(try request(to: "/api/v1/users/{userId}/lifecycle/reset_password".expanded(using: [
                     "userId": userId
                 ]), method: "POST", query: [
@@ -654,7 +654,7 @@ public extension OktaClient {
          - parameter clientId: (path)  
          */
         @discardableResult
-        func revokeGrantsForUserAndClient(userId: String, clientId: String) async throws -> OktaResponse<Empty> {
+        public func revokeGrantsForUserAndClient(userId: String, clientId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/clients/{clientId}/grants".expanded(using: [
                     "userId": userId, 
                     "clientId": clientId
@@ -669,7 +669,7 @@ public extension OktaClient {
          - parameter tokenId: (path)  
          */
         @discardableResult
-        func revokeTokenForUserAndClient(userId: String, clientId: String, tokenId: String) async throws -> OktaResponse<Empty> {
+        public func revokeTokenForUserAndClient(userId: String, clientId: String, tokenId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/clients/{clientId}/tokens/{tokenId}".expanded(using: [
                     "userId": userId, 
                     "clientId": clientId, 
@@ -684,7 +684,7 @@ public extension OktaClient {
          - parameter clientId: (path)  
          */
         @discardableResult
-        func revokeTokensForUserAndClient(userId: String, clientId: String) async throws -> OktaResponse<Empty> {
+        public func revokeTokensForUserAndClient(userId: String, clientId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/clients/{clientId}/tokens".expanded(using: [
                     "userId": userId, 
                     "clientId": clientId
@@ -698,7 +698,7 @@ public extension OktaClient {
          - parameter grantId: (path)  
          */
         @discardableResult
-        func revokeUserGrant(userId: String, grantId: String) async throws -> OktaResponse<Empty> {
+        public func revokeUserGrant(userId: String, grantId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/grants/{grantId}".expanded(using: [
                     "userId": userId, 
                     "grantId": grantId
@@ -711,7 +711,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @discardableResult
-        func revokeUserGrants(userId: String) async throws -> OktaResponse<Empty> {
+        public func revokeUserGrants(userId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/grants".expanded(using: [
                     "userId": userId
                 ]), method: "DELETE"))
@@ -725,7 +725,7 @@ public extension OktaClient {
          - parameter primaryUserId: (path)  
          */
         @discardableResult
-        func setLinkedObjectForUser(associatedUserId: String, primaryRelationshipName: String, primaryUserId: String) async throws -> OktaResponse<Empty> {
+        public func setLinkedObjectForUser(associatedUserId: String, primaryRelationshipName: String, primaryUserId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{associatedUserId}/linkedObjects/{primaryRelationshipName}/{primaryUserId}".expanded(using: [
                     "associatedUserId": associatedUserId, 
                     "primaryRelationshipName": primaryRelationshipName, 
@@ -739,7 +739,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @discardableResult
-        func suspendUser(userId: String) async throws -> OktaResponse<Empty> {
+        public func suspendUser(userId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/lifecycle/suspend".expanded(using: [
                     "userId": userId
                 ]), method: "POST"))
@@ -751,7 +751,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @discardableResult
-        func unlockUser(userId: String) async throws -> OktaResponse<Empty> {
+        public func unlockUser(userId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/lifecycle/unlock".expanded(using: [
                     "userId": userId
                 ]), method: "POST"))
@@ -763,7 +763,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @discardableResult
-        func unsuspendUser(userId: String) async throws -> OktaResponse<Empty> {
+        public func unsuspendUser(userId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/lifecycle/unsuspend".expanded(using: [
                     "userId": userId
                 ]), method: "POST"))
@@ -776,7 +776,7 @@ public extension OktaClient {
          - parameter user: (body)  
          - parameter strict: (query)  (optional)
          */
-        func updateUser(userId: String, user: UpdateUserRequest, strict: Bool? = nil) async throws -> OktaResponse<User> {
+        public func updateUser(userId: String, user: UpdateUserRequest, strict: Bool? = nil) async throws -> OktaResponse<User> {
             try await send(try requestWithBody(to: "/api/v1/users/{userId}".expanded(using: [
                     "userId": userId
                 ]), method: "PUT", query: [

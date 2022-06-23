@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter userType: (body)  
          */
-        func createUserType(userType: UserType) async throws -> OktaResponse<UserType> {
+        public func createUserType(userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try requestWithBody(to: "/api/v1/meta/types/user", method: "POST", body: userType))
         }
 
@@ -40,7 +40,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          */
         @discardableResult
-        func deleteUserType(typeId: String) async throws -> OktaResponse<Empty> {
+        public func deleteUserType(typeId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
                 ]), method: "DELETE"))
@@ -51,7 +51,7 @@ public extension OktaClient {
          
          - parameter typeId: (path)  
          */
-        func getUserType(typeId: String) async throws -> OktaResponse<UserType> {
+        public func getUserType(typeId: String) async throws -> OktaResponse<UserType> {
             try await send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
                 ]), method: "GET"))
@@ -61,7 +61,7 @@ public extension OktaClient {
          List all User Types
          
          */
-        func listUserTypes() async throws -> OktaResponse<[UserType]> {
+        public func listUserTypes() async throws -> OktaResponse<[UserType]> {
             try await send(try request(to: "/api/v1/meta/types/user", method: "GET"))
         }
 
@@ -71,7 +71,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          - parameter userType: (body)  
          */
-        func replaceUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
+        public func replaceUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
                 ]), method: "PUT", body: userType))
@@ -83,7 +83,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          - parameter userType: (body)  
          */
-        func updateUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
+        public func updateUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
                 ]), method: "POST", body: userType))

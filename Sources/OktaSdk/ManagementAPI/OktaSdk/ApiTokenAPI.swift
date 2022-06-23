@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter apiTokenId: (path) id of the API Token 
          */
-        func getApiToken(apiTokenId: String) async throws -> OktaResponse<ApiToken> {
+        public func getApiToken(apiTokenId: String) async throws -> OktaResponse<ApiToken> {
             try await send(try request(to: "/api/v1/api-tokens/{apiTokenId}".expanded(using: [
                     "apiTokenId": apiTokenId
                 ]), method: "GET"))
@@ -43,7 +43,7 @@ public extension OktaClient {
          - parameter limit: (query) A limit on the number of objects to return. (optional, default to 20)
          - parameter q: (query) Finds a token that matches the name or clientName. (optional)
          */
-        func listApiTokens(after: String? = nil, limit: Int? = nil, q: String? = nil) async throws -> OktaResponse<[ApiToken]> {
+        public func listApiTokens(after: String? = nil, limit: Int? = nil, q: String? = nil) async throws -> OktaResponse<[ApiToken]> {
             try await send(try request(to: "/api/v1/api-tokens", method: "GET", query: [
                     "after": after, 
                     "limit": limit, 
@@ -57,7 +57,7 @@ public extension OktaClient {
          - parameter apiTokenId: (path) id of the API Token 
          */
         @discardableResult
-        func revokeApiToken(apiTokenId: String) async throws -> OktaResponse<Empty> {
+        public func revokeApiToken(apiTokenId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/api-tokens/{apiTokenId}".expanded(using: [
                     "apiTokenId": apiTokenId
                 ]), method: "DELETE"))
@@ -68,7 +68,7 @@ public extension OktaClient {
          
          */
         @discardableResult
-        func revokeCurrentApiToken() async throws -> OktaResponse<Empty> {
+        public func revokeCurrentApiToken() async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/api-tokens/current", method: "DELETE"))
         }
 

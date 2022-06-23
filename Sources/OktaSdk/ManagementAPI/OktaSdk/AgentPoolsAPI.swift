@@ -31,7 +31,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
-        func activateAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
+        public func activateAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}/activate".expanded(using: [
                     "poolId": poolId, 
                     "updateId": updateId
@@ -44,7 +44,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter agentPoolUpdate: (body)  
          */
-        func createAgentPoolsUpdate(poolId: String, agentPoolUpdate: AgentPoolUpdate) async throws -> OktaResponse<AgentPoolUpdate> {
+        public func createAgentPoolsUpdate(poolId: String, agentPoolUpdate: AgentPoolUpdate) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try requestWithBody(to: "/api/v1/agentPools/{poolId}/updates".expanded(using: [
                     "poolId": poolId
                 ]), method: "POST", body: agentPoolUpdate))
@@ -56,7 +56,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
-        func deactivateAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
+        public func deactivateAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}/deactivate".expanded(using: [
                     "poolId": poolId, 
                     "updateId": updateId
@@ -70,7 +70,7 @@ public extension OktaClient {
          - parameter updateId: (path) Id of the update 
          */
         @discardableResult
-        func deleteAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<Empty> {
+        public func deleteAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}".expanded(using: [
                     "poolId": poolId, 
                     "updateId": updateId
@@ -84,7 +84,7 @@ public extension OktaClient {
          - parameter poolType: (query) Agent type to search for (optional)
          - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the &#x60;Link&#x60; response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
          */
-        func getAgentPools(limitPerPoolType: Int? = nil, poolType: AgentType? = nil, after: String? = nil) async throws -> OktaResponse<[AgentPool]> {
+        public func getAgentPools(limitPerPoolType: Int? = nil, poolType: AgentType? = nil, after: String? = nil) async throws -> OktaResponse<[AgentPool]> {
             try await send(try request(to: "/api/v1/agentPools", method: "GET", query: [
                     "limitPerPoolType": limitPerPoolType, 
                     "poolType": poolType, 
@@ -98,7 +98,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
-        func getAgentPoolsUpdateInstance(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
+        public func getAgentPoolsUpdateInstance(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}".expanded(using: [
                     "poolId": poolId, 
                     "updateId": updateId
@@ -110,7 +110,7 @@ public extension OktaClient {
          
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          */
-        func getAgentPoolsUpdateSettings(poolId: String) async throws -> OktaResponse<AgentPoolUpdateSetting> {
+        public func getAgentPoolsUpdateSettings(poolId: String) async throws -> OktaResponse<AgentPoolUpdateSetting> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/settings".expanded(using: [
                     "poolId": poolId
                 ]), method: "GET"))
@@ -122,7 +122,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter scheduled: (query) Scope the list only to scheduled or ad-hoc updates. If the parameter is not provided we will return the whole list of updates. (optional)
          */
-        func getAgentPoolsUpdates(poolId: String, scheduled: Bool? = nil) async throws -> OktaResponse<[AgentPoolUpdate]> {
+        public func getAgentPoolsUpdates(poolId: String, scheduled: Bool? = nil) async throws -> OktaResponse<[AgentPoolUpdate]> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates".expanded(using: [
                     "poolId": poolId
                 ]), method: "GET", query: [
@@ -136,7 +136,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
-        func pauseAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
+        public func pauseAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}/pause".expanded(using: [
                     "poolId": poolId, 
                     "updateId": updateId
@@ -149,7 +149,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
-        func resumeAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
+        public func resumeAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}/resume".expanded(using: [
                     "poolId": poolId, 
                     "updateId": updateId
@@ -162,7 +162,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
-        func retryAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
+        public func retryAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}/retry".expanded(using: [
                     "poolId": poolId, 
                     "updateId": updateId
@@ -175,7 +175,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter agentPoolUpdateSetting: (body)  
          */
-        func setAgentPoolsUpdateSettings(poolId: String, agentPoolUpdateSetting: AgentPoolUpdateSetting) async throws -> OktaResponse<AgentPoolUpdateSetting> {
+        public func setAgentPoolsUpdateSettings(poolId: String, agentPoolUpdateSetting: AgentPoolUpdateSetting) async throws -> OktaResponse<AgentPoolUpdateSetting> {
             try await send(try requestWithBody(to: "/api/v1/agentPools/{poolId}/updates/settings".expanded(using: [
                     "poolId": poolId
                 ]), method: "POST", body: agentPoolUpdateSetting))
@@ -187,7 +187,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
-        func stopAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
+        public func stopAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}/stop".expanded(using: [
                     "poolId": poolId, 
                     "updateId": updateId
@@ -201,7 +201,7 @@ public extension OktaClient {
          - parameter updateId: (path) Id of the update 
          - parameter agentPoolUpdate: (body)  
          */
-        func updateAgentPoolsUpdate(poolId: String, updateId: String, agentPoolUpdate: AgentPoolUpdate) async throws -> OktaResponse<AgentPoolUpdate> {
+        public func updateAgentPoolsUpdate(poolId: String, updateId: String, agentPoolUpdate: AgentPoolUpdate) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try requestWithBody(to: "/api/v1/agentPools/{poolId}/updates/{updateId}".expanded(using: [
                     "poolId": poolId, 
                     "updateId": updateId

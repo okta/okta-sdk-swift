@@ -32,7 +32,7 @@ public extension OktaClient {
          - parameter certificate: (body)  
          */
         @discardableResult
-        func createCertificate(domainId: String, certificate: DomainCertificate) async throws -> OktaResponse<Empty> {
+        public func createCertificate(domainId: String, certificate: DomainCertificate) async throws -> OktaResponse<Empty> {
             try await send(try requestWithBody(to: "/api/v1/domains/{domainId}/certificate".expanded(using: [
                     "domainId": domainId
                 ]), method: "PUT", body: certificate))
@@ -43,7 +43,7 @@ public extension OktaClient {
          
          - parameter domain: (body)  
          */
-        func createDomain(domain: Domain) async throws -> OktaResponse<DomainResponse> {
+        public func createDomain(domain: Domain) async throws -> OktaResponse<DomainResponse> {
             try await send(try requestWithBody(to: "/api/v1/domains", method: "POST", body: domain))
         }
 
@@ -53,7 +53,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          */
         @discardableResult
-        func deleteDomain(domainId: String) async throws -> OktaResponse<Empty> {
+        public func deleteDomain(domainId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/domains/{domainId}".expanded(using: [
                     "domainId": domainId
                 ]), method: "DELETE"))
@@ -64,7 +64,7 @@ public extension OktaClient {
          
          - parameter domainId: (path)  
          */
-        func getDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
+        public func getDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
             try await send(try request(to: "/api/v1/domains/{domainId}".expanded(using: [
                     "domainId": domainId
                 ]), method: "GET"))
@@ -74,7 +74,7 @@ public extension OktaClient {
          List all Domains
          
          */
-        func listDomains() async throws -> OktaResponse<DomainListResponse> {
+        public func listDomains() async throws -> OktaResponse<DomainListResponse> {
             try await send(try request(to: "/api/v1/domains", method: "GET"))
         }
 
@@ -83,7 +83,7 @@ public extension OktaClient {
          
          - parameter domainId: (path)  
          */
-        func verifyDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
+        public func verifyDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
             try await send(try request(to: "/api/v1/domains/{domainId}/verify".expanded(using: [
                     "domainId": domainId
                 ]), method: "POST"))

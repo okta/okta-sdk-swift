@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          */
-        func activateBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<BehaviorRule> {
+        public func activateBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<BehaviorRule> {
             try await send(try request(to: "/api/v1/behaviors/{behaviorId}/lifecycle/activate".expanded(using: [
                     "behaviorId": behaviorId
                 ]), method: "POST"))
@@ -41,7 +41,7 @@ public extension OktaClient {
          
          - parameter rule: (body)  
          */
-        func createBehaviorDetectionRule(rule: BehaviorRule) async throws -> OktaResponse<BehaviorRule> {
+        public func createBehaviorDetectionRule(rule: BehaviorRule) async throws -> OktaResponse<BehaviorRule> {
             try await send(try requestWithBody(to: "/api/v1/behaviors", method: "POST", body: rule))
         }
 
@@ -50,7 +50,7 @@ public extension OktaClient {
          
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          */
-        func deactivateBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<BehaviorRule> {
+        public func deactivateBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<BehaviorRule> {
             try await send(try request(to: "/api/v1/behaviors/{behaviorId}/lifecycle/deactivate".expanded(using: [
                     "behaviorId": behaviorId
                 ]), method: "POST"))
@@ -62,7 +62,7 @@ public extension OktaClient {
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          */
         @discardableResult
-        func deleteBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<Empty> {
+        public func deleteBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/behaviors/{behaviorId}".expanded(using: [
                     "behaviorId": behaviorId
                 ]), method: "DELETE"))
@@ -73,7 +73,7 @@ public extension OktaClient {
          
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          */
-        func getBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<[BehaviorRule]> {
+        public func getBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<[BehaviorRule]> {
             try await send(try request(to: "/api/v1/behaviors/{behaviorId}".expanded(using: [
                     "behaviorId": behaviorId
                 ]), method: "GET"))
@@ -83,7 +83,7 @@ public extension OktaClient {
          List all Behavior Detection Rules
          
          */
-        func listBehaviorDetectionRules() async throws -> OktaResponse<[BehaviorRule]> {
+        public func listBehaviorDetectionRules() async throws -> OktaResponse<[BehaviorRule]> {
             try await send(try request(to: "/api/v1/behaviors", method: "GET"))
         }
 
@@ -93,7 +93,7 @@ public extension OktaClient {
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          - parameter rule: (body)  
          */
-        func updateBehaviorDetectionRule(behaviorId: String, rule: BehaviorRule) async throws -> OktaResponse<BehaviorRule> {
+        public func updateBehaviorDetectionRule(behaviorId: String, rule: BehaviorRule) async throws -> OktaResponse<BehaviorRule> {
             try await send(try requestWithBody(to: "/api/v1/behaviors/{behaviorId}".expanded(using: [
                     "behaviorId": behaviorId
                 ]), method: "PUT", body: rule))

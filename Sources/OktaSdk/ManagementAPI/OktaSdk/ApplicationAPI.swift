@@ -31,7 +31,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @discardableResult
-        func activateApplication(appId: String) async throws -> OktaResponse<Empty> {
+        public func activateApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/apps/{appId}/lifecycle/activate".expanded(using: [
                     "appId": appId
                 ]), method: "POST"))
@@ -43,7 +43,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @discardableResult
-        func activateDefaultProvisioningConnectionForApplication(appId: String) async throws -> OktaResponse<Empty> {
+        public func activateDefaultProvisioningConnectionForApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/apps/{appId}/connections/default/lifecycle/activate".expanded(using: [
                     "appId": appId
                 ]), method: "POST"))
@@ -55,7 +55,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter appUser: (body)  
          */
-        func assignUserToApplication(appId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
+        public func assignUserToApplication(appId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
             try await send(try requestWithBody(to: "/api/v1/apps/{appId}/users".expanded(using: [
                     "appId": appId
                 ]), method: "POST", body: appUser))
@@ -68,7 +68,7 @@ public extension OktaClient {
          - parameter keyId: (path)  
          - parameter targetAid: (query) Unique key of the target Application 
          */
-        func cloneApplicationKey(appId: String, keyId: String, targetAid: String) async throws -> OktaResponse<JsonWebKey> {
+        public func cloneApplicationKey(appId: String, keyId: String, targetAid: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try request(to: "/api/v1/apps/{appId}/credentials/keys/{keyId}/clone".expanded(using: [
                     "appId": appId, 
                     "keyId": keyId
@@ -84,7 +84,7 @@ public extension OktaClient {
          - parameter activate: (query) Executes activation lifecycle operation when creating the app (optional, default to true)
          - parameter oktaAccessGatewayAgent: (header)  (optional)
          */
-        func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) async throws -> OktaResponse<Application> {
+        public func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil) async throws -> OktaResponse<Application> {
             try await send(try requestWithBody(to: "/api/v1/apps", method: "POST", query: [
                     "activate": activate
                 ], headers: [
@@ -99,7 +99,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          - parameter applicationGroupAssignment: (body)  (optional)
          */
-        func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
+        public func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
             try await send(try requestWithBody(to: "/api/v1/apps/{appId}/groups/{groupId}".expanded(using: [
                     "appId": appId, 
                     "groupId": groupId
@@ -112,7 +112,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @discardableResult
-        func deactivateApplication(appId: String) async throws -> OktaResponse<Empty> {
+        public func deactivateApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/apps/{appId}/lifecycle/deactivate".expanded(using: [
                     "appId": appId
                 ]), method: "POST"))
@@ -124,7 +124,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @discardableResult
-        func deactivateDefaultProvisioningConnectionForApplication(appId: String) async throws -> OktaResponse<Empty> {
+        public func deactivateDefaultProvisioningConnectionForApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/apps/{appId}/connections/default/lifecycle/deactivate".expanded(using: [
                     "appId": appId
                 ]), method: "POST"))
@@ -136,7 +136,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @discardableResult
-        func deleteApplication(appId: String) async throws -> OktaResponse<Empty> {
+        public func deleteApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/apps/{appId}".expanded(using: [
                     "appId": appId
                 ]), method: "DELETE"))
@@ -149,7 +149,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          */
         @discardableResult
-        func deleteApplicationGroupAssignment(appId: String, groupId: String) async throws -> OktaResponse<Empty> {
+        public func deleteApplicationGroupAssignment(appId: String, groupId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/apps/{appId}/groups/{groupId}".expanded(using: [
                     "appId": appId, 
                     "groupId": groupId
@@ -164,7 +164,7 @@ public extension OktaClient {
          - parameter sendEmail: (query)  (optional, default to false)
          */
         @discardableResult
-        func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
+        public func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/apps/{appId}/users/{userId}".expanded(using: [
                     "appId": appId, 
                     "userId": userId
@@ -179,7 +179,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter validityYears: (query)  (optional)
          */
-        func generateApplicationKey(appId: String, validityYears: Int? = nil) async throws -> OktaResponse<JsonWebKey> {
+        public func generateApplicationKey(appId: String, validityYears: Int? = nil) async throws -> OktaResponse<JsonWebKey> {
             try await send(try request(to: "/api/v1/apps/{appId}/credentials/keys/generate".expanded(using: [
                     "appId": appId
                 ]), method: "POST", query: [
@@ -193,7 +193,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter metadata: (body)  
          */
-        func generateCsrForApplication(appId: String, metadata: CsrMetadata) async throws -> OktaResponse<Csr> {
+        public func generateCsrForApplication(appId: String, metadata: CsrMetadata) async throws -> OktaResponse<Csr> {
             try await send(try requestWithBody(to: "/api/v1/apps/{appId}/credentials/csrs".expanded(using: [
                     "appId": appId
                 ]), method: "POST", body: metadata))
@@ -205,7 +205,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter expand: (query)  (optional)
          */
-        func getApplication(appId: String, expand: String? = nil) async throws -> OktaResponse<Application> {
+        public func getApplication(appId: String, expand: String? = nil) async throws -> OktaResponse<Application> {
             try await send(try request(to: "/api/v1/apps/{appId}".expanded(using: [
                     "appId": appId
                 ]), method: "GET", query: [
@@ -220,7 +220,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          - parameter expand: (query)  (optional)
          */
-        func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
+        public func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil) async throws -> OktaResponse<ApplicationGroupAssignment> {
             try await send(try request(to: "/api/v1/apps/{appId}/groups/{groupId}".expanded(using: [
                     "appId": appId, 
                     "groupId": groupId
@@ -235,7 +235,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter keyId: (path)  
          */
-        func getApplicationKey(appId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
+        public func getApplicationKey(appId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try request(to: "/api/v1/apps/{appId}/credentials/keys/{keyId}".expanded(using: [
                     "appId": appId, 
                     "keyId": keyId
@@ -249,7 +249,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter expand: (query)  (optional)
          */
-        func getApplicationUser(appId: String, userId: String, expand: String? = nil) async throws -> OktaResponse<AppUser> {
+        public func getApplicationUser(appId: String, userId: String, expand: String? = nil) async throws -> OktaResponse<AppUser> {
             try await send(try request(to: "/api/v1/apps/{appId}/users/{userId}".expanded(using: [
                     "appId": appId, 
                     "userId": userId
@@ -264,7 +264,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter csrId: (path)  
          */
-        func getCsrForApplication(appId: String, csrId: String) async throws -> OktaResponse<Csr> {
+        public func getCsrForApplication(appId: String, csrId: String) async throws -> OktaResponse<Csr> {
             try await send(try request(to: "/api/v1/apps/{appId}/credentials/csrs/{csrId}".expanded(using: [
                     "appId": appId, 
                     "csrId": csrId
@@ -276,7 +276,7 @@ public extension OktaClient {
          
          - parameter appId: (path)  
          */
-        func getDefaultProvisioningConnectionForApplication(appId: String) async throws -> OktaResponse<ProvisioningConnection> {
+        public func getDefaultProvisioningConnectionForApplication(appId: String) async throws -> OktaResponse<ProvisioningConnection> {
             try await send(try request(to: "/api/v1/apps/{appId}/connections/default".expanded(using: [
                     "appId": appId
                 ]), method: "GET"))
@@ -288,7 +288,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter name: (path)  
          */
-        func getFeatureForApplication(appId: String, name: String) async throws -> OktaResponse<ApplicationFeature> {
+        public func getFeatureForApplication(appId: String, name: String) async throws -> OktaResponse<ApplicationFeature> {
             try await send(try request(to: "/api/v1/apps/{appId}/features/{name}".expanded(using: [
                     "appId": appId, 
                     "name": name
@@ -302,7 +302,7 @@ public extension OktaClient {
          - parameter tokenId: (path)  
          - parameter expand: (query)  (optional)
          */
-        func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2Token> {
+        public func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2Token> {
             try await send(try request(to: "/api/v1/apps/{appId}/tokens/{tokenId}".expanded(using: [
                     "appId": appId, 
                     "tokenId": tokenId
@@ -318,7 +318,7 @@ public extension OktaClient {
          - parameter grantId: (path)  
          - parameter expand: (query)  (optional)
          */
-        func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
+        public func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
             try await send(try request(to: "/api/v1/apps/{appId}/grants/{grantId}".expanded(using: [
                     "appId": appId, 
                     "grantId": grantId
@@ -333,7 +333,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter oAuth2ScopeConsentGrant: (body)  
          */
-        func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
+        public func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
             try await send(try requestWithBody(to: "/api/v1/apps/{appId}/grants".expanded(using: [
                     "appId": appId
                 ]), method: "POST", body: oAuth2ScopeConsentGrant))
@@ -348,7 +348,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
          - parameter expand: (query)  (optional)
          */
-        func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) async throws -> OktaResponse<[ApplicationGroupAssignment]> {
+        public func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) async throws -> OktaResponse<[ApplicationGroupAssignment]> {
             try await send(try request(to: "/api/v1/apps/{appId}/groups".expanded(using: [
                     "appId": appId
                 ]), method: "GET", query: [
@@ -364,7 +364,7 @@ public extension OktaClient {
          
          - parameter appId: (path)  
          */
-        func listApplicationKeys(appId: String) async throws -> OktaResponse<[JsonWebKey]> {
+        public func listApplicationKeys(appId: String) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try request(to: "/api/v1/apps/{appId}/credentials/keys".expanded(using: [
                     "appId": appId
                 ]), method: "GET"))
@@ -381,7 +381,7 @@ public extension OktaClient {
          - parameter filter: (query)  (optional)
          - parameter expand: (query)  (optional)
          */
-        func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) async throws -> OktaResponse<[AppUser]> {
+        public func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil) async throws -> OktaResponse<[AppUser]> {
             try await send(try request(to: "/api/v1/apps/{appId}/users".expanded(using: [
                     "appId": appId
                 ]), method: "GET", query: [
@@ -404,7 +404,7 @@ public extension OktaClient {
          - parameter expand: (query) Traverses users link relationship and optionally embeds Application User resource (optional)
          - parameter includeNonDeleted: (query)  (optional, default to false)
          */
-        func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) async throws -> OktaResponse<[Application]> {
+        public func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil) async throws -> OktaResponse<[Application]> {
             try await send(try request(to: "/api/v1/apps", method: "GET", query: [
                     "q": q, 
                     "after": after, 
@@ -420,7 +420,7 @@ public extension OktaClient {
          
          - parameter appId: (path)  
          */
-        func listCsrsForApplication(appId: String) async throws -> OktaResponse<[Csr]> {
+        public func listCsrsForApplication(appId: String) async throws -> OktaResponse<[Csr]> {
             try await send(try request(to: "/api/v1/apps/{appId}/credentials/csrs".expanded(using: [
                     "appId": appId
                 ]), method: "GET"))
@@ -431,7 +431,7 @@ public extension OktaClient {
          
          - parameter appId: (path)  
          */
-        func listFeaturesForApplication(appId: String) async throws -> OktaResponse<[ApplicationFeature]> {
+        public func listFeaturesForApplication(appId: String) async throws -> OktaResponse<[ApplicationFeature]> {
             try await send(try request(to: "/api/v1/apps/{appId}/features".expanded(using: [
                     "appId": appId
                 ]), method: "GET"))
@@ -445,7 +445,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Token]> {
+        public func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Token]> {
             try await send(try request(to: "/api/v1/apps/{appId}/tokens".expanded(using: [
                     "appId": appId
                 ]), method: "GET", query: [
@@ -461,7 +461,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter expand: (query)  (optional)
          */
-        func listScopeConsentGrants(appId: String, expand: String? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
+        public func listScopeConsentGrants(appId: String, expand: String? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
             try await send(try request(to: "/api/v1/apps/{appId}/grants".expanded(using: [
                     "appId": appId
                 ]), method: "GET", query: [
@@ -476,7 +476,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          - parameter body: (body)  
          */
-        func publishCsrFromApplication(appId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
+        public func publishCsrFromApplication(appId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
             try await send(try requestWithBody(to: "/api/v1/apps/{appId}/credentials/csrs/{csrId}/lifecycle/publish".expanded(using: [
                     "appId": appId, 
                     "csrId": csrId
@@ -490,7 +490,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          */
         @discardableResult
-        func revokeCsrFromApplication(appId: String, csrId: String) async throws -> OktaResponse<Empty> {
+        public func revokeCsrFromApplication(appId: String, csrId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/apps/{appId}/credentials/csrs/{csrId}".expanded(using: [
                     "appId": appId, 
                     "csrId": csrId
@@ -504,7 +504,7 @@ public extension OktaClient {
          - parameter tokenId: (path)  
          */
         @discardableResult
-        func revokeOAuth2TokenForApplication(appId: String, tokenId: String) async throws -> OktaResponse<Empty> {
+        public func revokeOAuth2TokenForApplication(appId: String, tokenId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/apps/{appId}/tokens/{tokenId}".expanded(using: [
                     "appId": appId, 
                     "tokenId": tokenId
@@ -517,7 +517,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          */
         @discardableResult
-        func revokeOAuth2TokensForApplication(appId: String) async throws -> OktaResponse<Empty> {
+        public func revokeOAuth2TokensForApplication(appId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/apps/{appId}/tokens".expanded(using: [
                     "appId": appId
                 ]), method: "DELETE"))
@@ -530,7 +530,7 @@ public extension OktaClient {
          - parameter grantId: (path)  
          */
         @discardableResult
-        func revokeScopeConsentGrant(appId: String, grantId: String) async throws -> OktaResponse<Empty> {
+        public func revokeScopeConsentGrant(appId: String, grantId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/apps/{appId}/grants/{grantId}".expanded(using: [
                     "appId": appId, 
                     "grantId": grantId
@@ -544,7 +544,7 @@ public extension OktaClient {
          - parameter provisioningConnectionRequest: (body)  
          - parameter activate: (query)  (optional)
          */
-        func setDefaultProvisioningConnectionForApplication(appId: String, provisioningConnectionRequest: ProvisioningConnectionRequest, activate: Bool? = nil) async throws -> OktaResponse<ProvisioningConnection> {
+        public func setDefaultProvisioningConnectionForApplication(appId: String, provisioningConnectionRequest: ProvisioningConnectionRequest, activate: Bool? = nil) async throws -> OktaResponse<ProvisioningConnection> {
             try await send(try requestWithBody(to: "/api/v1/apps/{appId}/connections/default".expanded(using: [
                     "appId": appId
                 ]), method: "POST", query: [
@@ -558,7 +558,7 @@ public extension OktaClient {
          - parameter appId: (path)  
          - parameter application: (body)  
          */
-        func updateApplication(appId: String, application: Application) async throws -> OktaResponse<Application> {
+        public func updateApplication(appId: String, application: Application) async throws -> OktaResponse<Application> {
             try await send(try requestWithBody(to: "/api/v1/apps/{appId}".expanded(using: [
                     "appId": appId
                 ]), method: "PUT", body: application))
@@ -571,7 +571,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter appUser: (body)  
          */
-        func updateApplicationUser(appId: String, userId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
+        public func updateApplicationUser(appId: String, userId: String, appUser: AppUser) async throws -> OktaResponse<AppUser> {
             try await send(try requestWithBody(to: "/api/v1/apps/{appId}/users/{userId}".expanded(using: [
                     "appId": appId, 
                     "userId": userId
@@ -585,7 +585,7 @@ public extension OktaClient {
          - parameter name: (path)  
          - parameter capabilitiesObject: (body)  
          */
-        func updateFeatureForApplication(appId: String, name: String, capabilitiesObject: CapabilitiesObject) async throws -> OktaResponse<ApplicationFeature> {
+        public func updateFeatureForApplication(appId: String, name: String, capabilitiesObject: CapabilitiesObject) async throws -> OktaResponse<ApplicationFeature> {
             try await send(try requestWithBody(to: "/api/v1/apps/{appId}/features/{name}".expanded(using: [
                     "appId": appId, 
                     "name": name
@@ -599,7 +599,7 @@ public extension OktaClient {
          - parameter file: (form)  
          */
         @discardableResult
-        func uploadApplicationLogo(appId: String, file: URL) async throws -> OktaResponse<Empty> {
+        public func uploadApplicationLogo(appId: String, file: URL) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/apps/{appId}/logo".expanded(using: [
                     "appId": appId
                 ]), method: "POST"))

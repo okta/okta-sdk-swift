@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter featureId: (path)  
          */
-        func getFeature(featureId: String) async throws -> OktaResponse<Feature> {
+        public func getFeature(featureId: String) async throws -> OktaResponse<Feature> {
             try await send(try request(to: "/api/v1/features/{featureId}".expanded(using: [
                     "featureId": featureId
                 ]), method: "GET"))
@@ -41,7 +41,7 @@ public extension OktaClient {
          
          - parameter featureId: (path)  
          */
-        func listFeatureDependencies(featureId: String) async throws -> OktaResponse<[Feature]> {
+        public func listFeatureDependencies(featureId: String) async throws -> OktaResponse<[Feature]> {
             try await send(try request(to: "/api/v1/features/{featureId}/dependencies".expanded(using: [
                     "featureId": featureId
                 ]), method: "GET"))
@@ -52,7 +52,7 @@ public extension OktaClient {
          
          - parameter featureId: (path)  
          */
-        func listFeatureDependents(featureId: String) async throws -> OktaResponse<[Feature]> {
+        public func listFeatureDependents(featureId: String) async throws -> OktaResponse<[Feature]> {
             try await send(try request(to: "/api/v1/features/{featureId}/dependents".expanded(using: [
                     "featureId": featureId
                 ]), method: "GET"))
@@ -62,7 +62,7 @@ public extension OktaClient {
          List all Features
          
          */
-        func listFeatures() async throws -> OktaResponse<[Feature]> {
+        public func listFeatures() async throws -> OktaResponse<[Feature]> {
             try await send(try request(to: "/api/v1/features", method: "GET"))
         }
 
@@ -73,7 +73,7 @@ public extension OktaClient {
          - parameter lifecycle: (path)  
          - parameter mode: (query)  (optional)
          */
-        func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil) async throws -> OktaResponse<Feature> {
+        public func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil) async throws -> OktaResponse<Feature> {
             try await send(try request(to: "/api/v1/features/{featureId}/{lifecycle}".expanded(using: [
                     "featureId": featureId, 
                     "lifecycle": lifecycle

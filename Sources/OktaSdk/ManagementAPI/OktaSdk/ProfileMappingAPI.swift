@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter mappingId: (path)  
          */
-        func getProfileMapping(mappingId: String) async throws -> OktaResponse<ProfileMapping> {
+        public func getProfileMapping(mappingId: String) async throws -> OktaResponse<ProfileMapping> {
             try await send(try request(to: "/api/v1/mappings/{mappingId}".expanded(using: [
                     "mappingId": mappingId
                 ]), method: "GET"))
@@ -44,7 +44,7 @@ public extension OktaClient {
          - parameter sourceId: (query)  (optional)
          - parameter targetId: (query)  (optional, default to "")
          */
-        func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) async throws -> OktaResponse<[ProfileMapping]> {
+        public func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) async throws -> OktaResponse<[ProfileMapping]> {
             try await send(try request(to: "/api/v1/mappings", method: "GET", query: [
                     "after": after, 
                     "limit": limit, 
@@ -59,7 +59,7 @@ public extension OktaClient {
          - parameter mappingId: (path)  
          - parameter profileMapping: (body)  
          */
-        func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) async throws -> OktaResponse<ProfileMapping> {
+        public func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) async throws -> OktaResponse<ProfileMapping> {
             try await send(try requestWithBody(to: "/api/v1/mappings/{mappingId}".expanded(using: [
                     "mappingId": mappingId
                 ]), method: "POST", body: profileMapping))

@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter instance: (body)  
          */
-        func createCaptchaInstance(instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
+        public func createCaptchaInstance(instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try requestWithBody(to: "/api/v1/captchas", method: "POST", body: instance))
         }
 
@@ -40,7 +40,7 @@ public extension OktaClient {
          - parameter captchaId: (path) id of the CAPTCHA 
          */
         @discardableResult
-        func deleteCaptchaInstance(captchaId: String) async throws -> OktaResponse<Empty> {
+        public func deleteCaptchaInstance(captchaId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
                     "captchaId": captchaId
                 ]), method: "DELETE"))
@@ -51,7 +51,7 @@ public extension OktaClient {
          
          - parameter captchaId: (path) id of the CAPTCHA 
          */
-        func getCaptchaInstance(captchaId: String) async throws -> OktaResponse<CAPTCHAInstance> {
+        public func getCaptchaInstance(captchaId: String) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
                     "captchaId": captchaId
                 ]), method: "GET"))
@@ -61,7 +61,7 @@ public extension OktaClient {
          List all CAPTCHA instances
          
          */
-        func listCaptchaInstances() async throws -> OktaResponse<[CAPTCHAInstance]> {
+        public func listCaptchaInstances() async throws -> OktaResponse<[CAPTCHAInstance]> {
             try await send(try request(to: "/api/v1/captchas", method: "GET"))
         }
 
@@ -71,7 +71,7 @@ public extension OktaClient {
          - parameter captchaId: (path) id of the CAPTCHA 
          - parameter instance: (body)  
          */
-        func partialUpdateCaptchaInstance(captchaId: String, instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
+        public func partialUpdateCaptchaInstance(captchaId: String, instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try requestWithBody(to: "/api/v1/captchas/{captchaId}".expanded(using: [
                     "captchaId": captchaId
                 ]), method: "POST", body: instance))
@@ -83,7 +83,7 @@ public extension OktaClient {
          - parameter captchaId: (path) id of the CAPTCHA 
          - parameter instance: (body)  
          */
-        func updateCaptchaInstance(captchaId: String, instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
+        public func updateCaptchaInstance(captchaId: String, instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try requestWithBody(to: "/api/v1/captchas/{captchaId}".expanded(using: [
                     "captchaId": captchaId
                 ]), method: "PUT", body: instance))

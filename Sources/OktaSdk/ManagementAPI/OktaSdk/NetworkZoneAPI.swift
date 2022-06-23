@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter zoneId: (path)  
          */
-        func activateNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
+        public func activateNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
             try await send(try request(to: "/api/v1/zones/{zoneId}/lifecycle/activate".expanded(using: [
                     "zoneId": zoneId
                 ]), method: "POST"))
@@ -41,7 +41,7 @@ public extension OktaClient {
          
          - parameter zone: (body)  
          */
-        func createNetworkZone(zone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
+        public func createNetworkZone(zone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
             try await send(try requestWithBody(to: "/api/v1/zones", method: "POST", body: zone))
         }
 
@@ -50,7 +50,7 @@ public extension OktaClient {
          
          - parameter zoneId: (path)  
          */
-        func deactivateNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
+        public func deactivateNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
             try await send(try request(to: "/api/v1/zones/{zoneId}/lifecycle/deactivate".expanded(using: [
                     "zoneId": zoneId
                 ]), method: "POST"))
@@ -62,7 +62,7 @@ public extension OktaClient {
          - parameter zoneId: (path)  
          */
         @discardableResult
-        func deleteNetworkZone(zoneId: String) async throws -> OktaResponse<Empty> {
+        public func deleteNetworkZone(zoneId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/zones/{zoneId}".expanded(using: [
                     "zoneId": zoneId
                 ]), method: "DELETE"))
@@ -73,7 +73,7 @@ public extension OktaClient {
          
          - parameter zoneId: (path)  
          */
-        func getNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
+        public func getNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
             try await send(try request(to: "/api/v1/zones/{zoneId}".expanded(using: [
                     "zoneId": zoneId
                 ]), method: "GET"))
@@ -86,7 +86,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
          - parameter filter: (query) Filters zones by usage or id expression (optional)
          */
-        func listNetworkZones(after: String? = nil, limit: Int? = nil, filter: String? = nil) async throws -> OktaResponse<[NetworkZone]> {
+        public func listNetworkZones(after: String? = nil, limit: Int? = nil, filter: String? = nil) async throws -> OktaResponse<[NetworkZone]> {
             try await send(try request(to: "/api/v1/zones", method: "GET", query: [
                     "after": after, 
                     "limit": limit, 
@@ -100,7 +100,7 @@ public extension OktaClient {
          - parameter zoneId: (path)  
          - parameter zone: (body)  
          */
-        func updateNetworkZone(zoneId: String, zone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
+        public func updateNetworkZone(zoneId: String, zone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
             try await send(try requestWithBody(to: "/api/v1/zones/{zoneId}".expanded(using: [
                     "zoneId": zoneId
                 ]), method: "PUT", body: zone))

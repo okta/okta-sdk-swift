@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter trustedOriginId: (path)  
          */
-        func activateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
+        public func activateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}/lifecycle/activate".expanded(using: [
                     "trustedOriginId": trustedOriginId
                 ]), method: "POST"))
@@ -41,7 +41,7 @@ public extension OktaClient {
          
          - parameter trustedOrigin: (body)  
          */
-        func createOrigin(trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
+        public func createOrigin(trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try requestWithBody(to: "/api/v1/trustedOrigins", method: "POST", body: trustedOrigin))
         }
 
@@ -50,7 +50,7 @@ public extension OktaClient {
          
          - parameter trustedOriginId: (path)  
          */
-        func deactivateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
+        public func deactivateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}/lifecycle/deactivate".expanded(using: [
                     "trustedOriginId": trustedOriginId
                 ]), method: "POST"))
@@ -62,7 +62,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @discardableResult
-        func deleteOrigin(trustedOriginId: String) async throws -> OktaResponse<Empty> {
+        public func deleteOrigin(trustedOriginId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
                     "trustedOriginId": trustedOriginId
                 ]), method: "DELETE"))
@@ -73,7 +73,7 @@ public extension OktaClient {
          
          - parameter trustedOriginId: (path)  
          */
-        func getOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
+        public func getOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
                     "trustedOriginId": trustedOriginId
                 ]), method: "GET"))
@@ -87,7 +87,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to -1)
          */
-        func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[TrustedOrigin]> {
+        public func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[TrustedOrigin]> {
             try await send(try request(to: "/api/v1/trustedOrigins", method: "GET", query: [
                     "q": q, 
                     "filter": filter, 
@@ -102,7 +102,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          - parameter trustedOrigin: (body)  
          */
-        func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
+        public func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try requestWithBody(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
                     "trustedOriginId": trustedOriginId
                 ]), method: "PUT", body: trustedOrigin))

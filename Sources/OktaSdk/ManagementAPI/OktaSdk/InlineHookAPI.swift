@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter inlineHookId: (path)  
          */
-        func activateInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
+        public func activateInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
             try await send(try request(to: "/api/v1/inlineHooks/{inlineHookId}/lifecycle/activate".expanded(using: [
                     "inlineHookId": inlineHookId
                 ]), method: "POST"))
@@ -41,7 +41,7 @@ public extension OktaClient {
          
          - parameter inlineHook: (body)  
          */
-        func createInlineHook(inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
+        public func createInlineHook(inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
             try await send(try requestWithBody(to: "/api/v1/inlineHooks", method: "POST", body: inlineHook))
         }
 
@@ -50,7 +50,7 @@ public extension OktaClient {
          
          - parameter inlineHookId: (path)  
          */
-        func deactivateInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
+        public func deactivateInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
             try await send(try request(to: "/api/v1/inlineHooks/{inlineHookId}/lifecycle/deactivate".expanded(using: [
                     "inlineHookId": inlineHookId
                 ]), method: "POST"))
@@ -62,7 +62,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          */
         @discardableResult
-        func deleteInlineHook(inlineHookId: String) async throws -> OktaResponse<Empty> {
+        public func deleteInlineHook(inlineHookId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
                     "inlineHookId": inlineHookId
                 ]), method: "DELETE"))
@@ -74,7 +74,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          - parameter payloadData: (body)  
          */
-        func executeInlineHook(inlineHookId: String, payloadData: AnyCodable) async throws -> OktaResponse<InlineHookResponse> {
+        public func executeInlineHook(inlineHookId: String, payloadData: AnyCodable) async throws -> OktaResponse<InlineHookResponse> {
             try await send(try requestWithBody(to: "/api/v1/inlineHooks/{inlineHookId}/execute".expanded(using: [
                     "inlineHookId": inlineHookId
                 ]), method: "POST", body: payloadData))
@@ -85,7 +85,7 @@ public extension OktaClient {
          
          - parameter inlineHookId: (path)  
          */
-        func getInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
+        public func getInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
             try await send(try request(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
                     "inlineHookId": inlineHookId
                 ]), method: "GET"))
@@ -96,7 +96,7 @@ public extension OktaClient {
          
          - parameter type: (query)  (optional)
          */
-        func listInlineHooks(type: String? = nil) async throws -> OktaResponse<[InlineHook]> {
+        public func listInlineHooks(type: String? = nil) async throws -> OktaResponse<[InlineHook]> {
             try await send(try request(to: "/api/v1/inlineHooks", method: "GET", query: [
                     "type": type
                 ]))
@@ -108,7 +108,7 @@ public extension OktaClient {
          - parameter inlineHookId: (path)  
          - parameter inlineHook: (body)  
          */
-        func updateInlineHook(inlineHookId: String, inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
+        public func updateInlineHook(inlineHookId: String, inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
             try await send(try requestWithBody(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
                     "inlineHookId": inlineHookId
                 ]), method: "PUT", body: inlineHook))

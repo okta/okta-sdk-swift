@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter linkedObject: (body)  
          */
-        func addLinkedObjectDefinition(linkedObject: LinkedObject) async throws -> OktaResponse<LinkedObject> {
+        public func addLinkedObjectDefinition(linkedObject: LinkedObject) async throws -> OktaResponse<LinkedObject> {
             try await send(try requestWithBody(to: "/api/v1/meta/schemas/user/linkedObjects", method: "POST", body: linkedObject))
         }
 
@@ -40,7 +40,7 @@ public extension OktaClient {
          - parameter linkedObjectName: (path)  
          */
         @discardableResult
-        func deleteLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<Empty> {
+        public func deleteLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
                     "linkedObjectName": linkedObjectName
                 ]), method: "DELETE"))
@@ -51,7 +51,7 @@ public extension OktaClient {
          
          - parameter linkedObjectName: (path)  
          */
-        func getLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<LinkedObject> {
+        public func getLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<LinkedObject> {
             try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
                     "linkedObjectName": linkedObjectName
                 ]), method: "GET"))
@@ -61,7 +61,7 @@ public extension OktaClient {
          List all Linked Object Definitions
          
          */
-        func listLinkedObjectDefinitions() async throws -> OktaResponse<[LinkedObject]> {
+        public func listLinkedObjectDefinitions() async throws -> OktaResponse<[LinkedObject]> {
             try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects", method: "GET"))
         }
 

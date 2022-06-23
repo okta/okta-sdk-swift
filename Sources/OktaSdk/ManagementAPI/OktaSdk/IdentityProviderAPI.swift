@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter idpId: (path)  
          */
-        func activateIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
+        public func activateIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
             try await send(try request(to: "/api/v1/idps/{idpId}/lifecycle/activate".expanded(using: [
                     "idpId": idpId
                 ]), method: "POST"))
@@ -43,7 +43,7 @@ public extension OktaClient {
          - parameter keyId: (path)  
          - parameter targetIdpId: (query)  
          */
-        func cloneIdentityProviderKey(idpId: String, keyId: String, targetIdpId: String) async throws -> OktaResponse<JsonWebKey> {
+        public func cloneIdentityProviderKey(idpId: String, keyId: String, targetIdpId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try request(to: "/api/v1/idps/{idpId}/credentials/keys/{keyId}/clone".expanded(using: [
                     "idpId": idpId, 
                     "keyId": keyId
@@ -57,7 +57,7 @@ public extension OktaClient {
          
          - parameter identityProvider: (body)  
          */
-        func createIdentityProvider(identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
+        public func createIdentityProvider(identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
             try await send(try requestWithBody(to: "/api/v1/idps", method: "POST", body: identityProvider))
         }
 
@@ -66,7 +66,7 @@ public extension OktaClient {
          
          - parameter jsonWebKey: (body)  
          */
-        func createIdentityProviderKey(jsonWebKey: JsonWebKey) async throws -> OktaResponse<JsonWebKey> {
+        public func createIdentityProviderKey(jsonWebKey: JsonWebKey) async throws -> OktaResponse<JsonWebKey> {
             try await send(try requestWithBody(to: "/api/v1/idps/credentials/keys", method: "POST", body: jsonWebKey))
         }
 
@@ -75,7 +75,7 @@ public extension OktaClient {
          
          - parameter idpId: (path)  
          */
-        func deactivateIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
+        public func deactivateIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
             try await send(try request(to: "/api/v1/idps/{idpId}/lifecycle/deactivate".expanded(using: [
                     "idpId": idpId
                 ]), method: "POST"))
@@ -87,7 +87,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          */
         @discardableResult
-        func deleteIdentityProvider(idpId: String) async throws -> OktaResponse<Empty> {
+        public func deleteIdentityProvider(idpId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/idps/{idpId}".expanded(using: [
                     "idpId": idpId
                 ]), method: "DELETE"))
@@ -99,7 +99,7 @@ public extension OktaClient {
          - parameter keyId: (path)  
          */
         @discardableResult
-        func deleteIdentityProviderKey(keyId: String) async throws -> OktaResponse<Empty> {
+        public func deleteIdentityProviderKey(keyId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/idps/credentials/keys/{keyId}".expanded(using: [
                     "keyId": keyId
                 ]), method: "DELETE"))
@@ -111,7 +111,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          - parameter metadata: (body)  
          */
-        func generateCsrForIdentityProvider(idpId: String, metadata: CsrMetadata) async throws -> OktaResponse<Csr> {
+        public func generateCsrForIdentityProvider(idpId: String, metadata: CsrMetadata) async throws -> OktaResponse<Csr> {
             try await send(try requestWithBody(to: "/api/v1/idps/{idpId}/credentials/csrs".expanded(using: [
                     "idpId": idpId
                 ]), method: "POST", body: metadata))
@@ -123,7 +123,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          - parameter validityYears: (query) expiry of the IdP Key Credential 
          */
-        func generateIdentityProviderSigningKey(idpId: String, validityYears: Int) async throws -> OktaResponse<JsonWebKey> {
+        public func generateIdentityProviderSigningKey(idpId: String, validityYears: Int) async throws -> OktaResponse<JsonWebKey> {
             try await send(try request(to: "/api/v1/idps/{idpId}/credentials/keys/generate".expanded(using: [
                     "idpId": idpId
                 ]), method: "POST", query: [
@@ -137,7 +137,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          - parameter csrId: (path)  
          */
-        func getCsrForIdentityProvider(idpId: String, csrId: String) async throws -> OktaResponse<Csr> {
+        public func getCsrForIdentityProvider(idpId: String, csrId: String) async throws -> OktaResponse<Csr> {
             try await send(try request(to: "/api/v1/idps/{idpId}/credentials/csrs/{csrId}".expanded(using: [
                     "idpId": idpId, 
                     "csrId": csrId
@@ -149,7 +149,7 @@ public extension OktaClient {
          
          - parameter idpId: (path)  
          */
-        func getIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
+        public func getIdentityProvider(idpId: String) async throws -> OktaResponse<IdentityProvider> {
             try await send(try request(to: "/api/v1/idps/{idpId}".expanded(using: [
                     "idpId": idpId
                 ]), method: "GET"))
@@ -161,7 +161,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          - parameter userId: (path)  
          */
-        func getIdentityProviderApplicationUser(idpId: String, userId: String) async throws -> OktaResponse<IdentityProviderApplicationUser> {
+        public func getIdentityProviderApplicationUser(idpId: String, userId: String) async throws -> OktaResponse<IdentityProviderApplicationUser> {
             try await send(try request(to: "/api/v1/idps/{idpId}/users/{userId}".expanded(using: [
                     "idpId": idpId, 
                     "userId": userId
@@ -173,7 +173,7 @@ public extension OktaClient {
          
          - parameter keyId: (path)  
          */
-        func getIdentityProviderKey(keyId: String) async throws -> OktaResponse<JsonWebKey> {
+        public func getIdentityProviderKey(keyId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try request(to: "/api/v1/idps/credentials/keys/{keyId}".expanded(using: [
                     "keyId": keyId
                 ]), method: "GET"))
@@ -185,7 +185,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          - parameter keyId: (path)  
          */
-        func getIdentityProviderSigningKey(idpId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
+        public func getIdentityProviderSigningKey(idpId: String, keyId: String) async throws -> OktaResponse<JsonWebKey> {
             try await send(try request(to: "/api/v1/idps/{idpId}/credentials/keys/{keyId}".expanded(using: [
                     "idpId": idpId, 
                     "keyId": keyId
@@ -199,7 +199,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter userIdentityProviderLinkRequest: (body)  
          */
-        func linkUserToIdentityProvider(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest) async throws -> OktaResponse<IdentityProviderApplicationUser> {
+        public func linkUserToIdentityProvider(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest) async throws -> OktaResponse<IdentityProviderApplicationUser> {
             try await send(try requestWithBody(to: "/api/v1/idps/{idpId}/users/{userId}".expanded(using: [
                     "idpId": idpId, 
                     "userId": userId
@@ -211,7 +211,7 @@ public extension OktaClient {
          
          - parameter idpId: (path)  
          */
-        func listCsrsForIdentityProvider(idpId: String) async throws -> OktaResponse<[Csr]> {
+        public func listCsrsForIdentityProvider(idpId: String) async throws -> OktaResponse<[Csr]> {
             try await send(try request(to: "/api/v1/idps/{idpId}/credentials/csrs".expanded(using: [
                     "idpId": idpId
                 ]), method: "GET"))
@@ -222,7 +222,7 @@ public extension OktaClient {
          
          - parameter idpId: (path)  
          */
-        func listIdentityProviderApplicationUsers(idpId: String) async throws -> OktaResponse<[IdentityProviderApplicationUser]> {
+        public func listIdentityProviderApplicationUsers(idpId: String) async throws -> OktaResponse<[IdentityProviderApplicationUser]> {
             try await send(try request(to: "/api/v1/idps/{idpId}/users".expanded(using: [
                     "idpId": idpId
                 ]), method: "GET"))
@@ -234,7 +234,7 @@ public extension OktaClient {
          - parameter after: (query) Specifies the pagination cursor for the next page of keys (optional)
          - parameter limit: (query) Specifies the number of key results in a page (optional, default to 20)
          */
-        func listIdentityProviderKeys(after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[JsonWebKey]> {
+        public func listIdentityProviderKeys(after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try request(to: "/api/v1/idps/credentials/keys", method: "GET", query: [
                     "after": after, 
                     "limit": limit
@@ -246,7 +246,7 @@ public extension OktaClient {
          
          - parameter idpId: (path)  
          */
-        func listIdentityProviderSigningKeys(idpId: String) async throws -> OktaResponse<[JsonWebKey]> {
+        public func listIdentityProviderSigningKeys(idpId: String) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try request(to: "/api/v1/idps/{idpId}/credentials/keys".expanded(using: [
                     "idpId": idpId
                 ]), method: "GET"))
@@ -260,7 +260,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of IdP results in a page (optional, default to 20)
          - parameter type: (query) Filters IdPs by type (optional)
          */
-        func listIdentityProviders(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil) async throws -> OktaResponse<[IdentityProvider]> {
+        public func listIdentityProviders(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil) async throws -> OktaResponse<[IdentityProvider]> {
             try await send(try request(to: "/api/v1/idps", method: "GET", query: [
                     "q": q, 
                     "after": after, 
@@ -275,7 +275,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          - parameter userId: (path)  
          */
-        func listSocialAuthTokens(idpId: String, userId: String) async throws -> OktaResponse<[SocialAuthToken]> {
+        public func listSocialAuthTokens(idpId: String, userId: String) async throws -> OktaResponse<[SocialAuthToken]> {
             try await send(try request(to: "/api/v1/idps/{idpId}/users/{userId}/credentials/tokens".expanded(using: [
                     "idpId": idpId, 
                     "userId": userId
@@ -289,7 +289,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          - parameter body: (body)  
          */
-        func publishCsrForIdentityProvider(idpId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
+        public func publishCsrForIdentityProvider(idpId: String, csrId: String, body: URL) async throws -> OktaResponse<JsonWebKey> {
             try await send(try requestWithBody(to: "/api/v1/idps/{idpId}/credentials/csrs/{csrId}/lifecycle/publish".expanded(using: [
                     "idpId": idpId, 
                     "csrId": csrId
@@ -303,7 +303,7 @@ public extension OktaClient {
          - parameter csrId: (path)  
          */
         @discardableResult
-        func revokeCsrForIdentityProvider(idpId: String, csrId: String) async throws -> OktaResponse<Empty> {
+        public func revokeCsrForIdentityProvider(idpId: String, csrId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/idps/{idpId}/credentials/csrs/{csrId}".expanded(using: [
                     "idpId": idpId, 
                     "csrId": csrId
@@ -317,7 +317,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @discardableResult
-        func unlinkUserFromIdentityProvider(idpId: String, userId: String) async throws -> OktaResponse<Empty> {
+        public func unlinkUserFromIdentityProvider(idpId: String, userId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/idps/{idpId}/users/{userId}".expanded(using: [
                     "idpId": idpId, 
                     "userId": userId
@@ -330,7 +330,7 @@ public extension OktaClient {
          - parameter idpId: (path)  
          - parameter identityProvider: (body)  
          */
-        func updateIdentityProvider(idpId: String, identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
+        public func updateIdentityProvider(idpId: String, identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
             try await send(try requestWithBody(to: "/api/v1/idps/{idpId}".expanded(using: [
                     "idpId": idpId
                 ]), method: "PUT", body: identityProvider))

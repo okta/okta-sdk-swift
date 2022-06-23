@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter entity: (body)  
          */
-        func createPrincipalRateLimitEntity(entity: PrincipalRateLimitEntity) async throws -> OktaResponse<PrincipalRateLimitEntity> {
+        public func createPrincipalRateLimitEntity(entity: PrincipalRateLimitEntity) async throws -> OktaResponse<PrincipalRateLimitEntity> {
             try await send(try requestWithBody(to: "/api/v1/principal-rate-limits", method: "POST", body: entity))
         }
 
@@ -39,7 +39,7 @@ public extension OktaClient {
          
          - parameter principalRateLimitId: (path) id of the Principal Rate Limit 
          */
-        func getPrincipalRateLimitEntity(principalRateLimitId: String) async throws -> OktaResponse<PrincipalRateLimitEntity> {
+        public func getPrincipalRateLimitEntity(principalRateLimitId: String) async throws -> OktaResponse<PrincipalRateLimitEntity> {
             try await send(try request(to: "/api/v1/principal-rate-limits/{principalRateLimitId}".expanded(using: [
                     "principalRateLimitId": principalRateLimitId
                 ]), method: "GET"))
@@ -52,7 +52,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        func listPrincipalRateLimitEntities(filter: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[PrincipalRateLimitEntity]> {
+        public func listPrincipalRateLimitEntities(filter: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[PrincipalRateLimitEntity]> {
             try await send(try request(to: "/api/v1/principal-rate-limits", method: "GET", query: [
                     "filter": filter, 
                     "after": after, 
@@ -66,7 +66,7 @@ public extension OktaClient {
          - parameter principalRateLimitId: (path) id of the Principal Rate Limit 
          - parameter entity: (body)  
          */
-        func updatePrincipalRateLimitEntity(principalRateLimitId: String, entity: PrincipalRateLimitEntity) async throws -> OktaResponse<PrincipalRateLimitEntity> {
+        public func updatePrincipalRateLimitEntity(principalRateLimitId: String, entity: PrincipalRateLimitEntity) async throws -> OktaResponse<PrincipalRateLimitEntity> {
             try await send(try requestWithBody(to: "/api/v1/principal-rate-limits/{principalRateLimitId}".expanded(using: [
                     "principalRateLimitId": principalRateLimitId
                 ]), method: "PUT", body: entity))

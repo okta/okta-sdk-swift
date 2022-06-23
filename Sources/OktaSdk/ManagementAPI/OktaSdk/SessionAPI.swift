@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter createSessionRequest: (body)  
          */
-        func createSession(createSessionRequest: CreateSessionRequest) async throws -> OktaResponse<Session> {
+        public func createSession(createSessionRequest: CreateSessionRequest) async throws -> OktaResponse<Session> {
             try await send(try requestWithBody(to: "/api/v1/sessions", method: "POST", body: createSessionRequest))
         }
 
@@ -40,7 +40,7 @@ public extension OktaClient {
          - parameter sessionId: (path)  
          */
         @discardableResult
-        func endSession(sessionId: String) async throws -> OktaResponse<Empty> {
+        public func endSession(sessionId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
                     "sessionId": sessionId
                 ]), method: "DELETE"))
@@ -51,7 +51,7 @@ public extension OktaClient {
          
          - parameter sessionId: (path)  
          */
-        func getSession(sessionId: String) async throws -> OktaResponse<Session> {
+        public func getSession(sessionId: String) async throws -> OktaResponse<Session> {
             try await send(try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
                     "sessionId": sessionId
                 ]), method: "GET"))
@@ -62,7 +62,7 @@ public extension OktaClient {
          
          - parameter sessionId: (path)  
          */
-        func refreshSession(sessionId: String) async throws -> OktaResponse<Session> {
+        public func refreshSession(sessionId: String) async throws -> OktaResponse<Session> {
             try await send(try request(to: "/api/v1/sessions/{sessionId}/lifecycle/refresh".expanded(using: [
                     "sessionId": sessionId
                 ]), method: "POST"))

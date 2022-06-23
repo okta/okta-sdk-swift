@@ -30,7 +30,7 @@ public extension OktaClient {
          
          - parameter eventHookId: (path)  
          */
-        func activateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
+        public func activateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try request(to: "/api/v1/eventHooks/{eventHookId}/lifecycle/activate".expanded(using: [
                     "eventHookId": eventHookId
                 ]), method: "POST"))
@@ -41,7 +41,7 @@ public extension OktaClient {
          
          - parameter eventHook: (body)  
          */
-        func createEventHook(eventHook: EventHook) async throws -> OktaResponse<EventHook> {
+        public func createEventHook(eventHook: EventHook) async throws -> OktaResponse<EventHook> {
             try await send(try requestWithBody(to: "/api/v1/eventHooks", method: "POST", body: eventHook))
         }
 
@@ -50,7 +50,7 @@ public extension OktaClient {
          
          - parameter eventHookId: (path)  
          */
-        func deactivateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
+        public func deactivateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try request(to: "/api/v1/eventHooks/{eventHookId}/lifecycle/deactivate".expanded(using: [
                     "eventHookId": eventHookId
                 ]), method: "POST"))
@@ -62,7 +62,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @discardableResult
-        func deleteEventHook(eventHookId: String) async throws -> OktaResponse<Empty> {
+        public func deleteEventHook(eventHookId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/eventHooks/{eventHookId}".expanded(using: [
                     "eventHookId": eventHookId
                 ]), method: "DELETE"))
@@ -73,7 +73,7 @@ public extension OktaClient {
          
          - parameter eventHookId: (path)  
          */
-        func getEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
+        public func getEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try request(to: "/api/v1/eventHooks/{eventHookId}".expanded(using: [
                     "eventHookId": eventHookId
                 ]), method: "GET"))
@@ -83,7 +83,7 @@ public extension OktaClient {
          List all Event Hooks
          
          */
-        func listEventHooks() async throws -> OktaResponse<[EventHook]> {
+        public func listEventHooks() async throws -> OktaResponse<[EventHook]> {
             try await send(try request(to: "/api/v1/eventHooks", method: "GET"))
         }
 
@@ -93,7 +93,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          - parameter eventHook: (body)  
          */
-        func updateEventHook(eventHookId: String, eventHook: EventHook) async throws -> OktaResponse<EventHook> {
+        public func updateEventHook(eventHookId: String, eventHook: EventHook) async throws -> OktaResponse<EventHook> {
             try await send(try requestWithBody(to: "/api/v1/eventHooks/{eventHookId}".expanded(using: [
                     "eventHookId": eventHookId
                 ]), method: "PUT", body: eventHook))
@@ -104,7 +104,7 @@ public extension OktaClient {
          
          - parameter eventHookId: (path)  
          */
-        func verifyEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
+        public func verifyEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try request(to: "/api/v1/eventHooks/{eventHookId}/lifecycle/verify".expanded(using: [
                     "eventHookId": eventHookId
                 ]), method: "POST"))

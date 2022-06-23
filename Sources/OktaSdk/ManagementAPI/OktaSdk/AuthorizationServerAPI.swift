@@ -31,7 +31,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @discardableResult
-        func activateAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
+        public func activateAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/lifecycle/activate".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "POST"))
@@ -44,7 +44,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @discardableResult
-        func activateAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
+        public func activateAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/lifecycle/activate".expanded(using: [
                     "authServerId": authServerId, 
                     "policyId": policyId
@@ -59,7 +59,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @discardableResult
-        func activateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
+        public func activateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}/lifecycle/activate".expanded(using: [
                     "authServerId": authServerId, 
                     "policyId": policyId, 
@@ -72,7 +72,7 @@ public extension OktaClient {
          
          - parameter authorizationServer: (body)  
          */
-        func createAuthorizationServer(authorizationServer: AuthorizationServer) async throws -> OktaResponse<AuthorizationServer> {
+        public func createAuthorizationServer(authorizationServer: AuthorizationServer) async throws -> OktaResponse<AuthorizationServer> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers", method: "POST", body: authorizationServer))
         }
 
@@ -82,7 +82,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter policy: (body)  
          */
-        func createAuthorizationServerPolicy(authServerId: String, policy: AuthorizationServerPolicy) async throws -> OktaResponse<AuthorizationServerPolicy> {
+        public func createAuthorizationServerPolicy(authServerId: String, policy: AuthorizationServerPolicy) async throws -> OktaResponse<AuthorizationServerPolicy> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/policies".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "POST", body: policy))
@@ -95,7 +95,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter policyRule: (body)  
          */
-        func createAuthorizationServerPolicyRule(policyId: String, authServerId: String, policyRule: AuthorizationServerPolicyRule) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
+        public func createAuthorizationServerPolicyRule(policyId: String, authServerId: String, policyRule: AuthorizationServerPolicyRule) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules".expanded(using: [
                     "policyId": policyId, 
                     "authServerId": authServerId
@@ -108,7 +108,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter oAuth2Claim: (body)  
          */
-        func createOAuth2Claim(authServerId: String, oAuth2Claim: OAuth2Claim) async throws -> OktaResponse<OAuth2Claim> {
+        public func createOAuth2Claim(authServerId: String, oAuth2Claim: OAuth2Claim) async throws -> OktaResponse<OAuth2Claim> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/claims".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "POST", body: oAuth2Claim))
@@ -120,7 +120,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter oAuth2Scope: (body)  
          */
-        func createOAuth2Scope(authServerId: String, oAuth2Scope: OAuth2Scope) async throws -> OktaResponse<OAuth2Scope> {
+        public func createOAuth2Scope(authServerId: String, oAuth2Scope: OAuth2Scope) async throws -> OktaResponse<OAuth2Scope> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/scopes".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "POST", body: oAuth2Scope))
@@ -132,7 +132,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @discardableResult
-        func deactivateAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
+        public func deactivateAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/lifecycle/deactivate".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "POST"))
@@ -145,7 +145,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @discardableResult
-        func deactivateAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
+        public func deactivateAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/lifecycle/deactivate".expanded(using: [
                     "authServerId": authServerId, 
                     "policyId": policyId
@@ -160,7 +160,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @discardableResult
-        func deactivateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
+        public func deactivateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}/lifecycle/deactivate".expanded(using: [
                     "authServerId": authServerId, 
                     "policyId": policyId, 
@@ -174,7 +174,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @discardableResult
-        func deleteAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
+        public func deleteAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "DELETE"))
@@ -187,7 +187,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @discardableResult
-        func deleteAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
+        public func deleteAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}".expanded(using: [
                     "authServerId": authServerId, 
                     "policyId": policyId
@@ -202,7 +202,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @discardableResult
-        func deleteAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String) async throws -> OktaResponse<Empty> {
+        public func deleteAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}".expanded(using: [
                     "policyId": policyId, 
                     "authServerId": authServerId, 
@@ -217,7 +217,7 @@ public extension OktaClient {
          - parameter claimId: (path)  
          */
         @discardableResult
-        func deleteOAuth2Claim(authServerId: String, claimId: String) async throws -> OktaResponse<Empty> {
+        public func deleteOAuth2Claim(authServerId: String, claimId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/claims/{claimId}".expanded(using: [
                     "authServerId": authServerId, 
                     "claimId": claimId
@@ -231,7 +231,7 @@ public extension OktaClient {
          - parameter scopeId: (path)  
          */
         @discardableResult
-        func deleteOAuth2Scope(authServerId: String, scopeId: String) async throws -> OktaResponse<Empty> {
+        public func deleteOAuth2Scope(authServerId: String, scopeId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/scopes/{scopeId}".expanded(using: [
                     "authServerId": authServerId, 
                     "scopeId": scopeId
@@ -243,7 +243,7 @@ public extension OktaClient {
          
          - parameter authServerId: (path)  
          */
-        func getAuthorizationServer(authServerId: String) async throws -> OktaResponse<AuthorizationServer> {
+        public func getAuthorizationServer(authServerId: String) async throws -> OktaResponse<AuthorizationServer> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "GET"))
@@ -255,7 +255,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter policyId: (path)  
          */
-        func getAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<AuthorizationServerPolicy> {
+        public func getAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<AuthorizationServerPolicy> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}".expanded(using: [
                     "authServerId": authServerId, 
                     "policyId": policyId
@@ -269,7 +269,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter ruleId: (path)  
          */
-        func getAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
+        public func getAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}".expanded(using: [
                     "policyId": policyId, 
                     "authServerId": authServerId, 
@@ -283,7 +283,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter claimId: (path)  
          */
-        func getOAuth2Claim(authServerId: String, claimId: String) async throws -> OktaResponse<OAuth2Claim> {
+        public func getOAuth2Claim(authServerId: String, claimId: String) async throws -> OktaResponse<OAuth2Claim> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/claims/{claimId}".expanded(using: [
                     "authServerId": authServerId, 
                     "claimId": claimId
@@ -296,7 +296,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter scopeId: (path)  
          */
-        func getOAuth2Scope(authServerId: String, scopeId: String) async throws -> OktaResponse<OAuth2Scope> {
+        public func getOAuth2Scope(authServerId: String, scopeId: String) async throws -> OktaResponse<OAuth2Scope> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/scopes/{scopeId}".expanded(using: [
                     "authServerId": authServerId, 
                     "scopeId": scopeId
@@ -311,7 +311,7 @@ public extension OktaClient {
          - parameter tokenId: (path)  
          - parameter expand: (query)  (optional)
          */
-        func getRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2RefreshToken> {
+        public func getRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2RefreshToken> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens/{tokenId}".expanded(using: [
                     "authServerId": authServerId, 
                     "clientId": clientId, 
@@ -326,7 +326,7 @@ public extension OktaClient {
          
          - parameter authServerId: (path)  
          */
-        func listAuthorizationServerKeys(authServerId: String) async throws -> OktaResponse<[JsonWebKey]> {
+        public func listAuthorizationServerKeys(authServerId: String) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/credentials/keys".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "GET"))
@@ -337,7 +337,7 @@ public extension OktaClient {
          
          - parameter authServerId: (path)  
          */
-        func listAuthorizationServerPolicies(authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicy]> {
+        public func listAuthorizationServerPolicies(authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicy]> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "GET"))
@@ -349,7 +349,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          - parameter authServerId: (path)  
          */
-        func listAuthorizationServerPolicyRules(policyId: String, authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicyRule]> {
+        public func listAuthorizationServerPolicyRules(policyId: String, authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicyRule]> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules".expanded(using: [
                     "policyId": policyId, 
                     "authServerId": authServerId
@@ -363,7 +363,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional)
          - parameter after: (query)  (optional)
          */
-        func listAuthorizationServers(q: String? = nil, limit: String? = nil, after: String? = nil) async throws -> OktaResponse<[AuthorizationServer]> {
+        public func listAuthorizationServers(q: String? = nil, limit: String? = nil, after: String? = nil) async throws -> OktaResponse<[AuthorizationServer]> {
             try await send(try request(to: "/api/v1/authorizationServers", method: "GET", query: [
                     "q": q, 
                     "limit": limit, 
@@ -376,7 +376,7 @@ public extension OktaClient {
          
          - parameter authServerId: (path)  
          */
-        func listOAuth2Claims(authServerId: String) async throws -> OktaResponse<[OAuth2Claim]> {
+        public func listOAuth2Claims(authServerId: String) async throws -> OktaResponse<[OAuth2Claim]> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/claims".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "GET"))
@@ -387,7 +387,7 @@ public extension OktaClient {
          
          - parameter authServerId: (path)  
          */
-        func listOAuth2ClientsForAuthorizationServer(authServerId: String) async throws -> OktaResponse<[OAuth2Client]> {
+        public func listOAuth2ClientsForAuthorizationServer(authServerId: String) async throws -> OktaResponse<[OAuth2Client]> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "GET"))
@@ -402,7 +402,7 @@ public extension OktaClient {
          - parameter cursor: (query)  (optional)
          - parameter limit: (query)  (optional, default to -1)
          */
-        func listOAuth2Scopes(authServerId: String, q: String? = nil, filter: String? = nil, cursor: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Scope]> {
+        public func listOAuth2Scopes(authServerId: String, q: String? = nil, filter: String? = nil, cursor: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Scope]> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/scopes".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "GET", query: [
@@ -422,7 +422,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to -1)
          */
-        func listRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2RefreshToken]> {
+        public func listRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2RefreshToken]> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens".expanded(using: [
                     "authServerId": authServerId, 
                     "clientId": clientId
@@ -441,7 +441,7 @@ public extension OktaClient {
          - parameter tokenId: (path)  
          */
         @discardableResult
-        func revokeRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String) async throws -> OktaResponse<Empty> {
+        public func revokeRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens/{tokenId}".expanded(using: [
                     "authServerId": authServerId, 
                     "clientId": clientId, 
@@ -456,7 +456,7 @@ public extension OktaClient {
          - parameter clientId: (path)  
          */
         @discardableResult
-        func revokeRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String) async throws -> OktaResponse<Empty> {
+        public func revokeRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens".expanded(using: [
                     "authServerId": authServerId, 
                     "clientId": clientId
@@ -469,7 +469,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter use: (body)  
          */
-        func rotateAuthorizationServerKeys(authServerId: String, use: JwkUse) async throws -> OktaResponse<[JsonWebKey]> {
+        public func rotateAuthorizationServerKeys(authServerId: String, use: JwkUse) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/credentials/lifecycle/keyRotate".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "POST", body: use))
@@ -481,7 +481,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter authorizationServer: (body)  
          */
-        func updateAuthorizationServer(authServerId: String, authorizationServer: AuthorizationServer) async throws -> OktaResponse<AuthorizationServer> {
+        public func updateAuthorizationServer(authServerId: String, authorizationServer: AuthorizationServer) async throws -> OktaResponse<AuthorizationServer> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "PUT", body: authorizationServer))
@@ -494,7 +494,7 @@ public extension OktaClient {
          - parameter policyId: (path)  
          - parameter policy: (body)  
          */
-        func updateAuthorizationServerPolicy(authServerId: String, policyId: String, policy: AuthorizationServerPolicy) async throws -> OktaResponse<AuthorizationServerPolicy> {
+        public func updateAuthorizationServerPolicy(authServerId: String, policyId: String, policy: AuthorizationServerPolicy) async throws -> OktaResponse<AuthorizationServerPolicy> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}".expanded(using: [
                     "authServerId": authServerId, 
                     "policyId": policyId
@@ -509,7 +509,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          - parameter policyRule: (body)  
          */
-        func updateAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String, policyRule: AuthorizationServerPolicyRule) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
+        public func updateAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String, policyRule: AuthorizationServerPolicyRule) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}".expanded(using: [
                     "policyId": policyId, 
                     "authServerId": authServerId, 
@@ -524,7 +524,7 @@ public extension OktaClient {
          - parameter claimId: (path)  
          - parameter oAuth2Claim: (body)  
          */
-        func updateOAuth2Claim(authServerId: String, claimId: String, oAuth2Claim: OAuth2Claim) async throws -> OktaResponse<OAuth2Claim> {
+        public func updateOAuth2Claim(authServerId: String, claimId: String, oAuth2Claim: OAuth2Claim) async throws -> OktaResponse<OAuth2Claim> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/claims/{claimId}".expanded(using: [
                     "authServerId": authServerId, 
                     "claimId": claimId
@@ -538,7 +538,7 @@ public extension OktaClient {
          - parameter scopeId: (path)  
          - parameter oAuth2Scope: (body)  
          */
-        func updateOAuth2Scope(authServerId: String, scopeId: String, oAuth2Scope: OAuth2Scope) async throws -> OktaResponse<OAuth2Scope> {
+        public func updateOAuth2Scope(authServerId: String, scopeId: String, oAuth2Scope: OAuth2Scope) async throws -> OktaResponse<OAuth2Scope> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/scopes/{scopeId}".expanded(using: [
                     "authServerId": authServerId, 
                     "scopeId": scopeId

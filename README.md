@@ -242,6 +242,24 @@ The Okta API will return 429 responses if too many requests are made within a gi
 
 We're happy to accept contributions and PRs! Please see the [Contribution Guide](CONTRIBUTING.md) to understand how to structure a contribution.
 
+### Updating to the new spec
+
+Generating a new version of the SDK using an updated spec can be done as follows:
+
+```sh
+docker run --rm -v $PWD:/local \
+    openapitools/openapi-generator-cli generate  \
+    --api-package OktaSdk \
+    --generator-name swift5 \
+    --git-host github.com \
+    --git-repo-id okta-sdk-swift \
+    --git-user-id okta \
+    --config /local/openapi-config.yaml \
+    --input-spec /local/management-codegen.yaml \
+    --template-dir /local/openapi-template \
+    --output /local
+```
+
 [devforum]: https://devforum.okta.com/
 [github-issues]: https://github.com/okta/okta-sdk-swift/issues
 [github-releases]: https://github.com/okta/okta-sdk-swift/releases
