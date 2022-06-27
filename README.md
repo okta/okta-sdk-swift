@@ -42,7 +42,7 @@ The latest release can always be found on the [releases page][github-releases].
 
 ## Need help?
 
-*Note:* This SDK is in beta status, and is currently unsupported.  If you run into problems using the SDK, you can:
+*Note:* This SDK is in beta status, and is currently unsupported. At this time, there are no plans for this to become supported, and will remain in beta status. If you run into problems using the SDK, you can:
 
 - Ask questions on the [Okta Developer Forums][devforum]
 - Post [issues on GitHub][github-issues] (for code errors)
