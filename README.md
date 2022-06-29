@@ -30,6 +30,8 @@ This repository contains the Okta management SDK for Swift. This SDK can be used
 
 You can also learn more on the [Okta + Swift][lang-landing-page] page in our documentation.
 
+> *WARNING:* This SDK is not intended for use within production applications, or applications deployed to untrusted devices (e.g. via the app store or private distribution). Embedding SSWS tokens within applications is unsafe, and is not recommended.
+ 
 ## Release status
 
 This library uses semantic versioning and follows Okta's [Library Version Policy][okta-library-versioning].

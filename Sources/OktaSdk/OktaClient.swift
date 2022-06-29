@@ -26,6 +26,19 @@ enum OktaClientError: Error {
     case unknown
 }
 
+fileprivate var warning: Bool = {
+    print("""
+        
+        ************************ WARNING ************************
+        ** Embedding SSWS tokens within production / App Store **
+        ** applications is unsafe and not recommended.         **
+        ** Please use this SDK with caution.                   **
+        *********************************************************
+        
+        """)
+    return true
+}()
+
 /// The class describing an active client used to interact with an Okta org.
 open class OktaClient: OktaClientAPI {
     /// The configuration used with this client.
@@ -87,6 +100,10 @@ open class OktaClient: OktaClientAPI {
                              session: urlSession,
                              userAgent: userAgent ?? .userAgent)
         // swiftlint:enable force_unwrapping
+        
+        // Trigger the warning message to log to the console.
+        // This trick is needed to work around the absense of dispatch_once_t.
+        _ = warning
     }
     
     internal func fetchURLRequest<T>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) throws -> URLRequest {
