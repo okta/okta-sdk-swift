@@ -19,22 +19,22 @@ import AnyCodable
 public struct ThreatInsightConfiguration: Codable, Hashable {
 
     public var action: String?
-    public var excludeZones: [String]?
     public var created: Date?
+    public var excludeZones: [String]?
     public var lastUpdated: Date?
     public var links: [String: AnyCodable]?
 
-    public init(action: String? = nil, excludeZones: [String]? = nil, created: Date? = nil, lastUpdated: Date? = nil, links: [String: AnyCodable]? = nil) {
+    public init(action: String? = nil, created: Date? = nil, excludeZones: [String]? = nil, lastUpdated: Date? = nil, links: [String: AnyCodable]? = nil) {
         self.action = action
-        self.excludeZones = excludeZones
         self.created = created
+        self.excludeZones = excludeZones
         self.lastUpdated = lastUpdated
         self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case action
-        case excludeZones
         case created
+        case excludeZones
         case lastUpdated
         case links = "_links"
     }
@@ -44,8 +44,8 @@ public struct ThreatInsightConfiguration: Codable, Hashable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(action, forKey: .action)
-        try container.encodeIfPresent(excludeZones, forKey: .excludeZones)
         try container.encodeIfPresent(created, forKey: .created)
+        try container.encodeIfPresent(excludeZones, forKey: .excludeZones)
         try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
         try container.encodeIfPresent(links, forKey: .links)
     }

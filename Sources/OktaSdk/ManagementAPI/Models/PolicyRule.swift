@@ -18,48 +18,34 @@ import AnyCodable
 
 public struct PolicyRule: Codable, Hashable {
 
-    public enum Status: String, Codable, CaseIterable {
-        case active = "ACTIVE"
-        case inactive = "INACTIVE"
-    }
-    public enum ModelType: String, Codable, CaseIterable {
-        case signOn = "SIGN_ON"
-        case password = "PASSWORD"
-    }
     public var created: Date?
     public var id: String?
     public var lastUpdated: Date?
-    public var priority: Int?
-    public var status: Status? = .active
-    public var system: Bool? = false
-    public var type: ModelType?
     public var name: String?
-    public var conditions: PolicyRuleConditions?
-    public var actions: PolicyRuleActions?
+    public var priority: Int?
+    public var status: LifecycleStatus?
+    public var system: Bool? = false
+    public var type: PolicyRuleType?
 
-    public init(created: Date? = nil, id: String? = nil, lastUpdated: Date? = nil, priority: Int? = nil, status: Status? = .active, system: Bool? = false, type: ModelType? = nil, name: String? = nil, conditions: PolicyRuleConditions? = nil, actions: PolicyRuleActions? = nil) {
+    public init(created: Date? = nil, id: String? = nil, lastUpdated: Date? = nil, name: String? = nil, priority: Int? = nil, status: LifecycleStatus? = nil, system: Bool? = false, type: PolicyRuleType? = nil) {
         self.created = created
         self.id = id
         self.lastUpdated = lastUpdated
+        self.name = name
         self.priority = priority
         self.status = status
         self.system = system
         self.type = type
-        self.name = name
-        self.conditions = conditions
-        self.actions = actions
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case created
         case id
         case lastUpdated
+        case name
         case priority
         case status
         case system
         case type
-        case name
-        case conditions
-        case actions
     }
 
     // Encodable protocol methods
@@ -69,13 +55,11 @@ public struct PolicyRule: Codable, Hashable {
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(id, forKey: .id)
         try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
+        try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(priority, forKey: .priority)
         try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(system, forKey: .system)
         try container.encodeIfPresent(type, forKey: .type)
-        try container.encodeIfPresent(name, forKey: .name)
-        try container.encodeIfPresent(conditions, forKey: .conditions)
-        try container.encodeIfPresent(actions, forKey: .actions)
     }
 
 

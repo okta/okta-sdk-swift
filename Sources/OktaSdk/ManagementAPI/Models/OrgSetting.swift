@@ -18,7 +18,6 @@ import AnyCodable
 
 public struct OrgSetting: Codable, Hashable {
 
-    public var links: [String: AnyCodable]?
     public var address1: String?
     public var address2: String?
     public var city: String?
@@ -36,9 +35,9 @@ public struct OrgSetting: Codable, Hashable {
     public var subdomain: String?
     public var supportPhoneNumber: String?
     public var website: String?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, address1: String? = nil, address2: String? = nil, city: String? = nil, companyName: String? = nil, country: String? = nil, created: Date? = nil, endUserSupportHelpURL: String? = nil, expiresAt: Date? = nil, id: String? = nil, lastUpdated: Date? = nil, phoneNumber: String? = nil, postalCode: String? = nil, state: String? = nil, status: String? = nil, subdomain: String? = nil, supportPhoneNumber: String? = nil, website: String? = nil) {
-        self.links = links
+    public init(address1: String? = nil, address2: String? = nil, city: String? = nil, companyName: String? = nil, country: String? = nil, created: Date? = nil, endUserSupportHelpURL: String? = nil, expiresAt: Date? = nil, id: String? = nil, lastUpdated: Date? = nil, phoneNumber: String? = nil, postalCode: String? = nil, state: String? = nil, status: String? = nil, subdomain: String? = nil, supportPhoneNumber: String? = nil, website: String? = nil, links: [String: AnyCodable]? = nil) {
         self.address1 = address1
         self.address2 = address2
         self.city = city
@@ -56,9 +55,9 @@ public struct OrgSetting: Codable, Hashable {
         self.subdomain = subdomain
         self.supportPhoneNumber = supportPhoneNumber
         self.website = website
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case address1
         case address2
         case city
@@ -76,13 +75,13 @@ public struct OrgSetting: Codable, Hashable {
         case subdomain
         case supportPhoneNumber
         case website
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(address1, forKey: .address1)
         try container.encodeIfPresent(address2, forKey: .address2)
         try container.encodeIfPresent(city, forKey: .city)
@@ -100,6 +99,7 @@ public struct OrgSetting: Codable, Hashable {
         try container.encodeIfPresent(subdomain, forKey: .subdomain)
         try container.encodeIfPresent(supportPhoneNumber, forKey: .supportPhoneNumber)
         try container.encodeIfPresent(website, forKey: .website)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

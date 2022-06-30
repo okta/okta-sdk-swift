@@ -18,45 +18,45 @@ import AnyCodable
 
 public struct CatalogApplication: Codable, Hashable {
 
-    public var id: String?
-    public var name: String?
-    public var displayName: String?
-    public var description: String?
-    public var status: CatalogApplicationStatus?
-    public var lastUpdated: Date?
     public var category: String?
+    public var description: String?
+    public var displayName: String?
+    public var features: [String]?
+    public var id: String?
+    public var lastUpdated: Date?
+    public var name: String?
+    public var signOnModes: [String]?
+    public var status: CatalogApplicationStatus?
     public var verificationStatus: String?
     public var website: String?
-    public var signOnModes: [String]?
-    public var features: [String]?
     public var links: [String: AnyCodable]?
 
-    public init(id: String? = nil, name: String? = nil, displayName: String? = nil, description: String? = nil, status: CatalogApplicationStatus? = nil, lastUpdated: Date? = nil, category: String? = nil, verificationStatus: String? = nil, website: String? = nil, signOnModes: [String]? = nil, features: [String]? = nil, links: [String: AnyCodable]? = nil) {
-        self.id = id
-        self.name = name
-        self.displayName = displayName
-        self.description = description
-        self.status = status
-        self.lastUpdated = lastUpdated
+    public init(category: String? = nil, description: String? = nil, displayName: String? = nil, features: [String]? = nil, id: String? = nil, lastUpdated: Date? = nil, name: String? = nil, signOnModes: [String]? = nil, status: CatalogApplicationStatus? = nil, verificationStatus: String? = nil, website: String? = nil, links: [String: AnyCodable]? = nil) {
         self.category = category
+        self.description = description
+        self.displayName = displayName
+        self.features = features
+        self.id = id
+        self.lastUpdated = lastUpdated
+        self.name = name
+        self.signOnModes = signOnModes
+        self.status = status
         self.verificationStatus = verificationStatus
         self.website = website
-        self.signOnModes = signOnModes
-        self.features = features
         self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case id
-        case name
-        case displayName
-        case description
-        case status
-        case lastUpdated
         case category
+        case description
+        case displayName
+        case features
+        case id
+        case lastUpdated
+        case name
+        case signOnModes
+        case status
         case verificationStatus
         case website
-        case signOnModes
-        case features
         case links = "_links"
     }
 
@@ -64,17 +64,17 @@ public struct CatalogApplication: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(id, forKey: .id)
-        try container.encodeIfPresent(name, forKey: .name)
-        try container.encodeIfPresent(displayName, forKey: .displayName)
-        try container.encodeIfPresent(description, forKey: .description)
-        try container.encodeIfPresent(status, forKey: .status)
-        try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
         try container.encodeIfPresent(category, forKey: .category)
+        try container.encodeIfPresent(description, forKey: .description)
+        try container.encodeIfPresent(displayName, forKey: .displayName)
+        try container.encodeIfPresent(features, forKey: .features)
+        try container.encodeIfPresent(id, forKey: .id)
+        try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
+        try container.encodeIfPresent(name, forKey: .name)
+        try container.encodeIfPresent(signOnModes, forKey: .signOnModes)
+        try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(verificationStatus, forKey: .verificationStatus)
         try container.encodeIfPresent(website, forKey: .website)
-        try container.encodeIfPresent(signOnModes, forKey: .signOnModes)
-        try container.encodeIfPresent(features, forKey: .features)
         try container.encodeIfPresent(links, forKey: .links)
     }
 

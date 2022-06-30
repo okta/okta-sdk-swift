@@ -18,9 +18,9 @@ import AnyCodable
 
 public enum SessionIdentityProviderType: String, Codable, CaseIterable, OktaClientArgument {
     case activeDirectory = "ACTIVE_DIRECTORY"
+    case federation = "FEDERATION"
     case ldap = "LDAP"
     case okta = "OKTA"
-    case federation = "FEDERATION"
     case social = "SOCIAL"
 
     var stringValue: String { rawValue }

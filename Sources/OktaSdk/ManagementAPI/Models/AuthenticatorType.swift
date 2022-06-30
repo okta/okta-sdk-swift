@@ -17,11 +17,13 @@ import Foundation
 import AnyCodable
 
 public enum AuthenticatorType: String, Codable, CaseIterable, OktaClientArgument {
-    case password = "password"
-    case securityQuestion = "security_question"
-    case phone = "phone"
+    case app = "app"
     case email = "email"
+    case federated = "federated"
+    case password = "password"
+    case phone = "phone"
     case securityKey = "security_key"
+    case securityQuestion = "security_question"
 
     var stringValue: String { rawValue }
 }

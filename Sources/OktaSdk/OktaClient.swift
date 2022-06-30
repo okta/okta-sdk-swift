@@ -12,10 +12,6 @@
 
 import Foundation
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -30,6 +26,19 @@ enum OktaClientError: Error {
     case unknown
 }
 
+fileprivate var warning: Bool = {
+    print("""
+        
+        ************************ WARNING ************************
+        ** Embedding SSWS tokens within production / App Store **
+        ** applications is unsafe and not recommended.         **
+        ** Please use this SDK with caution.                   **
+        *********************************************************
+        
+        """)
+    return true
+}()
+
 /// The class describing an active client used to interact with an Okta org.
 open class OktaClient: OktaClientAPI {
     /// The configuration used with this client.
@@ -37,30 +46,37 @@ open class OktaClient: OktaClientAPI {
 
     internal let context: OktaClient.APIContext
 
-    public lazy var application: OktaClient.ApplicationAPI = { .init(context: self.context) }()
-    public lazy var authenticator: OktaClient.AuthenticatorAPI = { .init(context: self.context) }()
-    public lazy var authorizationServer: OktaClient.AuthorizationServerAPI = { .init(context: self.context) }()
-    public lazy var captcha: OktaClient.CAPTCHAAPI = { .init(context: self.context) }()
-    public lazy var domain: OktaClient.DomainAPI = { .init(context: self.context) }()
-    public lazy var eventHook: OktaClient.EventHookAPI = { .init(context: self.context) }()
-    public lazy var feature: OktaClient.FeatureAPI = { .init(context: self.context) }()
-    public lazy var group: OktaClient.GroupAPI = { .init(context: self.context) }()
-    public lazy var identityProvider: OktaClient.IdentityProviderAPI = { .init(context: self.context) }()
-    public lazy var inlineHook: OktaClient.InlineHookAPI = { .init(context: self.context) }()
-    public lazy var linkedObject: OktaClient.LinkedObjectAPI = { .init(context: self.context) }()
-    public lazy var log: OktaClient.LogAPI = { .init(context: self.context) }()
-    public lazy var networkZone: OktaClient.NetworkZoneAPI = { .init(context: self.context) }()
-    public lazy var policy: OktaClient.PolicyAPI = { .init(context: self.context) }()
-    public lazy var profileMapping: OktaClient.ProfileMappingAPI = { .init(context: self.context) }()
-    public lazy var session: OktaClient.SessionAPI = { .init(context: self.context) }()
-    public lazy var template: OktaClient.TemplateAPI = { .init(context: self.context) }()
-    public lazy var threadInsight: OktaClient.ThreatInsightAPI = { .init(context: self.context) }()
-    public lazy var trustedOrigin: OktaClient.TrustedOriginAPI = { .init(context: self.context) }()
-    public lazy var user: OktaClient.UserAPI = { .init(context: self.context) }()
-    public lazy var userFactor: OktaClient.UserFactorAPI = { .init(context: self.context) }()
-    public lazy var userSchema: OktaClient.UserSchemaAPI = { .init(context: self.context) }()
-    public lazy var userType: OktaClient.UserTypeAPI = { .init(context: self.context) }()
-    
+    public lazy var agentPools: OktaClient.AgentPoolsAPI = { .init(context: self.context) } ()
+    public lazy var apiToken: OktaClient.ApiTokenAPI = { .init(context: self.context) } ()
+    public lazy var application: OktaClient.ApplicationAPI = { .init(context: self.context) } ()
+    public lazy var authenticator: OktaClient.AuthenticatorAPI = { .init(context: self.context) } ()
+    public lazy var authorizationServer: OktaClient.AuthorizationServerAPI = { .init(context: self.context) } ()
+    public lazy var behavior: OktaClient.BehaviorAPI = { .init(context: self.context) } ()
+    public lazy var captcha: OktaClient.CAPTCHAAPI = { .init(context: self.context) } ()
+    public lazy var customization: OktaClient.CustomizationAPI = { .init(context: self.context) } ()
+    public lazy var domain: OktaClient.DomainAPI = { .init(context: self.context) } ()
+    public lazy var eventHook: OktaClient.EventHookAPI = { .init(context: self.context) } ()
+    public lazy var feature: OktaClient.FeatureAPI = { .init(context: self.context) } ()
+    public lazy var group: OktaClient.GroupAPI = { .init(context: self.context) } ()
+    public lazy var identityProvider: OktaClient.IdentityProviderAPI = { .init(context: self.context) } ()
+    public lazy var inlineHook: OktaClient.InlineHookAPI = { .init(context: self.context) } ()
+    public lazy var linkedObject: OktaClient.LinkedObjectAPI = { .init(context: self.context) } ()
+    public lazy var networkZone: OktaClient.NetworkZoneAPI = { .init(context: self.context) } ()
+    public lazy var orgSetting: OktaClient.OrgSettingAPI = { .init(context: self.context) } ()
+    public lazy var policy: OktaClient.PolicyAPI = { .init(context: self.context) } ()
+    public lazy var principalRateLimit: OktaClient.PrincipalRateLimitAPI = { .init(context: self.context) } ()
+    public lazy var profileMapping: OktaClient.ProfileMappingAPI = { .init(context: self.context) } ()
+    public lazy var schema: OktaClient.SchemaAPI = { .init(context: self.context) } ()
+    public lazy var session: OktaClient.SessionAPI = { .init(context: self.context) } ()
+    public lazy var subscription: OktaClient.SubscriptionAPI = { .init(context: self.context) } ()
+    public lazy var systemLog: OktaClient.SystemLogAPI = { .init(context: self.context) } ()
+    public lazy var template: OktaClient.TemplateAPI = { .init(context: self.context) } ()
+    public lazy var threatInsight: OktaClient.ThreatInsightAPI = { .init(context: self.context) } ()
+    public lazy var trustedOrigin: OktaClient.TrustedOriginAPI = { .init(context: self.context) } ()
+    public lazy var user: OktaClient.UserAPI = { .init(context: self.context) } ()
+    public lazy var userFactor: OktaClient.UserFactorAPI = { .init(context: self.context) } ()
+    public lazy var userType: OktaClient.UserTypeAPI = { .init(context: self.context) } ()
+
     /// Initializer for creating an Okta client with the given configuration.
     /// - Parameter configuration: Configuration instance describing how to connect to the desired Okta organization.
     public init(configuration: Configuration,
@@ -79,9 +95,15 @@ open class OktaClient: OktaClientAPI {
         }
         
         self.configuration = configuration
+        // swiftlint:disable force_unwrapping
         self.context = .init(baseURL: URL(string: "\(configuration.basePath)/api/")!,
                              session: urlSession,
                              userAgent: userAgent ?? .userAgent)
+        // swiftlint:enable force_unwrapping
+        
+        // Trigger the warning message to log to the console.
+        // This trick is needed to work around the absense of dispatch_once_t.
+        _ = warning
     }
     
     internal func fetchURLRequest<T>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) throws -> URLRequest {
@@ -92,26 +114,9 @@ open class OktaClient: OktaClientAPI {
         return URLRequest(url: url)
     }
     
-    /// Fetches the related pagination link from the given response.
-    public func fetch<T>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>, completion: @escaping(Result<OktaResponse<T>, Error>) -> Void) {
-        do {
-            send(try fetchURLRequest(link, from: response), completion: completion)
-        } catch {
-            completion(.failure(error))
-        }
-    }
-    
-    /// Fetches a response of the given type from the supplied URL.
-    ///
-    /// This may be used to process the `_links` related list from responses.
-    public func fetch<T>(_ type: T.Type, at url: URL, completion: @escaping(Result<OktaResponse<T>, Error>) -> Void) where T : Decodable {
-        send(URLRequest(url: url), completion: completion)
-    }
-
-    #if swift(>=5.5.1) && !os(Linux)
     /// Asynchronously fetches the related pagination link from the given response.
     @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-    public func fetchAsync<T: Decodable>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) async throws -> OktaResponse<T> {
+    public func fetch<T: Decodable>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) async throws -> OktaResponse<T> {
         try await send(try fetchURLRequest(link, from: response)) as OktaResponse<T>
     }
 
@@ -119,26 +124,9 @@ open class OktaClient: OktaClientAPI {
     ///
     /// This may be used to process the `_links` related list from responses.
     @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-    public func fetchAsync<T: Decodable>(_ type: T.Type, at url: URL) async throws -> OktaResponse<T> {
+    public func fetch<T: Decodable>(_ type: T.Type, at url: URL) async throws -> OktaResponse<T> {
         try await send(URLRequest(url: url)) as OktaResponse<T>
     }
-    #endif
-
-    #if canImport(Combine)
-    /// Fetches the related pagination link from the given response as a Combine publisher.
-    @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-    public func fetch<T>(_ link: OktaResponse<T>.Link, from response: OktaResponse<T>) throws -> AnyPublisher<OktaResponse<T>, Error> {
-        publish(try fetchURLRequest(link, from: response))
-    }
-
-    /// Fetches a response of the given type from the supplied URL as a Combine publisher.
-    ///
-    /// This may be used to process the `_links` related list from responses.
-    @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-    public func fetch<T>(_ type: T.Type, at url: URL) throws -> AnyPublisher<OktaResponse<T>, Error> {
-        publish(URLRequest(url: url))
-    }
-    #endif
 }
 
 extension OktaClient {
@@ -163,7 +151,7 @@ extension OktaClient {
             "https://\(domain)"
         }
         
-        internal var customHeaders: [String:String] {
+        internal var customHeaders: [String: String] {
             [
                 "Accept": "application/json",
                 "Content-Type": "application/json",

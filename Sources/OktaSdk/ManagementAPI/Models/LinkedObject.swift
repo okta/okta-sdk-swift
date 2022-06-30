@@ -18,28 +18,28 @@ import AnyCodable
 
 public struct LinkedObject: Codable, Hashable {
 
-    public var links: [String: AnyCodable]?
     public var associated: LinkedObjectDetails?
     public var primary: LinkedObjectDetails?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, associated: LinkedObjectDetails? = nil, primary: LinkedObjectDetails? = nil) {
-        self.links = links
+    public init(associated: LinkedObjectDetails? = nil, primary: LinkedObjectDetails? = nil, links: [String: AnyCodable]? = nil) {
         self.associated = associated
         self.primary = primary
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case associated
         case primary
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(associated, forKey: .associated)
         try container.encodeIfPresent(primary, forKey: .primary)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

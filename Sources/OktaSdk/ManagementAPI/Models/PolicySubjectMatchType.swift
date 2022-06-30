@@ -17,10 +17,10 @@ import Foundation
 import AnyCodable
 
 public enum PolicySubjectMatchType: String, Codable, CaseIterable, OktaClientArgument {
-    case username = "USERNAME"
-    case email = "EMAIL"
-    case usernameOrEmail = "USERNAME_OR_EMAIL"
     case customAttribute = "CUSTOM_ATTRIBUTE"
+    case email = "EMAIL"
+    case username = "USERNAME"
+    case usernameOrEmail = "USERNAME_OR_EMAIL"
 
     var stringValue: String { rawValue }
 }

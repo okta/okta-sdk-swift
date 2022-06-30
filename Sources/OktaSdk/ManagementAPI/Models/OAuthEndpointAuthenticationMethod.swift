@@ -17,10 +17,10 @@ import Foundation
 import AnyCodable
 
 public enum OAuthEndpointAuthenticationMethod: String, Codable, CaseIterable, OktaClientArgument {
-    case _none = "none"
-    case clientSecretPost = "client_secret_post"
     case clientSecretBasic = "client_secret_basic"
     case clientSecretJwt = "client_secret_jwt"
+    case clientSecretPost = "client_secret_post"
+    case _none = "none"
     case privateKeyJwt = "private_key_jwt"
 
     var stringValue: String { rawValue }

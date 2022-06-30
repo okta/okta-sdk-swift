@@ -18,13 +18,9 @@ import AnyCodable
 
 public struct ProvisioningDeprovisionedCondition: Codable, Hashable {
 
-    public enum Action: String, Codable, CaseIterable {
-        case _none = "NONE"
-        case reactivate = "REACTIVATE"
-    }
-    public var action: Action?
+    public var action: ProvisioningDeprovisionedAction?
 
-    public init(action: Action? = nil) {
+    public init(action: ProvisioningDeprovisionedAction? = nil) {
         self.action = action
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {

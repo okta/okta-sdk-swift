@@ -18,8 +18,8 @@ import AnyCodable
 
 public struct SamlApplicationSettingsSignOn: Codable, Hashable {
 
-    public var allowMultipleAcsEndpoints: Bool?
     public var acsEndpoints: [AcsEndpoint]?
+    public var allowMultipleAcsEndpoints: Bool?
     public var assertionSigned: Bool?
     public var attributeStatements: [SamlAttributeStatement]?
     public var audience: String?
@@ -38,16 +38,16 @@ public struct SamlApplicationSettingsSignOn: Codable, Hashable {
     public var responseSigned: Bool?
     public var signatureAlgorithm: String?
     public var slo: SingleLogout?
+    public var spCertificate: SpCertificate?
     public var spIssuer: String?
     public var ssoAcsUrl: String?
     public var ssoAcsUrlOverride: String?
-    public var spCertificate: SpCertificate?
     public var subjectNameIdFormat: String?
     public var subjectNameIdTemplate: String?
 
-    public init(allowMultipleAcsEndpoints: Bool? = nil, acsEndpoints: [AcsEndpoint]? = nil, assertionSigned: Bool? = nil, attributeStatements: [SamlAttributeStatement]? = nil, audience: String? = nil, audienceOverride: String? = nil, authnContextClassRef: String? = nil, defaultRelayState: String? = nil, destination: String? = nil, destinationOverride: String? = nil, digestAlgorithm: String? = nil, honorForceAuthn: Bool? = nil, idpIssuer: String? = nil, inlineHooks: [SignOnInlineHook]? = nil, recipient: String? = nil, recipientOverride: String? = nil, requestCompressed: Bool? = nil, responseSigned: Bool? = nil, signatureAlgorithm: String? = nil, slo: SingleLogout? = nil, spIssuer: String? = nil, ssoAcsUrl: String? = nil, ssoAcsUrlOverride: String? = nil, spCertificate: SpCertificate? = nil, subjectNameIdFormat: String? = nil, subjectNameIdTemplate: String? = nil) {
-        self.allowMultipleAcsEndpoints = allowMultipleAcsEndpoints
+    public init(acsEndpoints: [AcsEndpoint]? = nil, allowMultipleAcsEndpoints: Bool? = nil, assertionSigned: Bool? = nil, attributeStatements: [SamlAttributeStatement]? = nil, audience: String? = nil, audienceOverride: String? = nil, authnContextClassRef: String? = nil, defaultRelayState: String? = nil, destination: String? = nil, destinationOverride: String? = nil, digestAlgorithm: String? = nil, honorForceAuthn: Bool? = nil, idpIssuer: String? = nil, inlineHooks: [SignOnInlineHook]? = nil, recipient: String? = nil, recipientOverride: String? = nil, requestCompressed: Bool? = nil, responseSigned: Bool? = nil, signatureAlgorithm: String? = nil, slo: SingleLogout? = nil, spCertificate: SpCertificate? = nil, spIssuer: String? = nil, ssoAcsUrl: String? = nil, ssoAcsUrlOverride: String? = nil, subjectNameIdFormat: String? = nil, subjectNameIdTemplate: String? = nil) {
         self.acsEndpoints = acsEndpoints
+        self.allowMultipleAcsEndpoints = allowMultipleAcsEndpoints
         self.assertionSigned = assertionSigned
         self.attributeStatements = attributeStatements
         self.audience = audience
@@ -66,16 +66,16 @@ public struct SamlApplicationSettingsSignOn: Codable, Hashable {
         self.responseSigned = responseSigned
         self.signatureAlgorithm = signatureAlgorithm
         self.slo = slo
+        self.spCertificate = spCertificate
         self.spIssuer = spIssuer
         self.ssoAcsUrl = ssoAcsUrl
         self.ssoAcsUrlOverride = ssoAcsUrlOverride
-        self.spCertificate = spCertificate
         self.subjectNameIdFormat = subjectNameIdFormat
         self.subjectNameIdTemplate = subjectNameIdTemplate
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case allowMultipleAcsEndpoints
         case acsEndpoints
+        case allowMultipleAcsEndpoints
         case assertionSigned
         case attributeStatements
         case audience
@@ -94,10 +94,10 @@ public struct SamlApplicationSettingsSignOn: Codable, Hashable {
         case responseSigned
         case signatureAlgorithm
         case slo
+        case spCertificate
         case spIssuer
         case ssoAcsUrl
         case ssoAcsUrlOverride
-        case spCertificate
         case subjectNameIdFormat
         case subjectNameIdTemplate
     }
@@ -106,8 +106,8 @@ public struct SamlApplicationSettingsSignOn: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(allowMultipleAcsEndpoints, forKey: .allowMultipleAcsEndpoints)
         try container.encodeIfPresent(acsEndpoints, forKey: .acsEndpoints)
+        try container.encodeIfPresent(allowMultipleAcsEndpoints, forKey: .allowMultipleAcsEndpoints)
         try container.encodeIfPresent(assertionSigned, forKey: .assertionSigned)
         try container.encodeIfPresent(attributeStatements, forKey: .attributeStatements)
         try container.encodeIfPresent(audience, forKey: .audience)
@@ -126,10 +126,10 @@ public struct SamlApplicationSettingsSignOn: Codable, Hashable {
         try container.encodeIfPresent(responseSigned, forKey: .responseSigned)
         try container.encodeIfPresent(signatureAlgorithm, forKey: .signatureAlgorithm)
         try container.encodeIfPresent(slo, forKey: .slo)
+        try container.encodeIfPresent(spCertificate, forKey: .spCertificate)
         try container.encodeIfPresent(spIssuer, forKey: .spIssuer)
         try container.encodeIfPresent(ssoAcsUrl, forKey: .ssoAcsUrl)
         try container.encodeIfPresent(ssoAcsUrlOverride, forKey: .ssoAcsUrlOverride)
-        try container.encodeIfPresent(spCertificate, forKey: .spCertificate)
         try container.encodeIfPresent(subjectNameIdFormat, forKey: .subjectNameIdFormat)
         try container.encodeIfPresent(subjectNameIdTemplate, forKey: .subjectNameIdTemplate)
     }

@@ -104,6 +104,7 @@ extension UUID: JSONEncodable {
 }
 
 extension AnyCodable: Hashable {
+    // swiftlint:disable cyclomatic_complexity
     public func hash(into hasher: inout Hasher) {
         switch value {
         case let value as Bool:
@@ -142,4 +143,5 @@ extension AnyCodable: Hashable {
             hasher.combine(0)
         }
     }
+    // swiftlint:enable cyclomatic_complexity
 }

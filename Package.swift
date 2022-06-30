@@ -1,13 +1,13 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.6
 
 import PackageDescription
 
 let package = Package(
     name: "OktaSdk",
     platforms: [
-        .iOS(.v9),
-        .macOS(.v10_11),
-        .tvOS(.v9)
+        .iOS(.v15),
+        .macOS(.v12),
+        .tvOS(.v15)
     ],
     products: [
         .library(
@@ -16,7 +16,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/Flight-School/AnyCodable", .exact("0.4.0")),
+        .package(url: "https://github.com/Flight-School/AnyCodable", from: "0.4.0"),
     ],
     targets: [
         .target(

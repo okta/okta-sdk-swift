@@ -17,10 +17,10 @@ import Foundation
 import AnyCodable
 
 public enum AllowedForEnum: String, Codable, CaseIterable, OktaClientArgument {
-    case recovery = "recovery"
-    case sso = "sso"
     case any = "any"
     case _none = "none"
+    case recovery = "recovery"
+    case sso = "sso"
 
     var stringValue: String { rawValue }
 }

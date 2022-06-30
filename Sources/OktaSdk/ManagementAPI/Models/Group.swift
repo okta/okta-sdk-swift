@@ -18,8 +18,6 @@ import AnyCodable
 
 public struct Group: Codable, Hashable {
 
-    public var embedded: [String: AnyCodable]?
-    public var links: [String: AnyCodable]?
     public var created: Date?
     public var id: String?
     public var lastMembershipUpdated: Date?
@@ -27,10 +25,10 @@ public struct Group: Codable, Hashable {
     public var objectClass: [String]?
     public var profile: GroupProfile?
     public var type: GroupType?
+    public var embedded: [String: AnyCodable]?
+    public var links: [String: AnyCodable]?
 
-    public init(embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil, created: Date? = nil, id: String? = nil, lastMembershipUpdated: Date? = nil, lastUpdated: Date? = nil, objectClass: [String]? = nil, profile: GroupProfile? = nil, type: GroupType? = nil) {
-        self.embedded = embedded
-        self.links = links
+    public init(created: Date? = nil, id: String? = nil, lastMembershipUpdated: Date? = nil, lastUpdated: Date? = nil, objectClass: [String]? = nil, profile: GroupProfile? = nil, type: GroupType? = nil, embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil) {
         self.created = created
         self.id = id
         self.lastMembershipUpdated = lastMembershipUpdated
@@ -38,10 +36,10 @@ public struct Group: Codable, Hashable {
         self.objectClass = objectClass
         self.profile = profile
         self.type = type
+        self.embedded = embedded
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case embedded = "_embedded"
-        case links = "_links"
         case created
         case id
         case lastMembershipUpdated
@@ -49,14 +47,14 @@ public struct Group: Codable, Hashable {
         case objectClass
         case profile
         case type
+        case embedded = "_embedded"
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(embedded, forKey: .embedded)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(id, forKey: .id)
         try container.encodeIfPresent(lastMembershipUpdated, forKey: .lastMembershipUpdated)
@@ -64,6 +62,8 @@ public struct Group: Codable, Hashable {
         try container.encodeIfPresent(objectClass, forKey: .objectClass)
         try container.encodeIfPresent(profile, forKey: .profile)
         try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(embedded, forKey: .embedded)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

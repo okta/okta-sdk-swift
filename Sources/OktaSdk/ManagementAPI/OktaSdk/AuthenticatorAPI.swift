@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,180 +25,58 @@ public extension OktaClient {
     struct AuthenticatorAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func activateAuthenticatorURLRequest(authenticatorId: String) throws -> URLRequest {
-            try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/activate".expanded(using: [
-                "authenticatorId": authenticatorId
-            ]), method: "POST")
-        }
-
         /**
-         Activate Authenticator
-         
-         - parameter authenticatorId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func activateAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try activateAuthenticatorURLRequest(authenticatorId: authenticatorId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Activate Authenticator
+         Activate an Authenticator
          
          - parameter authenticatorId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func activateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Empty> {
-            try await send(try activateAuthenticatorURLRequest(authenticatorId: authenticatorId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Activate Authenticator
-         
-         - parameter authenticatorId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func activateAuthenticator(authenticatorId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try activateAuthenticatorURLRequest(authenticatorId: authenticatorId))
-        }
-        #endif
-
-
-        internal func deactivateAuthenticatorURLRequest(authenticatorId: String) throws -> URLRequest {
-            try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/deactivate".expanded(using: [
-                "authenticatorId": authenticatorId
-            ]), method: "POST")
+        public func activateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
+            try await send(try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/activate".expanded(using: [
+                    "authenticatorId": authenticatorId
+                ]), method: "POST"))
         }
 
         /**
-         Deactivate Authenticator
-         
-         - parameter authenticatorId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func deactivateAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deactivateAuthenticatorURLRequest(authenticatorId: authenticatorId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Deactivate Authenticator
+         Deactivate an Authenticator
          
          - parameter authenticatorId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func deactivateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deactivateAuthenticatorURLRequest(authenticatorId: authenticatorId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Deactivate Authenticator
-         
-         - parameter authenticatorId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deactivateAuthenticator(authenticatorId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deactivateAuthenticatorURLRequest(authenticatorId: authenticatorId))
-        }
-        #endif
-
-
-        internal func getAuthenticatorURLRequest(authenticatorId: String) throws -> URLRequest {
-            try request(to: "/api/v1/authenticators/{authenticatorId}".expanded(using: [
-                "authenticatorId": authenticatorId
-            ]), method: "GET")
+        public func deactivateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
+            try await send(try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/deactivate".expanded(using: [
+                    "authenticatorId": authenticatorId
+                ]), method: "POST"))
         }
 
         /**
-         Get Authenticator
-         
-         - parameter authenticatorId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func getAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Authenticator>, Error>) -> Void) {
-            do {
-                send(try getAuthenticatorURLRequest(authenticatorId: authenticatorId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Authenticator
+         Retrieve an Authenticator
          
          - parameter authenticatorId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func getAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
-            try await send(try getAuthenticatorURLRequest(authenticatorId: authenticatorId))
+            try await send(try request(to: "/api/v1/authenticators/{authenticatorId}".expanded(using: [
+                    "authenticatorId": authenticatorId
+                ]), method: "GET"))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Get Authenticator
+         List all Authenticators
+         
+         */
+        public func listAuthenticators() async throws -> OktaResponse<[Authenticator]> {
+            try await send(try request(to: "/api/v1/authenticators", method: "GET"))
+        }
+
+        /**
+         Replace an Authenticator
          
          - parameter authenticatorId: (path)  
+         - parameter authenticator: (body)  
          */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getAuthenticator(authenticatorId: String) throws -> AnyPublisher<OktaResponse<Authenticator>, Error> {
-            publish(try getAuthenticatorURLRequest(authenticatorId: authenticatorId))
+        public func updateAuthenticator(authenticatorId: String, authenticator: Authenticator) async throws -> OktaResponse<Authenticator> {
+            try await send(try requestWithBody(to: "/api/v1/authenticators/{authenticatorId}".expanded(using: [
+                    "authenticatorId": authenticatorId
+                ]), method: "PUT", body: authenticator))
         }
-        #endif
-
-
-        internal func listAuthenticatorsURLRequest() throws -> URLRequest {
-            try request(to: "/api/v1/authenticators", method: "GET")
-        }
-
-        /**
-         List Authenticators
-         
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listAuthenticators(completion: @escaping (Result<OktaResponse<[Authenticator]>, Error>) -> Void) {
-            do {
-                send(try listAuthenticatorsURLRequest(), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Authenticators
-         
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listAuthenticators() async throws -> OktaResponse<[Authenticator]> {
-            try await send(try listAuthenticatorsURLRequest())
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List Authenticators
-         
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listAuthenticators() throws -> AnyPublisher<OktaResponse<[Authenticator]>, Error> {
-            publish(try listAuthenticatorsURLRequest())
-        }
-        #endif
 
     }
 }

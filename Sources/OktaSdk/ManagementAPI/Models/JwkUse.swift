@@ -18,12 +18,9 @@ import AnyCodable
 
 public struct JwkUse: Codable, Hashable {
 
-    public enum Use: String, Codable, CaseIterable {
-        case sig = "sig"
-    }
-    public var use: Use?
+    public var use: JwkUseType?
 
-    public init(use: Use? = nil) {
+    public init(use: JwkUseType? = nil) {
         self.use = use
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {

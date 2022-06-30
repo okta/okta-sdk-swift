@@ -17,10 +17,10 @@ import Foundation
 import AnyCodable
 
 public enum DomainValidationStatus: String, Codable, CaseIterable, OktaClientArgument {
-    case notStarted = "NOT_STARTED"
-    case inProgress = "IN_PROGRESS"
-    case verified = "VERIFIED"
     case completed = "COMPLETED"
+    case inProgress = "IN_PROGRESS"
+    case notStarted = "NOT_STARTED"
+    case verified = "VERIFIED"
 
     var stringValue: String { rawValue }
 }

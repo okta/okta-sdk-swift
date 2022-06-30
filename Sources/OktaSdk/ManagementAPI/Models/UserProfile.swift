@@ -30,6 +30,7 @@ public struct UserProfile: Codable, Hashable {
     public var honorificPrefix: String?
     public var honorificSuffix: String?
     public var lastName: String?
+    /** The language specified as an [IETF BCP 47 language tag](https://datatracker.ietf.org/doc/html/rfc5646). */
     public var locale: String?
     public var login: String?
     public var manager: String?

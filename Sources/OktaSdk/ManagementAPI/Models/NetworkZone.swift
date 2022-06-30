@@ -18,51 +18,51 @@ import AnyCodable
 
 public struct NetworkZone: Codable, Hashable {
 
-    public var type: NetworkZoneType?
-    public var id: String?
-    public var name: String?
-    public var system: Bool?
-    public var usage: NetworkZoneUsage?
-    public var status: NetworkZoneStatus?
-    public var proxyType: String?
-    public var locations: [NetworkZoneLocation]?
-    public var gateways: [NetworkZoneAddress]?
-    public var proxies: [NetworkZoneAddress]?
     public var asns: [String]?
     public var created: Date?
+    public var gateways: [NetworkZoneAddress]?
+    public var id: String?
     public var lastUpdated: Date?
+    public var locations: [NetworkZoneLocation]?
+    public var name: String?
+    public var proxies: [NetworkZoneAddress]?
+    public var proxyType: String?
+    public var status: NetworkZoneStatus?
+    public var system: Bool?
+    public var type: NetworkZoneType?
+    public var usage: NetworkZoneUsage?
     public var links: [String: AnyCodable]?
 
-    public init(type: NetworkZoneType? = nil, id: String? = nil, name: String? = nil, system: Bool? = nil, usage: NetworkZoneUsage? = nil, status: NetworkZoneStatus? = nil, proxyType: String? = nil, locations: [NetworkZoneLocation]? = nil, gateways: [NetworkZoneAddress]? = nil, proxies: [NetworkZoneAddress]? = nil, asns: [String]? = nil, created: Date? = nil, lastUpdated: Date? = nil, links: [String: AnyCodable]? = nil) {
-        self.type = type
-        self.id = id
-        self.name = name
-        self.system = system
-        self.usage = usage
-        self.status = status
-        self.proxyType = proxyType
-        self.locations = locations
-        self.gateways = gateways
-        self.proxies = proxies
+    public init(asns: [String]? = nil, created: Date? = nil, gateways: [NetworkZoneAddress]? = nil, id: String? = nil, lastUpdated: Date? = nil, locations: [NetworkZoneLocation]? = nil, name: String? = nil, proxies: [NetworkZoneAddress]? = nil, proxyType: String? = nil, status: NetworkZoneStatus? = nil, system: Bool? = nil, type: NetworkZoneType? = nil, usage: NetworkZoneUsage? = nil, links: [String: AnyCodable]? = nil) {
         self.asns = asns
         self.created = created
+        self.gateways = gateways
+        self.id = id
         self.lastUpdated = lastUpdated
+        self.locations = locations
+        self.name = name
+        self.proxies = proxies
+        self.proxyType = proxyType
+        self.status = status
+        self.system = system
+        self.type = type
+        self.usage = usage
         self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case type
-        case id
-        case name
-        case system
-        case usage
-        case status
-        case proxyType
-        case locations
-        case gateways
-        case proxies
         case asns
         case created
+        case gateways
+        case id
         case lastUpdated
+        case locations
+        case name
+        case proxies
+        case proxyType
+        case status
+        case system
+        case type
+        case usage
         case links = "_links"
     }
 
@@ -70,19 +70,19 @@ public struct NetworkZone: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(type, forKey: .type)
-        try container.encodeIfPresent(id, forKey: .id)
-        try container.encodeIfPresent(name, forKey: .name)
-        try container.encodeIfPresent(system, forKey: .system)
-        try container.encodeIfPresent(usage, forKey: .usage)
-        try container.encodeIfPresent(status, forKey: .status)
-        try container.encodeIfPresent(proxyType, forKey: .proxyType)
-        try container.encodeIfPresent(locations, forKey: .locations)
-        try container.encodeIfPresent(gateways, forKey: .gateways)
-        try container.encodeIfPresent(proxies, forKey: .proxies)
         try container.encodeIfPresent(asns, forKey: .asns)
         try container.encodeIfPresent(created, forKey: .created)
+        try container.encodeIfPresent(gateways, forKey: .gateways)
+        try container.encodeIfPresent(id, forKey: .id)
         try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
+        try container.encodeIfPresent(locations, forKey: .locations)
+        try container.encodeIfPresent(name, forKey: .name)
+        try container.encodeIfPresent(proxies, forKey: .proxies)
+        try container.encodeIfPresent(proxyType, forKey: .proxyType)
+        try container.encodeIfPresent(status, forKey: .status)
+        try container.encodeIfPresent(system, forKey: .system)
+        try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(usage, forKey: .usage)
         try container.encodeIfPresent(links, forKey: .links)
     }
 

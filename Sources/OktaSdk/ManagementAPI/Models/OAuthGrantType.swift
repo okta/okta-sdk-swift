@@ -18,10 +18,11 @@ import AnyCodable
 
 public enum OAuthGrantType: String, Codable, CaseIterable, OktaClientArgument {
     case authorizationCode = "authorization_code"
+    case clientCredentials = "client_credentials"
     case implicit = "implicit"
+    case interactionCode = "interaction_code"
     case password = "password"
     case refreshToken = "refresh_token"
-    case clientCredentials = "client_credentials"
 
     var stringValue: String { rawValue }
 }

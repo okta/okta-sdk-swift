@@ -19,24 +19,24 @@ import AnyCodable
 /** Used for links */
 public struct HrefObject: Codable, Hashable {
 
-    public var href: String?
     public var hints: HrefObjectHints?
+    public var href: String?
 
-    public init(href: String? = nil, hints: HrefObjectHints? = nil) {
-        self.href = href
+    public init(hints: HrefObjectHints? = nil, href: String? = nil) {
         self.hints = hints
+        self.href = href
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case href
         case hints
+        case href
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(href, forKey: .href)
         try container.encodeIfPresent(hints, forKey: .hints)
+        try container.encodeIfPresent(href, forKey: .href)
     }
 
 

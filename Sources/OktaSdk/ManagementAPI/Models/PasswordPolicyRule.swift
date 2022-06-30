@@ -18,28 +18,56 @@ import AnyCodable
 
 public struct PasswordPolicyRule: Codable, Hashable {
 
+    public var created: Date?
+    public var id: String?
+    public var lastUpdated: Date?
+    public var name: String?
+    public var priority: Int?
+    public var status: LifecycleStatus?
+    public var system: Bool? = false
+    public var type: PolicyRuleType?
     public var actions: PasswordPolicyRuleActions?
     public var conditions: PasswordPolicyRuleConditions?
-    public var name: String?
 
-    public init(actions: PasswordPolicyRuleActions? = nil, conditions: PasswordPolicyRuleConditions? = nil, name: String? = nil) {
+    public init(created: Date? = nil, id: String? = nil, lastUpdated: Date? = nil, name: String? = nil, priority: Int? = nil, status: LifecycleStatus? = nil, system: Bool? = false, type: PolicyRuleType? = nil, actions: PasswordPolicyRuleActions? = nil, conditions: PasswordPolicyRuleConditions? = nil) {
+        self.created = created
+        self.id = id
+        self.lastUpdated = lastUpdated
+        self.name = name
+        self.priority = priority
+        self.status = status
+        self.system = system
+        self.type = type
         self.actions = actions
         self.conditions = conditions
-        self.name = name
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case created
+        case id
+        case lastUpdated
+        case name
+        case priority
+        case status
+        case system
+        case type
         case actions
         case conditions
-        case name
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(created, forKey: .created)
+        try container.encodeIfPresent(id, forKey: .id)
+        try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
+        try container.encodeIfPresent(name, forKey: .name)
+        try container.encodeIfPresent(priority, forKey: .priority)
+        try container.encodeIfPresent(status, forKey: .status)
+        try container.encodeIfPresent(system, forKey: .system)
+        try container.encodeIfPresent(type, forKey: .type)
         try container.encodeIfPresent(actions, forKey: .actions)
         try container.encodeIfPresent(conditions, forKey: .conditions)
-        try container.encodeIfPresent(name, forKey: .name)
     }
 
 

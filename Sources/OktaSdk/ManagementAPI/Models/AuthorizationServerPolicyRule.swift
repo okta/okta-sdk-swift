@@ -18,47 +18,40 @@ import AnyCodable
 
 public struct AuthorizationServerPolicyRule: Codable, Hashable {
 
-    public enum Status: String, Codable, CaseIterable {
-        case active = "ACTIVE"
-        case inactive = "INACTIVE"
-    }
-    public enum ModelType: String, Codable, CaseIterable {
-        case resourceAccess = "RESOURCE_ACCESS"
-    }
     public var created: Date?
     public var id: String?
-    public var name: String?
     public var lastUpdated: Date?
+    public var name: String?
     public var priority: Int?
-    public var status: Status? = .active
+    public var status: LifecycleStatus?
     public var system: Bool? = false
-    public var type: ModelType?
-    public var conditions: AuthorizationServerPolicyRuleConditions?
+    public var type: PolicyRuleType?
     public var actions: AuthorizationServerPolicyRuleActions?
+    public var conditions: AuthorizationServerPolicyRuleConditions?
 
-    public init(created: Date? = nil, id: String? = nil, name: String? = nil, lastUpdated: Date? = nil, priority: Int? = nil, status: Status? = .active, system: Bool? = false, type: ModelType? = nil, conditions: AuthorizationServerPolicyRuleConditions? = nil, actions: AuthorizationServerPolicyRuleActions? = nil) {
+    public init(created: Date? = nil, id: String? = nil, lastUpdated: Date? = nil, name: String? = nil, priority: Int? = nil, status: LifecycleStatus? = nil, system: Bool? = false, type: PolicyRuleType? = nil, actions: AuthorizationServerPolicyRuleActions? = nil, conditions: AuthorizationServerPolicyRuleConditions? = nil) {
         self.created = created
         self.id = id
-        self.name = name
         self.lastUpdated = lastUpdated
+        self.name = name
         self.priority = priority
         self.status = status
         self.system = system
         self.type = type
-        self.conditions = conditions
         self.actions = actions
+        self.conditions = conditions
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case created
         case id
-        case name
         case lastUpdated
+        case name
         case priority
         case status
         case system
         case type
-        case conditions
         case actions
+        case conditions
     }
 
     // Encodable protocol methods
@@ -67,14 +60,14 @@ public struct AuthorizationServerPolicyRule: Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(id, forKey: .id)
-        try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
+        try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(priority, forKey: .priority)
         try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(system, forKey: .system)
         try container.encodeIfPresent(type, forKey: .type)
-        try container.encodeIfPresent(conditions, forKey: .conditions)
         try container.encodeIfPresent(actions, forKey: .actions)
+        try container.encodeIfPresent(conditions, forKey: .conditions)
     }
 
 

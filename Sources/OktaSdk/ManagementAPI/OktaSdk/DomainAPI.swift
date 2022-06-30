@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,271 +25,69 @@ public extension OktaClient {
     struct DomainAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func createCertificateURLRequest(domainId: String, domainCertificate: DomainCertificate) throws -> URLRequest {
-            try request(to: "/api/v1/domains/{domainId}/certificate".expanded(using: [
-                "domainId": domainId
-            ]), method: "PUT", body: domainCertificate)
-        }
-
         /**
-         Create Certificate
+         Replace the Certificate
          
          - parameter domainId: (path)  
-         - parameter domainCertificate: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
+         - parameter certificate: (body)  
          */
-        public func createCertificate(domainId: String, domainCertificate: DomainCertificate, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try createCertificateURLRequest(domainId: domainId, domainCertificate: domainCertificate), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Create Certificate
-         
-         - parameter domainId: (path)  
-         - parameter domainCertificate: (body)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func createCertificate(domainId: String, domainCertificate: DomainCertificate) async throws -> OktaResponse<Empty> {
-            try await send(try createCertificateURLRequest(domainId: domainId, domainCertificate: domainCertificate))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Create Certificate
-         
-         - parameter domainId: (path)  
-         - parameter domainCertificate: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func createCertificate(domainId: String, domainCertificate: DomainCertificate) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try createCertificateURLRequest(domainId: domainId, domainCertificate: domainCertificate))
-        }
-        #endif
-
-
-        internal func createDomainURLRequest(domain: Domain) throws -> URLRequest {
-            try request(to: "/api/v1/domains", method: "POST", body: domain)
+        @discardableResult
+        public func createCertificate(domainId: String, certificate: DomainCertificate) async throws -> OktaResponse<Empty> {
+            try await send(try requestWithBody(to: "/api/v1/domains/{domainId}/certificate".expanded(using: [
+                    "domainId": domainId
+                ]), method: "PUT", body: certificate))
         }
 
         /**
-         Create Domain
-         
-         - parameter domain: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func createDomain(domain: Domain, completion: @escaping (Result<OktaResponse<DomainResponse>, Error>) -> Void) {
-            do {
-                send(try createDomainURLRequest(domain: domain), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Create Domain
+         Create a Domain
          
          - parameter domain: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func createDomain(domain: Domain) async throws -> OktaResponse<DomainResponse> {
-            try await send(try createDomainURLRequest(domain: domain))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Create Domain
-         
-         - parameter domain: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func createDomain(domain: Domain) throws -> AnyPublisher<OktaResponse<DomainResponse>, Error> {
-            publish(try createDomainURLRequest(domain: domain))
-        }
-        #endif
-
-
-        internal func deleteDomainURLRequest(domainId: String) throws -> URLRequest {
-            try request(to: "/api/v1/domains/{domainId}".expanded(using: [
-                "domainId": domainId
-            ]), method: "DELETE")
+            try await send(try requestWithBody(to: "/api/v1/domains", method: "POST", body: domain))
         }
 
         /**
-         Delete Domain
-         
-         - parameter domainId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func deleteDomain(domainId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteDomainURLRequest(domainId: domainId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Delete Domain
+         Delete a Domain
          
          - parameter domainId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func deleteDomain(domainId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deleteDomainURLRequest(domainId: domainId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Delete Domain
-         
-         - parameter domainId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deleteDomain(domainId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteDomainURLRequest(domainId: domainId))
-        }
-        #endif
-
-
-        internal func getDomainURLRequest(domainId: String) throws -> URLRequest {
-            try request(to: "/api/v1/domains/{domainId}".expanded(using: [
-                "domainId": domainId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/domains/{domainId}".expanded(using: [
+                    "domainId": domainId
+                ]), method: "DELETE"))
         }
 
         /**
-         Get Domain
-         
-         - parameter domainId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func getDomain(domainId: String, completion: @escaping (Result<OktaResponse<DomainResponse>, Error>) -> Void) {
-            do {
-                send(try getDomainURLRequest(domainId: domainId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Domain
+         Retrieve a Domain
          
          - parameter domainId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func getDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
-            try await send(try getDomainURLRequest(domainId: domainId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Get Domain
-         
-         - parameter domainId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getDomain(domainId: String) throws -> AnyPublisher<OktaResponse<DomainResponse>, Error> {
-            publish(try getDomainURLRequest(domainId: domainId))
-        }
-        #endif
-
-
-        internal func listDomainsURLRequest() throws -> URLRequest {
-            try request(to: "/api/v1/domains", method: "GET")
+            try await send(try request(to: "/api/v1/domains/{domainId}".expanded(using: [
+                    "domainId": domainId
+                ]), method: "GET"))
         }
 
         /**
-         List Domains
-         
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listDomains(completion: @escaping (Result<OktaResponse<DomainListResponse>, Error>) -> Void) {
-            do {
-                send(try listDomainsURLRequest(), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Domains
+         List all Domains
          
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listDomains() async throws -> OktaResponse<DomainListResponse> {
-            try await send(try listDomainsURLRequest())
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List Domains
-         
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listDomains() throws -> AnyPublisher<OktaResponse<DomainListResponse>, Error> {
-            publish(try listDomainsURLRequest())
-        }
-        #endif
-
-
-        internal func verifyDomainURLRequest(domainId: String) throws -> URLRequest {
-            try request(to: "/api/v1/domains/{domainId}/verify".expanded(using: [
-                "domainId": domainId
-            ]), method: "POST")
+            try await send(try request(to: "/api/v1/domains", method: "GET"))
         }
 
         /**
-         Verify Domain
-         
-         - parameter domainId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func verifyDomain(domainId: String, completion: @escaping (Result<OktaResponse<DomainResponse>, Error>) -> Void) {
-            do {
-                send(try verifyDomainURLRequest(domainId: domainId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Verify Domain
+         Verify a Domain
          
          - parameter domainId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func verifyDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
-            try await send(try verifyDomainURLRequest(domainId: domainId))
+            try await send(try request(to: "/api/v1/domains/{domainId}/verify".expanded(using: [
+                    "domainId": domainId
+                ]), method: "POST"))
         }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Verify Domain
-         
-         - parameter domainId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func verifyDomain(domainId: String) throws -> AnyPublisher<OktaResponse<DomainResponse>, Error> {
-            publish(try verifyDomainURLRequest(domainId: domainId))
-        }
-        #endif
 
     }
 }

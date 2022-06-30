@@ -18,16 +18,12 @@ import AnyCodable
 
 public struct DevicePolicyRuleCondition: Codable, Hashable {
 
-    public enum TrustLevel: String, Codable, CaseIterable {
-        case any = "ANY"
-        case trusted = "TRUSTED"
-    }
     public var migrated: Bool?
     public var platform: DevicePolicyRuleConditionPlatform?
     public var rooted: Bool?
-    public var trustLevel: TrustLevel?
+    public var trustLevel: DevicePolicyTrustLevel?
 
-    public init(migrated: Bool? = nil, platform: DevicePolicyRuleConditionPlatform? = nil, rooted: Bool? = nil, trustLevel: TrustLevel? = nil) {
+    public init(migrated: Bool? = nil, platform: DevicePolicyRuleConditionPlatform? = nil, rooted: Bool? = nil, trustLevel: DevicePolicyTrustLevel? = nil) {
         self.migrated = migrated
         self.platform = platform
         self.rooted = rooted

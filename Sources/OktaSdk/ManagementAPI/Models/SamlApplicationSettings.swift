@@ -18,12 +18,30 @@ import AnyCodable
 
 public struct SamlApplicationSettings: Codable, Hashable {
 
+    public var identityStoreId: String?
+    public var implicitAssignment: Bool?
+    public var inlineHookId: String?
+    public var notes: ApplicationSettingsNotes?
+    public var notifications: ApplicationSettingsNotifications?
+    public var app: SamlApplicationSettingsApplication?
     public var signOn: SamlApplicationSettingsSignOn?
 
-    public init(signOn: SamlApplicationSettingsSignOn? = nil) {
+    public init(identityStoreId: String? = nil, implicitAssignment: Bool? = nil, inlineHookId: String? = nil, notes: ApplicationSettingsNotes? = nil, notifications: ApplicationSettingsNotifications? = nil, app: SamlApplicationSettingsApplication? = nil, signOn: SamlApplicationSettingsSignOn? = nil) {
+        self.identityStoreId = identityStoreId
+        self.implicitAssignment = implicitAssignment
+        self.inlineHookId = inlineHookId
+        self.notes = notes
+        self.notifications = notifications
+        self.app = app
         self.signOn = signOn
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case identityStoreId
+        case implicitAssignment
+        case inlineHookId
+        case notes
+        case notifications
+        case app
         case signOn
     }
 
@@ -31,6 +49,12 @@ public struct SamlApplicationSettings: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(identityStoreId, forKey: .identityStoreId)
+        try container.encodeIfPresent(implicitAssignment, forKey: .implicitAssignment)
+        try container.encodeIfPresent(inlineHookId, forKey: .inlineHookId)
+        try container.encodeIfPresent(notes, forKey: .notes)
+        try container.encodeIfPresent(notifications, forKey: .notifications)
+        try container.encodeIfPresent(app, forKey: .app)
         try container.encodeIfPresent(signOn, forKey: .signOn)
     }
 

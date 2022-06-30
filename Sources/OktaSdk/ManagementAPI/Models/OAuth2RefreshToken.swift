@@ -18,12 +18,6 @@ import AnyCodable
 
 public struct OAuth2RefreshToken: Codable, Hashable {
 
-    public enum Status: String, Codable, CaseIterable {
-        case active = "ACTIVE"
-        case revoked = "REVOKED"
-    }
-    public var embedded: [String: AnyCodable]?
-    public var links: [String: AnyCodable]?
     public var clientId: String?
     public var created: Date?
     public var createdBy: OAuth2Actor?
@@ -32,12 +26,12 @@ public struct OAuth2RefreshToken: Codable, Hashable {
     public var issuer: String?
     public var lastUpdated: Date?
     public var scopes: [String]?
-    public var status: Status?
+    public var status: GrantOrTokenStatus?
     public var userId: String?
+    public var embedded: [String: AnyCodable]?
+    public var links: [String: AnyCodable]?
 
-    public init(embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil, clientId: String? = nil, created: Date? = nil, createdBy: OAuth2Actor? = nil, expiresAt: Date? = nil, id: String? = nil, issuer: String? = nil, lastUpdated: Date? = nil, scopes: [String]? = nil, status: Status? = nil, userId: String? = nil) {
-        self.embedded = embedded
-        self.links = links
+    public init(clientId: String? = nil, created: Date? = nil, createdBy: OAuth2Actor? = nil, expiresAt: Date? = nil, id: String? = nil, issuer: String? = nil, lastUpdated: Date? = nil, scopes: [String]? = nil, status: GrantOrTokenStatus? = nil, userId: String? = nil, embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil) {
         self.clientId = clientId
         self.created = created
         self.createdBy = createdBy
@@ -48,10 +42,10 @@ public struct OAuth2RefreshToken: Codable, Hashable {
         self.scopes = scopes
         self.status = status
         self.userId = userId
+        self.embedded = embedded
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case embedded = "_embedded"
-        case links = "_links"
         case clientId
         case created
         case createdBy
@@ -62,14 +56,14 @@ public struct OAuth2RefreshToken: Codable, Hashable {
         case scopes
         case status
         case userId
+        case embedded = "_embedded"
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(embedded, forKey: .embedded)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(clientId, forKey: .clientId)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(createdBy, forKey: .createdBy)
@@ -80,6 +74,8 @@ public struct OAuth2RefreshToken: Codable, Hashable {
         try container.encodeIfPresent(scopes, forKey: .scopes)
         try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(userId, forKey: .userId)
+        try container.encodeIfPresent(embedded, forKey: .embedded)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

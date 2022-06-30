@@ -18,19 +18,9 @@ import AnyCodable
 
 public struct UserStatusPolicyRuleCondition: Codable, Hashable {
 
-    public enum Value: String, Codable, CaseIterable {
-        case active = "ACTIVE"
-        case inactive = "INACTIVE"
-        case pending = "PENDING"
-        case deleted = "DELETED"
-        case expiredPassword = "EXPIRED_PASSWORD"
-        case activating = "ACTIVATING"
-        case suspended = "SUSPENDED"
-        case deleting = "DELETING"
-    }
-    public var value: Value?
+    public var value: PolicyUserStatus?
 
-    public init(value: Value? = nil) {
+    public init(value: PolicyUserStatus? = nil) {
         self.value = value
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {

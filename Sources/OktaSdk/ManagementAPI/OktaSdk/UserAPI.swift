@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,316 +25,97 @@ public extension OktaClient {
     struct UserAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func activateUserURLRequest(userId: String, sendEmail: Bool) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/lifecycle/activate".expanded(using: [
-                "userId": userId
-            ]), method: "POST", query: [
-                "sendEmail": sendEmail
-            ])
-        }
-
         /**
-         Activate User
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query) Sends an activation email to the user if true 
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func activateUser(userId: String, sendEmail: Bool, completion: @escaping (Result<OktaResponse<UserActivationToken>, Error>) -> Void) {
-            do {
-                send(try activateUserURLRequest(userId: userId, sendEmail: sendEmail), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Activate User
+         Activate a User
          
          - parameter userId: (path)  
          - parameter sendEmail: (query) Sends an activation email to the user if true 
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func activateUser(userId: String, sendEmail: Bool) async throws -> OktaResponse<UserActivationToken> {
-            try await send(try activateUserURLRequest(userId: userId, sendEmail: sendEmail))
+            try await send(try request(to: "/api/v1/users/{userId}/lifecycle/activate".expanded(using: [
+                    "userId": userId
+                ]), method: "POST", query: [
+                    "sendEmail": sendEmail
+                ]))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Activate User
+         Assign all Apps as Target to Role
          
          - parameter userId: (path)  
-         - parameter sendEmail: (query) Sends an activation email to the user if true 
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func activateUser(userId: String, sendEmail: Bool) throws -> AnyPublisher<OktaResponse<UserActivationToken>, Error> {
-            publish(try activateUserURLRequest(userId: userId, sendEmail: sendEmail))
-        }
-        #endif
-
-
-        internal func addAllAppsAsTargetToRoleURLRequest(userId: String, roleId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps".expanded(using: [
-                "userId": userId, 
-                "roleId": roleId
-            ]), method: "PUT")
-        }
-
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func addAllAppsAsTargetToRole(userId: String, roleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try addAllAppsAsTargetToRoleURLRequest(userId: userId, roleId: roleId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter userId: (path)  
          - parameter roleId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func addAllAppsAsTargetToRole(userId: String, roleId: String) async throws -> OktaResponse<Empty> {
-            try await send(try addAllAppsAsTargetToRoleURLRequest(userId: userId, roleId: roleId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func addAllAppsAsTargetToRole(userId: String, roleId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try addAllAppsAsTargetToRoleURLRequest(userId: userId, roleId: roleId))
-        }
-        #endif
-
-
-        internal func addApplicationTargetToAdminRoleForUserURLRequest(userId: String, roleId: String, appName: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}".expanded(using: [
-                "userId": userId, 
-                "roleId": roleId, 
-                "appName": appName
-            ]), method: "PUT")
+            try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps".expanded(using: [
+                    "userId": userId, 
+                    "roleId": roleId
+                ]), method: "PUT"))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter appName: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func addApplicationTargetToAdminRoleForUser(userId: String, roleId: String, appName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try addApplicationTargetToAdminRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Assign an Application Target to Administrator Role
+         
          - parameter userId: (path)  
          - parameter roleId: (path)  
          - parameter appName: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func addApplicationTargetToAdminRoleForUser(userId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
-            try await send(try addApplicationTargetToAdminRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter appName: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func addApplicationTargetToAdminRoleForUser(userId: String, roleId: String, appName: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try addApplicationTargetToAdminRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName))
-        }
-        #endif
-
-
-        internal func addApplicationTargetToAppAdminRoleForUserURLRequest(userId: String, roleId: String, appName: String, applicationId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}".expanded(using: [
-                "userId": userId, 
-                "roleId": roleId, 
-                "appName": appName, 
-                "applicationId": applicationId
-            ]), method: "PUT")
+            try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}".expanded(using: [
+                    "userId": userId, 
+                    "roleId": roleId, 
+                    "appName": appName
+                ]), method: "PUT"))
         }
 
         /**
-         Add App Instance Target to App Administrator Role given to a User
-         
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter appName: (path)  
-         - parameter applicationId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func addApplicationTargetToAppAdminRoleForUser(userId: String, roleId: String, appName: String, applicationId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try addApplicationTargetToAppAdminRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Add App Instance Target to App Administrator Role given to a User
+         Assign an Application Instance Target to an Application Administrator Role
          
          - parameter userId: (path)  
          - parameter roleId: (path)  
          - parameter appName: (path)  
          - parameter applicationId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func addApplicationTargetToAppAdminRoleForUser(userId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
-            try await send(try addApplicationTargetToAppAdminRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId))
+            try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}".expanded(using: [
+                    "userId": userId, 
+                    "roleId": roleId, 
+                    "appName": appName, 
+                    "applicationId": applicationId
+                ]), method: "PUT"))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Add App Instance Target to App Administrator Role given to a User
+         Assign a Group Target to Role
          
          - parameter userId: (path)  
          - parameter roleId: (path)  
-         - parameter appName: (path)  
-         - parameter applicationId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func addApplicationTargetToAppAdminRoleForUser(userId: String, roleId: String, appName: String, applicationId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try addApplicationTargetToAppAdminRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId))
-        }
-        #endif
-
-
-        internal func addGroupTargetToRoleURLRequest(userId: String, roleId: String, groupId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/groups/{groupId}".expanded(using: [
-                "userId": userId, 
-                "roleId": roleId, 
-                "groupId": groupId
-            ]), method: "PUT")
-        }
-
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter groupId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func addGroupTargetToRole(userId: String, roleId: String, groupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try addGroupTargetToRoleURLRequest(userId: userId, roleId: roleId, groupId: groupId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
          - parameter groupId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func addGroupTargetToRole(userId: String, roleId: String, groupId: String) async throws -> OktaResponse<Empty> {
-            try await send(try addGroupTargetToRoleURLRequest(userId: userId, roleId: roleId, groupId: groupId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter groupId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func addGroupTargetToRole(userId: String, roleId: String, groupId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try addGroupTargetToRoleURLRequest(userId: userId, roleId: roleId, groupId: groupId))
-        }
-        #endif
-
-
-        internal func assignRoleToUserURLRequest(userId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles".expanded(using: [
-                "userId": userId
-            ]), method: "POST", query: [
-                "disableNotifications": disableNotifications
-            ], body: assignRoleRequest)
+            try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/groups/{groupId}".expanded(using: [
+                    "userId": userId, 
+                    "roleId": roleId, 
+                    "groupId": groupId
+                ]), method: "PUT"))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter assignRoleRequest: (body)  
-         - parameter disableNotifications: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func assignRoleToUser(userId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil, completion: @escaping (Result<OktaResponse<Role>, Error>) -> Void) {
-            do {
-                send(try assignRoleToUserURLRequest(userId: userId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Assign a Role
+         
          - parameter userId: (path)  
          - parameter assignRoleRequest: (body)  
          - parameter disableNotifications: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func assignRoleToUser(userId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) async throws -> OktaResponse<Role> {
-            try await send(try assignRoleToUserURLRequest(userId: userId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter assignRoleRequest: (body)  
-         - parameter disableNotifications: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func assignRoleToUser(userId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: String? = nil) throws -> AnyPublisher<OktaResponse<Role>, Error> {
-            publish(try assignRoleToUserURLRequest(userId: userId, assignRoleRequest: assignRoleRequest, disableNotifications: disableNotifications))
-        }
-        #endif
-
-
-        internal func changePasswordURLRequest(userId: String, changePasswordRequest: ChangePasswordRequest, strict: Bool? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/credentials/change_password".expanded(using: [
-                "userId": userId
-            ]), method: "POST", query: [
-                "strict": strict
-            ], body: changePasswordRequest)
+        public func assignRoleToUser(userId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: Bool? = nil) async throws -> OktaResponse<Role> {
+            try await send(try requestWithBody(to: "/api/v1/users/{userId}/roles".expanded(using: [
+                    "userId": userId
+                ]), method: "POST", query: [
+                    "disableNotifications": disableNotifications
+                ], body: assignRoleRequest))
         }
 
         /**
@@ -347,49 +124,13 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter changePasswordRequest: (body)  
          - parameter strict: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
          */
-        public func changePassword(userId: String, changePasswordRequest: ChangePasswordRequest, strict: Bool? = nil, completion: @escaping (Result<OktaResponse<UserCredentials>, Error>) -> Void) {
-            do {
-                send(try changePasswordURLRequest(userId: userId, changePasswordRequest: changePasswordRequest, strict: strict), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Change Password
-         
-         - parameter userId: (path)  
-         - parameter changePasswordRequest: (body)  
-         - parameter strict: (query)  (optional)
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func changePassword(userId: String, changePasswordRequest: ChangePasswordRequest, strict: Bool? = nil) async throws -> OktaResponse<UserCredentials> {
-            try await send(try changePasswordURLRequest(userId: userId, changePasswordRequest: changePasswordRequest, strict: strict))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Change Password
-         
-         - parameter userId: (path)  
-         - parameter changePasswordRequest: (body)  
-         - parameter strict: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func changePassword(userId: String, changePasswordRequest: ChangePasswordRequest, strict: Bool? = nil) throws -> AnyPublisher<OktaResponse<UserCredentials>, Error> {
-            publish(try changePasswordURLRequest(userId: userId, changePasswordRequest: changePasswordRequest, strict: strict))
-        }
-        #endif
-
-
-        internal func changeRecoveryQuestionURLRequest(userId: String, userCredentials: UserCredentials) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/credentials/change_recovery_question".expanded(using: [
-                "userId": userId
-            ]), method: "POST", body: userCredentials)
+            try await send(try requestWithBody(to: "/api/v1/users/{userId}/credentials/change_password".expanded(using: [
+                    "userId": userId
+                ]), method: "POST", query: [
+                    "strict": strict
+                ], body: changePasswordRequest))
         }
 
         /**
@@ -397,527 +138,146 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          - parameter userCredentials: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
          */
-        public func changeRecoveryQuestion(userId: String, userCredentials: UserCredentials, completion: @escaping (Result<OktaResponse<UserCredentials>, Error>) -> Void) {
-            do {
-                send(try changeRecoveryQuestionURLRequest(userId: userId, userCredentials: userCredentials), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Change Recovery Question
-         
-         - parameter userId: (path)  
-         - parameter userCredentials: (body)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func changeRecoveryQuestion(userId: String, userCredentials: UserCredentials) async throws -> OktaResponse<UserCredentials> {
-            try await send(try changeRecoveryQuestionURLRequest(userId: userId, userCredentials: userCredentials))
+            try await send(try requestWithBody(to: "/api/v1/users/{userId}/credentials/change_recovery_question".expanded(using: [
+                    "userId": userId
+                ]), method: "POST", body: userCredentials))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Change Recovery Question
+         Delete all User Sessions
+         
+         - parameter userId: (path)  
+         - parameter oauthTokens: (query) Revoke issued OpenID Connect and OAuth refresh and access tokens (optional, default to false)
+         */
+        @discardableResult
+        public func clearUserSessions(userId: String, oauthTokens: Bool? = nil) async throws -> OktaResponse<Empty> {
+            try await send(try request(to: "/api/v1/users/{userId}/sessions".expanded(using: [
+                    "userId": userId
+                ]), method: "DELETE", query: [
+                    "oauthTokens": oauthTokens
+                ]))
+        }
+
+        /**
+         Create a User
+         
+         - parameter body: (body)  
+         - parameter activate: (query) Executes activation lifecycle operation when creating the user (optional, default to true)
+         - parameter provider: (query) Indicates whether to create a user with a specified authentication provider (optional, default to false)
+         - parameter nextLogin: (query) With activate&#x3D;true, set nextLogin to \&quot;changePassword\&quot; to have the password be EXPIRED, so user must change it the next time they log in. (optional)
+         */
+        public func createUser(body: CreateUserRequest, activate: Bool? = nil, provider: Bool? = nil, nextLogin: UserNextLogin? = nil) async throws -> OktaResponse<User> {
+            try await send(try requestWithBody(to: "/api/v1/users", method: "POST", query: [
+                    "activate": activate, 
+                    "provider": provider, 
+                    "nextLogin": nextLogin
+                ], body: body))
+        }
+
+        /**
+         Delete a User
+         
+         - parameter userId: (path)  
+         - parameter sendEmail: (query)  (optional, default to false)
+         */
+        @discardableResult
+        public func deactivateOrDeleteUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
+            try await send(try request(to: "/api/v1/users/{userId}".expanded(using: [
+                    "userId": userId
+                ]), method: "DELETE", query: [
+                    "sendEmail": sendEmail
+                ]))
+        }
+
+        /**
+         Deactivate a User
+         
+         - parameter userId: (path)  
+         - parameter sendEmail: (query)  (optional, default to false)
+         */
+        @discardableResult
+        public func deactivateUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
+            try await send(try request(to: "/api/v1/users/{userId}/lifecycle/deactivate".expanded(using: [
+                    "userId": userId
+                ]), method: "POST", query: [
+                    "sendEmail": sendEmail
+                ]))
+        }
+
+        /**
+         Expire Password
+         
+         - parameter userId: (path)  
+         */
+        public func expirePassword(userId: String) async throws -> OktaResponse<User> {
+            try await send(try request(to: "/api/v1/users/{userId}/lifecycle/expire_password".expanded(using: [
+                    "userId": userId
+                ]), method: "POST"))
+        }
+
+        /**
+         Expire Password and Set Temporary Password
+         
+         - parameter userId: (path)  
+         */
+        public func expirePasswordAndGetTemporaryPassword(userId: String) async throws -> OktaResponse<TempPassword> {
+            try await send(try request(to: "/api/v1/users/{userId}/lifecycle/expire_password_with_temp_password".expanded(using: [
+                    "userId": userId
+                ]), method: "POST"))
+        }
+
+        /**
+         Initiate Forgot Password
+         
+         - parameter userId: (path)  
+         - parameter sendEmail: (query)  (optional, default to true)
+         */
+        public func forgotPassword(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<ForgotPasswordResponse> {
+            try await send(try request(to: "/api/v1/users/{userId}/credentials/forgot_password".expanded(using: [
+                    "userId": userId
+                ]), method: "POST", query: [
+                    "sendEmail": sendEmail
+                ]))
+        }
+
+        /**
+         Reset Password with Recovery Question
          
          - parameter userId: (path)  
          - parameter userCredentials: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func changeRecoveryQuestion(userId: String, userCredentials: UserCredentials) throws -> AnyPublisher<OktaResponse<UserCredentials>, Error> {
-            publish(try changeRecoveryQuestionURLRequest(userId: userId, userCredentials: userCredentials))
-        }
-        #endif
-
-
-        internal func clearUserSessionsURLRequest(userId: String, oauthTokens: Bool? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/sessions".expanded(using: [
-                "userId": userId
-            ]), method: "DELETE", query: [
-                "oauthTokens": oauthTokens
-            ])
-        }
-
-        /**
-
-         - parameter userId: (path)  
-         - parameter oauthTokens: (query) Revoke issued OpenID Connect and OAuth refresh and access tokens (optional, default to false)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func clearUserSessions(userId: String, oauthTokens: Bool? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try clearUserSessionsURLRequest(userId: userId, oauthTokens: oauthTokens), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter userId: (path)  
-         - parameter oauthTokens: (query) Revoke issued OpenID Connect and OAuth refresh and access tokens (optional, default to false)
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func clearUserSessions(userId: String, oauthTokens: Bool? = nil) async throws -> OktaResponse<Empty> {
-            try await send(try clearUserSessionsURLRequest(userId: userId, oauthTokens: oauthTokens))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter oauthTokens: (query) Revoke issued OpenID Connect and OAuth refresh and access tokens (optional, default to false)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func clearUserSessions(userId: String, oauthTokens: Bool? = nil) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try clearUserSessionsURLRequest(userId: userId, oauthTokens: oauthTokens))
-        }
-        #endif
-
-
-        internal func createUserURLRequest(createUserRequest: CreateUserRequest, activate: Bool? = nil, provider: Bool? = nil, nextLogin: UserNextLogin? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users", method: "POST", query: [
-                "activate": activate, 
-                "provider": provider, 
-                "nextLogin": nextLogin
-            ], body: createUserRequest)
-        }
-
-        /**
-         Create User
-         
-         - parameter createUserRequest: (body)  
-         - parameter activate: (query) Executes activation lifecycle operation when creating the user (optional, default to true)
-         - parameter provider: (query) Indicates whether to create a user with a specified authentication provider (optional, default to false)
-         - parameter nextLogin: (query) With activate&#x3D;true, set nextLogin to \&quot;changePassword\&quot; to have the password be EXPIRED, so user must change it the next time they log in. (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func createUser(createUserRequest: CreateUserRequest, activate: Bool? = nil, provider: Bool? = nil, nextLogin: UserNextLogin? = nil, completion: @escaping (Result<OktaResponse<User>, Error>) -> Void) {
-            do {
-                send(try createUserURLRequest(createUserRequest: createUserRequest, activate: activate, provider: provider, nextLogin: nextLogin), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Create User
-         
-         - parameter createUserRequest: (body)  
-         - parameter activate: (query) Executes activation lifecycle operation when creating the user (optional, default to true)
-         - parameter provider: (query) Indicates whether to create a user with a specified authentication provider (optional, default to false)
-         - parameter nextLogin: (query) With activate&#x3D;true, set nextLogin to \&quot;changePassword\&quot; to have the password be EXPIRED, so user must change it the next time they log in. (optional)
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func createUser(createUserRequest: CreateUserRequest, activate: Bool? = nil, provider: Bool? = nil, nextLogin: UserNextLogin? = nil) async throws -> OktaResponse<User> {
-            try await send(try createUserURLRequest(createUserRequest: createUserRequest, activate: activate, provider: provider, nextLogin: nextLogin))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Create User
-         
-         - parameter createUserRequest: (body)  
-         - parameter activate: (query) Executes activation lifecycle operation when creating the user (optional, default to true)
-         - parameter provider: (query) Indicates whether to create a user with a specified authentication provider (optional, default to false)
-         - parameter nextLogin: (query) With activate&#x3D;true, set nextLogin to \&quot;changePassword\&quot; to have the password be EXPIRED, so user must change it the next time they log in. (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func createUser(createUserRequest: CreateUserRequest, activate: Bool? = nil, provider: Bool? = nil, nextLogin: UserNextLogin? = nil) throws -> AnyPublisher<OktaResponse<User>, Error> {
-            publish(try createUserURLRequest(createUserRequest: createUserRequest, activate: activate, provider: provider, nextLogin: nextLogin))
-        }
-        #endif
-
-
-        internal func deactivateOrDeleteUserURLRequest(userId: String, sendEmail: Bool? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}".expanded(using: [
-                "userId": userId
-            ]), method: "DELETE", query: [
-                "sendEmail": sendEmail
-            ])
-        }
-
-        /**
-         Delete User
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to false)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func deactivateOrDeleteUser(userId: String, sendEmail: Bool? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deactivateOrDeleteUserURLRequest(userId: userId, sendEmail: sendEmail), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Delete User
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to false)
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func deactivateOrDeleteUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
-            try await send(try deactivateOrDeleteUserURLRequest(userId: userId, sendEmail: sendEmail))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Delete User
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to false)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deactivateOrDeleteUser(userId: String, sendEmail: Bool? = nil) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deactivateOrDeleteUserURLRequest(userId: userId, sendEmail: sendEmail))
-        }
-        #endif
-
-
-        internal func deactivateUserURLRequest(userId: String, sendEmail: Bool? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/lifecycle/deactivate".expanded(using: [
-                "userId": userId
-            ]), method: "POST", query: [
-                "sendEmail": sendEmail
-            ])
-        }
-
-        /**
-         Deactivate User
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to false)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func deactivateUser(userId: String, sendEmail: Bool? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deactivateUserURLRequest(userId: userId, sendEmail: sendEmail), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Deactivate User
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to false)
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func deactivateUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<Empty> {
-            try await send(try deactivateUserURLRequest(userId: userId, sendEmail: sendEmail))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Deactivate User
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to false)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deactivateUser(userId: String, sendEmail: Bool? = nil) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deactivateUserURLRequest(userId: userId, sendEmail: sendEmail))
-        }
-        #endif
-
-
-        internal func expirePasswordURLRequest(userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/lifecycle/expire_password".expanded(using: [
-                "userId": userId
-            ]), method: "POST")
-        }
-
-        /**
-         Expire Password
-         
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func expirePassword(userId: String, completion: @escaping (Result<OktaResponse<User>, Error>) -> Void) {
-            do {
-                send(try expirePasswordURLRequest(userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Expire Password
-         
-         - parameter userId: (path)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func expirePassword(userId: String) async throws -> OktaResponse<User> {
-            try await send(try expirePasswordURLRequest(userId: userId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Expire Password
-         
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func expirePassword(userId: String) throws -> AnyPublisher<OktaResponse<User>, Error> {
-            publish(try expirePasswordURLRequest(userId: userId))
-        }
-        #endif
-
-
-        internal func expirePasswordAndGetTemporaryPasswordURLRequest(userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/lifecycle/expire_password_with_temp_password".expanded(using: [
-                "userId": userId
-            ]), method: "POST")
-        }
-
-        /**
-         Expire Password and Set Temporary Password
-         
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func expirePasswordAndGetTemporaryPassword(userId: String, completion: @escaping (Result<OktaResponse<TempPassword>, Error>) -> Void) {
-            do {
-                send(try expirePasswordAndGetTemporaryPasswordURLRequest(userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Expire Password and Set Temporary Password
-         
-         - parameter userId: (path)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func expirePasswordAndGetTemporaryPassword(userId: String) async throws -> OktaResponse<TempPassword> {
-            try await send(try expirePasswordAndGetTemporaryPasswordURLRequest(userId: userId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Expire Password and Set Temporary Password
-         
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func expirePasswordAndGetTemporaryPassword(userId: String) throws -> AnyPublisher<OktaResponse<TempPassword>, Error> {
-            publish(try expirePasswordAndGetTemporaryPasswordURLRequest(userId: userId))
-        }
-        #endif
-
-
-        internal func forgotPasswordURLRequest(userId: String, sendEmail: Bool? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/credentials/forgot_password".expanded(using: [
-                "userId": userId
-            ]), method: "POST", query: [
-                "sendEmail": sendEmail
-            ])
-        }
-
-        /**
-         Initiate Forgot Password
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to true)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func forgotPassword(userId: String, sendEmail: Bool? = nil, completion: @escaping (Result<OktaResponse<ForgotPasswordResponse>, Error>) -> Void) {
-            do {
-                send(try forgotPasswordURLRequest(userId: userId, sendEmail: sendEmail), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Initiate Forgot Password
-         
-         - parameter userId: (path)  
          - parameter sendEmail: (query)  (optional, default to true)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func forgotPassword(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<ForgotPasswordResponse> {
-            try await send(try forgotPasswordURLRequest(userId: userId, sendEmail: sendEmail))
+        public func forgotPasswordSetNewPassword(userId: String, userCredentials: UserCredentials, sendEmail: Bool? = nil) async throws -> OktaResponse<UserCredentials> {
+            try await send(try requestWithBody(to: "/api/v1/users/{userId}/credentials/forgot_password_recovery_question".expanded(using: [
+                    "userId": userId
+                ]), method: "POST", query: [
+                    "sendEmail": sendEmail
+                ], body: userCredentials))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Initiate Forgot Password
+         List all Linked Objects
          
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to true)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func forgotPassword(userId: String, sendEmail: Bool? = nil) throws -> AnyPublisher<OktaResponse<ForgotPasswordResponse>, Error> {
-            publish(try forgotPasswordURLRequest(userId: userId, sendEmail: sendEmail))
-        }
-        #endif
-
-
-        internal func forgotPasswordSetNewPasswordURLRequest(userId: String, sendEmail: Bool? = nil, userCredentials: UserCredentials? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/credentials/forgot_password_recovery_question".expanded(using: [
-                "userId": userId
-            ]), method: "POST", query: [
-                "sendEmail": sendEmail
-            ], body: userCredentials)
-        }
-
-        /**
-         Reset Password with Recovery Question
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to true)
-         - parameter userCredentials: (body)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func forgotPasswordSetNewPassword(userId: String, sendEmail: Bool? = nil, userCredentials: UserCredentials? = nil, completion: @escaping (Result<OktaResponse<UserCredentials>, Error>) -> Void) {
-            do {
-                send(try forgotPasswordSetNewPasswordURLRequest(userId: userId, sendEmail: sendEmail, userCredentials: userCredentials), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Reset Password with Recovery Question
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to true)
-         - parameter userCredentials: (body)  (optional)
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func forgotPasswordSetNewPassword(userId: String, sendEmail: Bool? = nil, userCredentials: UserCredentials? = nil) async throws -> OktaResponse<UserCredentials> {
-            try await send(try forgotPasswordSetNewPasswordURLRequest(userId: userId, sendEmail: sendEmail, userCredentials: userCredentials))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Reset Password with Recovery Question
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  (optional, default to true)
-         - parameter userCredentials: (body)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func forgotPasswordSetNewPassword(userId: String, sendEmail: Bool? = nil, userCredentials: UserCredentials? = nil) throws -> AnyPublisher<OktaResponse<UserCredentials>, Error> {
-            publish(try forgotPasswordSetNewPasswordURLRequest(userId: userId, sendEmail: sendEmail, userCredentials: userCredentials))
-        }
-        #endif
-
-
-        internal func getLinkedObjectsForUserURLRequest(userId: String, relationshipName: String, after: String? = nil, limit: Int? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/linkedObjects/{relationshipName}".expanded(using: [
-                "userId": userId, 
-                "relationshipName": relationshipName
-            ]), method: "GET", query: [
-                "after": after, 
-                "limit": limit
-            ])
-        }
-
-        /**
-
-         - parameter userId: (path)  
-         - parameter relationshipName: (path)  
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to -1)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func getLinkedObjectsForUser(userId: String, relationshipName: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[AnyCodable]>, Error>) -> Void) {
-            do {
-                send(try getLinkedObjectsForUserURLRequest(userId: userId, relationshipName: relationshipName, after: after, limit: limit), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
          - parameter userId: (path)  
          - parameter relationshipName: (path)  
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to -1)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func getLinkedObjectsForUser(userId: String, relationshipName: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[AnyCodable]> {
-            try await send(try getLinkedObjectsForUserURLRequest(userId: userId, relationshipName: relationshipName, after: after, limit: limit))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter relationshipName: (path)  
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to -1)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getLinkedObjectsForUser(userId: String, relationshipName: String, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[AnyCodable]>, Error> {
-            publish(try getLinkedObjectsForUserURLRequest(userId: userId, relationshipName: relationshipName, after: after, limit: limit))
-        }
-        #endif
-
-
-        internal func getRefreshTokenForUserAndClientURLRequest(userId: String, clientId: String, tokenId: String, expand: String? = nil, limit: Int? = nil, after: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/clients/{clientId}/tokens/{tokenId}".expanded(using: [
-                "userId": userId, 
-                "clientId": clientId, 
-                "tokenId": tokenId
-            ]), method: "GET", query: [
-                "expand": expand, 
-                "limit": limit, 
-                "after": after
-            ])
+            try await send(try request(to: "/api/v1/users/{userId}/linkedObjects/{relationshipName}".expanded(using: [
+                    "userId": userId, 
+                    "relationshipName": relationshipName
+                ]), method: "GET", query: [
+                    "after": after, 
+                    "limit": limit
+                ]))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter clientId: (path)  
-         - parameter tokenId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         - parameter after: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func getRefreshTokenForUserAndClient(userId: String, clientId: String, tokenId: String, expand: String? = nil, limit: Int? = nil, after: String? = nil, completion: @escaping (Result<OktaResponse<OAuth2RefreshToken>, Error>) -> Void) {
-            do {
-                send(try getRefreshTokenForUserAndClientURLRequest(userId: userId, clientId: clientId, tokenId: tokenId, expand: expand, limit: limit, after: after), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Retrieve a Refresh Token for a Client
+         
          - parameter userId: (path)  
          - parameter clientId: (path)  
          - parameter tokenId: (path)  
@@ -925,1151 +285,352 @@ public extension OktaClient {
          - parameter limit: (query)  (optional, default to 20)
          - parameter after: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func getRefreshTokenForUserAndClient(userId: String, clientId: String, tokenId: String, expand: String? = nil, limit: Int? = nil, after: String? = nil) async throws -> OktaResponse<OAuth2RefreshToken> {
-            try await send(try getRefreshTokenForUserAndClientURLRequest(userId: userId, clientId: clientId, tokenId: tokenId, expand: expand, limit: limit, after: after))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter clientId: (path)  
-         - parameter tokenId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         - parameter after: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getRefreshTokenForUserAndClient(userId: String, clientId: String, tokenId: String, expand: String? = nil, limit: Int? = nil, after: String? = nil) throws -> AnyPublisher<OktaResponse<OAuth2RefreshToken>, Error> {
-            publish(try getRefreshTokenForUserAndClientURLRequest(userId: userId, clientId: clientId, tokenId: tokenId, expand: expand, limit: limit, after: after))
-        }
-        #endif
-
-
-        internal func getUserURLRequest(userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}".expanded(using: [
-                "userId": userId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/users/{userId}/clients/{clientId}/tokens/{tokenId}".expanded(using: [
+                    "userId": userId, 
+                    "clientId": clientId, 
+                    "tokenId": tokenId
+                ]), method: "GET", query: [
+                    "expand": expand, 
+                    "limit": limit, 
+                    "after": after
+                ]))
         }
 
         /**
-         Get User
-         
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func getUser(userId: String, completion: @escaping (Result<OktaResponse<User>, Error>) -> Void) {
-            do {
-                send(try getUserURLRequest(userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get User
+         Retrieve a User
          
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func getUser(userId: String) async throws -> OktaResponse<User> {
-            try await send(try getUserURLRequest(userId: userId))
+            try await send(try request(to: "/api/v1/users/{userId}".expanded(using: [
+                    "userId": userId
+                ]), method: "GET"))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Get User
+         Retrieve a User Grant
          
          - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getUser(userId: String) throws -> AnyPublisher<OktaResponse<User>, Error> {
-            publish(try getUserURLRequest(userId: userId))
-        }
-        #endif
-
-
-        internal func getUserGrantURLRequest(userId: String, grantId: String, expand: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/grants/{grantId}".expanded(using: [
-                "userId": userId, 
-                "grantId": grantId
-            ]), method: "GET", query: [
-                "expand": expand
-            ])
-        }
-
-        /**
-
-         - parameter userId: (path)  
-         - parameter grantId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func getUserGrant(userId: String, grantId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<OAuth2ScopeConsentGrant>, Error>) -> Void) {
-            do {
-                send(try getUserGrantURLRequest(userId: userId, grantId: grantId, expand: expand), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter userId: (path)  
          - parameter grantId: (path)  
          - parameter expand: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func getUserGrant(userId: String, grantId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2ScopeConsentGrant> {
-            try await send(try getUserGrantURLRequest(userId: userId, grantId: grantId, expand: expand))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter grantId: (path)  
-         - parameter expand: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getUserGrant(userId: String, grantId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<OAuth2ScopeConsentGrant>, Error> {
-            publish(try getUserGrantURLRequest(userId: userId, grantId: grantId, expand: expand))
-        }
-        #endif
-
-
-        internal func getUserRoleURLRequest(userId: String, roleId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles/{roleId}".expanded(using: [
-                "userId": userId, 
-                "roleId": roleId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/users/{userId}/grants/{grantId}".expanded(using: [
+                    "userId": userId, 
+                    "grantId": grantId
+                ]), method: "GET", query: [
+                    "expand": expand
+                ]))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func getUserRole(userId: String, roleId: String, completion: @escaping (Result<OktaResponse<Role>, Error>) -> Void) {
-            do {
-                send(try getUserRoleURLRequest(userId: userId, roleId: roleId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Retrieve a Role
+         
          - parameter userId: (path)  
          - parameter roleId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func getUserRole(userId: String, roleId: String) async throws -> OktaResponse<Role> {
-            try await send(try getUserRoleURLRequest(userId: userId, roleId: roleId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getUserRole(userId: String, roleId: String) throws -> AnyPublisher<OktaResponse<Role>, Error> {
-            publish(try getUserRoleURLRequest(userId: userId, roleId: roleId))
-        }
-        #endif
-
-
-        internal func listAppLinksURLRequest(userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/appLinks".expanded(using: [
-                "userId": userId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}".expanded(using: [
+                    "userId": userId, 
+                    "roleId": roleId
+                ]), method: "GET"))
         }
 
         /**
-         Get Assigned App Links
-         
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listAppLinks(userId: String, completion: @escaping (Result<OktaResponse<[AppLink]>, Error>) -> Void) {
-            do {
-                send(try listAppLinksURLRequest(userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Assigned App Links
+         List all Assigned Application Links
          
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listAppLinks(userId: String) async throws -> OktaResponse<[AppLink]> {
-            try await send(try listAppLinksURLRequest(userId: userId))
+            try await send(try request(to: "/api/v1/users/{userId}/appLinks".expanded(using: [
+                    "userId": userId
+                ]), method: "GET"))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Get Assigned App Links
+         List all Application Targets for Application Administrator Role
          
          - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listAppLinks(userId: String) throws -> AnyPublisher<OktaResponse<[AppLink]>, Error> {
-            publish(try listAppLinksURLRequest(userId: userId))
-        }
-        #endif
-
-
-        internal func listApplicationTargetsForApplicationAdministratorRoleForUserURLRequest(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps".expanded(using: [
-                "userId": userId, 
-                "roleId": roleId
-            ]), method: "GET", query: [
-                "after": after, 
-                "limit": limit
-            ])
-        }
-
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listApplicationTargetsForApplicationAdministratorRoleForUser(userId: String, roleId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[CatalogApplication]>, Error>) -> Void) {
-            do {
-                send(try listApplicationTargetsForApplicationAdministratorRoleForUserURLRequest(userId: userId, roleId: roleId, after: after, limit: limit), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter userId: (path)  
          - parameter roleId: (path)  
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listApplicationTargetsForApplicationAdministratorRoleForUser(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[CatalogApplication]> {
-            try await send(try listApplicationTargetsForApplicationAdministratorRoleForUserURLRequest(userId: userId, roleId: roleId, after: after, limit: limit))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listApplicationTargetsForApplicationAdministratorRoleForUser(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[CatalogApplication]>, Error> {
-            publish(try listApplicationTargetsForApplicationAdministratorRoleForUserURLRequest(userId: userId, roleId: roleId, after: after, limit: limit))
-        }
-        #endif
-
-
-        internal func listAssignedRolesForUserURLRequest(userId: String, expand: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles".expanded(using: [
-                "userId": userId
-            ]), method: "GET", query: [
-                "expand": expand
-            ])
+            try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps".expanded(using: [
+                    "userId": userId, 
+                    "roleId": roleId
+                ]), method: "GET", query: [
+                    "after": after, 
+                    "limit": limit
+                ]))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listAssignedRolesForUser(userId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<[Role]>, Error>) -> Void) {
-            do {
-                send(try listAssignedRolesForUserURLRequest(userId: userId, expand: expand), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         List all Assigned Roles
+         
          - parameter userId: (path)  
          - parameter expand: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listAssignedRolesForUser(userId: String, expand: String? = nil) async throws -> OktaResponse<[Role]> {
-            try await send(try listAssignedRolesForUserURLRequest(userId: userId, expand: expand))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter expand: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listAssignedRolesForUser(userId: String, expand: String? = nil) throws -> AnyPublisher<OktaResponse<[Role]>, Error> {
-            publish(try listAssignedRolesForUserURLRequest(userId: userId, expand: expand))
-        }
-        #endif
-
-
-        internal func listGrantsForUserAndClientURLRequest(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/clients/{clientId}/grants".expanded(using: [
-                "userId": userId, 
-                "clientId": clientId
-            ]), method: "GET", query: [
-                "expand": expand, 
-                "after": after, 
-                "limit": limit
-            ])
+            try await send(try request(to: "/api/v1/users/{userId}/roles".expanded(using: [
+                    "userId": userId
+                ]), method: "GET", query: [
+                    "expand": expand
+                ]))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter clientId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listGrantsForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[OAuth2ScopeConsentGrant]>, Error>) -> Void) {
-            do {
-                send(try listGrantsForUserAndClientURLRequest(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         List all Grants for a Client
+         
          - parameter userId: (path)  
          - parameter clientId: (path)  
          - parameter expand: (query)  (optional)
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listGrantsForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
-            try await send(try listGrantsForUserAndClientURLRequest(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter clientId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listGrantsForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[OAuth2ScopeConsentGrant]>, Error> {
-            publish(try listGrantsForUserAndClientURLRequest(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit))
-        }
-        #endif
-
-
-        internal func listGroupTargetsForRoleURLRequest(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/groups".expanded(using: [
-                "userId": userId, 
-                "roleId": roleId
-            ]), method: "GET", query: [
-                "after": after, 
-                "limit": limit
-            ])
+            try await send(try request(to: "/api/v1/users/{userId}/clients/{clientId}/grants".expanded(using: [
+                    "userId": userId, 
+                    "clientId": clientId
+                ]), method: "GET", query: [
+                    "expand": expand, 
+                    "after": after, 
+                    "limit": limit
+                ]))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listGroupTargetsForRole(userId: String, roleId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[Group]>, Error>) -> Void) {
-            do {
-                send(try listGroupTargetsForRoleURLRequest(userId: userId, roleId: roleId, after: after, limit: limit), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         List all Group Targets for Role
+         
          - parameter userId: (path)  
          - parameter roleId: (path)  
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listGroupTargetsForRole(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[Group]> {
-            try await send(try listGroupTargetsForRoleURLRequest(userId: userId, roleId: roleId, after: after, limit: limit))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listGroupTargetsForRole(userId: String, roleId: String, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[Group]>, Error> {
-            publish(try listGroupTargetsForRoleURLRequest(userId: userId, roleId: roleId, after: after, limit: limit))
-        }
-        #endif
-
-
-        internal func listRefreshTokensForUserAndClientURLRequest(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/clients/{clientId}/tokens".expanded(using: [
-                "userId": userId, 
-                "clientId": clientId
-            ]), method: "GET", query: [
-                "expand": expand, 
-                "after": after, 
-                "limit": limit
-            ])
+            try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/groups".expanded(using: [
+                    "userId": userId, 
+                    "roleId": roleId
+                ]), method: "GET", query: [
+                    "after": after, 
+                    "limit": limit
+                ]))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter clientId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listRefreshTokensForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[OAuth2RefreshToken]>, Error>) -> Void) {
-            do {
-                send(try listRefreshTokensForUserAndClientURLRequest(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         List all Refresh Tokens for a Client
+         
          - parameter userId: (path)  
          - parameter clientId: (path)  
          - parameter expand: (query)  (optional)
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listRefreshTokensForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2RefreshToken]> {
-            try await send(try listRefreshTokensForUserAndClientURLRequest(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter clientId: (path)  
-         - parameter expand: (query)  (optional)
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listRefreshTokensForUserAndClient(userId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[OAuth2RefreshToken]>, Error> {
-            publish(try listRefreshTokensForUserAndClientURLRequest(userId: userId, clientId: clientId, expand: expand, after: after, limit: limit))
-        }
-        #endif
-
-
-        internal func listUserClientsURLRequest(userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/clients".expanded(using: [
-                "userId": userId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/users/{userId}/clients/{clientId}/tokens".expanded(using: [
+                    "userId": userId, 
+                    "clientId": clientId
+                ]), method: "GET", query: [
+                    "expand": expand, 
+                    "after": after, 
+                    "limit": limit
+                ]))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listUserClients(userId: String, completion: @escaping (Result<OktaResponse<[OAuth2Client]>, Error>) -> Void) {
-            do {
-                send(try listUserClientsURLRequest(userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         List all Clients
+         
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listUserClients(userId: String) async throws -> OktaResponse<[OAuth2Client]> {
-            try await send(try listUserClientsURLRequest(userId: userId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listUserClients(userId: String) throws -> AnyPublisher<OktaResponse<[OAuth2Client]>, Error> {
-            publish(try listUserClientsURLRequest(userId: userId))
-        }
-        #endif
-
-
-        internal func listUserGrantsURLRequest(userId: String, scopeId: String? = nil, expand: String? = nil, after: String? = nil, limit: Int? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/grants".expanded(using: [
-                "userId": userId
-            ]), method: "GET", query: [
-                "scopeId": scopeId, 
-                "expand": expand, 
-                "after": after, 
-                "limit": limit
-            ])
+            try await send(try request(to: "/api/v1/users/{userId}/clients".expanded(using: [
+                    "userId": userId
+                ]), method: "GET"))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter scopeId: (query)  (optional)
-         - parameter expand: (query)  (optional)
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listUserGrants(userId: String, scopeId: String? = nil, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[OAuth2ScopeConsentGrant]>, Error>) -> Void) {
-            do {
-                send(try listUserGrantsURLRequest(userId: userId, scopeId: scopeId, expand: expand, after: after, limit: limit), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         List all User Grants
+         
          - parameter userId: (path)  
          - parameter scopeId: (query)  (optional)
          - parameter expand: (query)  (optional)
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listUserGrants(userId: String, scopeId: String? = nil, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2ScopeConsentGrant]> {
-            try await send(try listUserGrantsURLRequest(userId: userId, scopeId: scopeId, expand: expand, after: after, limit: limit))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter scopeId: (query)  (optional)
-         - parameter expand: (query)  (optional)
-         - parameter after: (query)  (optional)
-         - parameter limit: (query)  (optional, default to 20)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listUserGrants(userId: String, scopeId: String? = nil, expand: String? = nil, after: String? = nil, limit: Int? = nil) throws -> AnyPublisher<OktaResponse<[OAuth2ScopeConsentGrant]>, Error> {
-            publish(try listUserGrantsURLRequest(userId: userId, scopeId: scopeId, expand: expand, after: after, limit: limit))
-        }
-        #endif
-
-
-        internal func listUserGroupsURLRequest(userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/groups".expanded(using: [
-                "userId": userId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/users/{userId}/grants".expanded(using: [
+                    "userId": userId
+                ]), method: "GET", query: [
+                    "scopeId": scopeId, 
+                    "expand": expand, 
+                    "after": after, 
+                    "limit": limit
+                ]))
         }
 
         /**
-         Get Member Groups
-         
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listUserGroups(userId: String, completion: @escaping (Result<OktaResponse<[Group]>, Error>) -> Void) {
-            do {
-                send(try listUserGroupsURLRequest(userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Member Groups
+         List all Groups
          
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listUserGroups(userId: String) async throws -> OktaResponse<[Group]> {
-            try await send(try listUserGroupsURLRequest(userId: userId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Get Member Groups
-         
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listUserGroups(userId: String) throws -> AnyPublisher<OktaResponse<[Group]>, Error> {
-            publish(try listUserGroupsURLRequest(userId: userId))
-        }
-        #endif
-
-
-        internal func listUserIdentityProvidersURLRequest(userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/idps".expanded(using: [
-                "userId": userId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/users/{userId}/groups".expanded(using: [
+                    "userId": userId
+                ]), method: "GET"))
         }
 
         /**
-         Listing IdPs associated with a user
-         
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listUserIdentityProviders(userId: String, completion: @escaping (Result<OktaResponse<[IdentityProvider]>, Error>) -> Void) {
-            do {
-                send(try listUserIdentityProvidersURLRequest(userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Listing IdPs associated with a user
+         List all Identity Providers
          
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listUserIdentityProviders(userId: String) async throws -> OktaResponse<[IdentityProvider]> {
-            try await send(try listUserIdentityProvidersURLRequest(userId: userId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Listing IdPs associated with a user
-         
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listUserIdentityProviders(userId: String) throws -> AnyPublisher<OktaResponse<[IdentityProvider]>, Error> {
-            publish(try listUserIdentityProvidersURLRequest(userId: userId))
-        }
-        #endif
-
-
-        internal func listUsersURLRequest(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, search: String? = nil, sortBy: String? = nil, sortOrder: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users", method: "GET", query: [
-                "q": q, 
-                "after": after, 
-                "limit": limit, 
-                "filter": filter, 
-                "search": search, 
-                "sortBy": sortBy, 
-                "sortOrder": sortOrder
-            ])
+            try await send(try request(to: "/api/v1/users/{userId}/idps".expanded(using: [
+                    "userId": userId
+                ]), method: "GET"))
         }
 
         /**
-         List Users
+         List all Users
          
+         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the &#x60;Link&#x60; response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
          - parameter q: (query) Finds a user that matches firstName, lastName, and email properties (optional)
-         - parameter after: (query) Specifies the pagination cursor for the next page of users (optional)
-         - parameter limit: (query) Specifies the number of results returned (optional, default to 10)
-         - parameter filter: (query) Filters users with a supported expression for a subset of properties (optional)
-         - parameter search: (query) Searches for users with a supported filtering  expression for most properties (optional)
-         - parameter sortBy: (query)  (optional)
-         - parameter sortOrder: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listUsers(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, search: String? = nil, sortBy: String? = nil, sortOrder: String? = nil, completion: @escaping (Result<OktaResponse<[User]>, Error>) -> Void) {
-            do {
-                send(try listUsersURLRequest(q: q, after: after, limit: limit, filter: filter, search: search, sortBy: sortBy, sortOrder: sortOrder), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List Users
-         
-         - parameter q: (query) Finds a user that matches firstName, lastName, and email properties (optional)
-         - parameter after: (query) Specifies the pagination cursor for the next page of users (optional)
-         - parameter limit: (query) Specifies the number of results returned (optional, default to 10)
+         - parameter limit: (query) Specifies the number of results returned. Defaults to 10 if &#x60;q&#x60; is provided. (optional, default to 200)
          - parameter filter: (query) Filters users with a supported expression for a subset of properties (optional)
          - parameter search: (query) Searches for users with a supported filtering  expression for most properties (optional)
          - parameter sortBy: (query)  (optional)
          - parameter sortOrder: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func listUsers(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, search: String? = nil, sortBy: String? = nil, sortOrder: String? = nil) async throws -> OktaResponse<[User]> {
-            try await send(try listUsersURLRequest(q: q, after: after, limit: limit, filter: filter, search: search, sortBy: sortBy, sortOrder: sortOrder))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List Users
-         
-         - parameter q: (query) Finds a user that matches firstName, lastName, and email properties (optional)
-         - parameter after: (query) Specifies the pagination cursor for the next page of users (optional)
-         - parameter limit: (query) Specifies the number of results returned (optional, default to 10)
-         - parameter filter: (query) Filters users with a supported expression for a subset of properties (optional)
-         - parameter search: (query) Searches for users with a supported filtering  expression for most properties (optional)
-         - parameter sortBy: (query)  (optional)
-         - parameter sortOrder: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listUsers(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, search: String? = nil, sortBy: String? = nil, sortOrder: String? = nil) throws -> AnyPublisher<OktaResponse<[User]>, Error> {
-            publish(try listUsersURLRequest(q: q, after: after, limit: limit, filter: filter, search: search, sortBy: sortBy, sortOrder: sortOrder))
-        }
-        #endif
-
-
-        internal func partialUpdateUserURLRequest(userId: String, user: User, strict: Bool? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}".expanded(using: [
-                "userId": userId
-            ]), method: "POST", query: [
-                "strict": strict
-            ], body: user)
+        public func listUsers(after: String? = nil, q: String? = nil, limit: Int? = nil, filter: String? = nil, search: String? = nil, sortBy: String? = nil, sortOrder: String? = nil) async throws -> OktaResponse<[User]> {
+            try await send(try request(to: "/api/v1/users", method: "GET", query: [
+                    "after": after, 
+                    "q": q, 
+                    "limit": limit, 
+                    "filter": filter, 
+                    "search": search, 
+                    "sortBy": sortBy, 
+                    "sortOrder": sortOrder
+                ]))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter user: (body)  
-         - parameter strict: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func partialUpdateUser(userId: String, user: User, strict: Bool? = nil, completion: @escaping (Result<OktaResponse<User>, Error>) -> Void) {
-            do {
-                send(try partialUpdateUserURLRequest(userId: userId, user: user, strict: strict), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter userId: (path)  
-         - parameter user: (body)  
-         - parameter strict: (query)  (optional)
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func partialUpdateUser(userId: String, user: User, strict: Bool? = nil) async throws -> OktaResponse<User> {
-            try await send(try partialUpdateUserURLRequest(userId: userId, user: user, strict: strict))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter user: (body)  
-         - parameter strict: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func partialUpdateUser(userId: String, user: User, strict: Bool? = nil) throws -> AnyPublisher<OktaResponse<User>, Error> {
-            publish(try partialUpdateUserURLRequest(userId: userId, user: user, strict: strict))
-        }
-        #endif
-
-
-        internal func reactivateUserURLRequest(userId: String, sendEmail: Bool? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/lifecycle/reactivate".expanded(using: [
-                "userId": userId
-            ]), method: "POST", query: [
-                "sendEmail": sendEmail
-            ])
-        }
-
-        /**
-         Reactivate User
+         Update a User
          
          - parameter userId: (path)  
-         - parameter sendEmail: (query) Sends an activation email to the user if true (optional, default to false)
-         - parameter completion: completion handler to receive the data and the error objects
+         - parameter user: (body)  
+         - parameter strict: (query)  (optional)
          */
-        public func reactivateUser(userId: String, sendEmail: Bool? = nil, completion: @escaping (Result<OktaResponse<UserActivationToken>, Error>) -> Void) {
-            do {
-                send(try reactivateUserURLRequest(userId: userId, sendEmail: sendEmail), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
+        public func partialUpdateUser(userId: String, user: UpdateUserRequest, strict: Bool? = nil) async throws -> OktaResponse<User> {
+            try await send(try requestWithBody(to: "/api/v1/users/{userId}".expanded(using: [
+                    "userId": userId
+                ]), method: "POST", query: [
+                    "strict": strict
+                ], body: user))
         }
 
-        #if swift(>=5.5.1) && !os(Linux)
         /**
-         Reactivate User
+         Reactivate a User
          
          - parameter userId: (path)  
          - parameter sendEmail: (query) Sends an activation email to the user if true (optional, default to false)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func reactivateUser(userId: String, sendEmail: Bool? = nil) async throws -> OktaResponse<UserActivationToken> {
-            try await send(try reactivateUserURLRequest(userId: userId, sendEmail: sendEmail))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Reactivate User
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query) Sends an activation email to the user if true (optional, default to false)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func reactivateUser(userId: String, sendEmail: Bool? = nil) throws -> AnyPublisher<OktaResponse<UserActivationToken>, Error> {
-            publish(try reactivateUserURLRequest(userId: userId, sendEmail: sendEmail))
-        }
-        #endif
-
-
-        internal func removeApplicationTargetFromAdministratorRoleForUserURLRequest(userId: String, roleId: String, appName: String, applicationId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}".expanded(using: [
-                "userId": userId, 
-                "roleId": roleId, 
-                "appName": appName, 
-                "applicationId": applicationId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/users/{userId}/lifecycle/reactivate".expanded(using: [
+                    "userId": userId
+                ]), method: "POST", query: [
+                    "sendEmail": sendEmail
+                ]))
         }
 
         /**
-         Remove App Instance Target to App Administrator Role given to a User
-         
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter appName: (path)  
-         - parameter applicationId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func removeApplicationTargetFromAdministratorRoleForUser(userId: String, roleId: String, appName: String, applicationId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try removeApplicationTargetFromAdministratorRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Remove App Instance Target to App Administrator Role given to a User
+         Unassign an Application Instance Target to Application Administrator Role
          
          - parameter userId: (path)  
          - parameter roleId: (path)  
          - parameter appName: (path)  
          - parameter applicationId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func removeApplicationTargetFromAdministratorRoleForUser(userId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
-            try await send(try removeApplicationTargetFromAdministratorRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId))
+            try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}".expanded(using: [
+                    "userId": userId, 
+                    "roleId": roleId, 
+                    "appName": appName, 
+                    "applicationId": applicationId
+                ]), method: "DELETE"))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Remove App Instance Target to App Administrator Role given to a User
+         Unassign an Application Target from Application Administrator Role
          
          - parameter userId: (path)  
          - parameter roleId: (path)  
          - parameter appName: (path)  
-         - parameter applicationId: (path)  
          */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func removeApplicationTargetFromAdministratorRoleForUser(userId: String, roleId: String, appName: String, applicationId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try removeApplicationTargetFromAdministratorRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName, applicationId: applicationId))
-        }
-        #endif
-
-
-        internal func removeApplicationTargetFromApplicationAdministratorRoleForUserURLRequest(userId: String, roleId: String, appName: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}".expanded(using: [
-                "userId": userId, 
-                "roleId": roleId, 
-                "appName": appName
-            ]), method: "DELETE")
-        }
-
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter appName: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func removeApplicationTargetFromApplicationAdministratorRoleForUser(userId: String, roleId: String, appName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try removeApplicationTargetFromApplicationAdministratorRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter appName: (path)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func removeApplicationTargetFromApplicationAdministratorRoleForUser(userId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
-            try await send(try removeApplicationTargetFromApplicationAdministratorRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter appName: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func removeApplicationTargetFromApplicationAdministratorRoleForUser(userId: String, roleId: String, appName: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try removeApplicationTargetFromApplicationAdministratorRoleForUserURLRequest(userId: userId, roleId: roleId, appName: appName))
-        }
-        #endif
-
-
-        internal func removeGroupTargetFromRoleURLRequest(userId: String, roleId: String, groupId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/groups/{groupId}".expanded(using: [
-                "userId": userId, 
-                "roleId": roleId, 
-                "groupId": groupId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/catalog/apps/{appName}".expanded(using: [
+                    "userId": userId, 
+                    "roleId": roleId, 
+                    "appName": appName
+                ]), method: "DELETE"))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter groupId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func removeGroupTargetFromRole(userId: String, roleId: String, groupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try removeGroupTargetFromRoleURLRequest(userId: userId, roleId: roleId, groupId: groupId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Unassign a Group Target from Role
+         
          - parameter userId: (path)  
          - parameter roleId: (path)  
          - parameter groupId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func removeGroupTargetFromRole(userId: String, roleId: String, groupId: String) async throws -> OktaResponse<Empty> {
-            try await send(try removeGroupTargetFromRoleURLRequest(userId: userId, roleId: roleId, groupId: groupId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter groupId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func removeGroupTargetFromRole(userId: String, roleId: String, groupId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try removeGroupTargetFromRoleURLRequest(userId: userId, roleId: roleId, groupId: groupId))
-        }
-        #endif
-
-
-        internal func removeLinkedObjectForUserURLRequest(userId: String, relationshipName: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/linkedObjects/{relationshipName}".expanded(using: [
-                "userId": userId, 
-                "relationshipName": relationshipName
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}/targets/groups/{groupId}".expanded(using: [
+                    "userId": userId, 
+                    "roleId": roleId, 
+                    "groupId": groupId
+                ]), method: "DELETE"))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter relationshipName: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func removeLinkedObjectForUser(userId: String, relationshipName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try removeLinkedObjectForUserURLRequest(userId: userId, relationshipName: relationshipName), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Delete a Linked Object
+         
          - parameter userId: (path)  
          - parameter relationshipName: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func removeLinkedObjectForUser(userId: String, relationshipName: String) async throws -> OktaResponse<Empty> {
-            try await send(try removeLinkedObjectForUserURLRequest(userId: userId, relationshipName: relationshipName))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter relationshipName: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func removeLinkedObjectForUser(userId: String, relationshipName: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try removeLinkedObjectForUserURLRequest(userId: userId, relationshipName: relationshipName))
-        }
-        #endif
-
-
-        internal func removeRoleFromUserURLRequest(userId: String, roleId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/roles/{roleId}".expanded(using: [
-                "userId": userId, 
-                "roleId": roleId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/users/{userId}/linkedObjects/{relationshipName}".expanded(using: [
+                    "userId": userId, 
+                    "relationshipName": relationshipName
+                ]), method: "DELETE"))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func removeRoleFromUser(userId: String, roleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try removeRoleFromUserURLRequest(userId: userId, roleId: roleId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Delete a Role
+         
          - parameter userId: (path)  
          - parameter roleId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func removeRoleFromUser(userId: String, roleId: String) async throws -> OktaResponse<Empty> {
-            try await send(try removeRoleFromUserURLRequest(userId: userId, roleId: roleId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter roleId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func removeRoleFromUser(userId: String, roleId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try removeRoleFromUserURLRequest(userId: userId, roleId: roleId))
-        }
-        #endif
-
-
-        internal func resetFactorsURLRequest(userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/lifecycle/reset_factors".expanded(using: [
-                "userId": userId
-            ]), method: "POST")
+            try await send(try request(to: "/api/v1/users/{userId}/roles/{roleId}".expanded(using: [
+                    "userId": userId, 
+                    "roleId": roleId
+                ]), method: "DELETE"))
         }
 
         /**
-         Reset Factors
-         
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func resetFactors(userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try resetFactorsURLRequest(userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Reset Factors
+         Reset all Factors
          
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func resetFactors(userId: String) async throws -> OktaResponse<Empty> {
-            try await send(try resetFactorsURLRequest(userId: userId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Reset Factors
-         
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func resetFactors(userId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try resetFactorsURLRequest(userId: userId))
-        }
-        #endif
-
-
-        internal func resetPasswordURLRequest(userId: String, sendEmail: Bool) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/lifecycle/reset_password".expanded(using: [
-                "userId": userId
-            ]), method: "POST", query: [
-                "sendEmail": sendEmail
-            ])
+            try await send(try request(to: "/api/v1/users/{userId}/lifecycle/reset_factors".expanded(using: [
+                    "userId": userId
+                ]), method: "POST"))
         }
 
         /**
@@ -2077,512 +638,151 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          - parameter sendEmail: (query)  
-         - parameter completion: completion handler to receive the data and the error objects
          */
-        public func resetPassword(userId: String, sendEmail: Bool, completion: @escaping (Result<OktaResponse<ResetPasswordToken>, Error>) -> Void) {
-            do {
-                send(try resetPasswordURLRequest(userId: userId, sendEmail: sendEmail), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Reset Password
-         
-         - parameter userId: (path)  
-         - parameter sendEmail: (query)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func resetPassword(userId: String, sendEmail: Bool) async throws -> OktaResponse<ResetPasswordToken> {
-            try await send(try resetPasswordURLRequest(userId: userId, sendEmail: sendEmail))
+            try await send(try request(to: "/api/v1/users/{userId}/lifecycle/reset_password".expanded(using: [
+                    "userId": userId
+                ]), method: "POST", query: [
+                    "sendEmail": sendEmail
+                ]))
         }
-        #endif
 
-        #if canImport(Combine)
         /**
-         Reset Password
+         Revoke all Grants for a Client
          
          - parameter userId: (path)  
-         - parameter sendEmail: (query)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func resetPassword(userId: String, sendEmail: Bool) throws -> AnyPublisher<OktaResponse<ResetPasswordToken>, Error> {
-            publish(try resetPasswordURLRequest(userId: userId, sendEmail: sendEmail))
-        }
-        #endif
-
-
-        internal func revokeGrantsForUserAndClientURLRequest(userId: String, clientId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/clients/{clientId}/grants".expanded(using: [
-                "userId": userId, 
-                "clientId": clientId
-            ]), method: "DELETE")
-        }
-
-        /**
-
-         - parameter userId: (path)  
-         - parameter clientId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func revokeGrantsForUserAndClient(userId: String, clientId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try revokeGrantsForUserAndClientURLRequest(userId: userId, clientId: clientId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter userId: (path)  
          - parameter clientId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func revokeGrantsForUserAndClient(userId: String, clientId: String) async throws -> OktaResponse<Empty> {
-            try await send(try revokeGrantsForUserAndClientURLRequest(userId: userId, clientId: clientId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter clientId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func revokeGrantsForUserAndClient(userId: String, clientId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try revokeGrantsForUserAndClientURLRequest(userId: userId, clientId: clientId))
-        }
-        #endif
-
-
-        internal func revokeTokenForUserAndClientURLRequest(userId: String, clientId: String, tokenId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/clients/{clientId}/tokens/{tokenId}".expanded(using: [
-                "userId": userId, 
-                "clientId": clientId, 
-                "tokenId": tokenId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/users/{userId}/clients/{clientId}/grants".expanded(using: [
+                    "userId": userId, 
+                    "clientId": clientId
+                ]), method: "DELETE"))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter clientId: (path)  
-         - parameter tokenId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func revokeTokenForUserAndClient(userId: String, clientId: String, tokenId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try revokeTokenForUserAndClientURLRequest(userId: userId, clientId: clientId, tokenId: tokenId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Revoke a Token for a Client
+         
          - parameter userId: (path)  
          - parameter clientId: (path)  
          - parameter tokenId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func revokeTokenForUserAndClient(userId: String, clientId: String, tokenId: String) async throws -> OktaResponse<Empty> {
-            try await send(try revokeTokenForUserAndClientURLRequest(userId: userId, clientId: clientId, tokenId: tokenId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter clientId: (path)  
-         - parameter tokenId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func revokeTokenForUserAndClient(userId: String, clientId: String, tokenId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try revokeTokenForUserAndClientURLRequest(userId: userId, clientId: clientId, tokenId: tokenId))
-        }
-        #endif
-
-
-        internal func revokeTokensForUserAndClientURLRequest(userId: String, clientId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/clients/{clientId}/tokens".expanded(using: [
-                "userId": userId, 
-                "clientId": clientId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/users/{userId}/clients/{clientId}/tokens/{tokenId}".expanded(using: [
+                    "userId": userId, 
+                    "clientId": clientId, 
+                    "tokenId": tokenId
+                ]), method: "DELETE"))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter clientId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func revokeTokensForUserAndClient(userId: String, clientId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try revokeTokensForUserAndClientURLRequest(userId: userId, clientId: clientId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Revoke all Refresh Tokens for a Client
+         
          - parameter userId: (path)  
          - parameter clientId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func revokeTokensForUserAndClient(userId: String, clientId: String) async throws -> OktaResponse<Empty> {
-            try await send(try revokeTokensForUserAndClientURLRequest(userId: userId, clientId: clientId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter clientId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func revokeTokensForUserAndClient(userId: String, clientId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try revokeTokensForUserAndClientURLRequest(userId: userId, clientId: clientId))
-        }
-        #endif
-
-
-        internal func revokeUserGrantURLRequest(userId: String, grantId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/grants/{grantId}".expanded(using: [
-                "userId": userId, 
-                "grantId": grantId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/users/{userId}/clients/{clientId}/tokens".expanded(using: [
+                    "userId": userId, 
+                    "clientId": clientId
+                ]), method: "DELETE"))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter grantId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func revokeUserGrant(userId: String, grantId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try revokeUserGrantURLRequest(userId: userId, grantId: grantId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Revoke a User Grant
+         
          - parameter userId: (path)  
          - parameter grantId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func revokeUserGrant(userId: String, grantId: String) async throws -> OktaResponse<Empty> {
-            try await send(try revokeUserGrantURLRequest(userId: userId, grantId: grantId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         - parameter grantId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func revokeUserGrant(userId: String, grantId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try revokeUserGrantURLRequest(userId: userId, grantId: grantId))
-        }
-        #endif
-
-
-        internal func revokeUserGrantsURLRequest(userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/grants".expanded(using: [
-                "userId": userId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/users/{userId}/grants/{grantId}".expanded(using: [
+                    "userId": userId, 
+                    "grantId": grantId
+                ]), method: "DELETE"))
         }
 
         /**
-
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func revokeUserGrants(userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try revokeUserGrantsURLRequest(userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Revoke all User Grants
+         
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func revokeUserGrants(userId: String) async throws -> OktaResponse<Empty> {
-            try await send(try revokeUserGrantsURLRequest(userId: userId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func revokeUserGrants(userId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try revokeUserGrantsURLRequest(userId: userId))
-        }
-        #endif
-
-
-        internal func setLinkedObjectForUserURLRequest(associatedUserId: String, primaryRelationshipName: String, primaryUserId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{associatedUserId}/linkedObjects/{primaryRelationshipName}/{primaryUserId}".expanded(using: [
-                "associatedUserId": associatedUserId, 
-                "primaryRelationshipName": primaryRelationshipName, 
-                "primaryUserId": primaryUserId
-            ]), method: "PUT")
+            try await send(try request(to: "/api/v1/users/{userId}/grants".expanded(using: [
+                    "userId": userId
+                ]), method: "DELETE"))
         }
 
         /**
-         Set Linked Object for User
-         
-         - parameter associatedUserId: (path)  
-         - parameter primaryRelationshipName: (path)  
-         - parameter primaryUserId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func setLinkedObjectForUser(associatedUserId: String, primaryRelationshipName: String, primaryUserId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try setLinkedObjectForUserURLRequest(associatedUserId: associatedUserId, primaryRelationshipName: primaryRelationshipName, primaryUserId: primaryUserId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Set Linked Object for User
+         Create a Linked Object for two User
          
          - parameter associatedUserId: (path)  
          - parameter primaryRelationshipName: (path)  
          - parameter primaryUserId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func setLinkedObjectForUser(associatedUserId: String, primaryRelationshipName: String, primaryUserId: String) async throws -> OktaResponse<Empty> {
-            try await send(try setLinkedObjectForUserURLRequest(associatedUserId: associatedUserId, primaryRelationshipName: primaryRelationshipName, primaryUserId: primaryUserId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Set Linked Object for User
-         
-         - parameter associatedUserId: (path)  
-         - parameter primaryRelationshipName: (path)  
-         - parameter primaryUserId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func setLinkedObjectForUser(associatedUserId: String, primaryRelationshipName: String, primaryUserId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try setLinkedObjectForUserURLRequest(associatedUserId: associatedUserId, primaryRelationshipName: primaryRelationshipName, primaryUserId: primaryUserId))
-        }
-        #endif
-
-
-        internal func suspendUserURLRequest(userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/lifecycle/suspend".expanded(using: [
-                "userId": userId
-            ]), method: "POST")
+            try await send(try request(to: "/api/v1/users/{associatedUserId}/linkedObjects/{primaryRelationshipName}/{primaryUserId}".expanded(using: [
+                    "associatedUserId": associatedUserId, 
+                    "primaryRelationshipName": primaryRelationshipName, 
+                    "primaryUserId": primaryUserId
+                ]), method: "PUT"))
         }
 
         /**
-         Suspend User
-         
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func suspendUser(userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try suspendUserURLRequest(userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Suspend User
+         Suspend a User
          
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func suspendUser(userId: String) async throws -> OktaResponse<Empty> {
-            try await send(try suspendUserURLRequest(userId: userId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Suspend User
-         
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func suspendUser(userId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try suspendUserURLRequest(userId: userId))
-        }
-        #endif
-
-
-        internal func unlockUserURLRequest(userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/lifecycle/unlock".expanded(using: [
-                "userId": userId
-            ]), method: "POST")
+            try await send(try request(to: "/api/v1/users/{userId}/lifecycle/suspend".expanded(using: [
+                    "userId": userId
+                ]), method: "POST"))
         }
 
         /**
-         Unlock User
-         
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func unlockUser(userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try unlockUserURLRequest(userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Unlock User
+         Unlock a User
          
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func unlockUser(userId: String) async throws -> OktaResponse<Empty> {
-            try await send(try unlockUserURLRequest(userId: userId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Unlock User
-         
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func unlockUser(userId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try unlockUserURLRequest(userId: userId))
-        }
-        #endif
-
-
-        internal func unsuspendUserURLRequest(userId: String) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}/lifecycle/unsuspend".expanded(using: [
-                "userId": userId
-            ]), method: "POST")
+            try await send(try request(to: "/api/v1/users/{userId}/lifecycle/unlock".expanded(using: [
+                    "userId": userId
+                ]), method: "POST"))
         }
 
         /**
-         Unsuspend User
-         
-         - parameter userId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func unsuspendUser(userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try unsuspendUserURLRequest(userId: userId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Unsuspend User
+         Unsuspend a User
          
          - parameter userId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func unsuspendUser(userId: String) async throws -> OktaResponse<Empty> {
-            try await send(try unsuspendUserURLRequest(userId: userId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Unsuspend User
-         
-         - parameter userId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func unsuspendUser(userId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try unsuspendUserURLRequest(userId: userId))
-        }
-        #endif
-
-
-        internal func updateUserURLRequest(userId: String, user: User, strict: Bool? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/users/{userId}".expanded(using: [
-                "userId": userId
-            ]), method: "PUT", query: [
-                "strict": strict
-            ], body: user)
+            try await send(try request(to: "/api/v1/users/{userId}/lifecycle/unsuspend".expanded(using: [
+                    "userId": userId
+                ]), method: "POST"))
         }
 
         /**
-         Update User
-         
-         - parameter userId: (path)  
-         - parameter user: (body)  
-         - parameter strict: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func updateUser(userId: String, user: User, strict: Bool? = nil, completion: @escaping (Result<OktaResponse<User>, Error>) -> Void) {
-            do {
-                send(try updateUserURLRequest(userId: userId, user: user, strict: strict), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Update User
+         Replace a User
          
          - parameter userId: (path)  
          - parameter user: (body)  
          - parameter strict: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func updateUser(userId: String, user: User, strict: Bool? = nil) async throws -> OktaResponse<User> {
-            try await send(try updateUserURLRequest(userId: userId, user: user, strict: strict))
+        public func updateUser(userId: String, user: UpdateUserRequest, strict: Bool? = nil) async throws -> OktaResponse<User> {
+            try await send(try requestWithBody(to: "/api/v1/users/{userId}".expanded(using: [
+                    "userId": userId
+                ]), method: "PUT", query: [
+                    "strict": strict
+                ], body: user))
         }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Update User
-         
-         - parameter userId: (path)  
-         - parameter user: (body)  
-         - parameter strict: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func updateUser(userId: String, user: User, strict: Bool? = nil) throws -> AnyPublisher<OktaResponse<User>, Error> {
-            publish(try updateUserURLRequest(userId: userId, user: user, strict: strict))
-        }
-        #endif
 
     }
 }

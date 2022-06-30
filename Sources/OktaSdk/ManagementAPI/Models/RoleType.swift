@@ -17,15 +17,16 @@ import Foundation
 import AnyCodable
 
 public enum RoleType: String, Codable, CaseIterable, OktaClientArgument {
-    case superAdmin = "SUPER_ADMIN"
-    case orgAdmin = "ORG_ADMIN"
-    case appAdmin = "APP_ADMIN"
-    case userAdmin = "USER_ADMIN"
-    case helpDeskAdmin = "HELP_DESK_ADMIN"
-    case readOnlyAdmin = "READ_ONLY_ADMIN"
-    case mobileAdmin = "MOBILE_ADMIN"
     case apiAccessManagementAdmin = "API_ACCESS_MANAGEMENT_ADMIN"
+    case appAdmin = "APP_ADMIN"
+    case groupMembershipAdmin = "GROUP_MEMBERSHIP_ADMIN"
+    case helpDeskAdmin = "HELP_DESK_ADMIN"
+    case mobileAdmin = "MOBILE_ADMIN"
+    case orgAdmin = "ORG_ADMIN"
+    case readOnlyAdmin = "READ_ONLY_ADMIN"
     case reportAdmin = "REPORT_ADMIN"
+    case superAdmin = "SUPER_ADMIN"
+    case userAdmin = "USER_ADMIN"
 
     var stringValue: String { rawValue }
 }

@@ -21,24 +21,24 @@ public struct CsrMetadataSubject: Codable, Hashable {
     public var commonName: String?
     public var countryName: String?
     public var localityName: String?
-    public var organizationName: String?
     public var organizationalUnitName: String?
+    public var organizationName: String?
     public var stateOrProvinceName: String?
 
-    public init(commonName: String? = nil, countryName: String? = nil, localityName: String? = nil, organizationName: String? = nil, organizationalUnitName: String? = nil, stateOrProvinceName: String? = nil) {
+    public init(commonName: String? = nil, countryName: String? = nil, localityName: String? = nil, organizationalUnitName: String? = nil, organizationName: String? = nil, stateOrProvinceName: String? = nil) {
         self.commonName = commonName
         self.countryName = countryName
         self.localityName = localityName
-        self.organizationName = organizationName
         self.organizationalUnitName = organizationalUnitName
+        self.organizationName = organizationName
         self.stateOrProvinceName = stateOrProvinceName
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case commonName
         case countryName
         case localityName
-        case organizationName
         case organizationalUnitName
+        case organizationName
         case stateOrProvinceName
     }
 
@@ -49,8 +49,8 @@ public struct CsrMetadataSubject: Codable, Hashable {
         try container.encodeIfPresent(commonName, forKey: .commonName)
         try container.encodeIfPresent(countryName, forKey: .countryName)
         try container.encodeIfPresent(localityName, forKey: .localityName)
-        try container.encodeIfPresent(organizationName, forKey: .organizationName)
         try container.encodeIfPresent(organizationalUnitName, forKey: .organizationalUnitName)
+        try container.encodeIfPresent(organizationName, forKey: .organizationName)
         try container.encodeIfPresent(stateOrProvinceName, forKey: .stateOrProvinceName)
     }
 

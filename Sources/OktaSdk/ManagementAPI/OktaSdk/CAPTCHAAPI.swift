@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,274 +25,69 @@ public extension OktaClient {
     struct CAPTCHAAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func createCaptchaInstanceURLRequest(cAPTCHAInstance: CAPTCHAInstance? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/captchas", method: "POST", body: cAPTCHAInstance)
-        }
-
         /**
-         Create new CAPTCHA instance
+         Create a CAPTCHA instance
          
-         - parameter cAPTCHAInstance: (body)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
+         - parameter instance: (body)  
          */
-        public func createCaptchaInstance(cAPTCHAInstance: CAPTCHAInstance? = nil, completion: @escaping (Result<OktaResponse<CAPTCHAInstance>, Error>) -> Void) {
-            do {
-                send(try createCaptchaInstanceURLRequest(cAPTCHAInstance: cAPTCHAInstance), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Create new CAPTCHA instance
-         
-         - parameter cAPTCHAInstance: (body)  (optional)
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func createCaptchaInstance(cAPTCHAInstance: CAPTCHAInstance? = nil) async throws -> OktaResponse<CAPTCHAInstance> {
-            try await send(try createCaptchaInstanceURLRequest(cAPTCHAInstance: cAPTCHAInstance))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Create new CAPTCHA instance
-         
-         - parameter cAPTCHAInstance: (body)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func createCaptchaInstance(cAPTCHAInstance: CAPTCHAInstance? = nil) throws -> AnyPublisher<OktaResponse<CAPTCHAInstance>, Error> {
-            publish(try createCaptchaInstanceURLRequest(cAPTCHAInstance: cAPTCHAInstance))
-        }
-        #endif
-
-
-        internal func deleteCaptchaInstanceURLRequest(captchaId: String) throws -> URLRequest {
-            try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
-                "captchaId": captchaId
-            ]), method: "DELETE")
+        public func createCaptchaInstance(instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
+            try await send(try requestWithBody(to: "/api/v1/captchas", method: "POST", body: instance))
         }
 
         /**
-         Delete CAPTCHA Instance
-         
-         - parameter captchaId: (path) id of the CAPTCHA 
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func deleteCaptchaInstance(captchaId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteCaptchaInstanceURLRequest(captchaId: captchaId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Delete CAPTCHA Instance
+         Delete a CAPTCHA Instance
          
          - parameter captchaId: (path) id of the CAPTCHA 
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func deleteCaptchaInstance(captchaId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deleteCaptchaInstanceURLRequest(captchaId: captchaId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Delete CAPTCHA Instance
-         
-         - parameter captchaId: (path) id of the CAPTCHA 
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deleteCaptchaInstance(captchaId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteCaptchaInstanceURLRequest(captchaId: captchaId))
-        }
-        #endif
-
-
-        internal func getCaptchaInstanceURLRequest(captchaId: String) throws -> URLRequest {
-            try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
-                "captchaId": captchaId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
+                    "captchaId": captchaId
+                ]), method: "DELETE"))
         }
 
         /**
-         Get CAPTCHA Instance
-         
-         - parameter captchaId: (path) id of the CAPTCHA 
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func getCaptchaInstance(captchaId: String, completion: @escaping (Result<OktaResponse<CAPTCHAInstance>, Error>) -> Void) {
-            do {
-                send(try getCaptchaInstanceURLRequest(captchaId: captchaId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get CAPTCHA Instance
+         Retrieve a CAPTCHA Instance
          
          - parameter captchaId: (path) id of the CAPTCHA 
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func getCaptchaInstance(captchaId: String) async throws -> OktaResponse<CAPTCHAInstance> {
-            try await send(try getCaptchaInstanceURLRequest(captchaId: captchaId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Get CAPTCHA Instance
-         
-         - parameter captchaId: (path) id of the CAPTCHA 
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getCaptchaInstance(captchaId: String) throws -> AnyPublisher<OktaResponse<CAPTCHAInstance>, Error> {
-            publish(try getCaptchaInstanceURLRequest(captchaId: captchaId))
-        }
-        #endif
-
-
-        internal func listCaptchaInstancesURLRequest() throws -> URLRequest {
-            try request(to: "/api/v1/captchas", method: "GET")
+            try await send(try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
+                    "captchaId": captchaId
+                ]), method: "GET"))
         }
 
         /**
-         List CAPTCHA instances
-         
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listCaptchaInstances(completion: @escaping (Result<OktaResponse<[CAPTCHAInstance]>, Error>) -> Void) {
-            do {
-                send(try listCaptchaInstancesURLRequest(), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         List CAPTCHA instances
+         List all CAPTCHA instances
          
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listCaptchaInstances() async throws -> OktaResponse<[CAPTCHAInstance]> {
-            try await send(try listCaptchaInstancesURLRequest())
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         List CAPTCHA instances
-         
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listCaptchaInstances() throws -> AnyPublisher<OktaResponse<[CAPTCHAInstance]>, Error> {
-            publish(try listCaptchaInstancesURLRequest())
-        }
-        #endif
-
-
-        internal func partialUpdateCaptchaInstanceURLRequest(captchaId: String, cAPTCHAInstance: CAPTCHAInstance) throws -> URLRequest {
-            try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
-                "captchaId": captchaId
-            ]), method: "POST", body: cAPTCHAInstance)
+            try await send(try request(to: "/api/v1/captchas", method: "GET"))
         }
 
         /**
-         Partial Update CAPTCHA instance
+         Update a CAPTCHA instance
          
          - parameter captchaId: (path) id of the CAPTCHA 
-         - parameter cAPTCHAInstance: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
+         - parameter instance: (body)  
          */
-        public func partialUpdateCaptchaInstance(captchaId: String, cAPTCHAInstance: CAPTCHAInstance, completion: @escaping (Result<OktaResponse<CAPTCHAInstance>, Error>) -> Void) {
-            do {
-                send(try partialUpdateCaptchaInstanceURLRequest(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Partial Update CAPTCHA instance
-         
-         - parameter captchaId: (path) id of the CAPTCHA 
-         - parameter cAPTCHAInstance: (body)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func partialUpdateCaptchaInstance(captchaId: String, cAPTCHAInstance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
-            try await send(try partialUpdateCaptchaInstanceURLRequest(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Partial Update CAPTCHA instance
-         
-         - parameter captchaId: (path) id of the CAPTCHA 
-         - parameter cAPTCHAInstance: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func partialUpdateCaptchaInstance(captchaId: String, cAPTCHAInstance: CAPTCHAInstance) throws -> AnyPublisher<OktaResponse<CAPTCHAInstance>, Error> {
-            publish(try partialUpdateCaptchaInstanceURLRequest(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance))
-        }
-        #endif
-
-
-        internal func updateCaptchaInstanceURLRequest(captchaId: String, cAPTCHAInstance: CAPTCHAInstance) throws -> URLRequest {
-            try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
-                "captchaId": captchaId
-            ]), method: "PUT", body: cAPTCHAInstance)
+        public func partialUpdateCaptchaInstance(captchaId: String, instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
+            try await send(try requestWithBody(to: "/api/v1/captchas/{captchaId}".expanded(using: [
+                    "captchaId": captchaId
+                ]), method: "POST", body: instance))
         }
 
         /**
-         Update CAPTCHA instance
+         Replace a CAPTCHA instance
          
          - parameter captchaId: (path) id of the CAPTCHA 
-         - parameter cAPTCHAInstance: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
+         - parameter instance: (body)  
          */
-        public func updateCaptchaInstance(captchaId: String, cAPTCHAInstance: CAPTCHAInstance, completion: @escaping (Result<OktaResponse<CAPTCHAInstance>, Error>) -> Void) {
-            do {
-                send(try updateCaptchaInstanceURLRequest(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
+        public func updateCaptchaInstance(captchaId: String, instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
+            try await send(try requestWithBody(to: "/api/v1/captchas/{captchaId}".expanded(using: [
+                    "captchaId": captchaId
+                ]), method: "PUT", body: instance))
         }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Update CAPTCHA instance
-         
-         - parameter captchaId: (path) id of the CAPTCHA 
-         - parameter cAPTCHAInstance: (body)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func updateCaptchaInstance(captchaId: String, cAPTCHAInstance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
-            try await send(try updateCaptchaInstanceURLRequest(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Update CAPTCHA instance
-         
-         - parameter captchaId: (path) id of the CAPTCHA 
-         - parameter cAPTCHAInstance: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func updateCaptchaInstance(captchaId: String, cAPTCHAInstance: CAPTCHAInstance) throws -> AnyPublisher<OktaResponse<CAPTCHAInstance>, Error> {
-            publish(try updateCaptchaInstanceURLRequest(captchaId: captchaId, cAPTCHAInstance: cAPTCHAInstance))
-        }
-        #endif
 
     }
 }

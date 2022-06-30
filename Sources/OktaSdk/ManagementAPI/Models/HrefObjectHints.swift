@@ -18,15 +18,9 @@ import AnyCodable
 
 public struct HrefObjectHints: Codable, Hashable {
 
-    public enum Allow: String, Codable, CaseIterable {
-        case _get = "GET"
-        case put = "PUT"
-        case delete = "DELETE"
-        case post = "POST"
-    }
-    public var allow: [Allow]?
+    public var allow: [HttpMethod]?
 
-    public init(allow: [Allow]? = nil) {
+    public init(allow: [HttpMethod]? = nil) {
         self.allow = allow
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {

@@ -18,7 +18,6 @@ import AnyCodable
 
 public struct TrustedOrigin: Codable, Hashable {
 
-    public var links: [String: AnyCodable]?
     public var created: Date?
     public var createdBy: String?
     public var id: String?
@@ -26,11 +25,11 @@ public struct TrustedOrigin: Codable, Hashable {
     public var lastUpdatedBy: String?
     public var name: String?
     public var origin: String?
-    public var scopes: [Scope]?
+    public var scopes: [TrustedOriginScope]?
     public var status: String?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, created: Date? = nil, createdBy: String? = nil, id: String? = nil, lastUpdated: Date? = nil, lastUpdatedBy: String? = nil, name: String? = nil, origin: String? = nil, scopes: [Scope]? = nil, status: String? = nil) {
-        self.links = links
+    public init(created: Date? = nil, createdBy: String? = nil, id: String? = nil, lastUpdated: Date? = nil, lastUpdatedBy: String? = nil, name: String? = nil, origin: String? = nil, scopes: [TrustedOriginScope]? = nil, status: String? = nil, links: [String: AnyCodable]? = nil) {
         self.created = created
         self.createdBy = createdBy
         self.id = id
@@ -40,9 +39,9 @@ public struct TrustedOrigin: Codable, Hashable {
         self.origin = origin
         self.scopes = scopes
         self.status = status
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case created
         case createdBy
         case id
@@ -52,13 +51,13 @@ public struct TrustedOrigin: Codable, Hashable {
         case origin
         case scopes
         case status
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(createdBy, forKey: .createdBy)
         try container.encodeIfPresent(id, forKey: .id)
@@ -68,6 +67,7 @@ public struct TrustedOrigin: Codable, Hashable {
         try container.encodeIfPresent(origin, forKey: .origin)
         try container.encodeIfPresent(scopes, forKey: .scopes)
         try container.encodeIfPresent(status, forKey: .status)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,82 +25,22 @@ public extension OktaClient {
     struct ThreatInsightAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func getCurrentConfigurationURLRequest() throws -> URLRequest {
-            try request(to: "/api/v1/threats/configuration", method: "GET")
-        }
-
         /**
-
-         - parameter completion: completion handler to receive the data and the error objects
+         Retrieve the ThreatInsight Configuration
+         
          */
-        public func getCurrentConfiguration(completion: @escaping (Result<OktaResponse<ThreatInsightConfiguration>, Error>) -> Void) {
-            do {
-                send(try getCurrentConfigurationURLRequest(), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func getCurrentConfiguration() async throws -> OktaResponse<ThreatInsightConfiguration> {
-            try await send(try getCurrentConfigurationURLRequest())
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getCurrentConfiguration() throws -> AnyPublisher<OktaResponse<ThreatInsightConfiguration>, Error> {
-            publish(try getCurrentConfigurationURLRequest())
-        }
-        #endif
-
-
-        internal func updateConfigurationURLRequest(threatInsightConfiguration: ThreatInsightConfiguration) throws -> URLRequest {
-            try request(to: "/api/v1/threats/configuration", method: "POST", body: threatInsightConfiguration)
+            try await send(try request(to: "/api/v1/threats/configuration", method: "GET"))
         }
 
         /**
-
-         - parameter threatInsightConfiguration: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration, completion: @escaping (Result<OktaResponse<ThreatInsightConfiguration>, Error>) -> Void) {
-            do {
-                send(try updateConfigurationURLRequest(threatInsightConfiguration: threatInsightConfiguration), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Update the ThreatInsight Configuration
+         
          - parameter threatInsightConfiguration: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration) async throws -> OktaResponse<ThreatInsightConfiguration> {
-            try await send(try updateConfigurationURLRequest(threatInsightConfiguration: threatInsightConfiguration))
+            try await send(try requestWithBody(to: "/api/v1/threats/configuration", method: "POST", body: threatInsightConfiguration))
         }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter threatInsightConfiguration: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration) throws -> AnyPublisher<OktaResponse<ThreatInsightConfiguration>, Error> {
-            publish(try updateConfigurationURLRequest(threatInsightConfiguration: threatInsightConfiguration))
-        }
-        #endif
 
     }
 }

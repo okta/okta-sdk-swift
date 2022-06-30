@@ -18,9 +18,9 @@ import AnyCodable
 
 public enum LogSeverity: String, Codable, CaseIterable, OktaClientArgument {
     case debug = "DEBUG"
+    case error = "ERROR"
     case info = "INFO"
     case warn = "WARN"
-    case error = "ERROR"
 
     var stringValue: String { rawValue }
 }

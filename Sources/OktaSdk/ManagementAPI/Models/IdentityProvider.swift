@@ -18,15 +18,6 @@ import AnyCodable
 
 public struct IdentityProvider: Codable, Hashable {
 
-    public enum IssuerMode: String, Codable, CaseIterable {
-        case orgUrl = "ORG_URL"
-        case customUrlDomain = "CUSTOM_URL_DOMAIN"
-    }
-    public enum Status: String, Codable, CaseIterable {
-        case active = "ACTIVE"
-        case inactive = "INACTIVE"
-    }
-    public var links: [String: AnyCodable]?
     public var created: Date?
     public var id: String?
     public var issuerMode: IssuerMode?
@@ -34,11 +25,11 @@ public struct IdentityProvider: Codable, Hashable {
     public var name: String?
     public var policy: IdentityProviderPolicy?
     public var _protocol: ModelProtocol?
-    public var status: Status?
+    public var status: LifecycleStatus?
     public var type: String?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, created: Date? = nil, id: String? = nil, issuerMode: IssuerMode? = nil, lastUpdated: Date? = nil, name: String? = nil, policy: IdentityProviderPolicy? = nil, _protocol: ModelProtocol? = nil, status: Status? = nil, type: String? = nil) {
-        self.links = links
+    public init(created: Date? = nil, id: String? = nil, issuerMode: IssuerMode? = nil, lastUpdated: Date? = nil, name: String? = nil, policy: IdentityProviderPolicy? = nil, _protocol: ModelProtocol? = nil, status: LifecycleStatus? = nil, type: String? = nil, links: [String: AnyCodable]? = nil) {
         self.created = created
         self.id = id
         self.issuerMode = issuerMode
@@ -48,9 +39,9 @@ public struct IdentityProvider: Codable, Hashable {
         self._protocol = _protocol
         self.status = status
         self.type = type
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case created
         case id
         case issuerMode
@@ -60,13 +51,13 @@ public struct IdentityProvider: Codable, Hashable {
         case _protocol = "protocol"
         case status
         case type
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(id, forKey: .id)
         try container.encodeIfPresent(issuerMode, forKey: .issuerMode)
@@ -76,6 +67,7 @@ public struct IdentityProvider: Codable, Hashable {
         try container.encodeIfPresent(_protocol, forKey: ._protocol)
         try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

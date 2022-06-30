@@ -17,8 +17,8 @@ import Foundation
 import AnyCodable
 
 public enum FeatureStageState: String, Codable, CaseIterable, OktaClientArgument {
-    case _open = "OPEN"
     case closed = "CLOSED"
+    case _open = "OPEN"
 
     var stringValue: String { rawValue }
 }

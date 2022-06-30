@@ -17,16 +17,16 @@ import Foundation
 import AnyCodable
 
 public enum FactorResultType: String, Codable, CaseIterable, OktaClientArgument {
-    case success = "SUCCESS"
+    case cancelled = "CANCELLED"
     case challenge = "CHALLENGE"
-    case waiting = "WAITING"
+    case error = "ERROR"
     case failed = "FAILED"
+    case passcodeReplayed = "PASSCODE_REPLAYED"
     case rejected = "REJECTED"
+    case success = "SUCCESS"
     case timeout = "TIMEOUT"
     case timeWindowExceeded = "TIME_WINDOW_EXCEEDED"
-    case passcodeReplayed = "PASSCODE_REPLAYED"
-    case error = "ERROR"
-    case cancelled = "CANCELLED"
+    case waiting = "WAITING"
 
     var stringValue: String { rawValue }
 }

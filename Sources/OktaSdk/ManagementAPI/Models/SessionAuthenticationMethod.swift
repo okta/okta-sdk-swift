@@ -17,16 +17,16 @@ import Foundation
 import AnyCodable
 
 public enum SessionAuthenticationMethod: String, Codable, CaseIterable, OktaClientArgument {
-    case pwd = "pwd"
-    case swk = "swk"
-    case hwk = "hwk"
-    case otp = "otp"
-    case sms = "sms"
-    case tel = "tel"
-    case geo = "geo"
     case fpt = "fpt"
+    case geo = "geo"
+    case hwk = "hwk"
     case kba = "kba"
     case mfa = "mfa"
+    case otp = "otp"
+    case pwd = "pwd"
+    case sms = "sms"
+    case swk = "swk"
+    case tel = "tel"
 
     var stringValue: String { rawValue }
 }

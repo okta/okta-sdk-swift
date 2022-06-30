@@ -17,10 +17,13 @@ import Foundation
 import AnyCodable
 
 public enum PolicyType: String, Codable, CaseIterable, OktaClientArgument {
+    case accessPolicy = "ACCESS_POLICY"
+    case idpDiscovery = "IDP_DISCOVERY"
+    case mfaEnroll = "MFA_ENROLL"
     case oauthAuthorizationPolicy = "OAUTH_AUTHORIZATION_POLICY"
     case oktaSignOn = "OKTA_SIGN_ON"
     case password = "PASSWORD"
-    case idpDiscovery = "IDP_DISCOVERY"
+    case profileEnrollment = "PROFILE_ENROLLMENT"
 
     var stringValue: String { rawValue }
 }

@@ -17,8 +17,8 @@ import Foundation
 import AnyCodable
 
 public enum EnabledStatus: String, Codable, CaseIterable, OktaClientArgument {
-    case enabled = "ENABLED"
     case disabled = "DISABLED"
+    case enabled = "ENABLED"
 
     var stringValue: String { rawValue }
 }

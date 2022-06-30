@@ -19,10 +19,10 @@ import AnyCodable
 public enum AuthenticationProviderType: String, Codable, CaseIterable, OktaClientArgument {
     case activeDirectory = "ACTIVE_DIRECTORY"
     case federation = "FEDERATION"
+    case _import = "IMPORT"
     case ldap = "LDAP"
     case okta = "OKTA"
     case social = "SOCIAL"
-    case _import = "IMPORT"
 
     var stringValue: String { rawValue }
 }

@@ -20,10 +20,10 @@ public struct CreateUserRequest: Codable, Hashable {
 
     public var credentials: UserCredentials?
     public var groupIds: [String]?
-    public var profile: UserProfile?
+    public var profile: UserProfile
     public var type: UserType?
 
-    public init(credentials: UserCredentials? = nil, groupIds: [String]? = nil, profile: UserProfile? = nil, type: UserType? = nil) {
+    public init(credentials: UserCredentials? = nil, groupIds: [String]? = nil, profile: UserProfile, type: UserType? = nil) {
         self.credentials = credentials
         self.groupIds = groupIds
         self.profile = profile
@@ -42,7 +42,7 @@ public struct CreateUserRequest: Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(credentials, forKey: .credentials)
         try container.encodeIfPresent(groupIds, forKey: .groupIds)
-        try container.encodeIfPresent(profile, forKey: .profile)
+        try container.encode(profile, forKey: .profile)
         try container.encodeIfPresent(type, forKey: .type)
     }
 

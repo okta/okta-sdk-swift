@@ -18,14 +18,10 @@ import AnyCodable
 
 public struct EventSubscriptions: Codable, Hashable {
 
-    public enum ModelType: String, Codable, CaseIterable {
-        case eventType = "EVENT_TYPE"
-        case flowEvent = "FLOW_EVENT"
-    }
     public var items: [String]?
-    public var type: ModelType?
+    public var type: EventSubscriptionType?
 
-    public init(items: [String]? = nil, type: ModelType? = nil) {
+    public init(items: [String]? = nil, type: EventSubscriptionType? = nil) {
         self.items = items
         self.type = type
     }

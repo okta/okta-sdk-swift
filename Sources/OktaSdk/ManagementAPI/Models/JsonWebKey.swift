@@ -18,7 +18,6 @@ import AnyCodable
 
 public struct JsonWebKey: Codable, Hashable {
 
-    public var links: [String: AnyCodable]?
     public var alg: String?
     public var created: Date?
     public var e: String?
@@ -34,9 +33,9 @@ public struct JsonWebKey: Codable, Hashable {
     public var x5t: String?
     public var x5tS256: String?
     public var x5u: String?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, alg: String? = nil, created: Date? = nil, e: String? = nil, expiresAt: Date? = nil, keyOps: [String]? = nil, kid: String? = nil, kty: String? = nil, lastUpdated: Date? = nil, n: String? = nil, status: String? = nil, use: String? = nil, x5c: [String]? = nil, x5t: String? = nil, x5tS256: String? = nil, x5u: String? = nil) {
-        self.links = links
+    public init(alg: String? = nil, created: Date? = nil, e: String? = nil, expiresAt: Date? = nil, keyOps: [String]? = nil, kid: String? = nil, kty: String? = nil, lastUpdated: Date? = nil, n: String? = nil, status: String? = nil, use: String? = nil, x5c: [String]? = nil, x5t: String? = nil, x5tS256: String? = nil, x5u: String? = nil, links: [String: AnyCodable]? = nil) {
         self.alg = alg
         self.created = created
         self.e = e
@@ -52,9 +51,9 @@ public struct JsonWebKey: Codable, Hashable {
         self.x5t = x5t
         self.x5tS256 = x5tS256
         self.x5u = x5u
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case alg
         case created
         case e
@@ -70,13 +69,13 @@ public struct JsonWebKey: Codable, Hashable {
         case x5t
         case x5tS256 = "x5t#S256"
         case x5u
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(alg, forKey: .alg)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(e, forKey: .e)
@@ -92,6 +91,7 @@ public struct JsonWebKey: Codable, Hashable {
         try container.encodeIfPresent(x5t, forKey: .x5t)
         try container.encodeIfPresent(x5tS256, forKey: .x5tS256)
         try container.encodeIfPresent(x5u, forKey: .x5u)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

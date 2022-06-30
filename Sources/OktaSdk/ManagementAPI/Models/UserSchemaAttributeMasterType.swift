@@ -17,9 +17,9 @@ import Foundation
 import AnyCodable
 
 public enum UserSchemaAttributeMasterType: String, Codable, CaseIterable, OktaClientArgument {
-    case profileMaster = "PROFILE_MASTER"
     case okta = "OKTA"
     case _override = "OVERRIDE"
+    case profileMaster = "PROFILE_MASTER"
 
     var stringValue: String { rawValue }
 }

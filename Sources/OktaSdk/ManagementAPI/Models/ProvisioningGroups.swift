@@ -18,18 +18,12 @@ import AnyCodable
 
 public struct ProvisioningGroups: Codable, Hashable {
 
-    public enum Action: String, Codable, CaseIterable {
-        case _none = "NONE"
-        case append = "APPEND"
-        case sync = "SYNC"
-        case assign = "ASSIGN"
-    }
-    public var action: Action?
+    public var action: ProvisioningGroupsAction?
     public var assignments: [String]?
     public var filter: [String]?
     public var sourceAttributeName: String?
 
-    public init(action: Action? = nil, assignments: [String]? = nil, filter: [String]? = nil, sourceAttributeName: String? = nil) {
+    public init(action: ProvisioningGroupsAction? = nil, assignments: [String]? = nil, filter: [String]? = nil, sourceAttributeName: String? = nil) {
         self.action = action
         self.assignments = assignments
         self.filter = filter

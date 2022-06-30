@@ -19,21 +19,21 @@ import AnyCodable
 public struct TokenAuthorizationServerPolicyRuleAction: Codable, Hashable {
 
     public var accessTokenLifetimeMinutes: Int?
+    public var inlineHook: TokenAuthorizationServerPolicyRuleActionInlineHook?
     public var refreshTokenLifetimeMinutes: Int?
     public var refreshTokenWindowMinutes: Int?
-    public var inlineHook: TokenAuthorizationServerPolicyRuleActionInlineHook?
 
-    public init(accessTokenLifetimeMinutes: Int? = nil, refreshTokenLifetimeMinutes: Int? = nil, refreshTokenWindowMinutes: Int? = nil, inlineHook: TokenAuthorizationServerPolicyRuleActionInlineHook? = nil) {
+    public init(accessTokenLifetimeMinutes: Int? = nil, inlineHook: TokenAuthorizationServerPolicyRuleActionInlineHook? = nil, refreshTokenLifetimeMinutes: Int? = nil, refreshTokenWindowMinutes: Int? = nil) {
         self.accessTokenLifetimeMinutes = accessTokenLifetimeMinutes
+        self.inlineHook = inlineHook
         self.refreshTokenLifetimeMinutes = refreshTokenLifetimeMinutes
         self.refreshTokenWindowMinutes = refreshTokenWindowMinutes
-        self.inlineHook = inlineHook
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case accessTokenLifetimeMinutes
+        case inlineHook
         case refreshTokenLifetimeMinutes
         case refreshTokenWindowMinutes
-        case inlineHook
     }
 
     // Encodable protocol methods
@@ -41,9 +41,9 @@ public struct TokenAuthorizationServerPolicyRuleAction: Codable, Hashable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(accessTokenLifetimeMinutes, forKey: .accessTokenLifetimeMinutes)
+        try container.encodeIfPresent(inlineHook, forKey: .inlineHook)
         try container.encodeIfPresent(refreshTokenLifetimeMinutes, forKey: .refreshTokenLifetimeMinutes)
         try container.encodeIfPresent(refreshTokenWindowMinutes, forKey: .refreshTokenWindowMinutes)
-        try container.encodeIfPresent(inlineHook, forKey: .inlineHook)
     }
 
 

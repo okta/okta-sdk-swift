@@ -18,140 +18,140 @@ import AnyCodable
 
 public struct UserSchemaBaseProperties: Codable, Hashable {
 
-    public var login: UserSchemaAttribute?
+    public var city: UserSchemaAttribute?
+    public var costCenter: UserSchemaAttribute?
+    public var countryCode: UserSchemaAttribute?
+    public var department: UserSchemaAttribute?
+    public var displayName: UserSchemaAttribute?
+    public var division: UserSchemaAttribute?
+    public var email: UserSchemaAttribute?
+    public var employeeNumber: UserSchemaAttribute?
     public var firstName: UserSchemaAttribute?
-    public var lastName: UserSchemaAttribute?
-    public var middleName: UserSchemaAttribute?
     public var honorificPrefix: UserSchemaAttribute?
     public var honorificSuffix: UserSchemaAttribute?
-    public var email: UserSchemaAttribute?
-    public var title: UserSchemaAttribute?
-    public var displayName: UserSchemaAttribute?
-    public var nickName: UserSchemaAttribute?
-    public var profileUrl: UserSchemaAttribute?
-    public var secondEmail: UserSchemaAttribute?
+    public var lastName: UserSchemaAttribute?
+    public var locale: UserSchemaAttribute?
+    public var login: UserSchemaAttribute?
+    public var manager: UserSchemaAttribute?
+    public var managerId: UserSchemaAttribute?
+    public var middleName: UserSchemaAttribute?
     public var mobilePhone: UserSchemaAttribute?
-    public var primaryPhone: UserSchemaAttribute?
-    public var streetAddress: UserSchemaAttribute?
-    public var city: UserSchemaAttribute?
-    public var state: UserSchemaAttribute?
-    public var zipCode: UserSchemaAttribute?
-    public var countryCode: UserSchemaAttribute?
+    public var nickName: UserSchemaAttribute?
+    public var organization: UserSchemaAttribute?
     public var postalAddress: UserSchemaAttribute?
     public var preferredLanguage: UserSchemaAttribute?
-    public var locale: UserSchemaAttribute?
+    public var primaryPhone: UserSchemaAttribute?
+    public var profileUrl: UserSchemaAttribute?
+    public var secondEmail: UserSchemaAttribute?
+    public var state: UserSchemaAttribute?
+    public var streetAddress: UserSchemaAttribute?
     public var timezone: UserSchemaAttribute?
+    public var title: UserSchemaAttribute?
     public var userType: UserSchemaAttribute?
-    public var employeeNumber: UserSchemaAttribute?
-    public var costCenter: UserSchemaAttribute?
-    public var organization: UserSchemaAttribute?
-    public var division: UserSchemaAttribute?
-    public var department: UserSchemaAttribute?
-    public var managerId: UserSchemaAttribute?
-    public var manager: UserSchemaAttribute?
+    public var zipCode: UserSchemaAttribute?
 
-    public init(login: UserSchemaAttribute? = nil, firstName: UserSchemaAttribute? = nil, lastName: UserSchemaAttribute? = nil, middleName: UserSchemaAttribute? = nil, honorificPrefix: UserSchemaAttribute? = nil, honorificSuffix: UserSchemaAttribute? = nil, email: UserSchemaAttribute? = nil, title: UserSchemaAttribute? = nil, displayName: UserSchemaAttribute? = nil, nickName: UserSchemaAttribute? = nil, profileUrl: UserSchemaAttribute? = nil, secondEmail: UserSchemaAttribute? = nil, mobilePhone: UserSchemaAttribute? = nil, primaryPhone: UserSchemaAttribute? = nil, streetAddress: UserSchemaAttribute? = nil, city: UserSchemaAttribute? = nil, state: UserSchemaAttribute? = nil, zipCode: UserSchemaAttribute? = nil, countryCode: UserSchemaAttribute? = nil, postalAddress: UserSchemaAttribute? = nil, preferredLanguage: UserSchemaAttribute? = nil, locale: UserSchemaAttribute? = nil, timezone: UserSchemaAttribute? = nil, userType: UserSchemaAttribute? = nil, employeeNumber: UserSchemaAttribute? = nil, costCenter: UserSchemaAttribute? = nil, organization: UserSchemaAttribute? = nil, division: UserSchemaAttribute? = nil, department: UserSchemaAttribute? = nil, managerId: UserSchemaAttribute? = nil, manager: UserSchemaAttribute? = nil) {
-        self.login = login
+    public init(city: UserSchemaAttribute? = nil, costCenter: UserSchemaAttribute? = nil, countryCode: UserSchemaAttribute? = nil, department: UserSchemaAttribute? = nil, displayName: UserSchemaAttribute? = nil, division: UserSchemaAttribute? = nil, email: UserSchemaAttribute? = nil, employeeNumber: UserSchemaAttribute? = nil, firstName: UserSchemaAttribute? = nil, honorificPrefix: UserSchemaAttribute? = nil, honorificSuffix: UserSchemaAttribute? = nil, lastName: UserSchemaAttribute? = nil, locale: UserSchemaAttribute? = nil, login: UserSchemaAttribute? = nil, manager: UserSchemaAttribute? = nil, managerId: UserSchemaAttribute? = nil, middleName: UserSchemaAttribute? = nil, mobilePhone: UserSchemaAttribute? = nil, nickName: UserSchemaAttribute? = nil, organization: UserSchemaAttribute? = nil, postalAddress: UserSchemaAttribute? = nil, preferredLanguage: UserSchemaAttribute? = nil, primaryPhone: UserSchemaAttribute? = nil, profileUrl: UserSchemaAttribute? = nil, secondEmail: UserSchemaAttribute? = nil, state: UserSchemaAttribute? = nil, streetAddress: UserSchemaAttribute? = nil, timezone: UserSchemaAttribute? = nil, title: UserSchemaAttribute? = nil, userType: UserSchemaAttribute? = nil, zipCode: UserSchemaAttribute? = nil) {
+        self.city = city
+        self.costCenter = costCenter
+        self.countryCode = countryCode
+        self.department = department
+        self.displayName = displayName
+        self.division = division
+        self.email = email
+        self.employeeNumber = employeeNumber
         self.firstName = firstName
-        self.lastName = lastName
-        self.middleName = middleName
         self.honorificPrefix = honorificPrefix
         self.honorificSuffix = honorificSuffix
-        self.email = email
-        self.title = title
-        self.displayName = displayName
-        self.nickName = nickName
-        self.profileUrl = profileUrl
-        self.secondEmail = secondEmail
+        self.lastName = lastName
+        self.locale = locale
+        self.login = login
+        self.manager = manager
+        self.managerId = managerId
+        self.middleName = middleName
         self.mobilePhone = mobilePhone
-        self.primaryPhone = primaryPhone
-        self.streetAddress = streetAddress
-        self.city = city
-        self.state = state
-        self.zipCode = zipCode
-        self.countryCode = countryCode
+        self.nickName = nickName
+        self.organization = organization
         self.postalAddress = postalAddress
         self.preferredLanguage = preferredLanguage
-        self.locale = locale
+        self.primaryPhone = primaryPhone
+        self.profileUrl = profileUrl
+        self.secondEmail = secondEmail
+        self.state = state
+        self.streetAddress = streetAddress
         self.timezone = timezone
+        self.title = title
         self.userType = userType
-        self.employeeNumber = employeeNumber
-        self.costCenter = costCenter
-        self.organization = organization
-        self.division = division
-        self.department = department
-        self.managerId = managerId
-        self.manager = manager
+        self.zipCode = zipCode
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case login
+        case city
+        case costCenter
+        case countryCode
+        case department
+        case displayName
+        case division
+        case email
+        case employeeNumber
         case firstName
-        case lastName
-        case middleName
         case honorificPrefix
         case honorificSuffix
-        case email
-        case title
-        case displayName
-        case nickName
-        case profileUrl
-        case secondEmail
+        case lastName
+        case locale
+        case login
+        case manager
+        case managerId
+        case middleName
         case mobilePhone
-        case primaryPhone
-        case streetAddress
-        case city
-        case state
-        case zipCode
-        case countryCode
+        case nickName
+        case organization
         case postalAddress
         case preferredLanguage
-        case locale
+        case primaryPhone
+        case profileUrl
+        case secondEmail
+        case state
+        case streetAddress
         case timezone
+        case title
         case userType
-        case employeeNumber
-        case costCenter
-        case organization
-        case division
-        case department
-        case managerId
-        case manager
+        case zipCode
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(login, forKey: .login)
+        try container.encodeIfPresent(city, forKey: .city)
+        try container.encodeIfPresent(costCenter, forKey: .costCenter)
+        try container.encodeIfPresent(countryCode, forKey: .countryCode)
+        try container.encodeIfPresent(department, forKey: .department)
+        try container.encodeIfPresent(displayName, forKey: .displayName)
+        try container.encodeIfPresent(division, forKey: .division)
+        try container.encodeIfPresent(email, forKey: .email)
+        try container.encodeIfPresent(employeeNumber, forKey: .employeeNumber)
         try container.encodeIfPresent(firstName, forKey: .firstName)
-        try container.encodeIfPresent(lastName, forKey: .lastName)
-        try container.encodeIfPresent(middleName, forKey: .middleName)
         try container.encodeIfPresent(honorificPrefix, forKey: .honorificPrefix)
         try container.encodeIfPresent(honorificSuffix, forKey: .honorificSuffix)
-        try container.encodeIfPresent(email, forKey: .email)
-        try container.encodeIfPresent(title, forKey: .title)
-        try container.encodeIfPresent(displayName, forKey: .displayName)
-        try container.encodeIfPresent(nickName, forKey: .nickName)
-        try container.encodeIfPresent(profileUrl, forKey: .profileUrl)
-        try container.encodeIfPresent(secondEmail, forKey: .secondEmail)
+        try container.encodeIfPresent(lastName, forKey: .lastName)
+        try container.encodeIfPresent(locale, forKey: .locale)
+        try container.encodeIfPresent(login, forKey: .login)
+        try container.encodeIfPresent(manager, forKey: .manager)
+        try container.encodeIfPresent(managerId, forKey: .managerId)
+        try container.encodeIfPresent(middleName, forKey: .middleName)
         try container.encodeIfPresent(mobilePhone, forKey: .mobilePhone)
-        try container.encodeIfPresent(primaryPhone, forKey: .primaryPhone)
-        try container.encodeIfPresent(streetAddress, forKey: .streetAddress)
-        try container.encodeIfPresent(city, forKey: .city)
-        try container.encodeIfPresent(state, forKey: .state)
-        try container.encodeIfPresent(zipCode, forKey: .zipCode)
-        try container.encodeIfPresent(countryCode, forKey: .countryCode)
+        try container.encodeIfPresent(nickName, forKey: .nickName)
+        try container.encodeIfPresent(organization, forKey: .organization)
         try container.encodeIfPresent(postalAddress, forKey: .postalAddress)
         try container.encodeIfPresent(preferredLanguage, forKey: .preferredLanguage)
-        try container.encodeIfPresent(locale, forKey: .locale)
+        try container.encodeIfPresent(primaryPhone, forKey: .primaryPhone)
+        try container.encodeIfPresent(profileUrl, forKey: .profileUrl)
+        try container.encodeIfPresent(secondEmail, forKey: .secondEmail)
+        try container.encodeIfPresent(state, forKey: .state)
+        try container.encodeIfPresent(streetAddress, forKey: .streetAddress)
         try container.encodeIfPresent(timezone, forKey: .timezone)
+        try container.encodeIfPresent(title, forKey: .title)
         try container.encodeIfPresent(userType, forKey: .userType)
-        try container.encodeIfPresent(employeeNumber, forKey: .employeeNumber)
-        try container.encodeIfPresent(costCenter, forKey: .costCenter)
-        try container.encodeIfPresent(organization, forKey: .organization)
-        try container.encodeIfPresent(division, forKey: .division)
-        try container.encodeIfPresent(department, forKey: .department)
-        try container.encodeIfPresent(managerId, forKey: .managerId)
-        try container.encodeIfPresent(manager, forKey: .manager)
+        try container.encodeIfPresent(zipCode, forKey: .zipCode)
     }
 
 

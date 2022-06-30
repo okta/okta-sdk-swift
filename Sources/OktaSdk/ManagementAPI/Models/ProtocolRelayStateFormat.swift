@@ -17,8 +17,8 @@ import Foundation
 import AnyCodable
 
 public enum ProtocolRelayStateFormat: String, Codable, CaseIterable, OktaClientArgument {
-    case opaque = "OPAQUE"
     case fromUrl = "FROM_URL"
+    case opaque = "OPAQUE"
 
     var stringValue: String { rawValue }
 }

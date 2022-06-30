@@ -17,14 +17,14 @@ import Foundation
 import AnyCodable
 
 public enum FactorProvider: String, Codable, CaseIterable, OktaClientArgument {
-    case okta = "OKTA"
-    case rsa = "RSA"
+    case custom = "CUSTOM"
+    case duo = "DUO"
     case fido = "FIDO"
     case google = "GOOGLE"
+    case okta = "OKTA"
+    case rsa = "RSA"
     case symantec = "SYMANTEC"
-    case duo = "DUO"
     case yubico = "YUBICO"
-    case custom = "CUSTOM"
 
     var stringValue: String { rawValue }
 }

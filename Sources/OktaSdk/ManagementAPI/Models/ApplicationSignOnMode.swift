@@ -17,15 +17,15 @@ import Foundation
 import AnyCodable
 
 public enum ApplicationSignOnMode: String, Codable, CaseIterable, OktaClientArgument {
-    case bookmark = "BOOKMARK"
-    case basicAuth = "BASIC_AUTH"
-    case browserPlugin = "BROWSER_PLUGIN"
-    case securePasswordStore = "SECURE_PASSWORD_STORE"
     case autoLogin = "AUTO_LOGIN"
-    case wsFederation = "WS_FEDERATION"
-    case saml20 = "SAML_2_0"
+    case basicAuth = "BASIC_AUTH"
+    case bookmark = "BOOKMARK"
+    case browserPlugin = "BROWSER_PLUGIN"
     case openidConnect = "OPENID_CONNECT"
     case saml11 = "SAML_1_1"
+    case saml20 = "SAML_2_0"
+    case securePasswordStore = "SECURE_PASSWORD_STORE"
+    case wsFederation = "WS_FEDERATION"
 
     var stringValue: String { rawValue }
 }

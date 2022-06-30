@@ -18,24 +18,24 @@ import AnyCodable
 
 public struct OrgContactUser: Codable, Hashable {
 
-    public var links: [String: AnyCodable]?
     public var userId: String?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, userId: String? = nil) {
-        self.links = links
+    public init(userId: String? = nil, links: [String: AnyCodable]? = nil) {
         self.userId = userId
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case userId
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(userId, forKey: .userId)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

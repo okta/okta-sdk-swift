@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,183 +25,48 @@ public extension OktaClient {
     struct SessionAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func createSessionURLRequest(createSessionRequest: CreateSessionRequest) throws -> URLRequest {
-            try request(to: "/api/v1/sessions", method: "POST", body: createSessionRequest)
-        }
-
         /**
-         Create Session with Session Token
-         
-         - parameter createSessionRequest: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func createSession(createSessionRequest: CreateSessionRequest, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
-            do {
-                send(try createSessionURLRequest(createSessionRequest: createSessionRequest), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Create Session with Session Token
+         Create a Session with Session Token
          
          - parameter createSessionRequest: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func createSession(createSessionRequest: CreateSessionRequest) async throws -> OktaResponse<Session> {
-            try await send(try createSessionURLRequest(createSessionRequest: createSessionRequest))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Create Session with Session Token
-         
-         - parameter createSessionRequest: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func createSession(createSessionRequest: CreateSessionRequest) throws -> AnyPublisher<OktaResponse<Session>, Error> {
-            publish(try createSessionURLRequest(createSessionRequest: createSessionRequest))
-        }
-        #endif
-
-
-        internal func endSessionURLRequest(sessionId: String) throws -> URLRequest {
-            try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
-                "sessionId": sessionId
-            ]), method: "DELETE")
+            try await send(try requestWithBody(to: "/api/v1/sessions", method: "POST", body: createSessionRequest))
         }
 
         /**
-         End Session
-         
-         - parameter sessionId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func endSession(sessionId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try endSessionURLRequest(sessionId: sessionId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         End Session
+         Delete a Session
          
          - parameter sessionId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func endSession(sessionId: String) async throws -> OktaResponse<Empty> {
-            try await send(try endSessionURLRequest(sessionId: sessionId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         End Session
-         
-         - parameter sessionId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func endSession(sessionId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try endSessionURLRequest(sessionId: sessionId))
-        }
-        #endif
-
-
-        internal func getSessionURLRequest(sessionId: String) throws -> URLRequest {
-            try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
-                "sessionId": sessionId
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
+                    "sessionId": sessionId
+                ]), method: "DELETE"))
         }
 
         /**
-         Get Session
-         
-         - parameter sessionId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func getSession(sessionId: String, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
-            do {
-                send(try getSessionURLRequest(sessionId: sessionId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Get Session
+         Retrieve a Session
          
          - parameter sessionId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func getSession(sessionId: String) async throws -> OktaResponse<Session> {
-            try await send(try getSessionURLRequest(sessionId: sessionId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Get Session
-         
-         - parameter sessionId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getSession(sessionId: String) throws -> AnyPublisher<OktaResponse<Session>, Error> {
-            publish(try getSessionURLRequest(sessionId: sessionId))
-        }
-        #endif
-
-
-        internal func refreshSessionURLRequest(sessionId: String) throws -> URLRequest {
-            try request(to: "/api/v1/sessions/{sessionId}/lifecycle/refresh".expanded(using: [
-                "sessionId": sessionId
-            ]), method: "POST")
+            try await send(try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
+                    "sessionId": sessionId
+                ]), method: "GET"))
         }
 
         /**
-         Refresh Session
-         
-         - parameter sessionId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func refreshSession(sessionId: String, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
-            do {
-                send(try refreshSessionURLRequest(sessionId: sessionId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-         Refresh Session
+         Refresh a Session
          
          - parameter sessionId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func refreshSession(sessionId: String) async throws -> OktaResponse<Session> {
-            try await send(try refreshSessionURLRequest(sessionId: sessionId))
+            try await send(try request(to: "/api/v1/sessions/{sessionId}/lifecycle/refresh".expanded(using: [
+                    "sessionId": sessionId
+                ]), method: "POST"))
         }
-        #endif
-
-        #if canImport(Combine)
-        /**
-         Refresh Session
-         
-         - parameter sessionId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func refreshSession(sessionId: String) throws -> AnyPublisher<OktaResponse<Session>, Error> {
-            publish(try refreshSessionURLRequest(sessionId: sessionId))
-        }
-        #endif
 
     }
 }

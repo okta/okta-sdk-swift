@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,166 +25,45 @@ public extension OktaClient {
     struct LinkedObjectAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func addLinkedObjectDefinitionURLRequest(linkedObject: LinkedObject) throws -> URLRequest {
-            try request(to: "/api/v1/meta/schemas/user/linkedObjects", method: "POST", body: linkedObject)
-        }
-
         /**
-
-         - parameter linkedObject: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func addLinkedObjectDefinition(linkedObject: LinkedObject, completion: @escaping (Result<OktaResponse<LinkedObject>, Error>) -> Void) {
-            do {
-                send(try addLinkedObjectDefinitionURLRequest(linkedObject: linkedObject), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Create a Linked Object Definition
+         
          - parameter linkedObject: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func addLinkedObjectDefinition(linkedObject: LinkedObject) async throws -> OktaResponse<LinkedObject> {
-            try await send(try addLinkedObjectDefinitionURLRequest(linkedObject: linkedObject))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter linkedObject: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func addLinkedObjectDefinition(linkedObject: LinkedObject) throws -> AnyPublisher<OktaResponse<LinkedObject>, Error> {
-            publish(try addLinkedObjectDefinitionURLRequest(linkedObject: linkedObject))
-        }
-        #endif
-
-
-        internal func deleteLinkedObjectDefinitionURLRequest(linkedObjectName: String) throws -> URLRequest {
-            try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
-                "linkedObjectName": linkedObjectName
-            ]), method: "DELETE")
+            try await send(try requestWithBody(to: "/api/v1/meta/schemas/user/linkedObjects", method: "POST", body: linkedObject))
         }
 
         /**
-
-         - parameter linkedObjectName: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func deleteLinkedObjectDefinition(linkedObjectName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Delete a Linked Object Definition
+         
          - parameter linkedObjectName: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func deleteLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<Empty> {
-            try await send(try deleteLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter linkedObjectName: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deleteLinkedObjectDefinition(linkedObjectName: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName))
-        }
-        #endif
-
-
-        internal func getLinkedObjectDefinitionURLRequest(linkedObjectName: String) throws -> URLRequest {
-            try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
-                "linkedObjectName": linkedObjectName
-            ]), method: "GET")
+            try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
+                    "linkedObjectName": linkedObjectName
+                ]), method: "DELETE"))
         }
 
         /**
-
-         - parameter linkedObjectName: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func getLinkedObjectDefinition(linkedObjectName: String, completion: @escaping (Result<OktaResponse<LinkedObject>, Error>) -> Void) {
-            do {
-                send(try getLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Retrieve a Linked Object Definition
+         
          - parameter linkedObjectName: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func getLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<LinkedObject> {
-            try await send(try getLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter linkedObjectName: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getLinkedObjectDefinition(linkedObjectName: String) throws -> AnyPublisher<OktaResponse<LinkedObject>, Error> {
-            publish(try getLinkedObjectDefinitionURLRequest(linkedObjectName: linkedObjectName))
-        }
-        #endif
-
-
-        internal func listLinkedObjectDefinitionsURLRequest() throws -> URLRequest {
-            try request(to: "/api/v1/meta/schemas/user/linkedObjects", method: "GET")
+            try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
+                    "linkedObjectName": linkedObjectName
+                ]), method: "GET"))
         }
 
         /**
-
-         - parameter completion: completion handler to receive the data and the error objects
+         List all Linked Object Definitions
+         
          */
-        public func listLinkedObjectDefinitions(completion: @escaping (Result<OktaResponse<[LinkedObject]>, Error>) -> Void) {
-            do {
-                send(try listLinkedObjectDefinitionsURLRequest(), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listLinkedObjectDefinitions() async throws -> OktaResponse<[LinkedObject]> {
-            try await send(try listLinkedObjectDefinitionsURLRequest())
+            try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects", method: "GET"))
         }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listLinkedObjectDefinitions() throws -> AnyPublisher<OktaResponse<[LinkedObject]>, Error> {
-            publish(try listLinkedObjectDefinitionsURLRequest())
-        }
-        #endif
 
     }
 }

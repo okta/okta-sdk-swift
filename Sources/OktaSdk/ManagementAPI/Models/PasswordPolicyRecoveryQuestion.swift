@@ -18,14 +18,10 @@ import AnyCodable
 
 public struct PasswordPolicyRecoveryQuestion: Codable, Hashable {
 
-    public enum Status: String, Codable, CaseIterable {
-        case active = "ACTIVE"
-        case inactive = "INACTIVE"
-    }
     public var properties: PasswordPolicyRecoveryQuestionProperties?
-    public var status: Status?
+    public var status: LifecycleStatus?
 
-    public init(properties: PasswordPolicyRecoveryQuestionProperties? = nil, status: Status? = nil) {
+    public init(properties: PasswordPolicyRecoveryQuestionProperties? = nil, status: LifecycleStatus? = nil) {
         self.properties = properties
         self.status = status
     }

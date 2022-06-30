@@ -18,12 +18,27 @@ import AnyCodable
 
 public struct OpenIdConnectApplicationSettings: Codable, Hashable {
 
+    public var identityStoreId: String?
+    public var implicitAssignment: Bool?
+    public var inlineHookId: String?
+    public var notes: ApplicationSettingsNotes?
+    public var notifications: ApplicationSettingsNotifications?
     public var oauthClient: OpenIdConnectApplicationSettingsClient?
 
-    public init(oauthClient: OpenIdConnectApplicationSettingsClient? = nil) {
+    public init(identityStoreId: String? = nil, implicitAssignment: Bool? = nil, inlineHookId: String? = nil, notes: ApplicationSettingsNotes? = nil, notifications: ApplicationSettingsNotifications? = nil, oauthClient: OpenIdConnectApplicationSettingsClient? = nil) {
+        self.identityStoreId = identityStoreId
+        self.implicitAssignment = implicitAssignment
+        self.inlineHookId = inlineHookId
+        self.notes = notes
+        self.notifications = notifications
         self.oauthClient = oauthClient
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case identityStoreId
+        case implicitAssignment
+        case inlineHookId
+        case notes
+        case notifications
         case oauthClient
     }
 
@@ -31,6 +46,11 @@ public struct OpenIdConnectApplicationSettings: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(identityStoreId, forKey: .identityStoreId)
+        try container.encodeIfPresent(implicitAssignment, forKey: .implicitAssignment)
+        try container.encodeIfPresent(inlineHookId, forKey: .inlineHookId)
+        try container.encodeIfPresent(notes, forKey: .notes)
+        try container.encodeIfPresent(notifications, forKey: .notifications)
         try container.encodeIfPresent(oauthClient, forKey: .oauthClient)
     }
 

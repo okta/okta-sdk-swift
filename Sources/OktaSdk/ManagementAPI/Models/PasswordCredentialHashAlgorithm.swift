@@ -18,10 +18,10 @@ import AnyCodable
 
 public enum PasswordCredentialHashAlgorithm: String, Codable, CaseIterable, OktaClientArgument {
     case bcrypt = "BCRYPT"
-    case sha512 = "SHA-512"
-    case sha256 = "SHA-256"
-    case sha1 = "SHA-1"
     case md5 = "MD5"
+    case sha1 = "SHA-1"
+    case sha256 = "SHA-256"
+    case sha512 = "SHA-512"
 
     var stringValue: String { rawValue }
 }

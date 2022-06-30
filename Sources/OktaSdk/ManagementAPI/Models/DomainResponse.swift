@@ -18,40 +18,31 @@ import AnyCodable
 
 public struct DomainResponse: Codable, Hashable {
 
-    public enum CertificateSourceType: String, Codable, CaseIterable {
-        case manual = "MANUAL"
-    }
-    public enum ValidationStatus: String, Codable, CaseIterable {
-        case notStarted = "NOT_STARTED"
-        case inProgress = "IN_PROGRESS"
-        case verified = "VERIFIED"
-        case completed = "COMPLETED"
-    }
-    public var certificateSourceType: CertificateSourceType?
+    public var certificateSourceType: DomainCertificateSourceType?
     public var dnsRecords: [DNSRecord]?
     public var domain: String?
     public var id: String?
-    public var links: DomainLinks?
     public var publicCertificate: DomainCertificateMetadata?
-    public var validationStatus: ValidationStatus?
+    public var validationStatus: DomainValidationStatus?
+    public var links: DomainLinks?
 
-    public init(certificateSourceType: CertificateSourceType? = nil, dnsRecords: [DNSRecord]? = nil, domain: String? = nil, id: String? = nil, links: DomainLinks? = nil, publicCertificate: DomainCertificateMetadata? = nil, validationStatus: ValidationStatus? = nil) {
+    public init(certificateSourceType: DomainCertificateSourceType? = nil, dnsRecords: [DNSRecord]? = nil, domain: String? = nil, id: String? = nil, publicCertificate: DomainCertificateMetadata? = nil, validationStatus: DomainValidationStatus? = nil, links: DomainLinks? = nil) {
         self.certificateSourceType = certificateSourceType
         self.dnsRecords = dnsRecords
         self.domain = domain
         self.id = id
-        self.links = links
         self.publicCertificate = publicCertificate
         self.validationStatus = validationStatus
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case certificateSourceType
         case dnsRecords
         case domain
         case id
-        case links = "_links"
         case publicCertificate
         case validationStatus
+        case links = "_links"
     }
 
     // Encodable protocol methods
@@ -62,9 +53,9 @@ public struct DomainResponse: Codable, Hashable {
         try container.encodeIfPresent(dnsRecords, forKey: .dnsRecords)
         try container.encodeIfPresent(domain, forKey: .domain)
         try container.encodeIfPresent(id, forKey: .id)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(publicCertificate, forKey: .publicCertificate)
         try container.encodeIfPresent(validationStatus, forKey: .validationStatus)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

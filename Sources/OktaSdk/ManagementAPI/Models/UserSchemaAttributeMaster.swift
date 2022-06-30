@@ -18,24 +18,24 @@ import AnyCodable
 
 public struct UserSchemaAttributeMaster: Codable, Hashable {
 
-    public var type: UserSchemaAttributeMasterType?
     public var priority: [UserSchemaAttributeMasterPriority]?
+    public var type: UserSchemaAttributeMasterType?
 
-    public init(type: UserSchemaAttributeMasterType? = nil, priority: [UserSchemaAttributeMasterPriority]? = nil) {
-        self.type = type
+    public init(priority: [UserSchemaAttributeMasterPriority]? = nil, type: UserSchemaAttributeMasterType? = nil) {
         self.priority = priority
+        self.type = type
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case type
         case priority
+        case type
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(type, forKey: .type)
         try container.encodeIfPresent(priority, forKey: .priority)
+        try container.encodeIfPresent(type, forKey: .type)
     }
 
 

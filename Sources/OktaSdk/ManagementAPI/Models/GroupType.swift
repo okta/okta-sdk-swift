@@ -17,9 +17,9 @@ import Foundation
 import AnyCodable
 
 public enum GroupType: String, Codable, CaseIterable, OktaClientArgument {
-    case oktaGroup = "OKTA_GROUP"
     case appGroup = "APP_GROUP"
     case builtIn = "BUILT_IN"
+    case oktaGroup = "OKTA_GROUP"
 
     var stringValue: String { rawValue }
 }

@@ -18,8 +18,6 @@ import AnyCodable
 
 public struct AppUser: Codable, Hashable {
 
-    public var embedded: [String: AnyCodable]?
-    public var links: [String: AnyCodable]?
     public var created: Date?
     public var credentials: AppUserCredentials?
     public var externalId: String?
@@ -32,10 +30,10 @@ public struct AppUser: Codable, Hashable {
     public var status: String?
     public var statusChanged: Date?
     public var syncState: String?
+    public var embedded: [String: AnyCodable]?
+    public var links: [String: AnyCodable]?
 
-    public init(embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil, created: Date? = nil, credentials: AppUserCredentials? = nil, externalId: String? = nil, id: String? = nil, lastSync: Date? = nil, lastUpdated: Date? = nil, passwordChanged: Date? = nil, profile: [String: AnyCodable]? = nil, scope: String? = nil, status: String? = nil, statusChanged: Date? = nil, syncState: String? = nil) {
-        self.embedded = embedded
-        self.links = links
+    public init(created: Date? = nil, credentials: AppUserCredentials? = nil, externalId: String? = nil, id: String? = nil, lastSync: Date? = nil, lastUpdated: Date? = nil, passwordChanged: Date? = nil, profile: [String: AnyCodable]? = nil, scope: String? = nil, status: String? = nil, statusChanged: Date? = nil, syncState: String? = nil, embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil) {
         self.created = created
         self.credentials = credentials
         self.externalId = externalId
@@ -48,10 +46,10 @@ public struct AppUser: Codable, Hashable {
         self.status = status
         self.statusChanged = statusChanged
         self.syncState = syncState
+        self.embedded = embedded
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case embedded = "_embedded"
-        case links = "_links"
         case created
         case credentials
         case externalId
@@ -64,14 +62,14 @@ public struct AppUser: Codable, Hashable {
         case status
         case statusChanged
         case syncState
+        case embedded = "_embedded"
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(embedded, forKey: .embedded)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(credentials, forKey: .credentials)
         try container.encodeIfPresent(externalId, forKey: .externalId)
@@ -84,6 +82,8 @@ public struct AppUser: Codable, Hashable {
         try container.encodeIfPresent(status, forKey: .status)
         try container.encodeIfPresent(statusChanged, forKey: .statusChanged)
         try container.encodeIfPresent(syncState, forKey: .syncState)
+        try container.encodeIfPresent(embedded, forKey: .embedded)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

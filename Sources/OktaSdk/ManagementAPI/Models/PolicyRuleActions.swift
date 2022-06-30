@@ -19,24 +19,27 @@ import AnyCodable
 public struct PolicyRuleActions: Codable, Hashable {
 
     public var enroll: PolicyRuleActionsEnroll?
-    public var signon: OktaSignOnPolicyRuleSignonActions?
+    public var idp: IdpPolicyRuleAction?
     public var passwordChange: PasswordPolicyRuleAction?
     public var selfServicePasswordReset: PasswordPolicyRuleAction?
     public var selfServiceUnlock: PasswordPolicyRuleAction?
+    public var signon: OktaSignOnPolicyRuleSignonActions?
 
-    public init(enroll: PolicyRuleActionsEnroll? = nil, signon: OktaSignOnPolicyRuleSignonActions? = nil, passwordChange: PasswordPolicyRuleAction? = nil, selfServicePasswordReset: PasswordPolicyRuleAction? = nil, selfServiceUnlock: PasswordPolicyRuleAction? = nil) {
+    public init(enroll: PolicyRuleActionsEnroll? = nil, idp: IdpPolicyRuleAction? = nil, passwordChange: PasswordPolicyRuleAction? = nil, selfServicePasswordReset: PasswordPolicyRuleAction? = nil, selfServiceUnlock: PasswordPolicyRuleAction? = nil, signon: OktaSignOnPolicyRuleSignonActions? = nil) {
         self.enroll = enroll
-        self.signon = signon
+        self.idp = idp
         self.passwordChange = passwordChange
         self.selfServicePasswordReset = selfServicePasswordReset
         self.selfServiceUnlock = selfServiceUnlock
+        self.signon = signon
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case enroll
-        case signon
+        case idp
         case passwordChange
         case selfServicePasswordReset
         case selfServiceUnlock
+        case signon
     }
 
     // Encodable protocol methods
@@ -44,10 +47,11 @@ public struct PolicyRuleActions: Codable, Hashable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(enroll, forKey: .enroll)
-        try container.encodeIfPresent(signon, forKey: .signon)
+        try container.encodeIfPresent(idp, forKey: .idp)
         try container.encodeIfPresent(passwordChange, forKey: .passwordChange)
         try container.encodeIfPresent(selfServicePasswordReset, forKey: .selfServicePasswordReset)
         try container.encodeIfPresent(selfServiceUnlock, forKey: .selfServiceUnlock)
+        try container.encodeIfPresent(signon, forKey: .signon)
     }
 
 

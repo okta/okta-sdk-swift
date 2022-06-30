@@ -18,27 +18,27 @@ import AnyCodable
 
 public struct SamlAttributeStatement: Codable, Hashable {
 
+    public var filterType: String?
+    public var filterValue: String?
     public var name: String?
     public var namespace: String?
     public var type: String?
-    public var filterType: String?
-    public var filterValue: String?
     public var values: [String]?
 
-    public init(name: String? = nil, namespace: String? = nil, type: String? = nil, filterType: String? = nil, filterValue: String? = nil, values: [String]? = nil) {
+    public init(filterType: String? = nil, filterValue: String? = nil, name: String? = nil, namespace: String? = nil, type: String? = nil, values: [String]? = nil) {
+        self.filterType = filterType
+        self.filterValue = filterValue
         self.name = name
         self.namespace = namespace
         self.type = type
-        self.filterType = filterType
-        self.filterValue = filterValue
         self.values = values
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
+        case filterType
+        case filterValue
         case name
         case namespace
         case type
-        case filterType
-        case filterValue
         case values
     }
 
@@ -46,11 +46,11 @@ public struct SamlAttributeStatement: Codable, Hashable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(filterType, forKey: .filterType)
+        try container.encodeIfPresent(filterValue, forKey: .filterValue)
         try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(namespace, forKey: .namespace)
         try container.encodeIfPresent(type, forKey: .type)
-        try container.encodeIfPresent(filterType, forKey: .filterType)
-        try container.encodeIfPresent(filterValue, forKey: .filterValue)
         try container.encodeIfPresent(values, forKey: .values)
     }
 

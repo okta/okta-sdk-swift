@@ -17,8 +17,8 @@ import Foundation
 import AnyCodable
 
 public enum NetworkZoneType: String, Codable, CaseIterable, OktaClientArgument {
-    case ip = "IP"
     case _dynamic = "DYNAMIC"
+    case ip = "IP"
 
     var stringValue: String { rawValue }
 }

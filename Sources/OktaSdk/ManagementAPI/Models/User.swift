@@ -18,8 +18,6 @@ import AnyCodable
 
 public struct User: Codable, Hashable {
 
-    public var embedded: [String: AnyCodable]?
-    public var links: [String: AnyCodable]?
     public var activated: Date?
     public var created: Date?
     public var credentials: UserCredentials?
@@ -32,10 +30,10 @@ public struct User: Codable, Hashable {
     public var statusChanged: Date?
     public var transitioningToStatus: UserStatus?
     public var type: UserType?
+    public var embedded: [String: AnyCodable]?
+    public var links: [String: AnyCodable]?
 
-    public init(embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil, activated: Date? = nil, created: Date? = nil, credentials: UserCredentials? = nil, id: String? = nil, lastLogin: Date? = nil, lastUpdated: Date? = nil, passwordChanged: Date? = nil, profile: UserProfile? = nil, status: UserStatus? = nil, statusChanged: Date? = nil, transitioningToStatus: UserStatus? = nil, type: UserType? = nil) {
-        self.embedded = embedded
-        self.links = links
+    public init(activated: Date? = nil, created: Date? = nil, credentials: UserCredentials? = nil, id: String? = nil, lastLogin: Date? = nil, lastUpdated: Date? = nil, passwordChanged: Date? = nil, profile: UserProfile? = nil, status: UserStatus? = nil, statusChanged: Date? = nil, transitioningToStatus: UserStatus? = nil, type: UserType? = nil, embedded: [String: AnyCodable]? = nil, links: [String: AnyCodable]? = nil) {
         self.activated = activated
         self.created = created
         self.credentials = credentials
@@ -48,10 +46,10 @@ public struct User: Codable, Hashable {
         self.statusChanged = statusChanged
         self.transitioningToStatus = transitioningToStatus
         self.type = type
+        self.embedded = embedded
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case embedded = "_embedded"
-        case links = "_links"
         case activated
         case created
         case credentials
@@ -64,14 +62,14 @@ public struct User: Codable, Hashable {
         case statusChanged
         case transitioningToStatus
         case type
+        case embedded = "_embedded"
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(embedded, forKey: .embedded)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(activated, forKey: .activated)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(credentials, forKey: .credentials)
@@ -84,6 +82,8 @@ public struct User: Codable, Hashable {
         try container.encodeIfPresent(statusChanged, forKey: .statusChanged)
         try container.encodeIfPresent(transitioningToStatus, forKey: .transitioningToStatus)
         try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(embedded, forKey: .embedded)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

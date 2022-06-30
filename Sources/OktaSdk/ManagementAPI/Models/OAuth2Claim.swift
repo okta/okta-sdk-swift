@@ -18,39 +18,19 @@ import AnyCodable
 
 public struct OAuth2Claim: Codable, Hashable {
 
-    public enum ClaimType: String, Codable, CaseIterable {
-        case identity = "IDENTITY"
-        case resource = "RESOURCE"
-    }
-    public enum GroupFilterType: String, Codable, CaseIterable {
-        case startsWith = "STARTS_WITH"
-        case equals = "EQUALS"
-        case contains = "CONTAINS"
-        case regex = "REGEX"
-    }
-    public enum Status: String, Codable, CaseIterable {
-        case active = "ACTIVE"
-        case inactive = "INACTIVE"
-    }
-    public enum ValueType: String, Codable, CaseIterable {
-        case expression = "EXPRESSION"
-        case groups = "GROUPS"
-        case system = "SYSTEM"
-    }
-    public var links: [String: AnyCodable]?
     public var alwaysIncludeInToken: Bool?
-    public var claimType: ClaimType?
+    public var claimType: OAuth2ClaimType?
     public var conditions: OAuth2ClaimConditions?
-    public var groupFilterType: GroupFilterType?
+    public var groupFilterType: OAuth2ClaimGroupFilterType?
     public var id: String?
     public var name: String?
-    public var status: Status?
+    public var status: LifecycleStatus?
     public var system: Bool?
     public var value: String?
-    public var valueType: ValueType?
+    public var valueType: OAuth2ClaimValueType?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, alwaysIncludeInToken: Bool? = nil, claimType: ClaimType? = nil, conditions: OAuth2ClaimConditions? = nil, groupFilterType: GroupFilterType? = nil, id: String? = nil, name: String? = nil, status: Status? = nil, system: Bool? = nil, value: String? = nil, valueType: ValueType? = nil) {
-        self.links = links
+    public init(alwaysIncludeInToken: Bool? = nil, claimType: OAuth2ClaimType? = nil, conditions: OAuth2ClaimConditions? = nil, groupFilterType: OAuth2ClaimGroupFilterType? = nil, id: String? = nil, name: String? = nil, status: LifecycleStatus? = nil, system: Bool? = nil, value: String? = nil, valueType: OAuth2ClaimValueType? = nil, links: [String: AnyCodable]? = nil) {
         self.alwaysIncludeInToken = alwaysIncludeInToken
         self.claimType = claimType
         self.conditions = conditions
@@ -61,9 +41,9 @@ public struct OAuth2Claim: Codable, Hashable {
         self.system = system
         self.value = value
         self.valueType = valueType
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case alwaysIncludeInToken
         case claimType
         case conditions
@@ -74,13 +54,13 @@ public struct OAuth2Claim: Codable, Hashable {
         case system
         case value
         case valueType
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(alwaysIncludeInToken, forKey: .alwaysIncludeInToken)
         try container.encodeIfPresent(claimType, forKey: .claimType)
         try container.encodeIfPresent(conditions, forKey: .conditions)
@@ -91,6 +71,7 @@ public struct OAuth2Claim: Codable, Hashable {
         try container.encodeIfPresent(system, forKey: .system)
         try container.encodeIfPresent(value, forKey: .value)
         try container.encodeIfPresent(valueType, forKey: .valueType)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

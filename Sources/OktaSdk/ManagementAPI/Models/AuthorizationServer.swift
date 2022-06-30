@@ -18,15 +18,6 @@ import AnyCodable
 
 public struct AuthorizationServer: Codable, Hashable {
 
-    public enum IssuerMode: String, Codable, CaseIterable {
-        case orgUrl = "ORG_URL"
-        case customUrl = "CUSTOM_URL"
-    }
-    public enum Status: String, Codable, CaseIterable {
-        case active = "ACTIVE"
-        case inactive = "INACTIVE"
-    }
-    public var links: [String: AnyCodable]?
     public var audiences: [String]?
     public var created: Date?
     public var credentials: AuthorizationServerCredentials?
@@ -36,10 +27,10 @@ public struct AuthorizationServer: Codable, Hashable {
     public var issuerMode: IssuerMode?
     public var lastUpdated: Date?
     public var name: String?
-    public var status: Status?
+    public var status: LifecycleStatus?
+    public var links: [String: AnyCodable]?
 
-    public init(links: [String: AnyCodable]? = nil, audiences: [String]? = nil, created: Date? = nil, credentials: AuthorizationServerCredentials? = nil, description: String? = nil, id: String? = nil, issuer: String? = nil, issuerMode: IssuerMode? = nil, lastUpdated: Date? = nil, name: String? = nil, status: Status? = nil) {
-        self.links = links
+    public init(audiences: [String]? = nil, created: Date? = nil, credentials: AuthorizationServerCredentials? = nil, description: String? = nil, id: String? = nil, issuer: String? = nil, issuerMode: IssuerMode? = nil, lastUpdated: Date? = nil, name: String? = nil, status: LifecycleStatus? = nil, links: [String: AnyCodable]? = nil) {
         self.audiences = audiences
         self.created = created
         self.credentials = credentials
@@ -50,9 +41,9 @@ public struct AuthorizationServer: Codable, Hashable {
         self.lastUpdated = lastUpdated
         self.name = name
         self.status = status
+        self.links = links
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
-        case links = "_links"
         case audiences
         case created
         case credentials
@@ -63,13 +54,13 @@ public struct AuthorizationServer: Codable, Hashable {
         case lastUpdated
         case name
         case status
+        case links = "_links"
     }
 
     // Encodable protocol methods
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(links, forKey: .links)
         try container.encodeIfPresent(audiences, forKey: .audiences)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(credentials, forKey: .credentials)
@@ -80,6 +71,7 @@ public struct AuthorizationServer: Codable, Hashable {
         try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
         try container.encodeIfPresent(name, forKey: .name)
         try container.encodeIfPresent(status, forKey: .status)
+        try container.encodeIfPresent(links, forKey: .links)
     }
 
 

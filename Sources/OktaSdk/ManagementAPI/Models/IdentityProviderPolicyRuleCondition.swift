@@ -18,15 +18,10 @@ import AnyCodable
 
 public struct IdentityProviderPolicyRuleCondition: Codable, Hashable {
 
-    public enum Provider: String, Codable, CaseIterable {
-        case any = "ANY"
-        case okta = "OKTA"
-        case specificIdp = "SPECIFIC_IDP"
-    }
     public var idpIds: [String]?
-    public var provider: Provider?
+    public var provider: IdentityProviderPolicyProvider?
 
-    public init(idpIds: [String]? = nil, provider: Provider? = nil) {
+    public init(idpIds: [String]? = nil, provider: IdentityProviderPolicyProvider? = nil) {
         self.idpIds = idpIds
         self.provider = provider
     }

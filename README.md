@@ -26,10 +26,12 @@ This repository contains the Okta management SDK for Swift. This SDK can be used
 - Manage applications with the [Apps API][apps-api-docs]
 - Much more!
 
-> Requires Swift version 5.4 or higher.
+> Requires Swift version 5.5 or higher.
 
 You can also learn more on the [Okta + Swift][lang-landing-page] page in our documentation.
 
+> *WARNING:* This SDK is not intended for use within production applications, or applications deployed to untrusted devices (e.g. via the app store or private distribution). Embedding SSWS tokens within applications is unsafe, and is not recommended.
+ 
 ## Release status
 
 This library uses semantic versioning and follows Okta's [Library Version Policy][okta-library-versioning].
@@ -42,7 +44,7 @@ The latest release can always be found on the [releases page][github-releases].
 
 ## Need help?
 
-*Note:* This SDK is in beta status, and is currently unsupported.  If you run into problems using the SDK, you can:
+*Note:* This SDK is in beta status, and is currently unsupported. At this time, there are no plans for this to become supported, and will remain in beta status. If you run into problems using the SDK, you can:
 
 - Ask questions on the [Okta Developer Forums][devforum]
 - Post [issues on GitHub][github-issues] (for code errors)
@@ -53,7 +55,7 @@ To get started, you will need:
 
 - An Okta account, called an _organization_ (sign up for a free [developer organization][dev-okta-signup] if you need one).
 - An [API token][api-token-docs].
-- Xcode targeting iOS 10 or above, tvOS 10 or above, or macOS 10.11 or above.
+- Xcode targeting iOS 15 or above, tvOS 15 or above, or macOS 12 or above.
 
 ### Swift Package Manager
 
@@ -80,50 +82,13 @@ Once you initialize a `client`, you can call methods to make requests to the Okt
 
 ### Making API calls
 
-The client provides three variations of each API call, depending on your particular usage pattern:
-
-* Methods that accept an escaping completion handler, accepting a `Result` type in the response;
-* Async methods when targeting Swift 5.5;
-* `AnyPublisher` variants when Combine is available.
+The client provides async methods using Swift Concurrency for each API call.
 
 Most methods are grouped by the API endpoint they belong to. For example, methods that call the [Users API][users-api-docs] are organized under the User resource client `client.user.*`.
-
-> Asynchronous functions are fairly new to Swift after making its debut in Swift 5.5. This allows developers to define `async` functions and `await` asynchronous calls within them. For more information, you can check out the [Swift Concurrency documentation][swift-concurrency-docs].
 
 ### Response Objects
 
 All results, regardless of the function type, will return an instance of `OktaResponse<T>`, whose embedded type is generic.  This response object contains information related to the response, such as rate limit information, pagination links, and the `requestId` returned from the server.
-
-#### Completion handler functions
-
-Functions that accept a completion block to process the asynchronous result returns the response to that completion block asynchronously.
-
-```swift
-client.user.listUsers { result in
-    switch result {
-    case .success(let response):
-        // Handle the response
-    case .failure(let error):
-        // Handle the error
-    }
-}
-```
-
-#### Combine Publisher functions
-
-A variation of the above method is one that will return a Combine `AnyPublisher` that can supply the same result, for platforms and OS versions that support Combine.
-
-```swift
-client.user.listUsers().sink { completion in
-    // Handle the completion
-} receiveValue: { response in
-    // Use the response
-}
-```
-
-#### Swift Concurrency Async functions
-
-For applications built with Swift 5.5 or above targeting devices that support [Swift Concurrency][swift-concurrency-docs], the `async` variation of the above methods can be used.
 
 ```swift
 let response = try await client.user.listUsers()
@@ -278,6 +243,24 @@ The Okta API will return 429 responses if too many requests are made within a gi
 ## Contributing
 
 We're happy to accept contributions and PRs! Please see the [Contribution Guide](CONTRIBUTING.md) to understand how to structure a contribution.
+
+### Updating to the new spec
+
+Generating a new version of the SDK using an updated spec can be done as follows:
+
+```sh
+docker run --rm -v $PWD:/local \
+    openapitools/openapi-generator-cli generate  \
+    --api-package OktaSdk \
+    --generator-name swift5 \
+    --git-host github.com \
+    --git-repo-id okta-sdk-swift \
+    --git-user-id okta \
+    --config /local/openapi-config.yaml \
+    --input-spec /local/management-codegen.yaml \
+    --template-dir /local/openapi-template \
+    --output /local
+```
 
 [devforum]: https://devforum.okta.com/
 [github-issues]: https://github.com/okta/okta-sdk-swift/issues

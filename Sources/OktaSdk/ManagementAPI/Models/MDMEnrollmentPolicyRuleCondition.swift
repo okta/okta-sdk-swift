@@ -18,14 +18,10 @@ import AnyCodable
 
 public struct MDMEnrollmentPolicyRuleCondition: Codable, Hashable {
 
-    public enum Enrollment: String, Codable, CaseIterable {
-        case omm = "OMM"
-        case anyOrNone = "ANY_OR_NONE"
-    }
     public var blockNonSafeAndroid: Bool?
-    public var enrollment: Enrollment?
+    public var enrollment: MDMEnrollmentPolicyEnrollment?
 
-    public init(blockNonSafeAndroid: Bool? = nil, enrollment: Enrollment? = nil) {
+    public init(blockNonSafeAndroid: Bool? = nil, enrollment: MDMEnrollmentPolicyEnrollment? = nil) {
         self.blockNonSafeAndroid = blockNonSafeAndroid
         self.enrollment = enrollment
     }

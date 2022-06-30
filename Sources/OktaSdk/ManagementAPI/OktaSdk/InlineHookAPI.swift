@@ -16,10 +16,6 @@
 import Foundation
 import AnyCodable
 
-#if canImport(Combine)
-import Combine
-#endif
-
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -29,345 +25,94 @@ public extension OktaClient {
     struct InlineHookAPI: OktaClientAPI {
         internal let context: OktaClient.APIContext
 
-
-        internal func activateInlineHookURLRequest(inlineHookId: String) throws -> URLRequest {
-            try request(to: "/api/v1/inlineHooks/{inlineHookId}/lifecycle/activate".expanded(using: [
-                "inlineHookId": inlineHookId
-            ]), method: "POST")
-        }
-
         /**
-
-         - parameter inlineHookId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func activateInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
-            do {
-                send(try activateInlineHookURLRequest(inlineHookId: inlineHookId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Activate an Inline Hook
+         
          - parameter inlineHookId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func activateInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
-            try await send(try activateInlineHookURLRequest(inlineHookId: inlineHookId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter inlineHookId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func activateInlineHook(inlineHookId: String) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
-            publish(try activateInlineHookURLRequest(inlineHookId: inlineHookId))
-        }
-        #endif
-
-
-        internal func createInlineHookURLRequest(inlineHook: InlineHook) throws -> URLRequest {
-            try request(to: "/api/v1/inlineHooks", method: "POST", body: inlineHook)
+            try await send(try request(to: "/api/v1/inlineHooks/{inlineHookId}/lifecycle/activate".expanded(using: [
+                    "inlineHookId": inlineHookId
+                ]), method: "POST"))
         }
 
         /**
-
-         - parameter inlineHook: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func createInlineHook(inlineHook: InlineHook, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
-            do {
-                send(try createInlineHookURLRequest(inlineHook: inlineHook), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Create an Inline Hook
+         
          - parameter inlineHook: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func createInlineHook(inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
-            try await send(try createInlineHookURLRequest(inlineHook: inlineHook))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter inlineHook: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func createInlineHook(inlineHook: InlineHook) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
-            publish(try createInlineHookURLRequest(inlineHook: inlineHook))
-        }
-        #endif
-
-
-        internal func deactivateInlineHookURLRequest(inlineHookId: String) throws -> URLRequest {
-            try request(to: "/api/v1/inlineHooks/{inlineHookId}/lifecycle/deactivate".expanded(using: [
-                "inlineHookId": inlineHookId
-            ]), method: "POST")
+            try await send(try requestWithBody(to: "/api/v1/inlineHooks", method: "POST", body: inlineHook))
         }
 
         /**
-
-         - parameter inlineHookId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func deactivateInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
-            do {
-                send(try deactivateInlineHookURLRequest(inlineHookId: inlineHookId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Deactivate an Inline Hook
+         
          - parameter inlineHookId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func deactivateInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
-            try await send(try deactivateInlineHookURLRequest(inlineHookId: inlineHookId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter inlineHookId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deactivateInlineHook(inlineHookId: String) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
-            publish(try deactivateInlineHookURLRequest(inlineHookId: inlineHookId))
-        }
-        #endif
-
-
-        internal func deleteInlineHookURLRequest(inlineHookId: String) throws -> URLRequest {
-            try request(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
-                "inlineHookId": inlineHookId
-            ]), method: "DELETE")
+            try await send(try request(to: "/api/v1/inlineHooks/{inlineHookId}/lifecycle/deactivate".expanded(using: [
+                    "inlineHookId": inlineHookId
+                ]), method: "POST"))
         }
 
         /**
-
-         - parameter inlineHookId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func deleteInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
-            do {
-                send(try deleteInlineHookURLRequest(inlineHookId: inlineHookId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Delete an Inline Hook
+         
          - parameter inlineHookId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
+        @discardableResult
         public func deleteInlineHook(inlineHookId: String) async throws -> OktaResponse<Empty> {
-            try await send(try deleteInlineHookURLRequest(inlineHookId: inlineHookId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter inlineHookId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func deleteInlineHook(inlineHookId: String) throws -> AnyPublisher<OktaResponse<Empty>, Error> {
-            publish(try deleteInlineHookURLRequest(inlineHookId: inlineHookId))
-        }
-        #endif
-
-
-        internal func executeInlineHookURLRequest(inlineHookId: String, body: AnyCodable) throws -> URLRequest {
-            try request(to: "/api/v1/inlineHooks/{inlineHookId}/execute".expanded(using: [
-                "inlineHookId": inlineHookId
-            ]), method: "POST", body: body)
+            try await send(try request(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
+                    "inlineHookId": inlineHookId
+                ]), method: "DELETE"))
         }
 
         /**
-
+         Execute an Inline Hook
+         
          - parameter inlineHookId: (path)  
-         - parameter body: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
+         - parameter payloadData: (body)  
          */
-        public func executeInlineHook(inlineHookId: String, body: AnyCodable, completion: @escaping (Result<OktaResponse<InlineHookResponse>, Error>) -> Void) {
-            do {
-                send(try executeInlineHookURLRequest(inlineHookId: inlineHookId, body: body), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
-         - parameter inlineHookId: (path)  
-         - parameter body: (body)  
-         */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
-        public func executeInlineHook(inlineHookId: String, body: AnyCodable) async throws -> OktaResponse<InlineHookResponse> {
-            try await send(try executeInlineHookURLRequest(inlineHookId: inlineHookId, body: body))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter inlineHookId: (path)  
-         - parameter body: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func executeInlineHook(inlineHookId: String, body: AnyCodable) throws -> AnyPublisher<OktaResponse<InlineHookResponse>, Error> {
-            publish(try executeInlineHookURLRequest(inlineHookId: inlineHookId, body: body))
-        }
-        #endif
-
-
-        internal func getInlineHookURLRequest(inlineHookId: String) throws -> URLRequest {
-            try request(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
-                "inlineHookId": inlineHookId
-            ]), method: "GET")
+        public func executeInlineHook(inlineHookId: String, payloadData: AnyCodable) async throws -> OktaResponse<InlineHookResponse> {
+            try await send(try requestWithBody(to: "/api/v1/inlineHooks/{inlineHookId}/execute".expanded(using: [
+                    "inlineHookId": inlineHookId
+                ]), method: "POST", body: payloadData))
         }
 
         /**
-
-         - parameter inlineHookId: (path)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func getInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
-            do {
-                send(try getInlineHookURLRequest(inlineHookId: inlineHookId), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Retrieve an Inline Hook
+         
          - parameter inlineHookId: (path)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func getInlineHook(inlineHookId: String) async throws -> OktaResponse<InlineHook> {
-            try await send(try getInlineHookURLRequest(inlineHookId: inlineHookId))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter inlineHookId: (path)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func getInlineHook(inlineHookId: String) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
-            publish(try getInlineHookURLRequest(inlineHookId: inlineHookId))
-        }
-        #endif
-
-
-        internal func listInlineHooksURLRequest(type: String? = nil) throws -> URLRequest {
-            try request(to: "/api/v1/inlineHooks", method: "GET", query: [
-                "type": type
-            ])
+            try await send(try request(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
+                    "inlineHookId": inlineHookId
+                ]), method: "GET"))
         }
 
         /**
-
-         - parameter type: (query)  (optional)
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func listInlineHooks(type: String? = nil, completion: @escaping (Result<OktaResponse<[InlineHook]>, Error>) -> Void) {
-            do {
-                send(try listInlineHooksURLRequest(type: type), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         List all Inline Hooks
+         
          - parameter type: (query)  (optional)
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func listInlineHooks(type: String? = nil) async throws -> OktaResponse<[InlineHook]> {
-            try await send(try listInlineHooksURLRequest(type: type))
-        }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter type: (query)  (optional)
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func listInlineHooks(type: String? = nil) throws -> AnyPublisher<OktaResponse<[InlineHook]>, Error> {
-            publish(try listInlineHooksURLRequest(type: type))
-        }
-        #endif
-
-
-        internal func updateInlineHookURLRequest(inlineHookId: String, inlineHook: InlineHook) throws -> URLRequest {
-            try request(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
-                "inlineHookId": inlineHookId
-            ]), method: "PUT", body: inlineHook)
+            try await send(try request(to: "/api/v1/inlineHooks", method: "GET", query: [
+                    "type": type
+                ]))
         }
 
         /**
-
-         - parameter inlineHookId: (path)  
-         - parameter inlineHook: (body)  
-         - parameter completion: completion handler to receive the data and the error objects
-         */
-        public func updateInlineHook(inlineHookId: String, inlineHook: InlineHook, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
-            do {
-                send(try updateInlineHookURLRequest(inlineHookId: inlineHookId, inlineHook: inlineHook), completion: completion)
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        #if swift(>=5.5.1) && !os(Linux)
-        /**
-
+         Replace an Inline Hook
+         
          - parameter inlineHookId: (path)  
          - parameter inlineHook: (body)  
          */
-        @available(iOS 15.0, tvOS 15.0, macOS 12.0, *)
         public func updateInlineHook(inlineHookId: String, inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
-            try await send(try updateInlineHookURLRequest(inlineHookId: inlineHookId, inlineHook: inlineHook))
+            try await send(try requestWithBody(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
+                    "inlineHookId": inlineHookId
+                ]), method: "PUT", body: inlineHook))
         }
-        #endif
-
-        #if canImport(Combine)
-        /**
-
-         - parameter inlineHookId: (path)  
-         - parameter inlineHook: (body)  
-         */
-        @available(iOS 13.0, tvOS 13.0, macOS 10.15, *)
-        public func updateInlineHook(inlineHookId: String, inlineHook: InlineHook) throws -> AnyPublisher<OktaResponse<InlineHook>, Error> {
-            publish(try updateInlineHookURLRequest(inlineHookId: inlineHookId, inlineHook: inlineHook))
-        }
-        #endif
 
     }
 }
