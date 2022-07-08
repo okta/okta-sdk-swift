@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter smsTemplate: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createSmsTemplate(smsTemplate: SmsTemplate) async throws -> OktaResponse<SmsTemplate> {
             try await send(try requestWithBody(to: "/api/v1/templates/sms", method: "POST", body: smsTemplate))
         }
@@ -54,6 +55,7 @@ public extension OktaClient {
          - parameter templateId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteSmsTemplate(templateId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
                     "templateId": templateId
@@ -81,6 +83,7 @@ public extension OktaClient {
          
          - parameter templateId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getSmsTemplate(templateId: String) async throws -> OktaResponse<SmsTemplate> {
             try await send(try request(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
                     "templateId": templateId
@@ -108,6 +111,7 @@ public extension OktaClient {
          
          - parameter templateType: (query)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listSmsTemplates(templateType: SmsTemplateType? = nil) async throws -> OktaResponse<[SmsTemplate]> {
             try await send(try request(to: "/api/v1/templates/sms", method: "GET", query: [
                     "templateType": templateType
@@ -136,6 +140,7 @@ public extension OktaClient {
          - parameter templateId: (path)  
          - parameter smsTemplate: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func partialUpdateSmsTemplate(templateId: String, smsTemplate: SmsTemplate) async throws -> OktaResponse<SmsTemplate> {
             try await send(try requestWithBody(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
                     "templateId": templateId
@@ -165,6 +170,7 @@ public extension OktaClient {
          - parameter templateId: (path)  
          - parameter smsTemplate: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateSmsTemplate(templateId: String, smsTemplate: SmsTemplate) async throws -> OktaResponse<SmsTemplate> {
             try await send(try requestWithBody(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
                     "templateId": templateId

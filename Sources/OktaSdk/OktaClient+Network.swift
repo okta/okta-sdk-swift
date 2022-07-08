@@ -68,6 +68,8 @@ internal protocol OktaClientAPI {
                                        query: [String: OktaClientArgument?]?,
                                        headers: [String: OktaClientArgument?]?,
                                        body: T?) throws -> URLRequest
+    
+    @available(iOS 13.0.0, *)
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T>
 }
 
@@ -169,10 +171,19 @@ extension OktaClientAPI {
                  completion(.failure(error))
              }
          }.resume()
-     }
+    }
 
+    @available(iOS 13.0.0, *)
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T> {
-        let (data, response) = try await context.session.data(for: request)
-        return try validate(data, response)
+        if #available(iOS 15.0, *) {
+            let (data, response) = try await context.session.data(for: request)
+            return try validate(data, response)
+        } else {
+            return try await withCheckedThrowingContinuation { continuation in
+                self.send(request, completion: { (result: Result<OktaResponse<T>, Error>) in
+                    continuation.resume(with: result)
+                })
+            }
+        }
     }
 }

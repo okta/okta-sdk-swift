@@ -32,7 +32,8 @@ public extension OktaClient {
          - parameter factorId: (path)  
          - parameter body: (body)  (optional)
          */
-        public func activateFactor(userId: String, factorId: String, body: ActivateFactorRequest? = nil) async throws -> OktaResponse<UserFactor> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func activateFactor(userId: String, factorId: String, body: ActivateFactorRequest? = nil) async throws -> OktaResponse<ListFactors200ResponseInner> {
             try await send(try requestWithBody(to: "/api/v1/users/{userId}/factors/{factorId}/lifecycle/activate".expanded(using: [
                     "userId": userId, 
                     "factorId": factorId
@@ -47,7 +48,7 @@ public extension OktaClient {
          - parameter body: (body)  (optional)
          - parameter completion: Completion block
          */
-        public func activateFactor(userId: String, factorId: String, body: ActivateFactorRequest? = nil, completion: @escaping (Result<OktaResponse<UserFactor>, Error>) -> Void) {
+        public func activateFactor(userId: String, factorId: String, body: ActivateFactorRequest? = nil, completion: @escaping (Result<OktaResponse<ListFactors200ResponseInner>, Error>) -> Void) {
             do {
                 send(try requestWithBody(to: "/api/v1/users/{userId}/factors/{factorId}/lifecycle/activate".expanded(using: [
                         "userId": userId, 
@@ -66,6 +67,7 @@ public extension OktaClient {
          - parameter removeEnrollmentRecovery: (query)  (optional, default to false)
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteFactor(userId: String, factorId: String, removeEnrollmentRecovery: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/factors/{factorId}".expanded(using: [
                     "userId": userId, 
@@ -106,7 +108,8 @@ public extension OktaClient {
          - parameter tokenLifetimeSeconds: (query)  (optional, default to 300)
          - parameter activate: (query)  (optional, default to false)
          */
-        public func enrollFactor(userId: String, body: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) async throws -> OktaResponse<UserFactor> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func enrollFactor(userId: String, body: ListFactors200ResponseInner, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil) async throws -> OktaResponse<ListFactors200ResponseInner> {
             try await send(try requestWithBody(to: "/api/v1/users/{userId}/factors".expanded(using: [
                     "userId": userId
                 ]), method: "POST", query: [
@@ -128,7 +131,7 @@ public extension OktaClient {
          - parameter activate: (query)  (optional, default to false)
          - parameter completion: Completion block
          */
-        public func enrollFactor(userId: String, body: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil, completion: @escaping (Result<OktaResponse<UserFactor>, Error>) -> Void) {
+        public func enrollFactor(userId: String, body: ListFactors200ResponseInner, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil, completion: @escaping (Result<OktaResponse<ListFactors200ResponseInner>, Error>) -> Void) {
             do {
                 send(try requestWithBody(to: "/api/v1/users/{userId}/factors".expanded(using: [
                         "userId": userId
@@ -149,7 +152,8 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter factorId: (path)  
          */
-        public func getFactor(userId: String, factorId: String) async throws -> OktaResponse<UserFactor> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func getFactor(userId: String, factorId: String) async throws -> OktaResponse<ListFactors200ResponseInner> {
             try await send(try request(to: "/api/v1/users/{userId}/factors/{factorId}".expanded(using: [
                     "userId": userId, 
                     "factorId": factorId
@@ -163,7 +167,7 @@ public extension OktaClient {
          - parameter factorId: (path)  
          - parameter completion: Completion block
          */
-        public func getFactor(userId: String, factorId: String, completion: @escaping (Result<OktaResponse<UserFactor>, Error>) -> Void) {
+        public func getFactor(userId: String, factorId: String, completion: @escaping (Result<OktaResponse<ListFactors200ResponseInner>, Error>) -> Void) {
             do {
                 send(try request(to: "/api/v1/users/{userId}/factors/{factorId}".expanded(using: [
                         "userId": userId, 
@@ -181,6 +185,7 @@ public extension OktaClient {
          - parameter factorId: (path)  
          - parameter transactionId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getFactorTransactionStatus(userId: String, factorId: String, transactionId: String) async throws -> OktaResponse<VerifyUserFactorResponse> {
             try await send(try request(to: "/api/v1/users/{userId}/factors/{factorId}/transactions/{transactionId}".expanded(using: [
                     "userId": userId, 
@@ -214,7 +219,8 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          */
-        public func listFactors(userId: String) async throws -> OktaResponse<[UserFactor]> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func listFactors(userId: String) async throws -> OktaResponse<[ListFactors200ResponseInner]> {
             try await send(try request(to: "/api/v1/users/{userId}/factors".expanded(using: [
                     "userId": userId
                 ]), method: "GET"))
@@ -226,7 +232,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter completion: Completion block
          */
-        public func listFactors(userId: String, completion: @escaping (Result<OktaResponse<[UserFactor]>, Error>) -> Void) {
+        public func listFactors(userId: String, completion: @escaping (Result<OktaResponse<[ListFactors200ResponseInner]>, Error>) -> Void) {
             do {
                 send(try request(to: "/api/v1/users/{userId}/factors".expanded(using: [
                         "userId": userId
@@ -241,7 +247,8 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          */
-        public func listSupportedFactors(userId: String) async throws -> OktaResponse<[UserFactor]> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func listSupportedFactors(userId: String) async throws -> OktaResponse<[ListFactors200ResponseInner]> {
             try await send(try request(to: "/api/v1/users/{userId}/factors/catalog".expanded(using: [
                     "userId": userId
                 ]), method: "GET"))
@@ -253,7 +260,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter completion: Completion block
          */
-        public func listSupportedFactors(userId: String, completion: @escaping (Result<OktaResponse<[UserFactor]>, Error>) -> Void) {
+        public func listSupportedFactors(userId: String, completion: @escaping (Result<OktaResponse<[ListFactors200ResponseInner]>, Error>) -> Void) {
             do {
                 send(try request(to: "/api/v1/users/{userId}/factors/catalog".expanded(using: [
                         "userId": userId
@@ -268,6 +275,7 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listSupportedSecurityQuestions(userId: String) async throws -> OktaResponse<[SecurityQuestion]> {
             try await send(try request(to: "/api/v1/users/{userId}/factors/questions".expanded(using: [
                     "userId": userId
@@ -302,6 +310,7 @@ public extension OktaClient {
          - parameter acceptLanguage: (header)  (optional)
          - parameter body: (body)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func verifyFactor(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, body: VerifyFactorRequest? = nil) async throws -> OktaResponse<VerifyUserFactorResponse> {
             try await send(try requestWithBody(to: "/api/v1/users/{userId}/factors/{factorId}/verify".expanded(using: [
                     "userId": userId, 

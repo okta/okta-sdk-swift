@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter instance: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createCaptchaInstance(instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try requestWithBody(to: "/api/v1/captchas", method: "POST", body: instance))
         }
@@ -54,6 +55,7 @@ public extension OktaClient {
          - parameter captchaId: (path) id of the CAPTCHA 
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteCaptchaInstance(captchaId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
                     "captchaId": captchaId
@@ -81,6 +83,7 @@ public extension OktaClient {
          
          - parameter captchaId: (path) id of the CAPTCHA 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getCaptchaInstance(captchaId: String) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
                     "captchaId": captchaId
@@ -107,6 +110,7 @@ public extension OktaClient {
          List all CAPTCHA instances
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listCaptchaInstances() async throws -> OktaResponse<[CAPTCHAInstance]> {
             try await send(try request(to: "/api/v1/captchas", method: "GET"))
         }
@@ -130,6 +134,7 @@ public extension OktaClient {
          - parameter captchaId: (path) id of the CAPTCHA 
          - parameter instance: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func partialUpdateCaptchaInstance(captchaId: String, instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try requestWithBody(to: "/api/v1/captchas/{captchaId}".expanded(using: [
                     "captchaId": captchaId
@@ -159,6 +164,7 @@ public extension OktaClient {
          - parameter captchaId: (path) id of the CAPTCHA 
          - parameter instance: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateCaptchaInstance(captchaId: String, instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try requestWithBody(to: "/api/v1/captchas/{captchaId}".expanded(using: [
                     "captchaId": captchaId

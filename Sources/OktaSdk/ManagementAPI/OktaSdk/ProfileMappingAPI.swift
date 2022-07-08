@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter mappingId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getProfileMapping(mappingId: String) async throws -> OktaResponse<ProfileMapping> {
             try await send(try request(to: "/api/v1/mappings/{mappingId}".expanded(using: [
                     "mappingId": mappingId
@@ -60,6 +61,7 @@ public extension OktaClient {
          - parameter sourceId: (query)  (optional)
          - parameter targetId: (query)  (optional, default to "")
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) async throws -> OktaResponse<[ProfileMapping]> {
             try await send(try request(to: "/api/v1/mappings", method: "GET", query: [
                     "after": after, 
@@ -97,6 +99,7 @@ public extension OktaClient {
          - parameter mappingId: (path)  
          - parameter profileMapping: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) async throws -> OktaResponse<ProfileMapping> {
             try await send(try requestWithBody(to: "/api/v1/mappings/{mappingId}".expanded(using: [
                     "mappingId": mappingId

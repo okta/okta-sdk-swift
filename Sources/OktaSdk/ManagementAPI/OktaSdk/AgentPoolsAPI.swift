@@ -31,6 +31,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func activateAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}/activate".expanded(using: [
                     "poolId": poolId, 
@@ -62,6 +63,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter agentPoolUpdate: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createAgentPoolsUpdate(poolId: String, agentPoolUpdate: AgentPoolUpdate) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try requestWithBody(to: "/api/v1/agentPools/{poolId}/updates".expanded(using: [
                     "poolId": poolId
@@ -91,6 +93,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deactivateAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}/deactivate".expanded(using: [
                     "poolId": poolId, 
@@ -123,6 +126,7 @@ public extension OktaClient {
          - parameter updateId: (path) Id of the update 
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}".expanded(using: [
                     "poolId": poolId, 
@@ -153,8 +157,9 @@ public extension OktaClient {
          
          - parameter limitPerPoolType: (query) Maximum number of AgentPools being returned (optional, default to 5)
          - parameter poolType: (query) Agent type to search for (optional)
-         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the &#x60;Link&#x60; response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
+         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the `Link` response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getAgentPools(limitPerPoolType: Int? = nil, poolType: AgentType? = nil, after: String? = nil) async throws -> OktaResponse<[AgentPool]> {
             try await send(try request(to: "/api/v1/agentPools", method: "GET", query: [
                     "limitPerPoolType": limitPerPoolType, 
@@ -168,7 +173,7 @@ public extension OktaClient {
          
          - parameter limitPerPoolType: (query) Maximum number of AgentPools being returned (optional, default to 5)
          - parameter poolType: (query) Agent type to search for (optional)
-         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the &#x60;Link&#x60; response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
+         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the `Link` response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
          - parameter completion: Completion block
          */
         public func getAgentPools(limitPerPoolType: Int? = nil, poolType: AgentType? = nil, after: String? = nil, completion: @escaping (Result<OktaResponse<[AgentPool]>, Error>) -> Void) {
@@ -189,6 +194,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getAgentPoolsUpdateInstance(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}".expanded(using: [
                     "poolId": poolId, 
@@ -219,6 +225,7 @@ public extension OktaClient {
          
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getAgentPoolsUpdateSettings(poolId: String) async throws -> OktaResponse<AgentPoolUpdateSetting> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/settings".expanded(using: [
                     "poolId": poolId
@@ -247,6 +254,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter scheduled: (query) Scope the list only to scheduled or ad-hoc updates. If the parameter is not provided we will return the whole list of updates. (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getAgentPoolsUpdates(poolId: String, scheduled: Bool? = nil) async throws -> OktaResponse<[AgentPoolUpdate]> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates".expanded(using: [
                     "poolId": poolId
@@ -280,6 +288,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func pauseAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}/pause".expanded(using: [
                     "poolId": poolId, 
@@ -311,6 +320,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func resumeAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}/resume".expanded(using: [
                     "poolId": poolId, 
@@ -342,6 +352,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func retryAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}/retry".expanded(using: [
                     "poolId": poolId, 
@@ -373,6 +384,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter agentPoolUpdateSetting: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func setAgentPoolsUpdateSettings(poolId: String, agentPoolUpdateSetting: AgentPoolUpdateSetting) async throws -> OktaResponse<AgentPoolUpdateSetting> {
             try await send(try requestWithBody(to: "/api/v1/agentPools/{poolId}/updates/settings".expanded(using: [
                     "poolId": poolId
@@ -402,6 +414,7 @@ public extension OktaClient {
          - parameter poolId: (path) Id of the agent pool for which the settings will apply 
          - parameter updateId: (path) Id of the update 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func stopAgentPoolsUpdate(poolId: String, updateId: String) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try request(to: "/api/v1/agentPools/{poolId}/updates/{updateId}/stop".expanded(using: [
                     "poolId": poolId, 
@@ -434,6 +447,7 @@ public extension OktaClient {
          - parameter updateId: (path) Id of the update 
          - parameter agentPoolUpdate: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateAgentPoolsUpdate(poolId: String, updateId: String, agentPoolUpdate: AgentPoolUpdate) async throws -> OktaResponse<AgentPoolUpdate> {
             try await send(try requestWithBody(to: "/api/v1/agentPools/{poolId}/updates/{updateId}".expanded(using: [
                     "poolId": poolId, 

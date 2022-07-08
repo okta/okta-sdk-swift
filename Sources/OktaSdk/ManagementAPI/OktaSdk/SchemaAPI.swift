@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter appInstanceId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getApplicationUserSchema(appInstanceId: String) async throws -> OktaResponse<UserSchema> {
             try await send(try request(to: "/api/v1/meta/schemas/apps/{appInstanceId}/default".expanded(using: [
                     "appInstanceId": appInstanceId
@@ -56,6 +57,7 @@ public extension OktaClient {
          Retrieve the default Group Schema
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getGroupSchema() async throws -> OktaResponse<GroupSchema> {
             try await send(try request(to: "/api/v1/meta/schemas/group/default", method: "GET"))
         }
@@ -78,6 +80,7 @@ public extension OktaClient {
          
          - parameter schemaId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getUserSchema(schemaId: String) async throws -> OktaResponse<UserSchema> {
             try await send(try request(to: "/api/v1/meta/schemas/user/{schemaId}".expanded(using: [
                     "schemaId": schemaId
@@ -106,6 +109,7 @@ public extension OktaClient {
          - parameter appInstanceId: (path)  
          - parameter body: (body)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateApplicationUserProfile(appInstanceId: String, body: UserSchema? = nil) async throws -> OktaResponse<UserSchema> {
             try await send(try requestWithBody(to: "/api/v1/meta/schemas/apps/{appInstanceId}/default".expanded(using: [
                     "appInstanceId": appInstanceId
@@ -134,6 +138,7 @@ public extension OktaClient {
          
          - parameter groupSchema: (body)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateGroupSchema(groupSchema: GroupSchema? = nil) async throws -> OktaResponse<GroupSchema> {
             try await send(try requestWithBody(to: "/api/v1/meta/schemas/group/default", method: "POST", body: groupSchema))
         }
@@ -158,6 +163,7 @@ public extension OktaClient {
          - parameter schemaId: (path)  
          - parameter userSchema: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateUserProfile(schemaId: String, userSchema: UserSchema) async throws -> OktaResponse<UserSchema> {
             try await send(try requestWithBody(to: "/api/v1/meta/schemas/user/{schemaId}".expanded(using: [
                     "schemaId": schemaId

@@ -36,6 +36,7 @@ public extension OktaClient {
          - parameter sortOrder: (query)  (optional, default to "ASCENDING")
          - parameter after: (query)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getLogs(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil) async throws -> OktaResponse<[LogEvent]> {
             try await send(try request(to: "/api/v1/logs", method: "GET", query: [
                     "since": since, 

@@ -46,11 +46,12 @@ public extension OktaClient {
          {{#summary}}
          {{{summary}}}
          {{/summary}}{{#allParams}}
-         - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{description}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
+         - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{{description}}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
          */{{#isDeprecated}}
         @available(*, deprecated, message: "This operation is deprecated.")
         {{/isDeprecated}}{{^returnType}}
         @discardableResult{{/returnType}}
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func {{operationId}}({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{^-last}}, {{/-last}}{{/allParams}}) async throws -> OktaResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Empty{{/returnType}}> {
             try await send(try request{{#bodyParam}}WithBody{{/bodyParam}}(to: "{{{path}}}"{{#hasPathParams}}.expanded(using: [
                 {{#pathParams}}
@@ -71,7 +72,7 @@ public extension OktaClient {
          {{#summary}}
          {{{summary}}}
          {{/summary}}{{#allParams}}
-         - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{description}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
+         - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{{description}}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
          - parameter completion: Completion block
          */
         {{#isDeprecated}}

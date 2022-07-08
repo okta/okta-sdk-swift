@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter bouncesRemoveListObj: (body)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func bulkRemoveEmailAddressBounces(bouncesRemoveListObj: BouncesRemoveListObj? = nil) async throws -> OktaResponse<BouncesRemoveListResult> {
             try await send(try requestWithBody(to: "/api/v1/org/email/bounces/remove-list", method: "POST", body: bouncesRemoveListObj))
         }
@@ -52,6 +53,7 @@ public extension OktaClient {
          Extend Okta Support Access
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func extendOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try request(to: "/api/v1/org/privacy/oktaSupport/extend", method: "POST"))
         }
@@ -73,6 +75,7 @@ public extension OktaClient {
          Retreive the Okta Communication Settings
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getOktaCommunicationSettings() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try request(to: "/api/v1/org/privacy/oktaCommunication", method: "GET"))
         }
@@ -94,6 +97,7 @@ public extension OktaClient {
          Retrieve the Org Contact Types
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getOrgContactTypes() async throws -> OktaResponse<[OrgContactTypeObj]> {
             try await send(try request(to: "/api/v1/org/contacts", method: "GET"))
         }
@@ -116,6 +120,7 @@ public extension OktaClient {
          
          - parameter contactType: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getOrgContactUser(contactType: String) async throws -> OktaResponse<OrgContactUser> {
             try await send(try request(to: "/api/v1/org/contacts/{contactType}".expanded(using: [
                     "contactType": contactType
@@ -142,6 +147,7 @@ public extension OktaClient {
          Retrieve the Okta Support Settings
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getOrgOktaSupportSettings() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try request(to: "/api/v1/org/privacy/oktaSupport", method: "GET"))
         }
@@ -163,6 +169,7 @@ public extension OktaClient {
          Retrieve the Org Preferences
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getOrgPreferences() async throws -> OktaResponse<OrgPreferences> {
             try await send(try request(to: "/api/v1/org/preferences", method: "GET"))
         }
@@ -184,6 +191,7 @@ public extension OktaClient {
          Retrieve the Org Settings
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getOrgSettings() async throws -> OktaResponse<OrgSetting> {
             try await send(try request(to: "/api/v1/org", method: "GET"))
         }
@@ -205,6 +213,7 @@ public extension OktaClient {
          Grant Okta Support Access to your Org
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func grantOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try request(to: "/api/v1/org/privacy/oktaSupport/grant", method: "POST"))
         }
@@ -226,6 +235,7 @@ public extension OktaClient {
          Update the Preference to Hide the Okta Dashboard Footer
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func hideOktaUIFooter() async throws -> OktaResponse<OrgPreferences> {
             try await send(try request(to: "/api/v1/org/preferences/hideEndUserFooter", method: "POST"))
         }
@@ -247,6 +257,7 @@ public extension OktaClient {
          Opt in all Users to Okta Communication emails
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func optInUsersToOktaCommunicationEmails() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try request(to: "/api/v1/org/privacy/oktaCommunication/optIn", method: "POST"))
         }
@@ -268,6 +279,7 @@ public extension OktaClient {
          Opt out all Users from Okta Communication emails
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func optOutUsersFromOktaCommunicationEmails() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try request(to: "/api/v1/org/privacy/oktaCommunication/optOut", method: "POST"))
         }
@@ -290,6 +302,7 @@ public extension OktaClient {
          
          - parameter orgSetting: (body)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func partialUpdateOrgSetting(orgSetting: OrgSetting? = nil) async throws -> OktaResponse<OrgSetting> {
             try await send(try requestWithBody(to: "/api/v1/org", method: "POST", body: orgSetting))
         }
@@ -312,6 +325,7 @@ public extension OktaClient {
          Revoke Okta Support Access
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func revokeOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try request(to: "/api/v1/org/privacy/oktaSupport/revoke", method: "POST"))
         }
@@ -333,6 +347,7 @@ public extension OktaClient {
          Update the Preference to Show the Okta Dashboard Footer
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func showOktaUIFooter() async throws -> OktaResponse<OrgPreferences> {
             try await send(try request(to: "/api/v1/org/preferences/showEndUserFooter", method: "POST"))
         }
@@ -356,6 +371,7 @@ public extension OktaClient {
          - parameter contactType: (path)  
          - parameter orgContactUser: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateOrgContactUser(contactType: String, orgContactUser: OrgContactUser) async throws -> OktaResponse<OrgContactUser> {
             try await send(try requestWithBody(to: "/api/v1/org/contacts/{contactType}".expanded(using: [
                     "contactType": contactType
@@ -385,6 +401,7 @@ public extension OktaClient {
          - parameter file: (form)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateOrgLogo(file: URL) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/org/logo", method: "POST"))
         }
@@ -408,6 +425,7 @@ public extension OktaClient {
          
          - parameter orgSetting: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateOrgSetting(orgSetting: OrgSetting) async throws -> OktaResponse<OrgSetting> {
             try await send(try requestWithBody(to: "/api/v1/org", method: "PUT", body: orgSetting))
         }

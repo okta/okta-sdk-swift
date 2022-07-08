@@ -31,6 +31,7 @@ public extension OktaClient {
          - parameter roleTypeOrRoleId: (path)  
          - parameter notificationType: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getRoleSubscriptionByNotificationType(roleTypeOrRoleId: String, notificationType: String) async throws -> OktaResponse<Subscription> {
             try await send(try request(to: "/api/v1/roles/{roleTypeOrRoleId}/subscriptions/{notificationType}".expanded(using: [
                     "roleTypeOrRoleId": roleTypeOrRoleId, 
@@ -62,6 +63,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          - parameter notificationType: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getUserSubscriptionByNotificationType(userId: String, notificationType: String) async throws -> OktaResponse<Subscription> {
             try await send(try request(to: "/api/v1/users/{userId}/subscriptions/{notificationType}".expanded(using: [
                     "userId": userId, 
@@ -92,6 +94,7 @@ public extension OktaClient {
          
          - parameter roleTypeOrRoleId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listRoleSubscriptions(roleTypeOrRoleId: String) async throws -> OktaResponse<[Subscription]> {
             try await send(try request(to: "/api/v1/roles/{roleTypeOrRoleId}/subscriptions".expanded(using: [
                     "roleTypeOrRoleId": roleTypeOrRoleId
@@ -119,6 +122,7 @@ public extension OktaClient {
          
          - parameter userId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listUserSubscriptions(userId: String) async throws -> OktaResponse<[Subscription]> {
             try await send(try request(to: "/api/v1/users/{userId}/subscriptions".expanded(using: [
                     "userId": userId
@@ -148,6 +152,7 @@ public extension OktaClient {
          - parameter notificationType: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func subscribeRoleSubscriptionByNotificationType(roleTypeOrRoleId: String, notificationType: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/roles/{roleTypeOrRoleId}/subscriptions/{notificationType}/subscribe".expanded(using: [
                     "roleTypeOrRoleId": roleTypeOrRoleId, 
@@ -180,6 +185,7 @@ public extension OktaClient {
          - parameter notificationType: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func subscribeUserSubscriptionByNotificationType(userId: String, notificationType: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/subscriptions/{notificationType}/subscribe".expanded(using: [
                     "userId": userId, 
@@ -212,6 +218,7 @@ public extension OktaClient {
          - parameter notificationType: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func unsubscribeRoleSubscriptionByNotificationType(roleTypeOrRoleId: String, notificationType: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/roles/{roleTypeOrRoleId}/subscriptions/{notificationType}/unsubscribe".expanded(using: [
                     "roleTypeOrRoleId": roleTypeOrRoleId, 
@@ -244,6 +251,7 @@ public extension OktaClient {
          - parameter notificationType: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func unsubscribeUserSubscriptionByNotificationType(userId: String, notificationType: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/users/{userId}/subscriptions/{notificationType}/unsubscribe".expanded(using: [
                     "userId": userId, 

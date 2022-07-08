@@ -30,7 +30,8 @@ public extension OktaClient {
          
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          */
-        public func activateBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<BehaviorRule> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func activateBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<ListBehaviorDetectionRules200ResponseInner> {
             try await send(try request(to: "/api/v1/behaviors/{behaviorId}/lifecycle/activate".expanded(using: [
                     "behaviorId": behaviorId
                 ]), method: "POST"))
@@ -42,7 +43,7 @@ public extension OktaClient {
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          - parameter completion: Completion block
          */
-        public func activateBehaviorDetectionRule(behaviorId: String, completion: @escaping (Result<OktaResponse<BehaviorRule>, Error>) -> Void) {
+        public func activateBehaviorDetectionRule(behaviorId: String, completion: @escaping (Result<OktaResponse<ListBehaviorDetectionRules200ResponseInner>, Error>) -> Void) {
             do {
                 send(try request(to: "/api/v1/behaviors/{behaviorId}/lifecycle/activate".expanded(using: [
                         "behaviorId": behaviorId
@@ -57,7 +58,8 @@ public extension OktaClient {
          
          - parameter rule: (body)  
          */
-        public func createBehaviorDetectionRule(rule: BehaviorRule) async throws -> OktaResponse<BehaviorRule> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func createBehaviorDetectionRule(rule: ListBehaviorDetectionRules200ResponseInner) async throws -> OktaResponse<BehaviorRule> {
             try await send(try requestWithBody(to: "/api/v1/behaviors", method: "POST", body: rule))
         }
 
@@ -67,7 +69,7 @@ public extension OktaClient {
          - parameter rule: (body)  
          - parameter completion: Completion block
          */
-        public func createBehaviorDetectionRule(rule: BehaviorRule, completion: @escaping (Result<OktaResponse<BehaviorRule>, Error>) -> Void) {
+        public func createBehaviorDetectionRule(rule: ListBehaviorDetectionRules200ResponseInner, completion: @escaping (Result<OktaResponse<BehaviorRule>, Error>) -> Void) {
             do {
                 send(try requestWithBody(to: "/api/v1/behaviors", method: "POST", body: rule), completion: completion)
             } catch {
@@ -80,7 +82,8 @@ public extension OktaClient {
          
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          */
-        public func deactivateBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<BehaviorRule> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func deactivateBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<ListBehaviorDetectionRules200ResponseInner> {
             try await send(try request(to: "/api/v1/behaviors/{behaviorId}/lifecycle/deactivate".expanded(using: [
                     "behaviorId": behaviorId
                 ]), method: "POST"))
@@ -92,7 +95,7 @@ public extension OktaClient {
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          - parameter completion: Completion block
          */
-        public func deactivateBehaviorDetectionRule(behaviorId: String, completion: @escaping (Result<OktaResponse<BehaviorRule>, Error>) -> Void) {
+        public func deactivateBehaviorDetectionRule(behaviorId: String, completion: @escaping (Result<OktaResponse<ListBehaviorDetectionRules200ResponseInner>, Error>) -> Void) {
             do {
                 send(try request(to: "/api/v1/behaviors/{behaviorId}/lifecycle/deactivate".expanded(using: [
                         "behaviorId": behaviorId
@@ -108,6 +111,7 @@ public extension OktaClient {
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/behaviors/{behaviorId}".expanded(using: [
                     "behaviorId": behaviorId
@@ -135,7 +139,8 @@ public extension OktaClient {
          
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          */
-        public func getBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<[BehaviorRule]> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func getBehaviorDetectionRule(behaviorId: String) async throws -> OktaResponse<[ListBehaviorDetectionRules200ResponseInner]> {
             try await send(try request(to: "/api/v1/behaviors/{behaviorId}".expanded(using: [
                     "behaviorId": behaviorId
                 ]), method: "GET"))
@@ -147,7 +152,7 @@ public extension OktaClient {
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          - parameter completion: Completion block
          */
-        public func getBehaviorDetectionRule(behaviorId: String, completion: @escaping (Result<OktaResponse<[BehaviorRule]>, Error>) -> Void) {
+        public func getBehaviorDetectionRule(behaviorId: String, completion: @escaping (Result<OktaResponse<[ListBehaviorDetectionRules200ResponseInner]>, Error>) -> Void) {
             do {
                 send(try request(to: "/api/v1/behaviors/{behaviorId}".expanded(using: [
                         "behaviorId": behaviorId
@@ -161,7 +166,8 @@ public extension OktaClient {
          List all Behavior Detection Rules
          
          */
-        public func listBehaviorDetectionRules() async throws -> OktaResponse<[BehaviorRule]> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func listBehaviorDetectionRules() async throws -> OktaResponse<[ListBehaviorDetectionRules200ResponseInner]> {
             try await send(try request(to: "/api/v1/behaviors", method: "GET"))
         }
 
@@ -170,7 +176,7 @@ public extension OktaClient {
          
          - parameter completion: Completion block
          */
-        public func listBehaviorDetectionRules(completion: @escaping (Result<OktaResponse<[BehaviorRule]>, Error>) -> Void) {
+        public func listBehaviorDetectionRules(completion: @escaping (Result<OktaResponse<[ListBehaviorDetectionRules200ResponseInner]>, Error>) -> Void) {
             do {
                 send(try request(to: "/api/v1/behaviors", method: "GET"), completion: completion)
             } catch {
@@ -184,7 +190,8 @@ public extension OktaClient {
          - parameter behaviorId: (path) id of the Behavior Detection Rule 
          - parameter rule: (body)  
          */
-        public func updateBehaviorDetectionRule(behaviorId: String, rule: BehaviorRule) async throws -> OktaResponse<BehaviorRule> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func updateBehaviorDetectionRule(behaviorId: String, rule: ListBehaviorDetectionRules200ResponseInner) async throws -> OktaResponse<ListBehaviorDetectionRules200ResponseInner> {
             try await send(try requestWithBody(to: "/api/v1/behaviors/{behaviorId}".expanded(using: [
                     "behaviorId": behaviorId
                 ]), method: "PUT", body: rule))
@@ -197,7 +204,7 @@ public extension OktaClient {
          - parameter rule: (body)  
          - parameter completion: Completion block
          */
-        public func updateBehaviorDetectionRule(behaviorId: String, rule: BehaviorRule, completion: @escaping (Result<OktaResponse<BehaviorRule>, Error>) -> Void) {
+        public func updateBehaviorDetectionRule(behaviorId: String, rule: ListBehaviorDetectionRules200ResponseInner, completion: @escaping (Result<OktaResponse<ListBehaviorDetectionRules200ResponseInner>, Error>) -> Void) {
             do {
                 send(try requestWithBody(to: "/api/v1/behaviors/{behaviorId}".expanded(using: [
                         "behaviorId": behaviorId

@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter userType: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createUserType(userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try requestWithBody(to: "/api/v1/meta/types/user", method: "POST", body: userType))
         }
@@ -54,6 +55,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteUserType(typeId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
@@ -81,6 +83,7 @@ public extension OktaClient {
          
          - parameter typeId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getUserType(typeId: String) async throws -> OktaResponse<UserType> {
             try await send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
@@ -107,6 +110,7 @@ public extension OktaClient {
          List all User Types
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listUserTypes() async throws -> OktaResponse<[UserType]> {
             try await send(try request(to: "/api/v1/meta/types/user", method: "GET"))
         }
@@ -130,6 +134,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          - parameter userType: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func replaceUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
@@ -159,6 +164,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          - parameter userType: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId

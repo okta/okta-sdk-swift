@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter apiTokenId: (path) id of the API Token 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getApiToken(apiTokenId: String) async throws -> OktaResponse<ApiToken> {
             try await send(try request(to: "/api/v1/api-tokens/{apiTokenId}".expanded(using: [
                     "apiTokenId": apiTokenId
@@ -55,10 +56,11 @@ public extension OktaClient {
         /**
          List all API Token Metadata
          
-         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the &#x60;Link&#x60; response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
+         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the `Link` response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
          - parameter limit: (query) A limit on the number of objects to return. (optional, default to 20)
          - parameter q: (query) Finds a token that matches the name or clientName. (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listApiTokens(after: String? = nil, limit: Int? = nil, q: String? = nil) async throws -> OktaResponse<[ApiToken]> {
             try await send(try request(to: "/api/v1/api-tokens", method: "GET", query: [
                     "after": after, 
@@ -70,7 +72,7 @@ public extension OktaClient {
         /**
          List all API Token Metadata
          
-         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the &#x60;Link&#x60; response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
+         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the `Link` response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
          - parameter limit: (query) A limit on the number of objects to return. (optional, default to 20)
          - parameter q: (query) Finds a token that matches the name or clientName. (optional)
          - parameter completion: Completion block
@@ -93,6 +95,7 @@ public extension OktaClient {
          - parameter apiTokenId: (path) id of the API Token 
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func revokeApiToken(apiTokenId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/api-tokens/{apiTokenId}".expanded(using: [
                     "apiTokenId": apiTokenId
@@ -120,6 +123,7 @@ public extension OktaClient {
          
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func revokeCurrentApiToken() async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/api-tokens/current", method: "DELETE"))
         }

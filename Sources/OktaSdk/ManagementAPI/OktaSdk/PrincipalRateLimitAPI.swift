@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter entity: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createPrincipalRateLimitEntity(entity: PrincipalRateLimitEntity) async throws -> OktaResponse<PrincipalRateLimitEntity> {
             try await send(try requestWithBody(to: "/api/v1/principal-rate-limits", method: "POST", body: entity))
         }
@@ -53,6 +54,7 @@ public extension OktaClient {
          
          - parameter principalRateLimitId: (path) id of the Principal Rate Limit 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getPrincipalRateLimitEntity(principalRateLimitId: String) async throws -> OktaResponse<PrincipalRateLimitEntity> {
             try await send(try request(to: "/api/v1/principal-rate-limits/{principalRateLimitId}".expanded(using: [
                     "principalRateLimitId": principalRateLimitId
@@ -82,6 +84,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listPrincipalRateLimitEntities(filter: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[PrincipalRateLimitEntity]> {
             try await send(try request(to: "/api/v1/principal-rate-limits", method: "GET", query: [
                     "filter": filter, 
@@ -116,6 +119,7 @@ public extension OktaClient {
          - parameter principalRateLimitId: (path) id of the Principal Rate Limit 
          - parameter entity: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updatePrincipalRateLimitEntity(principalRateLimitId: String, entity: PrincipalRateLimitEntity) async throws -> OktaResponse<PrincipalRateLimitEntity> {
             try await send(try requestWithBody(to: "/api/v1/principal-rate-limits/{principalRateLimitId}".expanded(using: [
                     "principalRateLimitId": principalRateLimitId

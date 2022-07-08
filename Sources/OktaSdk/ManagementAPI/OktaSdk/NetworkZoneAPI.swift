@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter zoneId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func activateNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
             try await send(try request(to: "/api/v1/zones/{zoneId}/lifecycle/activate".expanded(using: [
                     "zoneId": zoneId
@@ -57,6 +58,7 @@ public extension OktaClient {
          
          - parameter zone: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createNetworkZone(zone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
             try await send(try requestWithBody(to: "/api/v1/zones", method: "POST", body: zone))
         }
@@ -80,6 +82,7 @@ public extension OktaClient {
          
          - parameter zoneId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deactivateNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
             try await send(try request(to: "/api/v1/zones/{zoneId}/lifecycle/deactivate".expanded(using: [
                     "zoneId": zoneId
@@ -108,6 +111,7 @@ public extension OktaClient {
          - parameter zoneId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteNetworkZone(zoneId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/zones/{zoneId}".expanded(using: [
                     "zoneId": zoneId
@@ -135,6 +139,7 @@ public extension OktaClient {
          
          - parameter zoneId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getNetworkZone(zoneId: String) async throws -> OktaResponse<NetworkZone> {
             try await send(try request(to: "/api/v1/zones/{zoneId}".expanded(using: [
                     "zoneId": zoneId
@@ -164,6 +169,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
          - parameter filter: (query) Filters zones by usage or id expression (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listNetworkZones(after: String? = nil, limit: Int? = nil, filter: String? = nil) async throws -> OktaResponse<[NetworkZone]> {
             try await send(try request(to: "/api/v1/zones", method: "GET", query: [
                     "after": after, 
@@ -198,6 +204,7 @@ public extension OktaClient {
          - parameter zoneId: (path)  
          - parameter zone: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateNetworkZone(zoneId: String, zone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
             try await send(try requestWithBody(to: "/api/v1/zones/{zoneId}".expanded(using: [
                     "zoneId": zoneId

@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter linkedObject: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func addLinkedObjectDefinition(linkedObject: LinkedObject) async throws -> OktaResponse<LinkedObject> {
             try await send(try requestWithBody(to: "/api/v1/meta/schemas/user/linkedObjects", method: "POST", body: linkedObject))
         }
@@ -54,6 +55,7 @@ public extension OktaClient {
          - parameter linkedObjectName: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
                     "linkedObjectName": linkedObjectName
@@ -81,6 +83,7 @@ public extension OktaClient {
          
          - parameter linkedObjectName: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<LinkedObject> {
             try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
                     "linkedObjectName": linkedObjectName
@@ -107,6 +110,7 @@ public extension OktaClient {
          List all Linked Object Definitions
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listLinkedObjectDefinitions() async throws -> OktaResponse<[LinkedObject]> {
             try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects", method: "GET"))
         }

@@ -32,6 +32,7 @@ public extension OktaClient {
          - parameter certificate: (body)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createCertificate(domainId: String, certificate: DomainCertificate) async throws -> OktaResponse<Empty> {
             try await send(try requestWithBody(to: "/api/v1/domains/{domainId}/certificate".expanded(using: [
                     "domainId": domainId
@@ -60,6 +61,7 @@ public extension OktaClient {
          
          - parameter domain: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createDomain(domain: Domain) async throws -> OktaResponse<DomainResponse> {
             try await send(try requestWithBody(to: "/api/v1/domains", method: "POST", body: domain))
         }
@@ -84,6 +86,7 @@ public extension OktaClient {
          - parameter domainId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteDomain(domainId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/domains/{domainId}".expanded(using: [
                     "domainId": domainId
@@ -111,6 +114,7 @@ public extension OktaClient {
          
          - parameter domainId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
             try await send(try request(to: "/api/v1/domains/{domainId}".expanded(using: [
                     "domainId": domainId
@@ -137,6 +141,7 @@ public extension OktaClient {
          List all Domains
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listDomains() async throws -> OktaResponse<DomainListResponse> {
             try await send(try request(to: "/api/v1/domains", method: "GET"))
         }
@@ -159,6 +164,7 @@ public extension OktaClient {
          
          - parameter domainId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func verifyDomain(domainId: String) async throws -> OktaResponse<DomainResponse> {
             try await send(try request(to: "/api/v1/domains/{domainId}/verify".expanded(using: [
                     "domainId": domainId

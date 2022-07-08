@@ -31,6 +31,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func activateGroupRule(ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/rules/{ruleId}/lifecycle/activate".expanded(using: [
                     "ruleId": ruleId
@@ -62,6 +63,7 @@ public extension OktaClient {
          - parameter applicationId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func addApplicationInstanceTargetToAppAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}".expanded(using: [
                     "groupId": groupId, 
@@ -101,6 +103,7 @@ public extension OktaClient {
          - parameter appName: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func addApplicationTargetToAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}".expanded(using: [
                     "groupId": groupId, 
@@ -137,6 +140,7 @@ public extension OktaClient {
          - parameter targetGroupId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func addGroupTargetToGroupAdministratorRoleForGroup(groupId: String, roleId: String, targetGroupId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/groups/{targetGroupId}".expanded(using: [
                     "groupId": groupId, 
@@ -172,6 +176,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func addUserToGroup(groupId: String, userId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/{groupId}/users/{userId}".expanded(using: [
                     "groupId": groupId, 
@@ -204,6 +209,7 @@ public extension OktaClient {
          - parameter assignRoleRequest: (body)  
          - parameter disableNotifications: (query)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func assignRoleToGroup(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: Bool? = nil) async throws -> OktaResponse<Role> {
             try await send(try requestWithBody(to: "/api/v1/groups/{groupId}/roles".expanded(using: [
                     "groupId": groupId
@@ -237,6 +243,7 @@ public extension OktaClient {
          
          - parameter group: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createGroup(group: Group) async throws -> OktaResponse<Group> {
             try await send(try requestWithBody(to: "/api/v1/groups", method: "POST", body: group))
         }
@@ -260,6 +267,7 @@ public extension OktaClient {
          
          - parameter groupRule: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createGroupRule(groupRule: GroupRule) async throws -> OktaResponse<GroupRule> {
             try await send(try requestWithBody(to: "/api/v1/groups/rules", method: "POST", body: groupRule))
         }
@@ -284,6 +292,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deactivateGroupRule(ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/rules/{ruleId}/lifecycle/deactivate".expanded(using: [
                     "ruleId": ruleId
@@ -312,6 +321,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteGroup(groupId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/{groupId}".expanded(using: [
                     "groupId": groupId
@@ -341,6 +351,7 @@ public extension OktaClient {
          - parameter removeUsers: (query) Indicates whether to keep or remove users from groups assigned by this rule. (optional)
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteGroupRule(ruleId: String, removeUsers: Bool? = nil) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/rules/{ruleId}".expanded(using: [
                     "ruleId": ruleId
@@ -373,6 +384,7 @@ public extension OktaClient {
          
          - parameter groupId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getGroup(groupId: String) async throws -> OktaResponse<Group> {
             try await send(try request(to: "/api/v1/groups/{groupId}".expanded(using: [
                     "groupId": groupId
@@ -401,6 +413,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          - parameter expand: (query)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getGroupRule(ruleId: String, expand: String? = nil) async throws -> OktaResponse<GroupRule> {
             try await send(try request(to: "/api/v1/groups/rules/{ruleId}".expanded(using: [
                     "ruleId": ruleId
@@ -434,6 +447,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          - parameter roleId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getRole(groupId: String, roleId: String) async throws -> OktaResponse<Role> {
             try await send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}".expanded(using: [
                     "groupId": groupId, 
@@ -467,6 +481,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listApplicationTargetsForApplicationAdministratorRoleForGroup(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[CatalogApplication]> {
             try await send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps".expanded(using: [
                     "groupId": groupId, 
@@ -507,7 +522,8 @@ public extension OktaClient {
          - parameter after: (query) Specifies the pagination cursor for the next page of apps (optional)
          - parameter limit: (query) Specifies the number of app results for a page (optional, default to 20)
          */
-        public func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[Application]> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[ListApplications200ResponseInner]> {
             try await send(try request(to: "/api/v1/groups/{groupId}/apps".expanded(using: [
                     "groupId": groupId
                 ]), method: "GET", query: [
@@ -524,7 +540,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of app results for a page (optional, default to 20)
          - parameter completion: Completion block
          */
-        public func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[Application]>, Error>) -> Void) {
+        public func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[ListApplications200ResponseInner]>, Error>) -> Void) {
             do {
                 send(try request(to: "/api/v1/groups/{groupId}/apps".expanded(using: [
                         "groupId": groupId
@@ -543,6 +559,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          - parameter expand: (query)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listGroupAssignedRoles(groupId: String, expand: String? = nil) async throws -> OktaResponse<[Role]> {
             try await send(try request(to: "/api/v1/groups/{groupId}/roles".expanded(using: [
                     "groupId": groupId
@@ -576,8 +593,9 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of rule results in a page (optional, default to 50)
          - parameter after: (query) Specifies the pagination cursor for the next page of rules (optional)
          - parameter search: (query) Specifies the keyword to search fules for (optional)
-         - parameter expand: (query) If specified as &#x60;groupIdToGroupNameMap&#x60;, then show group names (optional)
+         - parameter expand: (query) If specified as `groupIdToGroupNameMap`, then show group names (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listGroupRules(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil) async throws -> OktaResponse<[GroupRule]> {
             try await send(try request(to: "/api/v1/groups/rules", method: "GET", query: [
                     "limit": limit, 
@@ -593,7 +611,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of rule results in a page (optional, default to 50)
          - parameter after: (query) Specifies the pagination cursor for the next page of rules (optional)
          - parameter search: (query) Specifies the keyword to search fules for (optional)
-         - parameter expand: (query) If specified as &#x60;groupIdToGroupNameMap&#x60;, then show group names (optional)
+         - parameter expand: (query) If specified as `groupIdToGroupNameMap`, then show group names (optional)
          - parameter completion: Completion block
          */
         public func listGroupRules(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[GroupRule]>, Error>) -> Void) {
@@ -617,6 +635,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to 20)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listGroupTargetsForGroupRole(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[Group]> {
             try await send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/groups".expanded(using: [
                     "groupId": groupId, 
@@ -657,6 +676,7 @@ public extension OktaClient {
          - parameter after: (query) Specifies the pagination cursor for the next page of users (optional)
          - parameter limit: (query) Specifies the number of user results in a page (optional, default to 1000)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listGroupUsers(groupId: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[User]> {
             try await send(try request(to: "/api/v1/groups/{groupId}/users".expanded(using: [
                     "groupId": groupId
@@ -696,6 +716,7 @@ public extension OktaClient {
          - parameter limit: (query) Specifies the number of group results in a page (optional, default to 10000)
          - parameter expand: (query) If specified, it causes additional metadata to be included in the response. (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listGroups(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil) async throws -> OktaResponse<[Group]> {
             try await send(try request(to: "/api/v1/groups", method: "GET", query: [
                     "q": q, 
@@ -739,6 +760,7 @@ public extension OktaClient {
          - parameter applicationId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func removeApplicationTargetFromAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}".expanded(using: [
                     "groupId": groupId, 
@@ -778,6 +800,7 @@ public extension OktaClient {
          - parameter appName: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}".expanded(using: [
                     "groupId": groupId, 
@@ -814,6 +837,7 @@ public extension OktaClient {
          - parameter targetGroupId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func removeGroupTargetFromGroupAdministratorRoleGivenToGroup(groupId: String, roleId: String, targetGroupId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/groups/{targetGroupId}".expanded(using: [
                     "groupId": groupId, 
@@ -849,6 +873,7 @@ public extension OktaClient {
          - parameter roleId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func removeRoleFromGroup(groupId: String, roleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}".expanded(using: [
                     "groupId": groupId, 
@@ -881,6 +906,7 @@ public extension OktaClient {
          - parameter userId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func removeUserFromGroup(groupId: String, userId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/groups/{groupId}/users/{userId}".expanded(using: [
                     "groupId": groupId, 
@@ -912,6 +938,7 @@ public extension OktaClient {
          - parameter groupId: (path)  
          - parameter group: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateGroup(groupId: String, group: Group) async throws -> OktaResponse<Group> {
             try await send(try requestWithBody(to: "/api/v1/groups/{groupId}".expanded(using: [
                     "groupId": groupId
@@ -941,6 +968,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          - parameter groupRule: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateGroupRule(ruleId: String, groupRule: GroupRule) async throws -> OktaResponse<GroupRule> {
             try await send(try requestWithBody(to: "/api/v1/groups/rules/{ruleId}".expanded(using: [
                     "ruleId": ruleId

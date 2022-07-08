@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter featureId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getFeature(featureId: String) async throws -> OktaResponse<Feature> {
             try await send(try request(to: "/api/v1/features/{featureId}".expanded(using: [
                     "featureId": featureId
@@ -57,6 +58,7 @@ public extension OktaClient {
          
          - parameter featureId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listFeatureDependencies(featureId: String) async throws -> OktaResponse<[Feature]> {
             try await send(try request(to: "/api/v1/features/{featureId}/dependencies".expanded(using: [
                     "featureId": featureId
@@ -84,6 +86,7 @@ public extension OktaClient {
          
          - parameter featureId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listFeatureDependents(featureId: String) async throws -> OktaResponse<[Feature]> {
             try await send(try request(to: "/api/v1/features/{featureId}/dependents".expanded(using: [
                     "featureId": featureId
@@ -110,6 +113,7 @@ public extension OktaClient {
          List all Features
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listFeatures() async throws -> OktaResponse<[Feature]> {
             try await send(try request(to: "/api/v1/features", method: "GET"))
         }
@@ -134,6 +138,7 @@ public extension OktaClient {
          - parameter lifecycle: (path)  
          - parameter mode: (query)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil) async throws -> OktaResponse<Feature> {
             try await send(try request(to: "/api/v1/features/{featureId}/{lifecycle}".expanded(using: [
                     "featureId": featureId, 
