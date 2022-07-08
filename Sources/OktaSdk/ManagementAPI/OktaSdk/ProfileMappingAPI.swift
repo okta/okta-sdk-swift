@@ -30,10 +30,27 @@ public extension OktaClient {
          
          - parameter mappingId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getProfileMapping(mappingId: String) async throws -> OktaResponse<ProfileMapping> {
             try await send(try request(to: "/api/v1/mappings/{mappingId}".expanded(using: [
                     "mappingId": mappingId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Profile Mapping
+         
+         - parameter mappingId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getProfileMapping(mappingId: String, completion: @escaping (Result<OktaResponse<ProfileMapping>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/mappings/{mappingId}".expanded(using: [
+                        "mappingId": mappingId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -44,6 +61,7 @@ public extension OktaClient {
          - parameter sourceId: (query)  (optional)
          - parameter targetId: (query)  (optional, default to "")
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil) async throws -> OktaResponse<[ProfileMapping]> {
             try await send(try request(to: "/api/v1/mappings", method: "GET", query: [
                     "after": after, 
@@ -54,15 +72,55 @@ public extension OktaClient {
         }
 
         /**
+         List all Profile Mappings
+         
+         - parameter after: (query)  (optional)
+         - parameter limit: (query)  (optional, default to -1)
+         - parameter sourceId: (query)  (optional)
+         - parameter targetId: (query)  (optional, default to "")
+         - parameter completion: Completion block
+         */
+        public func listProfileMappings(after: String? = nil, limit: Int? = nil, sourceId: String? = nil, targetId: String? = nil, completion: @escaping (Result<OktaResponse<[ProfileMapping]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/mappings", method: "GET", query: [
+                        "after": after, 
+                        "limit": limit, 
+                        "sourceId": sourceId, 
+                        "targetId": targetId
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Update a Profile Mapping
          
          - parameter mappingId: (path)  
          - parameter profileMapping: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping) async throws -> OktaResponse<ProfileMapping> {
             try await send(try requestWithBody(to: "/api/v1/mappings/{mappingId}".expanded(using: [
                     "mappingId": mappingId
                 ]), method: "POST", body: profileMapping))
+        }
+
+        /**
+         Update a Profile Mapping
+         
+         - parameter mappingId: (path)  
+         - parameter profileMapping: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateProfileMapping(mappingId: String, profileMapping: ProfileMapping, completion: @escaping (Result<OktaResponse<ProfileMapping>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/mappings/{mappingId}".expanded(using: [
+                        "mappingId": mappingId
+                    ]), method: "POST", body: profileMapping), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

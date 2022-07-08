@@ -31,10 +31,27 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func activateAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/lifecycle/activate".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "POST"))
+        }
+
+        /**
+         Activate an Authorization Server
+         
+         - parameter authServerId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateAuthorizationServer(authServerId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/lifecycle/activate".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -44,11 +61,30 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func activateAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/lifecycle/activate".expanded(using: [
                     "authServerId": authServerId, 
                     "policyId": policyId
                 ]), method: "POST"))
+        }
+
+        /**
+         Activate a Policy
+         
+         - parameter authServerId: (path)  
+         - parameter policyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateAuthorizationServerPolicy(authServerId: String, policyId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/lifecycle/activate".expanded(using: [
+                        "authServerId": authServerId, 
+                        "policyId": policyId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -59,6 +95,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func activateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}/lifecycle/activate".expanded(using: [
                     "authServerId": authServerId, 
@@ -68,12 +105,47 @@ public extension OktaClient {
         }
 
         /**
+         Activate a Policy Rule
+         
+         - parameter authServerId: (path)  
+         - parameter policyId: (path)  
+         - parameter ruleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}/lifecycle/activate".expanded(using: [
+                        "authServerId": authServerId, 
+                        "policyId": policyId, 
+                        "ruleId": ruleId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Create an Authorization Server
          
          - parameter authorizationServer: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createAuthorizationServer(authorizationServer: AuthorizationServer) async throws -> OktaResponse<AuthorizationServer> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers", method: "POST", body: authorizationServer))
+        }
+
+        /**
+         Create an Authorization Server
+         
+         - parameter authorizationServer: (body)  
+         - parameter completion: Completion block
+         */
+        public func createAuthorizationServer(authorizationServer: AuthorizationServer, completion: @escaping (Result<OktaResponse<AuthorizationServer>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authorizationServers", method: "POST", body: authorizationServer), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -82,10 +154,28 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter policy: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createAuthorizationServerPolicy(authServerId: String, policy: AuthorizationServerPolicy) async throws -> OktaResponse<AuthorizationServerPolicy> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/policies".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "POST", body: policy))
+        }
+
+        /**
+         Create a Policy
+         
+         - parameter authServerId: (path)  
+         - parameter policy: (body)  
+         - parameter completion: Completion block
+         */
+        public func createAuthorizationServerPolicy(authServerId: String, policy: AuthorizationServerPolicy, completion: @escaping (Result<OktaResponse<AuthorizationServerPolicy>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/policies".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "POST", body: policy), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -95,6 +185,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter policyRule: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createAuthorizationServerPolicyRule(policyId: String, authServerId: String, policyRule: AuthorizationServerPolicyRule) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules".expanded(using: [
                     "policyId": policyId, 
@@ -103,15 +194,52 @@ public extension OktaClient {
         }
 
         /**
+         Create a Policy Rule
+         
+         - parameter policyId: (path)  
+         - parameter authServerId: (path)  
+         - parameter policyRule: (body)  
+         - parameter completion: Completion block
+         */
+        public func createAuthorizationServerPolicyRule(policyId: String, authServerId: String, policyRule: AuthorizationServerPolicyRule, completion: @escaping (Result<OktaResponse<AuthorizationServerPolicyRule>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules".expanded(using: [
+                        "policyId": policyId, 
+                        "authServerId": authServerId
+                    ]), method: "POST", body: policyRule), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Create a Custom Token Claim
          
          - parameter authServerId: (path)  
          - parameter oAuth2Claim: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createOAuth2Claim(authServerId: String, oAuth2Claim: OAuth2Claim) async throws -> OktaResponse<OAuth2Claim> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/claims".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "POST", body: oAuth2Claim))
+        }
+
+        /**
+         Create a Custom Token Claim
+         
+         - parameter authServerId: (path)  
+         - parameter oAuth2Claim: (body)  
+         - parameter completion: Completion block
+         */
+        public func createOAuth2Claim(authServerId: String, oAuth2Claim: OAuth2Claim, completion: @escaping (Result<OktaResponse<OAuth2Claim>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/claims".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "POST", body: oAuth2Claim), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -120,10 +248,28 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter oAuth2Scope: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createOAuth2Scope(authServerId: String, oAuth2Scope: OAuth2Scope) async throws -> OktaResponse<OAuth2Scope> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/scopes".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "POST", body: oAuth2Scope))
+        }
+
+        /**
+         Create a Custom Token Scope
+         
+         - parameter authServerId: (path)  
+         - parameter oAuth2Scope: (body)  
+         - parameter completion: Completion block
+         */
+        public func createOAuth2Scope(authServerId: String, oAuth2Scope: OAuth2Scope, completion: @escaping (Result<OktaResponse<OAuth2Scope>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/scopes".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "POST", body: oAuth2Scope), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -132,10 +278,27 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deactivateAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/lifecycle/deactivate".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "POST"))
+        }
+
+        /**
+         Deactivate an Authorization Server
+         
+         - parameter authServerId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivateAuthorizationServer(authServerId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/lifecycle/deactivate".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -145,11 +308,30 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deactivateAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/lifecycle/deactivate".expanded(using: [
                     "authServerId": authServerId, 
                     "policyId": policyId
                 ]), method: "POST"))
+        }
+
+        /**
+         Deactivate a Policy
+         
+         - parameter authServerId: (path)  
+         - parameter policyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivateAuthorizationServerPolicy(authServerId: String, policyId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/lifecycle/deactivate".expanded(using: [
+                        "authServerId": authServerId, 
+                        "policyId": policyId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -160,6 +342,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deactivateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}/lifecycle/deactivate".expanded(using: [
                     "authServerId": authServerId, 
@@ -169,15 +352,52 @@ public extension OktaClient {
         }
 
         /**
+         Deactivate a Policy Rule
+         
+         - parameter authServerId: (path)  
+         - parameter policyId: (path)  
+         - parameter ruleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivateAuthorizationServerPolicyRule(authServerId: String, policyId: String, ruleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}/lifecycle/deactivate".expanded(using: [
+                        "authServerId": authServerId, 
+                        "policyId": policyId, 
+                        "ruleId": ruleId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete an Authorization Server
          
          - parameter authServerId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteAuthorizationServer(authServerId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete an Authorization Server
+         
+         - parameter authServerId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteAuthorizationServer(authServerId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -187,11 +407,30 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}".expanded(using: [
                     "authServerId": authServerId, 
                     "policyId": policyId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete a Policy
+         
+         - parameter authServerId: (path)  
+         - parameter policyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteAuthorizationServerPolicy(authServerId: String, policyId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}".expanded(using: [
+                        "authServerId": authServerId, 
+                        "policyId": policyId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -202,6 +441,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}".expanded(using: [
                     "policyId": policyId, 
@@ -211,17 +451,56 @@ public extension OktaClient {
         }
 
         /**
+         Delete a Policy Rule
+         
+         - parameter policyId: (path)  
+         - parameter authServerId: (path)  
+         - parameter ruleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}".expanded(using: [
+                        "policyId": policyId, 
+                        "authServerId": authServerId, 
+                        "ruleId": ruleId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete a Custom Token Claim
          
          - parameter authServerId: (path)  
          - parameter claimId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteOAuth2Claim(authServerId: String, claimId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/claims/{claimId}".expanded(using: [
                     "authServerId": authServerId, 
                     "claimId": claimId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete a Custom Token Claim
+         
+         - parameter authServerId: (path)  
+         - parameter claimId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteOAuth2Claim(authServerId: String, claimId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/claims/{claimId}".expanded(using: [
+                        "authServerId": authServerId, 
+                        "claimId": claimId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -231,6 +510,7 @@ public extension OktaClient {
          - parameter scopeId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteOAuth2Scope(authServerId: String, scopeId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/scopes/{scopeId}".expanded(using: [
                     "authServerId": authServerId, 
@@ -239,14 +519,49 @@ public extension OktaClient {
         }
 
         /**
+         Delete a Custom Token Scope
+         
+         - parameter authServerId: (path)  
+         - parameter scopeId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteOAuth2Scope(authServerId: String, scopeId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/scopes/{scopeId}".expanded(using: [
+                        "authServerId": authServerId, 
+                        "scopeId": scopeId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve an Authorization Server
          
          - parameter authServerId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getAuthorizationServer(authServerId: String) async throws -> OktaResponse<AuthorizationServer> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve an Authorization Server
+         
+         - parameter authServerId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getAuthorizationServer(authServerId: String, completion: @escaping (Result<OktaResponse<AuthorizationServer>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -255,11 +570,30 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter policyId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getAuthorizationServerPolicy(authServerId: String, policyId: String) async throws -> OktaResponse<AuthorizationServerPolicy> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}".expanded(using: [
                     "authServerId": authServerId, 
                     "policyId": policyId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Policy
+         
+         - parameter authServerId: (path)  
+         - parameter policyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getAuthorizationServerPolicy(authServerId: String, policyId: String, completion: @escaping (Result<OktaResponse<AuthorizationServerPolicy>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}".expanded(using: [
+                        "authServerId": authServerId, 
+                        "policyId": policyId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -269,6 +603,7 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter ruleId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}".expanded(using: [
                     "policyId": policyId, 
@@ -278,11 +613,32 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Policy Rule
+         
+         - parameter policyId: (path)  
+         - parameter authServerId: (path)  
+         - parameter ruleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String, completion: @escaping (Result<OktaResponse<AuthorizationServerPolicyRule>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}".expanded(using: [
+                        "policyId": policyId, 
+                        "authServerId": authServerId, 
+                        "ruleId": ruleId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Custom Token Claim
          
          - parameter authServerId: (path)  
          - parameter claimId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getOAuth2Claim(authServerId: String, claimId: String) async throws -> OktaResponse<OAuth2Claim> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/claims/{claimId}".expanded(using: [
                     "authServerId": authServerId, 
@@ -291,16 +647,53 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Custom Token Claim
+         
+         - parameter authServerId: (path)  
+         - parameter claimId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getOAuth2Claim(authServerId: String, claimId: String, completion: @escaping (Result<OktaResponse<OAuth2Claim>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/claims/{claimId}".expanded(using: [
+                        "authServerId": authServerId, 
+                        "claimId": claimId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Custom Token Scope
          
          - parameter authServerId: (path)  
          - parameter scopeId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getOAuth2Scope(authServerId: String, scopeId: String) async throws -> OktaResponse<OAuth2Scope> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/scopes/{scopeId}".expanded(using: [
                     "authServerId": authServerId, 
                     "scopeId": scopeId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Custom Token Scope
+         
+         - parameter authServerId: (path)  
+         - parameter scopeId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getOAuth2Scope(authServerId: String, scopeId: String, completion: @escaping (Result<OktaResponse<OAuth2Scope>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/scopes/{scopeId}".expanded(using: [
+                        "authServerId": authServerId, 
+                        "scopeId": scopeId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -311,6 +704,7 @@ public extension OktaClient {
          - parameter tokenId: (path)  
          - parameter expand: (query)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String, expand: String? = nil) async throws -> OktaResponse<OAuth2RefreshToken> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens/{tokenId}".expanded(using: [
                     "authServerId": authServerId, 
@@ -322,12 +716,64 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Refresh Token for a Client
+         
+         - parameter authServerId: (path)  
+         - parameter clientId: (path)  
+         - parameter tokenId: (path)  
+         - parameter expand: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func getRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<OAuth2RefreshToken>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens/{tokenId}".expanded(using: [
+                        "authServerId": authServerId, 
+                        "clientId": clientId, 
+                        "tokenId": tokenId
+                    ]), method: "GET", query: [
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Credential Keys
          
          - parameter authServerId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listAuthorizationServerKeys(authServerId: String) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/credentials/keys".expanded(using: [
+                    "authServerId": authServerId
+                ]), method: "GET"))
+        }
+
+        /**
+         List all Credential Keys
+         
+         - parameter authServerId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listAuthorizationServerKeys(authServerId: String, completion: @escaping (Result<OktaResponse<[JsonWebKey]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/credentials/keys".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         List all Policies
+         
+         - parameter authServerId: (path)  
+         */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func listAuthorizationServerPolicies(authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicy]> {
+            try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "GET"))
         }
@@ -336,9 +782,28 @@ public extension OktaClient {
          List all Policies
          
          - parameter authServerId: (path)  
+         - parameter completion: Completion block
          */
-        public func listAuthorizationServerPolicies(authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicy]> {
-            try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies".expanded(using: [
+        public func listAuthorizationServerPolicies(authServerId: String, completion: @escaping (Result<OktaResponse<[AuthorizationServerPolicy]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         List all Policy Rules
+         
+         - parameter policyId: (path)  
+         - parameter authServerId: (path)  
+         */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func listAuthorizationServerPolicyRules(policyId: String, authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicyRule]> {
+            try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules".expanded(using: [
+                    "policyId": policyId, 
                     "authServerId": authServerId
                 ]), method: "GET"))
         }
@@ -348,12 +813,17 @@ public extension OktaClient {
          
          - parameter policyId: (path)  
          - parameter authServerId: (path)  
+         - parameter completion: Completion block
          */
-        public func listAuthorizationServerPolicyRules(policyId: String, authServerId: String) async throws -> OktaResponse<[AuthorizationServerPolicyRule]> {
-            try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules".expanded(using: [
-                    "policyId": policyId, 
-                    "authServerId": authServerId
-                ]), method: "GET"))
+        public func listAuthorizationServerPolicyRules(policyId: String, authServerId: String, completion: @escaping (Result<OktaResponse<[AuthorizationServerPolicyRule]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules".expanded(using: [
+                        "policyId": policyId, 
+                        "authServerId": authServerId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -363,6 +833,7 @@ public extension OktaClient {
          - parameter limit: (query)  (optional)
          - parameter after: (query)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listAuthorizationServers(q: String? = nil, limit: String? = nil, after: String? = nil) async throws -> OktaResponse<[AuthorizationServer]> {
             try await send(try request(to: "/api/v1/authorizationServers", method: "GET", query: [
                     "q": q, 
@@ -372,12 +843,61 @@ public extension OktaClient {
         }
 
         /**
+         List all Authorization Servers
+         
+         - parameter q: (query)  (optional)
+         - parameter limit: (query)  (optional)
+         - parameter after: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func listAuthorizationServers(q: String? = nil, limit: String? = nil, after: String? = nil, completion: @escaping (Result<OktaResponse<[AuthorizationServer]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers", method: "GET", query: [
+                        "q": q, 
+                        "limit": limit, 
+                        "after": after
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Custom Token Claims
          
          - parameter authServerId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listOAuth2Claims(authServerId: String) async throws -> OktaResponse<[OAuth2Claim]> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/claims".expanded(using: [
+                    "authServerId": authServerId
+                ]), method: "GET"))
+        }
+
+        /**
+         List all Custom Token Claims
+         
+         - parameter authServerId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listOAuth2Claims(authServerId: String, completion: @escaping (Result<OktaResponse<[OAuth2Claim]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/claims".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         List all Clients
+         
+         - parameter authServerId: (path)  
+         */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func listOAuth2ClientsForAuthorizationServer(authServerId: String) async throws -> OktaResponse<[OAuth2Client]> {
+            try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "GET"))
         }
@@ -386,11 +906,16 @@ public extension OktaClient {
          List all Clients
          
          - parameter authServerId: (path)  
+         - parameter completion: Completion block
          */
-        public func listOAuth2ClientsForAuthorizationServer(authServerId: String) async throws -> OktaResponse<[OAuth2Client]> {
-            try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients".expanded(using: [
-                    "authServerId": authServerId
-                ]), method: "GET"))
+        public func listOAuth2ClientsForAuthorizationServer(authServerId: String, completion: @escaping (Result<OktaResponse<[OAuth2Client]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -402,6 +927,7 @@ public extension OktaClient {
          - parameter cursor: (query)  (optional)
          - parameter limit: (query)  (optional, default to -1)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listOAuth2Scopes(authServerId: String, q: String? = nil, filter: String? = nil, cursor: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2Scope]> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/scopes".expanded(using: [
                     "authServerId": authServerId
@@ -414,6 +940,31 @@ public extension OktaClient {
         }
 
         /**
+         List all Custom Token Scopes
+         
+         - parameter authServerId: (path)  
+         - parameter q: (query)  (optional)
+         - parameter filter: (query)  (optional)
+         - parameter cursor: (query)  (optional)
+         - parameter limit: (query)  (optional, default to -1)
+         - parameter completion: Completion block
+         */
+        public func listOAuth2Scopes(authServerId: String, q: String? = nil, filter: String? = nil, cursor: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[OAuth2Scope]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/scopes".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "GET", query: [
+                        "q": q, 
+                        "filter": filter, 
+                        "cursor": cursor, 
+                        "limit": limit
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Refresh Tokens for a Client
          
          - parameter authServerId: (path)  
@@ -422,6 +973,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to -1)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[OAuth2RefreshToken]> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens".expanded(using: [
                     "authServerId": authServerId, 
@@ -434,6 +986,31 @@ public extension OktaClient {
         }
 
         /**
+         List all Refresh Tokens for a Client
+         
+         - parameter authServerId: (path)  
+         - parameter clientId: (path)  
+         - parameter expand: (query)  (optional)
+         - parameter after: (query)  (optional)
+         - parameter limit: (query)  (optional, default to -1)
+         - parameter completion: Completion block
+         */
+        public func listRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[OAuth2RefreshToken]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens".expanded(using: [
+                        "authServerId": authServerId, 
+                        "clientId": clientId
+                    ]), method: "GET", query: [
+                        "expand": expand, 
+                        "after": after, 
+                        "limit": limit
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Revoke a Refresh Token for a Client
          
          - parameter authServerId: (path)  
@@ -441,6 +1018,7 @@ public extension OktaClient {
          - parameter tokenId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func revokeRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens/{tokenId}".expanded(using: [
                     "authServerId": authServerId, 
@@ -450,12 +1028,33 @@ public extension OktaClient {
         }
 
         /**
+         Revoke a Refresh Token for a Client
+         
+         - parameter authServerId: (path)  
+         - parameter clientId: (path)  
+         - parameter tokenId: (path)  
+         - parameter completion: Completion block
+         */
+        public func revokeRefreshTokenForAuthorizationServerAndClient(authServerId: String, clientId: String, tokenId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens/{tokenId}".expanded(using: [
+                        "authServerId": authServerId, 
+                        "clientId": clientId, 
+                        "tokenId": tokenId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Revoke all Refresh Tokens for a Client
          
          - parameter authServerId: (path)  
          - parameter clientId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func revokeRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens".expanded(using: [
                     "authServerId": authServerId, 
@@ -464,15 +1063,51 @@ public extension OktaClient {
         }
 
         /**
+         Revoke all Refresh Tokens for a Client
+         
+         - parameter authServerId: (path)  
+         - parameter clientId: (path)  
+         - parameter completion: Completion block
+         */
+        public func revokeRefreshTokensForAuthorizationServerAndClient(authServerId: String, clientId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authorizationServers/{authServerId}/clients/{clientId}/tokens".expanded(using: [
+                        "authServerId": authServerId, 
+                        "clientId": clientId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Rotate all Credential Keys
          
          - parameter authServerId: (path)  
          - parameter use: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func rotateAuthorizationServerKeys(authServerId: String, use: JwkUse) async throws -> OktaResponse<[JsonWebKey]> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/credentials/lifecycle/keyRotate".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "POST", body: use))
+        }
+
+        /**
+         Rotate all Credential Keys
+         
+         - parameter authServerId: (path)  
+         - parameter use: (body)  
+         - parameter completion: Completion block
+         */
+        public func rotateAuthorizationServerKeys(authServerId: String, use: JwkUse, completion: @escaping (Result<OktaResponse<[JsonWebKey]>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/credentials/lifecycle/keyRotate".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "POST", body: use), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -481,10 +1116,28 @@ public extension OktaClient {
          - parameter authServerId: (path)  
          - parameter authorizationServer: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateAuthorizationServer(authServerId: String, authorizationServer: AuthorizationServer) async throws -> OktaResponse<AuthorizationServer> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}".expanded(using: [
                     "authServerId": authServerId
                 ]), method: "PUT", body: authorizationServer))
+        }
+
+        /**
+         Replace an Authorization Server
+         
+         - parameter authServerId: (path)  
+         - parameter authorizationServer: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateAuthorizationServer(authServerId: String, authorizationServer: AuthorizationServer, completion: @escaping (Result<OktaResponse<AuthorizationServer>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}".expanded(using: [
+                        "authServerId": authServerId
+                    ]), method: "PUT", body: authorizationServer), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -494,11 +1147,31 @@ public extension OktaClient {
          - parameter policyId: (path)  
          - parameter policy: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateAuthorizationServerPolicy(authServerId: String, policyId: String, policy: AuthorizationServerPolicy) async throws -> OktaResponse<AuthorizationServerPolicy> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}".expanded(using: [
                     "authServerId": authServerId, 
                     "policyId": policyId
                 ]), method: "PUT", body: policy))
+        }
+
+        /**
+         Replace a Policy
+         
+         - parameter authServerId: (path)  
+         - parameter policyId: (path)  
+         - parameter policy: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateAuthorizationServerPolicy(authServerId: String, policyId: String, policy: AuthorizationServerPolicy, completion: @escaping (Result<OktaResponse<AuthorizationServerPolicy>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}".expanded(using: [
+                        "authServerId": authServerId, 
+                        "policyId": policyId
+                    ]), method: "PUT", body: policy), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -509,6 +1182,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          - parameter policyRule: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String, policyRule: AuthorizationServerPolicyRule) async throws -> OktaResponse<AuthorizationServerPolicyRule> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}".expanded(using: [
                     "policyId": policyId, 
@@ -518,17 +1192,58 @@ public extension OktaClient {
         }
 
         /**
+         Replace a Policy Rule
+         
+         - parameter policyId: (path)  
+         - parameter authServerId: (path)  
+         - parameter ruleId: (path)  
+         - parameter policyRule: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateAuthorizationServerPolicyRule(policyId: String, authServerId: String, ruleId: String, policyRule: AuthorizationServerPolicyRule, completion: @escaping (Result<OktaResponse<AuthorizationServerPolicyRule>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/policies/{policyId}/rules/{ruleId}".expanded(using: [
+                        "policyId": policyId, 
+                        "authServerId": authServerId, 
+                        "ruleId": ruleId
+                    ]), method: "PUT", body: policyRule), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Replace a Custom Token Claim
          
          - parameter authServerId: (path)  
          - parameter claimId: (path)  
          - parameter oAuth2Claim: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateOAuth2Claim(authServerId: String, claimId: String, oAuth2Claim: OAuth2Claim) async throws -> OktaResponse<OAuth2Claim> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/claims/{claimId}".expanded(using: [
                     "authServerId": authServerId, 
                     "claimId": claimId
                 ]), method: "PUT", body: oAuth2Claim))
+        }
+
+        /**
+         Replace a Custom Token Claim
+         
+         - parameter authServerId: (path)  
+         - parameter claimId: (path)  
+         - parameter oAuth2Claim: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateOAuth2Claim(authServerId: String, claimId: String, oAuth2Claim: OAuth2Claim, completion: @escaping (Result<OktaResponse<OAuth2Claim>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/claims/{claimId}".expanded(using: [
+                        "authServerId": authServerId, 
+                        "claimId": claimId
+                    ]), method: "PUT", body: oAuth2Claim), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -538,11 +1253,31 @@ public extension OktaClient {
          - parameter scopeId: (path)  
          - parameter oAuth2Scope: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateOAuth2Scope(authServerId: String, scopeId: String, oAuth2Scope: OAuth2Scope) async throws -> OktaResponse<OAuth2Scope> {
             try await send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/scopes/{scopeId}".expanded(using: [
                     "authServerId": authServerId, 
                     "scopeId": scopeId
                 ]), method: "PUT", body: oAuth2Scope))
+        }
+
+        /**
+         Replace a Custom Token Scope
+         
+         - parameter authServerId: (path)  
+         - parameter scopeId: (path)  
+         - parameter oAuth2Scope: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateOAuth2Scope(authServerId: String, scopeId: String, oAuth2Scope: OAuth2Scope, completion: @escaping (Result<OktaResponse<OAuth2Scope>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authorizationServers/{authServerId}/scopes/{scopeId}".expanded(using: [
+                        "authServerId": authServerId, 
+                        "scopeId": scopeId
+                    ]), method: "PUT", body: oAuth2Scope), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

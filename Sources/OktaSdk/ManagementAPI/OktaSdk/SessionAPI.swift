@@ -30,8 +30,23 @@ public extension OktaClient {
          
          - parameter createSessionRequest: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createSession(createSessionRequest: CreateSessionRequest) async throws -> OktaResponse<Session> {
             try await send(try requestWithBody(to: "/api/v1/sessions", method: "POST", body: createSessionRequest))
+        }
+
+        /**
+         Create a Session with Session Token
+         
+         - parameter createSessionRequest: (body)  
+         - parameter completion: Completion block
+         */
+        public func createSession(createSessionRequest: CreateSessionRequest, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/sessions", method: "POST", body: createSessionRequest), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -40,6 +55,7 @@ public extension OktaClient {
          - parameter sessionId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func endSession(sessionId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
                     "sessionId": sessionId
@@ -47,10 +63,27 @@ public extension OktaClient {
         }
 
         /**
+         Delete a Session
+         
+         - parameter sessionId: (path)  
+         - parameter completion: Completion block
+         */
+        public func endSession(sessionId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
+                        "sessionId": sessionId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Session
          
          - parameter sessionId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getSession(sessionId: String) async throws -> OktaResponse<Session> {
             try await send(try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
                     "sessionId": sessionId
@@ -58,14 +91,47 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Session
+         
+         - parameter sessionId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getSession(sessionId: String, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
+                        "sessionId": sessionId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Refresh a Session
          
          - parameter sessionId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func refreshSession(sessionId: String) async throws -> OktaResponse<Session> {
             try await send(try request(to: "/api/v1/sessions/{sessionId}/lifecycle/refresh".expanded(using: [
                     "sessionId": sessionId
                 ]), method: "POST"))
+        }
+
+        /**
+         Refresh a Session
+         
+         - parameter sessionId: (path)  
+         - parameter completion: Completion block
+         */
+        public func refreshSession(sessionId: String, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/sessions/{sessionId}/lifecycle/refresh".expanded(using: [
+                        "sessionId": sessionId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

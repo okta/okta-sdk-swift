@@ -21,6 +21,7 @@ class UserClientIntegrationTests: XCTestCase {
         client = OktaClient(configuration: .init(apiKey: apiKey, domain: domain))
     }
     
+    @available(iOS 13.0.0, *)
     func testCreateUser() async throws {
         let response = try await client.user.createUser(body: .init(credentials: .init(password: .init(value: "TestPassword"),
                                                                                        recoveryQuestion: .init(answer: "Okta", question: "What's your favorite identity provider?")),

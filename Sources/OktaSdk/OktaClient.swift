@@ -55,6 +55,7 @@ open class OktaClient: OktaClientAPI {
     public lazy var captcha: OktaClient.CAPTCHAAPI = { .init(context: self.context) } ()
     public lazy var customization: OktaClient.CustomizationAPI = { .init(context: self.context) } ()
     public lazy var domain: OktaClient.DomainAPI = { .init(context: self.context) } ()
+    public lazy var emailDomain: OktaClient.EmailDomainAPI = { .init(context: self.context) } ()
     public lazy var eventHook: OktaClient.EventHookAPI = { .init(context: self.context) } ()
     public lazy var feature: OktaClient.FeatureAPI = { .init(context: self.context) } ()
     public lazy var group: OktaClient.GroupAPI = { .init(context: self.context) } ()

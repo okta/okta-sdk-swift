@@ -31,10 +31,27 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func activatePolicy(policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/policies/{policyId}/lifecycle/activate".expanded(using: [
                     "policyId": policyId
                 ]), method: "POST"))
+        }
+
+        /**
+         Activate a Policy
+         
+         - parameter policyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activatePolicy(policyId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/policies/{policyId}/lifecycle/activate".expanded(using: [
+                        "policyId": policyId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -44,6 +61,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func activatePolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/policies/{policyId}/rules/{ruleId}/lifecycle/activate".expanded(using: [
                     "policyId": policyId, 
@@ -52,15 +70,79 @@ public extension OktaClient {
         }
 
         /**
+         Activate a Policy Rule
+         
+         - parameter policyId: (path)  
+         - parameter ruleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activatePolicyRule(policyId: String, ruleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/policies/{policyId}/rules/{ruleId}/lifecycle/activate".expanded(using: [
+                        "policyId": policyId, 
+                        "ruleId": ruleId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         Clone an existing policy
+         
+         - parameter policyId: (path)  
+         */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func clonePolicy(policyId: String) async throws -> OktaResponse<ListPolicies200ResponseInner> {
+            try await send(try request(to: "/api/v1/policies/{policyId}/clone".expanded(using: [
+                    "policyId": policyId
+                ]), method: "POST"))
+        }
+
+        /**
+         Clone an existing policy
+         
+         - parameter policyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func clonePolicy(policyId: String, completion: @escaping (Result<OktaResponse<ListPolicies200ResponseInner>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/policies/{policyId}/clone".expanded(using: [
+                        "policyId": policyId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Create a Policy
          
          - parameter policy: (body)  
          - parameter activate: (query)  (optional, default to true)
          */
-        public func createPolicy(policy: Policy, activate: Bool? = nil) async throws -> OktaResponse<Policy> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func createPolicy(policy: ListPolicies200ResponseInner, activate: Bool? = nil) async throws -> OktaResponse<ListPolicies200ResponseInner> {
             try await send(try requestWithBody(to: "/api/v1/policies", method: "POST", query: [
                     "activate": activate
                 ], body: policy))
+        }
+
+        /**
+         Create a Policy
+         
+         - parameter policy: (body)  
+         - parameter activate: (query)  (optional, default to true)
+         - parameter completion: Completion block
+         */
+        public func createPolicy(policy: ListPolicies200ResponseInner, activate: Bool? = nil, completion: @escaping (Result<OktaResponse<ListPolicies200ResponseInner>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/policies", method: "POST", query: [
+                        "activate": activate
+                    ], body: policy), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -69,10 +151,28 @@ public extension OktaClient {
          - parameter policyId: (path)  
          - parameter policyRule: (body)  
          */
-        public func createPolicyRule(policyId: String, policyRule: PolicyRule) async throws -> OktaResponse<PolicyRule> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func createPolicyRule(policyId: String, policyRule: ListPolicyRules200ResponseInner) async throws -> OktaResponse<ListPolicyRules200ResponseInner> {
             try await send(try requestWithBody(to: "/api/v1/policies/{policyId}/rules".expanded(using: [
                     "policyId": policyId
                 ]), method: "POST", body: policyRule))
+        }
+
+        /**
+         Create a Policy Rule
+         
+         - parameter policyId: (path)  
+         - parameter policyRule: (body)  
+         - parameter completion: Completion block
+         */
+        public func createPolicyRule(policyId: String, policyRule: ListPolicyRules200ResponseInner, completion: @escaping (Result<OktaResponse<ListPolicyRules200ResponseInner>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/policies/{policyId}/rules".expanded(using: [
+                        "policyId": policyId
+                    ]), method: "POST", body: policyRule), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -81,10 +181,27 @@ public extension OktaClient {
          - parameter policyId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deactivatePolicy(policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/policies/{policyId}/lifecycle/deactivate".expanded(using: [
                     "policyId": policyId
                 ]), method: "POST"))
+        }
+
+        /**
+         Deactivate a Policy
+         
+         - parameter policyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivatePolicy(policyId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/policies/{policyId}/lifecycle/deactivate".expanded(using: [
+                        "policyId": policyId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -94,6 +211,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deactivatePolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/policies/{policyId}/rules/{ruleId}/lifecycle/deactivate".expanded(using: [
                     "policyId": policyId, 
@@ -102,15 +220,50 @@ public extension OktaClient {
         }
 
         /**
+         Deactivate a Policy Rule
+         
+         - parameter policyId: (path)  
+         - parameter ruleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivatePolicyRule(policyId: String, ruleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/policies/{policyId}/rules/{ruleId}/lifecycle/deactivate".expanded(using: [
+                        "policyId": policyId, 
+                        "ruleId": ruleId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete a Policy
          
          - parameter policyId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deletePolicy(policyId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/policies/{policyId}".expanded(using: [
                     "policyId": policyId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete a Policy
+         
+         - parameter policyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deletePolicy(policyId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/policies/{policyId}".expanded(using: [
+                        "policyId": policyId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -120,6 +273,7 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deletePolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/policies/{policyId}/rules/{ruleId}".expanded(using: [
                     "policyId": policyId, 
@@ -128,12 +282,31 @@ public extension OktaClient {
         }
 
         /**
+         Delete a Policy Rule
+         
+         - parameter policyId: (path)  
+         - parameter ruleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deletePolicyRule(policyId: String, ruleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/policies/{policyId}/rules/{ruleId}".expanded(using: [
+                        "policyId": policyId, 
+                        "ruleId": ruleId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Policy
          
          - parameter policyId: (path)  
          - parameter expand: (query)  (optional, default to "")
          */
-        public func getPolicy(policyId: String, expand: String? = nil) async throws -> OktaResponse<Policy> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func getPolicy(policyId: String, expand: String? = nil) async throws -> OktaResponse<ListPolicies200ResponseInner> {
             try await send(try request(to: "/api/v1/policies/{policyId}".expanded(using: [
                     "policyId": policyId
                 ]), method: "GET", query: [
@@ -142,16 +315,54 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Policy
+         
+         - parameter policyId: (path)  
+         - parameter expand: (query)  (optional, default to "")
+         - parameter completion: Completion block
+         */
+        public func getPolicy(policyId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<ListPolicies200ResponseInner>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/policies/{policyId}".expanded(using: [
+                        "policyId": policyId
+                    ]), method: "GET", query: [
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Policy Rule
          
          - parameter policyId: (path)  
          - parameter ruleId: (path)  
          */
-        public func getPolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<PolicyRule> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func getPolicyRule(policyId: String, ruleId: String) async throws -> OktaResponse<ListPolicyRules200ResponseInner> {
             try await send(try request(to: "/api/v1/policies/{policyId}/rules/{ruleId}".expanded(using: [
                     "policyId": policyId, 
                     "ruleId": ruleId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Policy Rule
+         
+         - parameter policyId: (path)  
+         - parameter ruleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getPolicyRule(policyId: String, ruleId: String, completion: @escaping (Result<OktaResponse<ListPolicyRules200ResponseInner>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/policies/{policyId}/rules/{ruleId}".expanded(using: [
+                        "policyId": policyId, 
+                        "ruleId": ruleId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -161,7 +372,8 @@ public extension OktaClient {
          - parameter status: (query)  (optional)
          - parameter expand: (query)  (optional, default to "")
          */
-        public func listPolicies(type: String, status: String? = nil, expand: String? = nil) async throws -> OktaResponse<[Policy]> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func listPolicies(type: String, status: String? = nil, expand: String? = nil) async throws -> OktaResponse<[ListPolicies200ResponseInner]> {
             try await send(try request(to: "/api/v1/policies", method: "GET", query: [
                     "type": type, 
                     "status": status, 
@@ -170,14 +382,51 @@ public extension OktaClient {
         }
 
         /**
+         List all Policies
+         
+         - parameter type: (query)  
+         - parameter status: (query)  (optional)
+         - parameter expand: (query)  (optional, default to "")
+         - parameter completion: Completion block
+         */
+        public func listPolicies(type: String, status: String? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[ListPolicies200ResponseInner]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/policies", method: "GET", query: [
+                        "type": type, 
+                        "status": status, 
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Policy Rules
          
          - parameter policyId: (path)  
          */
-        public func listPolicyRules(policyId: String) async throws -> OktaResponse<[PolicyRule]> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func listPolicyRules(policyId: String) async throws -> OktaResponse<[ListPolicyRules200ResponseInner]> {
             try await send(try request(to: "/api/v1/policies/{policyId}/rules".expanded(using: [
                     "policyId": policyId
                 ]), method: "GET"))
+        }
+
+        /**
+         List all Policy Rules
+         
+         - parameter policyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listPolicyRules(policyId: String, completion: @escaping (Result<OktaResponse<[ListPolicyRules200ResponseInner]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/policies/{policyId}/rules".expanded(using: [
+                        "policyId": policyId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -186,10 +435,28 @@ public extension OktaClient {
          - parameter policyId: (path)  
          - parameter policy: (body)  
          */
-        public func updatePolicy(policyId: String, policy: Policy) async throws -> OktaResponse<Policy> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func updatePolicy(policyId: String, policy: ListPolicies200ResponseInner) async throws -> OktaResponse<ListPolicies200ResponseInner> {
             try await send(try requestWithBody(to: "/api/v1/policies/{policyId}".expanded(using: [
                     "policyId": policyId
                 ]), method: "PUT", body: policy))
+        }
+
+        /**
+         Replace a Policy
+         
+         - parameter policyId: (path)  
+         - parameter policy: (body)  
+         - parameter completion: Completion block
+         */
+        public func updatePolicy(policyId: String, policy: ListPolicies200ResponseInner, completion: @escaping (Result<OktaResponse<ListPolicies200ResponseInner>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/policies/{policyId}".expanded(using: [
+                        "policyId": policyId
+                    ]), method: "PUT", body: policy), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -199,11 +466,31 @@ public extension OktaClient {
          - parameter ruleId: (path)  
          - parameter policyRule: (body)  
          */
-        public func updatePolicyRule(policyId: String, ruleId: String, policyRule: PolicyRule) async throws -> OktaResponse<PolicyRule> {
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func updatePolicyRule(policyId: String, ruleId: String, policyRule: ListPolicyRules200ResponseInner) async throws -> OktaResponse<ListPolicyRules200ResponseInner> {
             try await send(try requestWithBody(to: "/api/v1/policies/{policyId}/rules/{ruleId}".expanded(using: [
                     "policyId": policyId, 
                     "ruleId": ruleId
                 ]), method: "PUT", body: policyRule))
+        }
+
+        /**
+         Replace a Policy Rule
+         
+         - parameter policyId: (path)  
+         - parameter ruleId: (path)  
+         - parameter policyRule: (body)  
+         - parameter completion: Completion block
+         */
+        public func updatePolicyRule(policyId: String, ruleId: String, policyRule: ListPolicyRules200ResponseInner, completion: @escaping (Result<OktaResponse<ListPolicyRules200ResponseInner>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/policies/{policyId}/rules/{ruleId}".expanded(using: [
+                        "policyId": policyId, 
+                        "ruleId": ruleId
+                    ]), method: "PUT", body: policyRule), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

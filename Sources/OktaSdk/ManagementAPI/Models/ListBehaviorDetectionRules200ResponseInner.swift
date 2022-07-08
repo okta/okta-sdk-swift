@@ -16,42 +16,36 @@
 import Foundation
 import AnyCodable
 
-public struct IdentityProvider: Codable, Hashable {
+public struct ListBehaviorDetectionRules200ResponseInner: Codable, Hashable {
 
     public var created: Date?
     public var id: String?
-    public var issuerMode: IssuerMode?
     public var lastUpdated: Date?
-    public var name: String?
-    public var policy: IdentityProviderPolicy?
-    public var _protocol: ModelProtocol?
+    public var name: String
     public var status: LifecycleStatus?
-    public var type: IdentityProviderType?
-    public var links: [String: AnyCodable]?
+    public var type: BehaviorRuleType
+    public var link: ApiTokenLink?
+    public var settings: BehaviorRuleSettingsVelocity?
 
-    public init(created: Date? = nil, id: String? = nil, issuerMode: IssuerMode? = nil, lastUpdated: Date? = nil, name: String? = nil, policy: IdentityProviderPolicy? = nil, _protocol: ModelProtocol? = nil, status: LifecycleStatus? = nil, type: IdentityProviderType? = nil, links: [String: AnyCodable]? = nil) {
+    public init(created: Date? = nil, id: String? = nil, lastUpdated: Date? = nil, name: String, status: LifecycleStatus? = nil, type: BehaviorRuleType, link: ApiTokenLink? = nil, settings: BehaviorRuleSettingsVelocity? = nil) {
         self.created = created
         self.id = id
-        self.issuerMode = issuerMode
         self.lastUpdated = lastUpdated
         self.name = name
-        self.policy = policy
-        self._protocol = _protocol
         self.status = status
         self.type = type
-        self.links = links
+        self.link = link
+        self.settings = settings
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case created
         case id
-        case issuerMode
         case lastUpdated
         case name
-        case policy
-        case _protocol = "protocol"
         case status
         case type
-        case links = "_links"
+        case link = "_link"
+        case settings
     }
 
     // Encodable protocol methods
@@ -60,14 +54,12 @@ public struct IdentityProvider: Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(id, forKey: .id)
-        try container.encodeIfPresent(issuerMode, forKey: .issuerMode)
         try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
-        try container.encodeIfPresent(name, forKey: .name)
-        try container.encodeIfPresent(policy, forKey: .policy)
-        try container.encodeIfPresent(_protocol, forKey: ._protocol)
+        try container.encode(name, forKey: .name)
         try container.encodeIfPresent(status, forKey: .status)
-        try container.encodeIfPresent(type, forKey: .type)
-        try container.encodeIfPresent(links, forKey: .links)
+        try container.encode(type, forKey: .type)
+        try container.encodeIfPresent(link, forKey: .link)
+        try container.encodeIfPresent(settings, forKey: .settings)
     }
 
 

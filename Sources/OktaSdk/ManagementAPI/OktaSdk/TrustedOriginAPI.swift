@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter trustedOriginId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func activateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}/lifecycle/activate".expanded(using: [
                     "trustedOriginId": trustedOriginId
@@ -37,12 +38,43 @@ public extension OktaClient {
         }
 
         /**
+         Activate a Trusted Origin
+         
+         - parameter trustedOriginId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}/lifecycle/activate".expanded(using: [
+                        "trustedOriginId": trustedOriginId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Create a Trusted Origin
          
          - parameter trustedOrigin: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createOrigin(trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try requestWithBody(to: "/api/v1/trustedOrigins", method: "POST", body: trustedOrigin))
+        }
+
+        /**
+         Create a Trusted Origin
+         
+         - parameter trustedOrigin: (body)  
+         - parameter completion: Completion block
+         */
+        public func createOrigin(trustedOrigin: TrustedOrigin, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/trustedOrigins", method: "POST", body: trustedOrigin), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -50,10 +82,27 @@ public extension OktaClient {
          
          - parameter trustedOriginId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deactivateOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}/lifecycle/deactivate".expanded(using: [
                     "trustedOriginId": trustedOriginId
                 ]), method: "POST"))
+        }
+
+        /**
+         Deactivate a Trusted Origin
+         
+         - parameter trustedOriginId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivateOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}/lifecycle/deactivate".expanded(using: [
+                        "trustedOriginId": trustedOriginId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -62,6 +111,7 @@ public extension OktaClient {
          - parameter trustedOriginId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteOrigin(trustedOriginId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
                     "trustedOriginId": trustedOriginId
@@ -69,14 +119,47 @@ public extension OktaClient {
         }
 
         /**
+         Delete a Trusted Origin
+         
+         - parameter trustedOriginId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
+                        "trustedOriginId": trustedOriginId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Trusted Origin
          
          - parameter trustedOriginId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getOrigin(trustedOriginId: String) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
                     "trustedOriginId": trustedOriginId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Trusted Origin
+         
+         - parameter trustedOriginId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getOrigin(trustedOriginId: String, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
+                        "trustedOriginId": trustedOriginId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -87,6 +170,7 @@ public extension OktaClient {
          - parameter after: (query)  (optional)
          - parameter limit: (query)  (optional, default to -1)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[TrustedOrigin]> {
             try await send(try request(to: "/api/v1/trustedOrigins", method: "GET", query: [
                     "q": q, 
@@ -97,15 +181,55 @@ public extension OktaClient {
         }
 
         /**
+         List all Trusted Origins
+         
+         - parameter q: (query)  (optional)
+         - parameter filter: (query)  (optional)
+         - parameter after: (query)  (optional)
+         - parameter limit: (query)  (optional, default to -1)
+         - parameter completion: Completion block
+         */
+        public func listOrigins(q: String? = nil, filter: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[TrustedOrigin]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/trustedOrigins", method: "GET", query: [
+                        "q": q, 
+                        "filter": filter, 
+                        "after": after, 
+                        "limit": limit
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Replace a Trusted Origin
          
          - parameter trustedOriginId: (path)  
          - parameter trustedOrigin: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin) async throws -> OktaResponse<TrustedOrigin> {
             try await send(try requestWithBody(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
                     "trustedOriginId": trustedOriginId
                 ]), method: "PUT", body: trustedOrigin))
+        }
+
+        /**
+         Replace a Trusted Origin
+         
+         - parameter trustedOriginId: (path)  
+         - parameter trustedOrigin: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateOrigin(trustedOriginId: String, trustedOrigin: TrustedOrigin, completion: @escaping (Result<OktaResponse<TrustedOrigin>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/trustedOrigins/{trustedOriginId}".expanded(using: [
+                        "trustedOriginId": trustedOriginId
+                    ]), method: "PUT", body: trustedOrigin), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }
