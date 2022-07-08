@@ -55,7 +55,7 @@ To get started, you will need:
 
 - An Okta account, called an _organization_ (sign up for a free [developer organization][dev-okta-signup] if you need one).
 - An [API token][api-token-docs].
-- Xcode targeting iOS 15 or above, tvOS 15 or above, or macOS 12 or above.
+- Xcode targeting iOS 10 or above, tvOS 10 or above, or macOS 12 or above.
 
 ### Swift Package Manager
 
@@ -82,7 +82,7 @@ Once you initialize a `client`, you can call methods to make requests to the Okt
 
 ### Making API calls
 
-The client provides async methods using Swift Concurrency for each API call.
+The client provides completion handler-based methods, as well as async methods using Swift Concurrency, for each API call.
 
 Most methods are grouped by the API endpoint they belong to. For example, methods that call the [Users API][users-api-docs] are organized under the User resource client `client.user.*`.
 

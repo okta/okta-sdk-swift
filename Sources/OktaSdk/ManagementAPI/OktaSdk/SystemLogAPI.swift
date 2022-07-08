@@ -48,5 +48,33 @@ public extension OktaClient {
                 ]))
         }
 
+        /**
+         List all System Log Events
+         
+         - parameter since: (query)  (optional)
+         - parameter until: (query)  (optional)
+         - parameter filter: (query)  (optional)
+         - parameter q: (query)  (optional)
+         - parameter limit: (query)  (optional, default to 100)
+         - parameter sortOrder: (query)  (optional, default to "ASCENDING")
+         - parameter after: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func getLogs(since: Date? = nil, until: Date? = nil, filter: String? = nil, q: String? = nil, limit: Int? = nil, sortOrder: String? = nil, after: String? = nil, completion: @escaping (Result<OktaResponse<[LogEvent]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/logs", method: "GET", query: [
+                        "since": since, 
+                        "until": until, 
+                        "filter": filter, 
+                        "q": q, 
+                        "limit": limit, 
+                        "sortOrder": sortOrder, 
+                        "after": after
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
     }
 }

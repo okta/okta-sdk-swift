@@ -37,12 +37,42 @@ public extension OktaClient {
         }
 
         /**
+         Activate an Inline Hook
+         
+         - parameter inlineHookId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/inlineHooks/{inlineHookId}/lifecycle/activate".expanded(using: [
+                        "inlineHookId": inlineHookId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Create an Inline Hook
          
          - parameter inlineHook: (body)  
          */
         public func createInlineHook(inlineHook: InlineHook) async throws -> OktaResponse<InlineHook> {
             try await send(try requestWithBody(to: "/api/v1/inlineHooks", method: "POST", body: inlineHook))
+        }
+
+        /**
+         Create an Inline Hook
+         
+         - parameter inlineHook: (body)  
+         - parameter completion: Completion block
+         */
+        public func createInlineHook(inlineHook: InlineHook, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/inlineHooks", method: "POST", body: inlineHook), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -54,6 +84,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/inlineHooks/{inlineHookId}/lifecycle/deactivate".expanded(using: [
                     "inlineHookId": inlineHookId
                 ]), method: "POST"))
+        }
+
+        /**
+         Deactivate an Inline Hook
+         
+         - parameter inlineHookId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivateInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/inlineHooks/{inlineHookId}/lifecycle/deactivate".expanded(using: [
+                        "inlineHookId": inlineHookId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -69,6 +115,22 @@ public extension OktaClient {
         }
 
         /**
+         Delete an Inline Hook
+         
+         - parameter inlineHookId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
+                        "inlineHookId": inlineHookId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Execute an Inline Hook
          
          - parameter inlineHookId: (path)  
@@ -78,6 +140,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/inlineHooks/{inlineHookId}/execute".expanded(using: [
                     "inlineHookId": inlineHookId
                 ]), method: "POST", body: payloadData))
+        }
+
+        /**
+         Execute an Inline Hook
+         
+         - parameter inlineHookId: (path)  
+         - parameter payloadData: (body)  
+         - parameter completion: Completion block
+         */
+        public func executeInlineHook(inlineHookId: String, payloadData: AnyCodable, completion: @escaping (Result<OktaResponse<InlineHookResponse>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/inlineHooks/{inlineHookId}/execute".expanded(using: [
+                        "inlineHookId": inlineHookId
+                    ]), method: "POST", body: payloadData), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -92,6 +171,22 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve an Inline Hook
+         
+         - parameter inlineHookId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getInlineHook(inlineHookId: String, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
+                        "inlineHookId": inlineHookId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Inline Hooks
          
          - parameter type: (query)  (optional)
@@ -100,6 +195,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/inlineHooks", method: "GET", query: [
                     "type": type
                 ]))
+        }
+
+        /**
+         List all Inline Hooks
+         
+         - parameter type: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func listInlineHooks(type: String? = nil, completion: @escaping (Result<OktaResponse<[InlineHook]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/inlineHooks", method: "GET", query: [
+                        "type": type
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -112,6 +223,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
                     "inlineHookId": inlineHookId
                 ]), method: "PUT", body: inlineHook))
+        }
+
+        /**
+         Replace an Inline Hook
+         
+         - parameter inlineHookId: (path)  
+         - parameter inlineHook: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateInlineHook(inlineHookId: String, inlineHook: InlineHook, completion: @escaping (Result<OktaResponse<InlineHook>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/inlineHooks/{inlineHookId}".expanded(using: [
+                        "inlineHookId": inlineHookId
+                    ]), method: "PUT", body: inlineHook), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

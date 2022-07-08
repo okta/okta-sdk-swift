@@ -40,6 +40,25 @@ public extension OktaClient {
         }
 
         /**
+         Activate a Factor
+         
+         - parameter userId: (path)  
+         - parameter factorId: (path)  
+         - parameter body: (body)  (optional)
+         - parameter completion: Completion block
+         */
+        public func activateFactor(userId: String, factorId: String, body: ActivateFactorRequest? = nil, completion: @escaping (Result<OktaResponse<UserFactor>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/users/{userId}/factors/{factorId}/lifecycle/activate".expanded(using: [
+                        "userId": userId, 
+                        "factorId": factorId
+                    ]), method: "POST", body: body), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete a Factor
          
          - parameter userId: (path)  
@@ -54,6 +73,27 @@ public extension OktaClient {
                 ]), method: "DELETE", query: [
                     "removeEnrollmentRecovery": removeEnrollmentRecovery
                 ]))
+        }
+
+        /**
+         Delete a Factor
+         
+         - parameter userId: (path)  
+         - parameter factorId: (path)  
+         - parameter removeEnrollmentRecovery: (query)  (optional, default to false)
+         - parameter completion: Completion block
+         */
+        public func deleteFactor(userId: String, factorId: String, removeEnrollmentRecovery: Bool? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/users/{userId}/factors/{factorId}".expanded(using: [
+                        "userId": userId, 
+                        "factorId": factorId
+                    ]), method: "DELETE", query: [
+                        "removeEnrollmentRecovery": removeEnrollmentRecovery
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -78,6 +118,32 @@ public extension OktaClient {
         }
 
         /**
+         Enroll a Factor
+         
+         - parameter userId: (path)  
+         - parameter body: (body) Factor 
+         - parameter updatePhone: (query)  (optional, default to false)
+         - parameter templateId: (query) id of SMS template (only for SMS factor) (optional)
+         - parameter tokenLifetimeSeconds: (query)  (optional, default to 300)
+         - parameter activate: (query)  (optional, default to false)
+         - parameter completion: Completion block
+         */
+        public func enrollFactor(userId: String, body: UserFactor, updatePhone: Bool? = nil, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, activate: Bool? = nil, completion: @escaping (Result<OktaResponse<UserFactor>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/users/{userId}/factors".expanded(using: [
+                        "userId": userId
+                    ]), method: "POST", query: [
+                        "updatePhone": updatePhone, 
+                        "templateId": templateId, 
+                        "tokenLifetimeSeconds": tokenLifetimeSeconds, 
+                        "activate": activate
+                    ], body: body), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Factor
          
          - parameter userId: (path)  
@@ -88,6 +154,24 @@ public extension OktaClient {
                     "userId": userId, 
                     "factorId": factorId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Factor
+         
+         - parameter userId: (path)  
+         - parameter factorId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getFactor(userId: String, factorId: String, completion: @escaping (Result<OktaResponse<UserFactor>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/users/{userId}/factors/{factorId}".expanded(using: [
+                        "userId": userId, 
+                        "factorId": factorId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -106,6 +190,26 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Factor Transaction Status
+         
+         - parameter userId: (path)  
+         - parameter factorId: (path)  
+         - parameter transactionId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getFactorTransactionStatus(userId: String, factorId: String, transactionId: String, completion: @escaping (Result<OktaResponse<VerifyUserFactorResponse>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/users/{userId}/factors/{factorId}/transactions/{transactionId}".expanded(using: [
+                        "userId": userId, 
+                        "factorId": factorId, 
+                        "transactionId": transactionId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Factors
          
          - parameter userId: (path)  
@@ -114,6 +218,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/users/{userId}/factors".expanded(using: [
                     "userId": userId
                 ]), method: "GET"))
+        }
+
+        /**
+         List all Factors
+         
+         - parameter userId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listFactors(userId: String, completion: @escaping (Result<OktaResponse<[UserFactor]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/users/{userId}/factors".expanded(using: [
+                        "userId": userId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -128,6 +248,22 @@ public extension OktaClient {
         }
 
         /**
+         List all Supported Factors
+         
+         - parameter userId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listSupportedFactors(userId: String, completion: @escaping (Result<OktaResponse<[UserFactor]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/users/{userId}/factors/catalog".expanded(using: [
+                        "userId": userId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Supported Security Questions
          
          - parameter userId: (path)  
@@ -136,6 +272,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/users/{userId}/factors/questions".expanded(using: [
                     "userId": userId
                 ]), method: "GET"))
+        }
+
+        /**
+         List all Supported Security Questions
+         
+         - parameter userId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listSupportedSecurityQuestions(userId: String, completion: @escaping (Result<OktaResponse<[SecurityQuestion]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/users/{userId}/factors/questions".expanded(using: [
+                        "userId": userId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -162,6 +314,37 @@ public extension OktaClient {
                     "userAgent": userAgent?.stringValue, 
                     "acceptLanguage": acceptLanguage?.stringValue
                 ], body: body))
+        }
+
+        /**
+         Verify an MFA Factor
+         
+         - parameter userId: (path)  
+         - parameter factorId: (path)  
+         - parameter templateId: (query)  (optional)
+         - parameter tokenLifetimeSeconds: (query)  (optional, default to 300)
+         - parameter xForwardedFor: (header)  (optional)
+         - parameter userAgent: (header)  (optional)
+         - parameter acceptLanguage: (header)  (optional)
+         - parameter body: (body)  (optional)
+         - parameter completion: Completion block
+         */
+        public func verifyFactor(userId: String, factorId: String, templateId: String? = nil, tokenLifetimeSeconds: Int? = nil, xForwardedFor: String? = nil, userAgent: String? = nil, acceptLanguage: String? = nil, body: VerifyFactorRequest? = nil, completion: @escaping (Result<OktaResponse<VerifyUserFactorResponse>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/users/{userId}/factors/{factorId}/verify".expanded(using: [
+                        "userId": userId, 
+                        "factorId": factorId
+                    ]), method: "POST", query: [
+                        "templateId": templateId, 
+                        "tokenLifetimeSeconds": tokenLifetimeSeconds
+                    ], headers: [
+                        "xForwardedFor": xForwardedFor?.stringValue, 
+                        "userAgent": userAgent?.stringValue, 
+                        "acceptLanguage": acceptLanguage?.stringValue
+                    ], body: body), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

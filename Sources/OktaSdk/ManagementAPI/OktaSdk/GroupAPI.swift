@@ -38,6 +38,22 @@ public extension OktaClient {
         }
 
         /**
+         Activate a Group Rule
+         
+         - parameter ruleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateGroupRule(ruleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/rules/{ruleId}/lifecycle/activate".expanded(using: [
+                        "ruleId": ruleId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Assign an Application Instance Target to Application Administrator Role
          
          - parameter groupId: (path)  
@@ -53,6 +69,28 @@ public extension OktaClient {
                     "appName": appName, 
                     "applicationId": applicationId
                 ]), method: "PUT"))
+        }
+
+        /**
+         Assign an Application Instance Target to Application Administrator Role
+         
+         - parameter groupId: (path)  
+         - parameter roleId: (path)  
+         - parameter appName: (path)  
+         - parameter applicationId: (path)  
+         - parameter completion: Completion block
+         */
+        public func addApplicationInstanceTargetToAppAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}".expanded(using: [
+                        "groupId": groupId, 
+                        "roleId": roleId, 
+                        "appName": appName, 
+                        "applicationId": applicationId
+                    ]), method: "PUT"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -72,6 +110,26 @@ public extension OktaClient {
         }
 
         /**
+         Assign an Application Target to Administrator Role
+         
+         - parameter groupId: (path)  
+         - parameter roleId: (path)  
+         - parameter appName: (path)  
+         - parameter completion: Completion block
+         */
+        public func addApplicationTargetToAdminRoleGivenToGroup(groupId: String, roleId: String, appName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}".expanded(using: [
+                        "groupId": groupId, 
+                        "roleId": roleId, 
+                        "appName": appName
+                    ]), method: "PUT"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Assign a Group Target for Group Role
          
          - parameter groupId: (path)  
@@ -88,6 +146,26 @@ public extension OktaClient {
         }
 
         /**
+         Assign a Group Target for Group Role
+         
+         - parameter groupId: (path)  
+         - parameter roleId: (path)  
+         - parameter targetGroupId: (path)  
+         - parameter completion: Completion block
+         */
+        public func addGroupTargetToGroupAdministratorRoleForGroup(groupId: String, roleId: String, targetGroupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/groups/{targetGroupId}".expanded(using: [
+                        "groupId": groupId, 
+                        "roleId": roleId, 
+                        "targetGroupId": targetGroupId
+                    ]), method: "PUT"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Assign a User
          
          - parameter groupId: (path)  
@@ -99,6 +177,24 @@ public extension OktaClient {
                     "groupId": groupId, 
                     "userId": userId
                 ]), method: "PUT"))
+        }
+
+        /**
+         Assign a User
+         
+         - parameter groupId: (path)  
+         - parameter userId: (path)  
+         - parameter completion: Completion block
+         */
+        public func addUserToGroup(groupId: String, userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/users/{userId}".expanded(using: [
+                        "groupId": groupId, 
+                        "userId": userId
+                    ]), method: "PUT"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -117,6 +213,26 @@ public extension OktaClient {
         }
 
         /**
+         Assign a Role
+         
+         - parameter groupId: (path)  
+         - parameter assignRoleRequest: (body)  
+         - parameter disableNotifications: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func assignRoleToGroup(groupId: String, assignRoleRequest: AssignRoleRequest, disableNotifications: Bool? = nil, completion: @escaping (Result<OktaResponse<Role>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/groups/{groupId}/roles".expanded(using: [
+                        "groupId": groupId
+                    ]), method: "POST", query: [
+                        "disableNotifications": disableNotifications
+                    ], body: assignRoleRequest), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Create a Group
          
          - parameter group: (body)  
@@ -126,12 +242,40 @@ public extension OktaClient {
         }
 
         /**
+         Create a Group
+         
+         - parameter group: (body)  
+         - parameter completion: Completion block
+         */
+        public func createGroup(group: Group, completion: @escaping (Result<OktaResponse<Group>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/groups", method: "POST", body: group), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Create a Group Rule
          
          - parameter groupRule: (body)  
          */
         public func createGroupRule(groupRule: GroupRule) async throws -> OktaResponse<GroupRule> {
             try await send(try requestWithBody(to: "/api/v1/groups/rules", method: "POST", body: groupRule))
+        }
+
+        /**
+         Create a Group Rule
+         
+         - parameter groupRule: (body)  
+         - parameter completion: Completion block
+         */
+        public func createGroupRule(groupRule: GroupRule, completion: @escaping (Result<OktaResponse<GroupRule>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/groups/rules", method: "POST", body: groupRule), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -147,6 +291,22 @@ public extension OktaClient {
         }
 
         /**
+         Deactivate a Group Rule
+         
+         - parameter ruleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivateGroupRule(ruleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/rules/{ruleId}/lifecycle/deactivate".expanded(using: [
+                        "ruleId": ruleId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete a Group
          
          - parameter groupId: (path)  
@@ -156,6 +316,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/groups/{groupId}".expanded(using: [
                     "groupId": groupId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete a Group
+         
+         - parameter groupId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteGroup(groupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}".expanded(using: [
+                        "groupId": groupId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -174,6 +350,25 @@ public extension OktaClient {
         }
 
         /**
+         Delete a group Rule
+         
+         - parameter ruleId: (path)  
+         - parameter removeUsers: (query) Indicates whether to keep or remove users from groups assigned by this rule. (optional)
+         - parameter completion: Completion block
+         */
+        public func deleteGroupRule(ruleId: String, removeUsers: Bool? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/rules/{ruleId}".expanded(using: [
+                        "ruleId": ruleId
+                    ]), method: "DELETE", query: [
+                        "removeUsers": removeUsers
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Group Rules
          
          - parameter groupId: (path)  
@@ -182,6 +377,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/groups/{groupId}".expanded(using: [
                     "groupId": groupId
                 ]), method: "GET"))
+        }
+
+        /**
+         List all Group Rules
+         
+         - parameter groupId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getGroup(groupId: String, completion: @escaping (Result<OktaResponse<Group>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}".expanded(using: [
+                        "groupId": groupId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -199,6 +410,25 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Group Rule
+         
+         - parameter ruleId: (path)  
+         - parameter expand: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func getGroupRule(ruleId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<GroupRule>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/rules/{ruleId}".expanded(using: [
+                        "ruleId": ruleId
+                    ]), method: "GET", query: [
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Role
          
          - parameter groupId: (path)  
@@ -209,6 +439,24 @@ public extension OktaClient {
                     "groupId": groupId, 
                     "roleId": roleId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Role
+         
+         - parameter groupId: (path)  
+         - parameter roleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getRole(groupId: String, roleId: String, completion: @escaping (Result<OktaResponse<Role>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}".expanded(using: [
+                        "groupId": groupId, 
+                        "roleId": roleId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -230,6 +478,29 @@ public extension OktaClient {
         }
 
         /**
+         List all Application Targets for an Application Administrator Role
+         
+         - parameter groupId: (path)  
+         - parameter roleId: (path)  
+         - parameter after: (query)  (optional)
+         - parameter limit: (query)  (optional, default to 20)
+         - parameter completion: Completion block
+         */
+        public func listApplicationTargetsForApplicationAdministratorRoleForGroup(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[CatalogApplication]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps".expanded(using: [
+                        "groupId": groupId, 
+                        "roleId": roleId
+                    ]), method: "GET", query: [
+                        "after": after, 
+                        "limit": limit
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Assigned Applications
          
          - parameter groupId: (path)  
@@ -243,6 +514,27 @@ public extension OktaClient {
                     "after": after, 
                     "limit": limit
                 ]))
+        }
+
+        /**
+         List all Assigned Applications
+         
+         - parameter groupId: (path)  
+         - parameter after: (query) Specifies the pagination cursor for the next page of apps (optional)
+         - parameter limit: (query) Specifies the number of app results for a page (optional, default to 20)
+         - parameter completion: Completion block
+         */
+        public func listAssignedApplicationsForGroup(groupId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[Application]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/apps".expanded(using: [
+                        "groupId": groupId
+                    ]), method: "GET", query: [
+                        "after": after, 
+                        "limit": limit
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -260,6 +552,25 @@ public extension OktaClient {
         }
 
         /**
+         List all Assigned Roles
+         
+         - parameter groupId: (path)  
+         - parameter expand: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func listGroupAssignedRoles(groupId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<[Role]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/roles".expanded(using: [
+                        "groupId": groupId
+                    ]), method: "GET", query: [
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Group Rules
          
          - parameter limit: (query) Specifies the number of rule results in a page (optional, default to 50)
@@ -274,6 +585,28 @@ public extension OktaClient {
                     "search": search, 
                     "expand": expand
                 ]))
+        }
+
+        /**
+         List all Group Rules
+         
+         - parameter limit: (query) Specifies the number of rule results in a page (optional, default to 50)
+         - parameter after: (query) Specifies the pagination cursor for the next page of rules (optional)
+         - parameter search: (query) Specifies the keyword to search fules for (optional)
+         - parameter expand: (query) If specified as &#x60;groupIdToGroupNameMap&#x60;, then show group names (optional)
+         - parameter completion: Completion block
+         */
+        public func listGroupRules(limit: Int? = nil, after: String? = nil, search: String? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[GroupRule]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/rules", method: "GET", query: [
+                        "limit": limit, 
+                        "after": after, 
+                        "search": search, 
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -295,6 +628,29 @@ public extension OktaClient {
         }
 
         /**
+         List all Group Targets for a Group Role
+         
+         - parameter groupId: (path)  
+         - parameter roleId: (path)  
+         - parameter after: (query)  (optional)
+         - parameter limit: (query)  (optional, default to 20)
+         - parameter completion: Completion block
+         */
+        public func listGroupTargetsForGroupRole(groupId: String, roleId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[Group]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/groups".expanded(using: [
+                        "groupId": groupId, 
+                        "roleId": roleId
+                    ]), method: "GET", query: [
+                        "after": after, 
+                        "limit": limit
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Member Users
          
          - parameter groupId: (path)  
@@ -308,6 +664,27 @@ public extension OktaClient {
                     "after": after, 
                     "limit": limit
                 ]))
+        }
+
+        /**
+         List all Member Users
+         
+         - parameter groupId: (path)  
+         - parameter after: (query) Specifies the pagination cursor for the next page of users (optional)
+         - parameter limit: (query) Specifies the number of user results in a page (optional, default to 1000)
+         - parameter completion: Completion block
+         */
+        public func listGroupUsers(groupId: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[User]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/users".expanded(using: [
+                        "groupId": groupId
+                    ]), method: "GET", query: [
+                        "after": after, 
+                        "limit": limit
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -330,6 +707,30 @@ public extension OktaClient {
         }
 
         /**
+         List all Groups
+         
+         - parameter q: (query) Searches the name property of groups for matching value (optional)
+         - parameter search: (query) Filter expression for groups (optional)
+         - parameter after: (query) Specifies the pagination cursor for the next page of groups (optional)
+         - parameter limit: (query) Specifies the number of group results in a page (optional, default to 10000)
+         - parameter expand: (query) If specified, it causes additional metadata to be included in the response. (optional)
+         - parameter completion: Completion block
+         */
+        public func listGroups(q: String? = nil, search: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[Group]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups", method: "GET", query: [
+                        "q": q, 
+                        "search": search, 
+                        "after": after, 
+                        "limit": limit, 
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete an Application Instance Target to Application Administrator Role
          
          - parameter groupId: (path)  
@@ -345,6 +746,28 @@ public extension OktaClient {
                     "appName": appName, 
                     "applicationId": applicationId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete an Application Instance Target to Application Administrator Role
+         
+         - parameter groupId: (path)  
+         - parameter roleId: (path)  
+         - parameter appName: (path)  
+         - parameter applicationId: (path)  
+         - parameter completion: Completion block
+         */
+        public func removeApplicationTargetFromAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, applicationId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}/{applicationId}".expanded(using: [
+                        "groupId": groupId, 
+                        "roleId": roleId, 
+                        "appName": appName, 
+                        "applicationId": applicationId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -364,6 +787,26 @@ public extension OktaClient {
         }
 
         /**
+         Delete an Application Target from Application Administrator Role
+         
+         - parameter groupId: (path)  
+         - parameter roleId: (path)  
+         - parameter appName: (path)  
+         - parameter completion: Completion block
+         */
+        public func removeApplicationTargetFromApplicationAdministratorRoleGivenToGroup(groupId: String, roleId: String, appName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/catalog/apps/{appName}".expanded(using: [
+                        "groupId": groupId, 
+                        "roleId": roleId, 
+                        "appName": appName
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete a Group Target for Group Role
          
          - parameter groupId: (path)  
@@ -377,6 +820,26 @@ public extension OktaClient {
                     "roleId": roleId, 
                     "targetGroupId": targetGroupId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete a Group Target for Group Role
+         
+         - parameter groupId: (path)  
+         - parameter roleId: (path)  
+         - parameter targetGroupId: (path)  
+         - parameter completion: Completion block
+         */
+        public func removeGroupTargetFromGroupAdministratorRoleGivenToGroup(groupId: String, roleId: String, targetGroupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}/targets/groups/{targetGroupId}".expanded(using: [
+                        "groupId": groupId, 
+                        "roleId": roleId, 
+                        "targetGroupId": targetGroupId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -394,6 +857,24 @@ public extension OktaClient {
         }
 
         /**
+         Delete a Role
+         
+         - parameter groupId: (path)  
+         - parameter roleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func removeRoleFromGroup(groupId: String, roleId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/roles/{roleId}".expanded(using: [
+                        "groupId": groupId, 
+                        "roleId": roleId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Unassign a User
          
          - parameter groupId: (path)  
@@ -405,6 +886,24 @@ public extension OktaClient {
                     "groupId": groupId, 
                     "userId": userId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Unassign a User
+         
+         - parameter groupId: (path)  
+         - parameter userId: (path)  
+         - parameter completion: Completion block
+         */
+        public func removeUserFromGroup(groupId: String, userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/groups/{groupId}/users/{userId}".expanded(using: [
+                        "groupId": groupId, 
+                        "userId": userId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -420,6 +919,23 @@ public extension OktaClient {
         }
 
         /**
+         Replace a Group
+         
+         - parameter groupId: (path)  
+         - parameter group: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateGroup(groupId: String, group: Group, completion: @escaping (Result<OktaResponse<Group>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/groups/{groupId}".expanded(using: [
+                        "groupId": groupId
+                    ]), method: "PUT", body: group), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Replace a Group Rule
          
          - parameter ruleId: (path)  
@@ -429,6 +945,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/groups/rules/{ruleId}".expanded(using: [
                     "ruleId": ruleId
                 ]), method: "PUT", body: groupRule))
+        }
+
+        /**
+         Replace a Group Rule
+         
+         - parameter ruleId: (path)  
+         - parameter groupRule: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateGroupRule(ruleId: String, groupRule: GroupRule, completion: @escaping (Result<OktaResponse<GroupRule>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/groups/rules/{ruleId}".expanded(using: [
+                        "ruleId": ruleId
+                    ]), method: "PUT", body: groupRule), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

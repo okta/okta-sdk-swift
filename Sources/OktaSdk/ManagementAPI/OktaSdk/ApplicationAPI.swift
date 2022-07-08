@@ -38,6 +38,22 @@ public extension OktaClient {
         }
 
         /**
+         Activate an Application
+         
+         - parameter appId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/lifecycle/activate".expanded(using: [
+                        "appId": appId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Activate the default Provisioning Connection
          
          - parameter appId: (path)  
@@ -50,6 +66,22 @@ public extension OktaClient {
         }
 
         /**
+         Activate the default Provisioning Connection
+         
+         - parameter appId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateDefaultProvisioningConnectionForApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/connections/default/lifecycle/activate".expanded(using: [
+                        "appId": appId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Assign a User
          
          - parameter appId: (path)  
@@ -59,6 +91,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/apps/{appId}/users".expanded(using: [
                     "appId": appId
                 ]), method: "POST", body: appUser))
+        }
+
+        /**
+         Assign a User
+         
+         - parameter appId: (path)  
+         - parameter appUser: (body)  
+         - parameter completion: Completion block
+         */
+        public func assignUserToApplication(appId: String, appUser: AppUser, completion: @escaping (Result<OktaResponse<AppUser>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/apps/{appId}/users".expanded(using: [
+                        "appId": appId
+                    ]), method: "POST", body: appUser), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -78,6 +127,27 @@ public extension OktaClient {
         }
 
         /**
+         Clone a Key Credential
+         
+         - parameter appId: (path)  
+         - parameter keyId: (path)  
+         - parameter targetAid: (query) Unique key of the target Application 
+         - parameter completion: Completion block
+         */
+        public func cloneApplicationKey(appId: String, keyId: String, targetAid: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/credentials/keys/{keyId}/clone".expanded(using: [
+                        "appId": appId, 
+                        "keyId": keyId
+                    ]), method: "POST", query: [
+                        "targetAid": targetAid
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Create an Application
          
          - parameter application: (body)  
@@ -90,6 +160,26 @@ public extension OktaClient {
                 ], headers: [
                     "oktaAccessGatewayAgent": oktaAccessGatewayAgent?.stringValue
                 ], body: application))
+        }
+
+        /**
+         Create an Application
+         
+         - parameter application: (body)  
+         - parameter activate: (query) Executes activation lifecycle operation when creating the app (optional, default to true)
+         - parameter oktaAccessGatewayAgent: (header)  (optional)
+         - parameter completion: Completion block
+         */
+        public func createApplication(application: Application, activate: Bool? = nil, oktaAccessGatewayAgent: String? = nil, completion: @escaping (Result<OktaResponse<Application>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/apps", method: "POST", query: [
+                        "activate": activate
+                    ], headers: [
+                        "oktaAccessGatewayAgent": oktaAccessGatewayAgent?.stringValue
+                    ], body: application), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -107,6 +197,25 @@ public extension OktaClient {
         }
 
         /**
+         Assign a Group
+         
+         - parameter appId: (path)  
+         - parameter groupId: (path)  
+         - parameter applicationGroupAssignment: (body)  (optional)
+         - parameter completion: Completion block
+         */
+        public func createApplicationGroupAssignment(appId: String, groupId: String, applicationGroupAssignment: ApplicationGroupAssignment? = nil, completion: @escaping (Result<OktaResponse<ApplicationGroupAssignment>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/apps/{appId}/groups/{groupId}".expanded(using: [
+                        "appId": appId, 
+                        "groupId": groupId
+                    ]), method: "PUT", body: applicationGroupAssignment), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Deactivate an Application
          
          - parameter appId: (path)  
@@ -116,6 +225,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/apps/{appId}/lifecycle/deactivate".expanded(using: [
                     "appId": appId
                 ]), method: "POST"))
+        }
+
+        /**
+         Deactivate an Application
+         
+         - parameter appId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivateApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/lifecycle/deactivate".expanded(using: [
+                        "appId": appId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -131,6 +256,22 @@ public extension OktaClient {
         }
 
         /**
+         Deactivate the default Provisioning Connection for an Application
+         
+         - parameter appId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivateDefaultProvisioningConnectionForApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/connections/default/lifecycle/deactivate".expanded(using: [
+                        "appId": appId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete an Application
          
          - parameter appId: (path)  
@@ -140,6 +281,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/apps/{appId}".expanded(using: [
                     "appId": appId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete an Application
+         
+         - parameter appId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}".expanded(using: [
+                        "appId": appId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -154,6 +311,24 @@ public extension OktaClient {
                     "appId": appId, 
                     "groupId": groupId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Unassign a Group
+         
+         - parameter appId: (path)  
+         - parameter groupId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteApplicationGroupAssignment(appId: String, groupId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/groups/{groupId}".expanded(using: [
+                        "appId": appId, 
+                        "groupId": groupId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -174,6 +349,27 @@ public extension OktaClient {
         }
 
         /**
+         Unassign a User
+         
+         - parameter appId: (path)  
+         - parameter userId: (path)  
+         - parameter sendEmail: (query)  (optional, default to false)
+         - parameter completion: Completion block
+         */
+        public func deleteApplicationUser(appId: String, userId: String, sendEmail: Bool? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/users/{userId}".expanded(using: [
+                        "appId": appId, 
+                        "userId": userId
+                    ]), method: "DELETE", query: [
+                        "sendEmail": sendEmail
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Generate a Key Credential
          
          - parameter appId: (path)  
@@ -185,6 +381,25 @@ public extension OktaClient {
                 ]), method: "POST", query: [
                     "validityYears": validityYears
                 ]))
+        }
+
+        /**
+         Generate a Key Credential
+         
+         - parameter appId: (path)  
+         - parameter validityYears: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func generateApplicationKey(appId: String, validityYears: Int? = nil, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/credentials/keys/generate".expanded(using: [
+                        "appId": appId
+                    ]), method: "POST", query: [
+                        "validityYears": validityYears
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -200,6 +415,23 @@ public extension OktaClient {
         }
 
         /**
+         Generate a Certificate Signing Request
+         
+         - parameter appId: (path)  
+         - parameter metadata: (body)  
+         - parameter completion: Completion block
+         */
+        public func generateCsrForApplication(appId: String, metadata: CsrMetadata, completion: @escaping (Result<OktaResponse<Csr>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/apps/{appId}/credentials/csrs".expanded(using: [
+                        "appId": appId
+                    ]), method: "POST", body: metadata), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve an Application
          
          - parameter appId: (path)  
@@ -211,6 +443,25 @@ public extension OktaClient {
                 ]), method: "GET", query: [
                     "expand": expand
                 ]))
+        }
+
+        /**
+         Retrieve an Application
+         
+         - parameter appId: (path)  
+         - parameter expand: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func getApplication(appId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<Application>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}".expanded(using: [
+                        "appId": appId
+                    ]), method: "GET", query: [
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -230,6 +481,27 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve an Assigned Group
+         
+         - parameter appId: (path)  
+         - parameter groupId: (path)  
+         - parameter expand: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func getApplicationGroupAssignment(appId: String, groupId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<ApplicationGroupAssignment>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/groups/{groupId}".expanded(using: [
+                        "appId": appId, 
+                        "groupId": groupId
+                    ]), method: "GET", query: [
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Key Credential
          
          - parameter appId: (path)  
@@ -240,6 +512,24 @@ public extension OktaClient {
                     "appId": appId, 
                     "keyId": keyId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Key Credential
+         
+         - parameter appId: (path)  
+         - parameter keyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getApplicationKey(appId: String, keyId: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/credentials/keys/{keyId}".expanded(using: [
+                        "appId": appId, 
+                        "keyId": keyId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -259,6 +549,27 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve an Assigned User
+         
+         - parameter appId: (path)  
+         - parameter userId: (path)  
+         - parameter expand: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func getApplicationUser(appId: String, userId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<AppUser>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/users/{userId}".expanded(using: [
+                        "appId": appId, 
+                        "userId": userId
+                    ]), method: "GET", query: [
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Certificate Signing Request
          
          - parameter appId: (path)  
@@ -269,6 +580,24 @@ public extension OktaClient {
                     "appId": appId, 
                     "csrId": csrId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Certificate Signing Request
+         
+         - parameter appId: (path)  
+         - parameter csrId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getCsrForApplication(appId: String, csrId: String, completion: @escaping (Result<OktaResponse<Csr>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/credentials/csrs/{csrId}".expanded(using: [
+                        "appId": appId, 
+                        "csrId": csrId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -283,6 +612,22 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve the default Provisioning Connection
+         
+         - parameter appId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getDefaultProvisioningConnectionForApplication(appId: String, completion: @escaping (Result<OktaResponse<ProvisioningConnection>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/connections/default".expanded(using: [
+                        "appId": appId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Feature
          
          - parameter appId: (path)  
@@ -293,6 +638,24 @@ public extension OktaClient {
                     "appId": appId, 
                     "name": name
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Feature
+         
+         - parameter appId: (path)  
+         - parameter name: (path)  
+         - parameter completion: Completion block
+         */
+        public func getFeatureForApplication(appId: String, name: String, completion: @escaping (Result<OktaResponse<ApplicationFeature>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/features/{name}".expanded(using: [
+                        "appId": appId, 
+                        "name": name
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -312,6 +675,27 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve an OAuth 2.0 Token
+         
+         - parameter appId: (path)  
+         - parameter tokenId: (path)  
+         - parameter expand: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func getOAuth2TokenForApplication(appId: String, tokenId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<OAuth2Token>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/tokens/{tokenId}".expanded(using: [
+                        "appId": appId, 
+                        "tokenId": tokenId
+                    ]), method: "GET", query: [
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Scope Consent Grant
          
          - parameter appId: (path)  
@@ -328,6 +712,27 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Scope Consent Grant
+         
+         - parameter appId: (path)  
+         - parameter grantId: (path)  
+         - parameter expand: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func getScopeConsentGrant(appId: String, grantId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<OAuth2ScopeConsentGrant>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/grants/{grantId}".expanded(using: [
+                        "appId": appId, 
+                        "grantId": grantId
+                    ]), method: "GET", query: [
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Grant Consent to Scope
          
          - parameter appId: (path)  
@@ -337,6 +742,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/apps/{appId}/grants".expanded(using: [
                     "appId": appId
                 ]), method: "POST", body: oAuth2ScopeConsentGrant))
+        }
+
+        /**
+         Grant Consent to Scope
+         
+         - parameter appId: (path)  
+         - parameter oAuth2ScopeConsentGrant: (body)  
+         - parameter completion: Completion block
+         */
+        public func grantConsentToScope(appId: String, oAuth2ScopeConsentGrant: OAuth2ScopeConsentGrant, completion: @escaping (Result<OktaResponse<OAuth2ScopeConsentGrant>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/apps/{appId}/grants".expanded(using: [
+                        "appId": appId
+                    ]), method: "POST", body: oAuth2ScopeConsentGrant), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -360,6 +782,31 @@ public extension OktaClient {
         }
 
         /**
+         List all Assigned Groups
+         
+         - parameter appId: (path)  
+         - parameter q: (query)  (optional)
+         - parameter after: (query) Specifies the pagination cursor for the next page of assignments (optional)
+         - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
+         - parameter expand: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func listApplicationGroupAssignments(appId: String, q: String? = nil, after: String? = nil, limit: Int? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[ApplicationGroupAssignment]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/groups".expanded(using: [
+                        "appId": appId
+                    ]), method: "GET", query: [
+                        "q": q, 
+                        "after": after, 
+                        "limit": limit, 
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Key Credentials
          
          - parameter appId: (path)  
@@ -368,6 +815,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/apps/{appId}/credentials/keys".expanded(using: [
                     "appId": appId
                 ]), method: "GET"))
+        }
+
+        /**
+         List all Key Credentials
+         
+         - parameter appId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listApplicationKeys(appId: String, completion: @escaping (Result<OktaResponse<[JsonWebKey]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/credentials/keys".expanded(using: [
+                        "appId": appId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -395,6 +858,35 @@ public extension OktaClient {
         }
 
         /**
+         List all Assigned Users
+         
+         - parameter appId: (path)  
+         - parameter q: (query)  (optional)
+         - parameter queryScope: (query)  (optional)
+         - parameter after: (query) specifies the pagination cursor for the next page of assignments (optional)
+         - parameter limit: (query) specifies the number of results for a page (optional, default to -1)
+         - parameter filter: (query)  (optional)
+         - parameter expand: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func listApplicationUsers(appId: String, q: String? = nil, queryScope: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, completion: @escaping (Result<OktaResponse<[AppUser]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/users".expanded(using: [
+                        "appId": appId
+                    ]), method: "GET", query: [
+                        "q": q, 
+                        "queryScope": queryScope, 
+                        "after": after, 
+                        "limit": limit, 
+                        "filter": filter, 
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Applications
          
          - parameter q: (query)  (optional)
@@ -416,6 +908,32 @@ public extension OktaClient {
         }
 
         /**
+         List all Applications
+         
+         - parameter q: (query)  (optional)
+         - parameter after: (query) Specifies the pagination cursor for the next page of apps (optional)
+         - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
+         - parameter filter: (query) Filters apps by status, user.id, group.id or credentials.signing.kid expression (optional)
+         - parameter expand: (query) Traverses users link relationship and optionally embeds Application User resource (optional)
+         - parameter includeNonDeleted: (query)  (optional, default to false)
+         - parameter completion: Completion block
+         */
+        public func listApplications(q: String? = nil, after: String? = nil, limit: Int? = nil, filter: String? = nil, expand: String? = nil, includeNonDeleted: Bool? = nil, completion: @escaping (Result<OktaResponse<[Application]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps", method: "GET", query: [
+                        "q": q, 
+                        "after": after, 
+                        "limit": limit, 
+                        "filter": filter, 
+                        "expand": expand, 
+                        "includeNonDeleted": includeNonDeleted
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Certificate Signing Requests
          
          - parameter appId: (path)  
@@ -427,6 +945,22 @@ public extension OktaClient {
         }
 
         /**
+         List all Certificate Signing Requests
+         
+         - parameter appId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listCsrsForApplication(appId: String, completion: @escaping (Result<OktaResponse<[Csr]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/credentials/csrs".expanded(using: [
+                        "appId": appId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Features
          
          - parameter appId: (path)  
@@ -435,6 +969,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/apps/{appId}/features".expanded(using: [
                     "appId": appId
                 ]), method: "GET"))
+        }
+
+        /**
+         List all Features
+         
+         - parameter appId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listFeaturesForApplication(appId: String, completion: @escaping (Result<OktaResponse<[ApplicationFeature]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/features".expanded(using: [
+                        "appId": appId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -456,6 +1006,29 @@ public extension OktaClient {
         }
 
         /**
+         List all OAuth 2.0 Tokens
+         
+         - parameter appId: (path)  
+         - parameter expand: (query)  (optional)
+         - parameter after: (query)  (optional)
+         - parameter limit: (query)  (optional, default to 20)
+         - parameter completion: Completion block
+         */
+        public func listOAuth2TokensForApplication(appId: String, expand: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[OAuth2Token]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/tokens".expanded(using: [
+                        "appId": appId
+                    ]), method: "GET", query: [
+                        "expand": expand, 
+                        "after": after, 
+                        "limit": limit
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Scope Consent Grants
          
          - parameter appId: (path)  
@@ -467,6 +1040,25 @@ public extension OktaClient {
                 ]), method: "GET", query: [
                     "expand": expand
                 ]))
+        }
+
+        /**
+         List all Scope Consent Grants
+         
+         - parameter appId: (path)  
+         - parameter expand: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func listScopeConsentGrants(appId: String, expand: String? = nil, completion: @escaping (Result<OktaResponse<[OAuth2ScopeConsentGrant]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/grants".expanded(using: [
+                        "appId": appId
+                    ]), method: "GET", query: [
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -484,6 +1076,25 @@ public extension OktaClient {
         }
 
         /**
+         Publish a Certificate Signing Request
+         
+         - parameter appId: (path)  
+         - parameter csrId: (path)  
+         - parameter body: (body)  
+         - parameter completion: Completion block
+         */
+        public func publishCsrFromApplication(appId: String, csrId: String, body: URL, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/apps/{appId}/credentials/csrs/{csrId}/lifecycle/publish".expanded(using: [
+                        "appId": appId, 
+                        "csrId": csrId
+                    ]), method: "POST", body: body), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Revoke a Certificate Signing Request
          
          - parameter appId: (path)  
@@ -495,6 +1106,24 @@ public extension OktaClient {
                     "appId": appId, 
                     "csrId": csrId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Revoke a Certificate Signing Request
+         
+         - parameter appId: (path)  
+         - parameter csrId: (path)  
+         - parameter completion: Completion block
+         */
+        public func revokeCsrFromApplication(appId: String, csrId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/credentials/csrs/{csrId}".expanded(using: [
+                        "appId": appId, 
+                        "csrId": csrId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -512,6 +1141,24 @@ public extension OktaClient {
         }
 
         /**
+         Revoke an OAuth 2.0 Token
+         
+         - parameter appId: (path)  
+         - parameter tokenId: (path)  
+         - parameter completion: Completion block
+         */
+        public func revokeOAuth2TokenForApplication(appId: String, tokenId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/tokens/{tokenId}".expanded(using: [
+                        "appId": appId, 
+                        "tokenId": tokenId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Revoke all OAuth 2.0 Tokens
          
          - parameter appId: (path)  
@@ -521,6 +1168,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/apps/{appId}/tokens".expanded(using: [
                     "appId": appId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Revoke all OAuth 2.0 Tokens
+         
+         - parameter appId: (path)  
+         - parameter completion: Completion block
+         */
+        public func revokeOAuth2TokensForApplication(appId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/tokens".expanded(using: [
+                        "appId": appId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -535,6 +1198,24 @@ public extension OktaClient {
                     "appId": appId, 
                     "grantId": grantId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Revoke a Scope Consent Grant
+         
+         - parameter appId: (path)  
+         - parameter grantId: (path)  
+         - parameter completion: Completion block
+         */
+        public func revokeScopeConsentGrant(appId: String, grantId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/grants/{grantId}".expanded(using: [
+                        "appId": appId, 
+                        "grantId": grantId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -553,6 +1234,26 @@ public extension OktaClient {
         }
 
         /**
+         Update the default Provisioning Connection
+         
+         - parameter appId: (path)  
+         - parameter provisioningConnectionRequest: (body)  
+         - parameter activate: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func setDefaultProvisioningConnectionForApplication(appId: String, provisioningConnectionRequest: ProvisioningConnectionRequest, activate: Bool? = nil, completion: @escaping (Result<OktaResponse<ProvisioningConnection>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/apps/{appId}/connections/default".expanded(using: [
+                        "appId": appId
+                    ]), method: "POST", query: [
+                        "activate": activate
+                    ], body: provisioningConnectionRequest), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Replace an Application
          
          - parameter appId: (path)  
@@ -562,6 +1263,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/apps/{appId}".expanded(using: [
                     "appId": appId
                 ]), method: "PUT", body: application))
+        }
+
+        /**
+         Replace an Application
+         
+         - parameter appId: (path)  
+         - parameter application: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateApplication(appId: String, application: Application, completion: @escaping (Result<OktaResponse<Application>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/apps/{appId}".expanded(using: [
+                        "appId": appId
+                    ]), method: "PUT", body: application), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -579,6 +1297,25 @@ public extension OktaClient {
         }
 
         /**
+         Update an Application Profile for Assigned User
+         
+         - parameter appId: (path)  
+         - parameter userId: (path)  
+         - parameter appUser: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateApplicationUser(appId: String, userId: String, appUser: AppUser, completion: @escaping (Result<OktaResponse<AppUser>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/apps/{appId}/users/{userId}".expanded(using: [
+                        "appId": appId, 
+                        "userId": userId
+                    ]), method: "POST", body: appUser), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Update a Feature
          
          - parameter appId: (path)  
@@ -593,6 +1330,25 @@ public extension OktaClient {
         }
 
         /**
+         Update a Feature
+         
+         - parameter appId: (path)  
+         - parameter name: (path)  
+         - parameter capabilitiesObject: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateFeatureForApplication(appId: String, name: String, capabilitiesObject: CapabilitiesObject, completion: @escaping (Result<OktaResponse<ApplicationFeature>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/apps/{appId}/features/{name}".expanded(using: [
+                        "appId": appId, 
+                        "name": name
+                    ]), method: "PUT", body: capabilitiesObject), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Upload a Logo
          
          - parameter appId: (path)  
@@ -603,6 +1359,23 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/apps/{appId}/logo".expanded(using: [
                     "appId": appId
                 ]), method: "POST"))
+        }
+
+        /**
+         Upload a Logo
+         
+         - parameter appId: (path)  
+         - parameter file: (form)  
+         - parameter completion: Completion block
+         */
+        public func uploadApplicationLogo(appId: String, file: URL, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/apps/{appId}/logo".expanded(using: [
+                        "appId": appId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

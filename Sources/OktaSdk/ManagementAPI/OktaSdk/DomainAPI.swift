@@ -39,12 +39,43 @@ public extension OktaClient {
         }
 
         /**
+         Replace the Certificate
+         
+         - parameter domainId: (path)  
+         - parameter certificate: (body)  
+         - parameter completion: Completion block
+         */
+        public func createCertificate(domainId: String, certificate: DomainCertificate, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/domains/{domainId}/certificate".expanded(using: [
+                        "domainId": domainId
+                    ]), method: "PUT", body: certificate), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Create a Domain
          
          - parameter domain: (body)  
          */
         public func createDomain(domain: Domain) async throws -> OktaResponse<DomainResponse> {
             try await send(try requestWithBody(to: "/api/v1/domains", method: "POST", body: domain))
+        }
+
+        /**
+         Create a Domain
+         
+         - parameter domain: (body)  
+         - parameter completion: Completion block
+         */
+        public func createDomain(domain: Domain, completion: @escaping (Result<OktaResponse<DomainResponse>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/domains", method: "POST", body: domain), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -60,6 +91,22 @@ public extension OktaClient {
         }
 
         /**
+         Delete a Domain
+         
+         - parameter domainId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteDomain(domainId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/domains/{domainId}".expanded(using: [
+                        "domainId": domainId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Domain
          
          - parameter domainId: (path)  
@@ -71,11 +118,40 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Domain
+         
+         - parameter domainId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getDomain(domainId: String, completion: @escaping (Result<OktaResponse<DomainResponse>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/domains/{domainId}".expanded(using: [
+                        "domainId": domainId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Domains
          
          */
         public func listDomains() async throws -> OktaResponse<DomainListResponse> {
             try await send(try request(to: "/api/v1/domains", method: "GET"))
+        }
+
+        /**
+         List all Domains
+         
+         - parameter completion: Completion block
+         */
+        public func listDomains(completion: @escaping (Result<OktaResponse<DomainListResponse>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/domains", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -87,6 +163,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/domains/{domainId}/verify".expanded(using: [
                     "domainId": domainId
                 ]), method: "POST"))
+        }
+
+        /**
+         Verify a Domain
+         
+         - parameter domainId: (path)  
+         - parameter completion: Completion block
+         */
+        public func verifyDomain(domainId: String, completion: @escaping (Result<OktaResponse<DomainResponse>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/domains/{domainId}/verify".expanded(using: [
+                        "domainId": domainId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

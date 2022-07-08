@@ -35,6 +35,20 @@ public extension OktaClient {
         }
 
         /**
+         Create an SMS Template
+         
+         - parameter smsTemplate: (body)  
+         - parameter completion: Completion block
+         */
+        public func createSmsTemplate(smsTemplate: SmsTemplate, completion: @escaping (Result<OktaResponse<SmsTemplate>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/templates/sms", method: "POST", body: smsTemplate), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete an SMS Template
          
          - parameter templateId: (path)  
@@ -44,6 +58,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
                     "templateId": templateId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete an SMS Template
+         
+         - parameter templateId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteSmsTemplate(templateId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
+                        "templateId": templateId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -58,6 +88,22 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve an SMS Template
+         
+         - parameter templateId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getSmsTemplate(templateId: String, completion: @escaping (Result<OktaResponse<SmsTemplate>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
+                        "templateId": templateId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all SMS Templates
          
          - parameter templateType: (query)  (optional)
@@ -66,6 +112,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/templates/sms", method: "GET", query: [
                     "templateType": templateType
                 ]))
+        }
+
+        /**
+         List all SMS Templates
+         
+         - parameter templateType: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func listSmsTemplates(templateType: SmsTemplateType? = nil, completion: @escaping (Result<OktaResponse<[SmsTemplate]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/templates/sms", method: "GET", query: [
+                        "templateType": templateType
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -81,6 +143,23 @@ public extension OktaClient {
         }
 
         /**
+         Update an SMS Template
+         
+         - parameter templateId: (path)  
+         - parameter smsTemplate: (body)  
+         - parameter completion: Completion block
+         */
+        public func partialUpdateSmsTemplate(templateId: String, smsTemplate: SmsTemplate, completion: @escaping (Result<OktaResponse<SmsTemplate>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
+                        "templateId": templateId
+                    ]), method: "POST", body: smsTemplate), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Replace an SMS Template
          
          - parameter templateId: (path)  
@@ -90,6 +169,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
                     "templateId": templateId
                 ]), method: "PUT", body: smsTemplate))
+        }
+
+        /**
+         Replace an SMS Template
+         
+         - parameter templateId: (path)  
+         - parameter smsTemplate: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateSmsTemplate(templateId: String, smsTemplate: SmsTemplate, completion: @escaping (Result<OktaResponse<SmsTemplate>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/templates/sms/{templateId}".expanded(using: [
+                        "templateId": templateId
+                    ]), method: "PUT", body: smsTemplate), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

@@ -35,11 +35,38 @@ public extension OktaClient {
         }
 
         /**
+         Remove Emails from Email Provider Bounce List
+         
+         - parameter bouncesRemoveListObj: (body)  (optional)
+         - parameter completion: Completion block
+         */
+        public func bulkRemoveEmailAddressBounces(bouncesRemoveListObj: BouncesRemoveListObj? = nil, completion: @escaping (Result<OktaResponse<BouncesRemoveListResult>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/org/email/bounces/remove-list", method: "POST", body: bouncesRemoveListObj), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Extend Okta Support Access
          
          */
         public func extendOktaSupport() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try request(to: "/api/v1/org/privacy/oktaSupport/extend", method: "POST"))
+        }
+
+        /**
+         Extend Okta Support Access
+         
+         - parameter completion: Completion block
+         */
+        public func extendOktaSupport(completion: @escaping (Result<OktaResponse<OrgOktaSupportSettingsObj>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/privacy/oktaSupport/extend", method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -51,11 +78,37 @@ public extension OktaClient {
         }
 
         /**
+         Retreive the Okta Communication Settings
+         
+         - parameter completion: Completion block
+         */
+        public func getOktaCommunicationSettings(completion: @escaping (Result<OktaResponse<OrgOktaCommunicationSetting>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/privacy/oktaCommunication", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve the Org Contact Types
          
          */
         public func getOrgContactTypes() async throws -> OktaResponse<[OrgContactTypeObj]> {
             try await send(try request(to: "/api/v1/org/contacts", method: "GET"))
+        }
+
+        /**
+         Retrieve the Org Contact Types
+         
+         - parameter completion: Completion block
+         */
+        public func getOrgContactTypes(completion: @escaping (Result<OktaResponse<[OrgContactTypeObj]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/contacts", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -70,11 +123,40 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve the User of the Contact Type
+         
+         - parameter contactType: (path)  
+         - parameter completion: Completion block
+         */
+        public func getOrgContactUser(contactType: String, completion: @escaping (Result<OktaResponse<OrgContactUser>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/contacts/{contactType}".expanded(using: [
+                        "contactType": contactType
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve the Okta Support Settings
          
          */
         public func getOrgOktaSupportSettings() async throws -> OktaResponse<OrgOktaSupportSettingsObj> {
             try await send(try request(to: "/api/v1/org/privacy/oktaSupport", method: "GET"))
+        }
+
+        /**
+         Retrieve the Okta Support Settings
+         
+         - parameter completion: Completion block
+         */
+        public func getOrgOktaSupportSettings(completion: @escaping (Result<OktaResponse<OrgOktaSupportSettingsObj>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/privacy/oktaSupport", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -86,11 +168,37 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve the Org Preferences
+         
+         - parameter completion: Completion block
+         */
+        public func getOrgPreferences(completion: @escaping (Result<OktaResponse<OrgPreferences>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/preferences", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve the Org Settings
          
          */
         public func getOrgSettings() async throws -> OktaResponse<OrgSetting> {
             try await send(try request(to: "/api/v1/org", method: "GET"))
+        }
+
+        /**
+         Retrieve the Org Settings
+         
+         - parameter completion: Completion block
+         */
+        public func getOrgSettings(completion: @escaping (Result<OktaResponse<OrgSetting>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -102,11 +210,37 @@ public extension OktaClient {
         }
 
         /**
+         Grant Okta Support Access to your Org
+         
+         - parameter completion: Completion block
+         */
+        public func grantOktaSupport(completion: @escaping (Result<OktaResponse<OrgOktaSupportSettingsObj>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/privacy/oktaSupport/grant", method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Update the Preference to Hide the Okta Dashboard Footer
          
          */
         public func hideOktaUIFooter() async throws -> OktaResponse<OrgPreferences> {
             try await send(try request(to: "/api/v1/org/preferences/hideEndUserFooter", method: "POST"))
+        }
+
+        /**
+         Update the Preference to Hide the Okta Dashboard Footer
+         
+         - parameter completion: Completion block
+         */
+        public func hideOktaUIFooter(completion: @escaping (Result<OktaResponse<OrgPreferences>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/preferences/hideEndUserFooter", method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -118,11 +252,37 @@ public extension OktaClient {
         }
 
         /**
+         Opt in all Users to Okta Communication emails
+         
+         - parameter completion: Completion block
+         */
+        public func optInUsersToOktaCommunicationEmails(completion: @escaping (Result<OktaResponse<OrgOktaCommunicationSetting>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/privacy/oktaCommunication/optIn", method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Opt out all Users from Okta Communication emails
          
          */
         public func optOutUsersFromOktaCommunicationEmails() async throws -> OktaResponse<OrgOktaCommunicationSetting> {
             try await send(try request(to: "/api/v1/org/privacy/oktaCommunication/optOut", method: "POST"))
+        }
+
+        /**
+         Opt out all Users from Okta Communication emails
+         
+         - parameter completion: Completion block
+         */
+        public func optOutUsersFromOktaCommunicationEmails(completion: @escaping (Result<OktaResponse<OrgOktaCommunicationSetting>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/privacy/oktaCommunication/optOut", method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -135,6 +295,20 @@ public extension OktaClient {
         }
 
         /**
+         Update the Org Settings
+         
+         - parameter orgSetting: (body)  (optional)
+         - parameter completion: Completion block
+         */
+        public func partialUpdateOrgSetting(orgSetting: OrgSetting? = nil, completion: @escaping (Result<OktaResponse<OrgSetting>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/org", method: "POST", body: orgSetting), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Revoke Okta Support Access
          
          */
@@ -143,11 +317,37 @@ public extension OktaClient {
         }
 
         /**
+         Revoke Okta Support Access
+         
+         - parameter completion: Completion block
+         */
+        public func revokeOktaSupport(completion: @escaping (Result<OktaResponse<OrgOktaSupportSettingsObj>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/privacy/oktaSupport/revoke", method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Update the Preference to Show the Okta Dashboard Footer
          
          */
         public func showOktaUIFooter() async throws -> OktaResponse<OrgPreferences> {
             try await send(try request(to: "/api/v1/org/preferences/showEndUserFooter", method: "POST"))
+        }
+
+        /**
+         Update the Preference to Show the Okta Dashboard Footer
+         
+         - parameter completion: Completion block
+         */
+        public func showOktaUIFooter(completion: @escaping (Result<OktaResponse<OrgPreferences>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/preferences/showEndUserFooter", method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -163,6 +363,23 @@ public extension OktaClient {
         }
 
         /**
+         Replace the User of the Contact Type
+         
+         - parameter contactType: (path)  
+         - parameter orgContactUser: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateOrgContactUser(contactType: String, orgContactUser: OrgContactUser, completion: @escaping (Result<OktaResponse<OrgContactUser>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/org/contacts/{contactType}".expanded(using: [
+                        "contactType": contactType
+                    ]), method: "PUT", body: orgContactUser), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Upload the Org Logo
          
          - parameter file: (form)  
@@ -173,12 +390,40 @@ public extension OktaClient {
         }
 
         /**
+         Upload the Org Logo
+         
+         - parameter file: (form)  
+         - parameter completion: Completion block
+         */
+        public func updateOrgLogo(file: URL, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/org/logo", method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Replace the Org Settings
          
          - parameter orgSetting: (body)  
          */
         public func updateOrgSetting(orgSetting: OrgSetting) async throws -> OktaResponse<OrgSetting> {
             try await send(try requestWithBody(to: "/api/v1/org", method: "PUT", body: orgSetting))
+        }
+
+        /**
+         Replace the Org Settings
+         
+         - parameter orgSetting: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateOrgSetting(orgSetting: OrgSetting, completion: @escaping (Result<OktaResponse<OrgSetting>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/org", method: "PUT", body: orgSetting), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

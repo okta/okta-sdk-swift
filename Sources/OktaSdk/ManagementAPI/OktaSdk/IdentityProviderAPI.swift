@@ -37,6 +37,22 @@ public extension OktaClient {
         }
 
         /**
+         Activate an Identity Provider
+         
+         - parameter idpId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateIdentityProvider(idpId: String, completion: @escaping (Result<OktaResponse<IdentityProvider>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/lifecycle/activate".expanded(using: [
+                        "idpId": idpId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Clone a Signing Credential Key
          
          - parameter idpId: (path)  
@@ -53,12 +69,47 @@ public extension OktaClient {
         }
 
         /**
+         Clone a Signing Credential Key
+         
+         - parameter idpId: (path)  
+         - parameter keyId: (path)  
+         - parameter targetIdpId: (query)  
+         - parameter completion: Completion block
+         */
+        public func cloneIdentityProviderKey(idpId: String, keyId: String, targetIdpId: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/credentials/keys/{keyId}/clone".expanded(using: [
+                        "idpId": idpId, 
+                        "keyId": keyId
+                    ]), method: "POST", query: [
+                        "targetIdpId": targetIdpId
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Create an Identity Provider
          
          - parameter identityProvider: (body)  
          */
         public func createIdentityProvider(identityProvider: IdentityProvider) async throws -> OktaResponse<IdentityProvider> {
             try await send(try requestWithBody(to: "/api/v1/idps", method: "POST", body: identityProvider))
+        }
+
+        /**
+         Create an Identity Provider
+         
+         - parameter identityProvider: (body)  
+         - parameter completion: Completion block
+         */
+        public func createIdentityProvider(identityProvider: IdentityProvider, completion: @escaping (Result<OktaResponse<IdentityProvider>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/idps", method: "POST", body: identityProvider), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -71,6 +122,20 @@ public extension OktaClient {
         }
 
         /**
+         Create an X.509 Certificate Public Key
+         
+         - parameter jsonWebKey: (body)  
+         - parameter completion: Completion block
+         */
+        public func createIdentityProviderKey(jsonWebKey: JsonWebKey, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/idps/credentials/keys", method: "POST", body: jsonWebKey), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Deactivate an Identity Provider
          
          - parameter idpId: (path)  
@@ -79,6 +144,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/idps/{idpId}/lifecycle/deactivate".expanded(using: [
                     "idpId": idpId
                 ]), method: "POST"))
+        }
+
+        /**
+         Deactivate an Identity Provider
+         
+         - parameter idpId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivateIdentityProvider(idpId: String, completion: @escaping (Result<OktaResponse<IdentityProvider>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/lifecycle/deactivate".expanded(using: [
+                        "idpId": idpId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -94,6 +175,22 @@ public extension OktaClient {
         }
 
         /**
+         Delete an Identity Provider
+         
+         - parameter idpId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteIdentityProvider(idpId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}".expanded(using: [
+                        "idpId": idpId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete a Signing Credential Key
          
          - parameter keyId: (path)  
@@ -106,6 +203,22 @@ public extension OktaClient {
         }
 
         /**
+         Delete a Signing Credential Key
+         
+         - parameter keyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteIdentityProviderKey(keyId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/credentials/keys/{keyId}".expanded(using: [
+                        "keyId": keyId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Generate a Certificate Signing Request
          
          - parameter idpId: (path)  
@@ -115,6 +228,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/idps/{idpId}/credentials/csrs".expanded(using: [
                     "idpId": idpId
                 ]), method: "POST", body: metadata))
+        }
+
+        /**
+         Generate a Certificate Signing Request
+         
+         - parameter idpId: (path)  
+         - parameter metadata: (body)  
+         - parameter completion: Completion block
+         */
+        public func generateCsrForIdentityProvider(idpId: String, metadata: CsrMetadata, completion: @escaping (Result<OktaResponse<Csr>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/idps/{idpId}/credentials/csrs".expanded(using: [
+                        "idpId": idpId
+                    ]), method: "POST", body: metadata), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -132,6 +262,25 @@ public extension OktaClient {
         }
 
         /**
+         Generate a new Signing Credential Key
+         
+         - parameter idpId: (path)  
+         - parameter validityYears: (query) expiry of the IdP Key Credential 
+         - parameter completion: Completion block
+         */
+        public func generateIdentityProviderSigningKey(idpId: String, validityYears: Int, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/credentials/keys/generate".expanded(using: [
+                        "idpId": idpId
+                    ]), method: "POST", query: [
+                        "validityYears": validityYears
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Certificate Signing Request
          
          - parameter idpId: (path)  
@@ -145,6 +294,24 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Certificate Signing Request
+         
+         - parameter idpId: (path)  
+         - parameter csrId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getCsrForIdentityProvider(idpId: String, csrId: String, completion: @escaping (Result<OktaResponse<Csr>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/credentials/csrs/{csrId}".expanded(using: [
+                        "idpId": idpId, 
+                        "csrId": csrId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve an Identity Provider
          
          - parameter idpId: (path)  
@@ -153,6 +320,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/idps/{idpId}".expanded(using: [
                     "idpId": idpId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve an Identity Provider
+         
+         - parameter idpId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getIdentityProvider(idpId: String, completion: @escaping (Result<OktaResponse<IdentityProvider>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}".expanded(using: [
+                        "idpId": idpId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -169,6 +352,24 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a User
+         
+         - parameter idpId: (path)  
+         - parameter userId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getIdentityProviderApplicationUser(idpId: String, userId: String, completion: @escaping (Result<OktaResponse<IdentityProviderApplicationUser>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/users/{userId}".expanded(using: [
+                        "idpId": idpId, 
+                        "userId": userId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve an Credential Key
          
          - parameter keyId: (path)  
@@ -177,6 +378,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/idps/credentials/keys/{keyId}".expanded(using: [
                     "keyId": keyId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve an Credential Key
+         
+         - parameter keyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getIdentityProviderKey(keyId: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/credentials/keys/{keyId}".expanded(using: [
+                        "keyId": keyId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -190,6 +407,24 @@ public extension OktaClient {
                     "idpId": idpId, 
                     "keyId": keyId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Signing Credential Key
+         
+         - parameter idpId: (path)  
+         - parameter keyId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getIdentityProviderSigningKey(idpId: String, keyId: String, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/credentials/keys/{keyId}".expanded(using: [
+                        "idpId": idpId, 
+                        "keyId": keyId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -207,6 +442,25 @@ public extension OktaClient {
         }
 
         /**
+         Link a User to a Social IdP
+         
+         - parameter idpId: (path)  
+         - parameter userId: (path)  
+         - parameter userIdentityProviderLinkRequest: (body)  
+         - parameter completion: Completion block
+         */
+        public func linkUserToIdentityProvider(idpId: String, userId: String, userIdentityProviderLinkRequest: UserIdentityProviderLinkRequest, completion: @escaping (Result<OktaResponse<IdentityProviderApplicationUser>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/idps/{idpId}/users/{userId}".expanded(using: [
+                        "idpId": idpId, 
+                        "userId": userId
+                    ]), method: "POST", body: userIdentityProviderLinkRequest), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Certificate Signing Requests
          
          - parameter idpId: (path)  
@@ -218,6 +472,22 @@ public extension OktaClient {
         }
 
         /**
+         List all Certificate Signing Requests
+         
+         - parameter idpId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listCsrsForIdentityProvider(idpId: String, completion: @escaping (Result<OktaResponse<[Csr]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/credentials/csrs".expanded(using: [
+                        "idpId": idpId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Users
          
          - parameter idpId: (path)  
@@ -226,6 +496,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/idps/{idpId}/users".expanded(using: [
                     "idpId": idpId
                 ]), method: "GET"))
+        }
+
+        /**
+         List all Users
+         
+         - parameter idpId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listIdentityProviderApplicationUsers(idpId: String, completion: @escaping (Result<OktaResponse<[IdentityProviderApplicationUser]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/users".expanded(using: [
+                        "idpId": idpId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -242,6 +528,24 @@ public extension OktaClient {
         }
 
         /**
+         List all Credential Keys
+         
+         - parameter after: (query) Specifies the pagination cursor for the next page of keys (optional)
+         - parameter limit: (query) Specifies the number of key results in a page (optional, default to 20)
+         - parameter completion: Completion block
+         */
+        public func listIdentityProviderKeys(after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[JsonWebKey]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/credentials/keys", method: "GET", query: [
+                        "after": after, 
+                        "limit": limit
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Signing Credential Keys
          
          - parameter idpId: (path)  
@@ -250,6 +554,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/idps/{idpId}/credentials/keys".expanded(using: [
                     "idpId": idpId
                 ]), method: "GET"))
+        }
+
+        /**
+         List all Signing Credential Keys
+         
+         - parameter idpId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listIdentityProviderSigningKeys(idpId: String, completion: @escaping (Result<OktaResponse<[JsonWebKey]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/credentials/keys".expanded(using: [
+                        "idpId": idpId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -270,6 +590,28 @@ public extension OktaClient {
         }
 
         /**
+         List all Identity Providers
+         
+         - parameter q: (query) Searches the name property of IdPs for matching value (optional)
+         - parameter after: (query) Specifies the pagination cursor for the next page of IdPs (optional)
+         - parameter limit: (query) Specifies the number of IdP results in a page (optional, default to 20)
+         - parameter type: (query) Filters IdPs by type (optional)
+         - parameter completion: Completion block
+         */
+        public func listIdentityProviders(q: String? = nil, after: String? = nil, limit: Int? = nil, type: String? = nil, completion: @escaping (Result<OktaResponse<[IdentityProvider]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps", method: "GET", query: [
+                        "q": q, 
+                        "after": after, 
+                        "limit": limit, 
+                        "type": type
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Tokens from a OIDC Identity Provider
          
          - parameter idpId: (path)  
@@ -280,6 +622,24 @@ public extension OktaClient {
                     "idpId": idpId, 
                     "userId": userId
                 ]), method: "GET"))
+        }
+
+        /**
+         List all Tokens from a OIDC Identity Provider
+         
+         - parameter idpId: (path)  
+         - parameter userId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listSocialAuthTokens(idpId: String, userId: String, completion: @escaping (Result<OktaResponse<[SocialAuthToken]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/users/{userId}/credentials/tokens".expanded(using: [
+                        "idpId": idpId, 
+                        "userId": userId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -297,6 +657,25 @@ public extension OktaClient {
         }
 
         /**
+         Publish a Certificate Signing Request
+         
+         - parameter idpId: (path)  
+         - parameter csrId: (path)  
+         - parameter body: (body)  
+         - parameter completion: Completion block
+         */
+        public func publishCsrForIdentityProvider(idpId: String, csrId: String, body: URL, completion: @escaping (Result<OktaResponse<JsonWebKey>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/idps/{idpId}/credentials/csrs/{csrId}/lifecycle/publish".expanded(using: [
+                        "idpId": idpId, 
+                        "csrId": csrId
+                    ]), method: "POST", body: body), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Revoke a Certificate Signing Request
          
          - parameter idpId: (path)  
@@ -308,6 +687,24 @@ public extension OktaClient {
                     "idpId": idpId, 
                     "csrId": csrId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Revoke a Certificate Signing Request
+         
+         - parameter idpId: (path)  
+         - parameter csrId: (path)  
+         - parameter completion: Completion block
+         */
+        public func revokeCsrForIdentityProvider(idpId: String, csrId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/credentials/csrs/{csrId}".expanded(using: [
+                        "idpId": idpId, 
+                        "csrId": csrId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -325,6 +722,24 @@ public extension OktaClient {
         }
 
         /**
+         Unlink a User from IdP
+         
+         - parameter idpId: (path)  
+         - parameter userId: (path)  
+         - parameter completion: Completion block
+         */
+        public func unlinkUserFromIdentityProvider(idpId: String, userId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/idps/{idpId}/users/{userId}".expanded(using: [
+                        "idpId": idpId, 
+                        "userId": userId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Replace an Identity Provider
          
          - parameter idpId: (path)  
@@ -334,6 +749,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/idps/{idpId}".expanded(using: [
                     "idpId": idpId
                 ]), method: "PUT", body: identityProvider))
+        }
+
+        /**
+         Replace an Identity Provider
+         
+         - parameter idpId: (path)  
+         - parameter identityProvider: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateIdentityProvider(idpId: String, identityProvider: IdentityProvider, completion: @escaping (Result<OktaResponse<IdentityProvider>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/idps/{idpId}".expanded(using: [
+                        "idpId": idpId
+                    ]), method: "PUT", body: identityProvider), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

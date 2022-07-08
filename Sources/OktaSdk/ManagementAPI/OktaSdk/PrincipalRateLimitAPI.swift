@@ -35,6 +35,20 @@ public extension OktaClient {
         }
 
         /**
+         Create a Principal Rate Limit
+         
+         - parameter entity: (body)  
+         - parameter completion: Completion block
+         */
+        public func createPrincipalRateLimitEntity(entity: PrincipalRateLimitEntity, completion: @escaping (Result<OktaResponse<PrincipalRateLimitEntity>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/principal-rate-limits", method: "POST", body: entity), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Principal Rate Limit
          
          - parameter principalRateLimitId: (path) id of the Principal Rate Limit 
@@ -43,6 +57,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/principal-rate-limits/{principalRateLimitId}".expanded(using: [
                     "principalRateLimitId": principalRateLimitId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Principal Rate Limit
+         
+         - parameter principalRateLimitId: (path) id of the Principal Rate Limit 
+         - parameter completion: Completion block
+         */
+        public func getPrincipalRateLimitEntity(principalRateLimitId: String, completion: @escaping (Result<OktaResponse<PrincipalRateLimitEntity>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/principal-rate-limits/{principalRateLimitId}".expanded(using: [
+                        "principalRateLimitId": principalRateLimitId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -61,6 +91,26 @@ public extension OktaClient {
         }
 
         /**
+         List all Principal Rate Limits
+         
+         - parameter filter: (query)  (optional)
+         - parameter after: (query)  (optional)
+         - parameter limit: (query)  (optional, default to 20)
+         - parameter completion: Completion block
+         */
+        public func listPrincipalRateLimitEntities(filter: String? = nil, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[PrincipalRateLimitEntity]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/principal-rate-limits", method: "GET", query: [
+                        "filter": filter, 
+                        "after": after, 
+                        "limit": limit
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Replace a Principal Rate Limit
          
          - parameter principalRateLimitId: (path) id of the Principal Rate Limit 
@@ -70,6 +120,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/principal-rate-limits/{principalRateLimitId}".expanded(using: [
                     "principalRateLimitId": principalRateLimitId
                 ]), method: "PUT", body: entity))
+        }
+
+        /**
+         Replace a Principal Rate Limit
+         
+         - parameter principalRateLimitId: (path) id of the Principal Rate Limit 
+         - parameter entity: (body)  
+         - parameter completion: Completion block
+         */
+        public func updatePrincipalRateLimitEntity(principalRateLimitId: String, entity: PrincipalRateLimitEntity, completion: @escaping (Result<OktaResponse<PrincipalRateLimitEntity>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/principal-rate-limits/{principalRateLimitId}".expanded(using: [
+                        "principalRateLimitId": principalRateLimitId
+                    ]), method: "PUT", body: entity), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

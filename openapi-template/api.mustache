@@ -67,6 +67,36 @@ public extension OktaClient {
                 ]{{/hasHeaderParams}}{{#bodyParam}}, body: {{paramName}}{{/bodyParam}}))
         }
 
+        /**
+         {{#summary}}
+         {{{summary}}}
+         {{/summary}}{{#allParams}}
+         - parameter {{paramName}}: ({{#isFormParam}}form{{/isFormParam}}{{#isQueryParam}}query{{/isQueryParam}}{{#isPathParam}}path{{/isPathParam}}{{#isHeaderParam}}header{{/isHeaderParam}}{{#isBodyParam}}body{{/isBodyParam}}) {{description}} {{^required}}(optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}{{/allParams}}
+         - parameter completion: Completion block
+         */
+        {{#isDeprecated}}
+        @available(*, deprecated, message: "This operation is deprecated.")
+        {{/isDeprecated}}
+        public func {{operationId}}({{#allParams}}{{paramName}}: {{#isEnum}}{{#isContainer}}{{{dataType}}}{{/isContainer}}{{^isContainer}}{{{datatypeWithEnum}}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}, {{/allParams}}completion: @escaping (Result<OktaResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Empty{{/returnType}}>, Error>) -> Void) {
+            do {
+                send(try request{{#bodyParam}}WithBody{{/bodyParam}}(to: "{{{path}}}"{{#hasPathParams}}.expanded(using: [
+                    {{#pathParams}}
+                        "{{paramName}}": {{paramName}}{{^-last}}, {{/-last}}
+                    {{/pathParams}}
+                    ]){{/hasPathParams}}, method: "{{httpMethod}}"{{#hasQueryParams}}, query: [
+                        {{#queryParams}}
+                        "{{paramName}}": {{paramName}}{{^-last}}, {{/-last}}
+                        {{/queryParams}}
+                    ]{{/hasQueryParams}}{{#hasHeaderParams}}, headers: [
+                        {{#headerParams}}
+                        "{{paramName}}": {{paramName}}?.stringValue{{^-last}}, {{/-last}}
+                        {{/headerParams}}
+                    ]{{/hasHeaderParams}}{{#bodyParam}}, body: {{paramName}}{{/bodyParam}}), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
 {{/operation}}
     }
 }

@@ -39,6 +39,24 @@ public extension OktaClient {
         }
 
         /**
+         List all Subscriptions of a Custom Role with a specific notification type
+         
+         - parameter roleTypeOrRoleId: (path)  
+         - parameter notificationType: (path)  
+         - parameter completion: Completion block
+         */
+        public func getRoleSubscriptionByNotificationType(roleTypeOrRoleId: String, notificationType: String, completion: @escaping (Result<OktaResponse<Subscription>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/roles/{roleTypeOrRoleId}/subscriptions/{notificationType}".expanded(using: [
+                        "roleTypeOrRoleId": roleTypeOrRoleId, 
+                        "notificationType": notificationType
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Subscriptions by type
          
          - parameter userId: (path)  
@@ -49,6 +67,24 @@ public extension OktaClient {
                     "userId": userId, 
                     "notificationType": notificationType
                 ]), method: "GET"))
+        }
+
+        /**
+         List all Subscriptions by type
+         
+         - parameter userId: (path)  
+         - parameter notificationType: (path)  
+         - parameter completion: Completion block
+         */
+        public func getUserSubscriptionByNotificationType(userId: String, notificationType: String, completion: @escaping (Result<OktaResponse<Subscription>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/users/{userId}/subscriptions/{notificationType}".expanded(using: [
+                        "userId": userId, 
+                        "notificationType": notificationType
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -63,6 +99,22 @@ public extension OktaClient {
         }
 
         /**
+         List all Subscriptions of a Custom Role
+         
+         - parameter roleTypeOrRoleId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listRoleSubscriptions(roleTypeOrRoleId: String, completion: @escaping (Result<OktaResponse<[Subscription]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/roles/{roleTypeOrRoleId}/subscriptions".expanded(using: [
+                        "roleTypeOrRoleId": roleTypeOrRoleId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Subscriptions
          
          - parameter userId: (path)  
@@ -71,6 +123,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/users/{userId}/subscriptions".expanded(using: [
                     "userId": userId
                 ]), method: "GET"))
+        }
+
+        /**
+         List all Subscriptions
+         
+         - parameter userId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listUserSubscriptions(userId: String, completion: @escaping (Result<OktaResponse<[Subscription]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/users/{userId}/subscriptions".expanded(using: [
+                        "userId": userId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -88,6 +156,24 @@ public extension OktaClient {
         }
 
         /**
+         Subscribe a Custom Role to a specific notification type
+         
+         - parameter roleTypeOrRoleId: (path)  
+         - parameter notificationType: (path)  
+         - parameter completion: Completion block
+         */
+        public func subscribeRoleSubscriptionByNotificationType(roleTypeOrRoleId: String, notificationType: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/roles/{roleTypeOrRoleId}/subscriptions/{notificationType}/subscribe".expanded(using: [
+                        "roleTypeOrRoleId": roleTypeOrRoleId, 
+                        "notificationType": notificationType
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Subscribe to a specific notification type
          
          - parameter userId: (path)  
@@ -99,6 +185,24 @@ public extension OktaClient {
                     "userId": userId, 
                     "notificationType": notificationType
                 ]), method: "POST"))
+        }
+
+        /**
+         Subscribe to a specific notification type
+         
+         - parameter userId: (path)  
+         - parameter notificationType: (path)  
+         - parameter completion: Completion block
+         */
+        public func subscribeUserSubscriptionByNotificationType(userId: String, notificationType: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/users/{userId}/subscriptions/{notificationType}/subscribe".expanded(using: [
+                        "userId": userId, 
+                        "notificationType": notificationType
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -116,6 +220,24 @@ public extension OktaClient {
         }
 
         /**
+         Unsubscribe a Custom Role from a specific notification type
+         
+         - parameter roleTypeOrRoleId: (path)  
+         - parameter notificationType: (path)  
+         - parameter completion: Completion block
+         */
+        public func unsubscribeRoleSubscriptionByNotificationType(roleTypeOrRoleId: String, notificationType: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/roles/{roleTypeOrRoleId}/subscriptions/{notificationType}/unsubscribe".expanded(using: [
+                        "roleTypeOrRoleId": roleTypeOrRoleId, 
+                        "notificationType": notificationType
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Unsubscribe from a specific notification type
          
          - parameter userId: (path)  
@@ -127,6 +249,24 @@ public extension OktaClient {
                     "userId": userId, 
                     "notificationType": notificationType
                 ]), method: "POST"))
+        }
+
+        /**
+         Unsubscribe from a specific notification type
+         
+         - parameter userId: (path)  
+         - parameter notificationType: (path)  
+         - parameter completion: Completion block
+         */
+        public func unsubscribeUserSubscriptionByNotificationType(userId: String, notificationType: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/users/{userId}/subscriptions/{notificationType}/unsubscribe".expanded(using: [
+                        "userId": userId, 
+                        "notificationType": notificationType
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

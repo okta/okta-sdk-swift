@@ -154,6 +154,23 @@ extension OktaClientAPI {
         return result
     }
 
+    func send<T: Decodable>(_ request: URLRequest, completion: @escaping (Result<OktaResponse<T>, Error>) -> Void) {
+         context.session.dataTask(with: request) { data, response, error in
+             guard let data = data,
+                   let response = response
+             else {
+                 completion(.failure(error ?? OktaClientError.unknown))
+                 return
+             }
+
+             do {
+                 try completion(.success(self.validate(data, response)))
+             } catch {
+                 completion(.failure(error))
+             }
+         }.resume()
+     }
+
     func send<T: Decodable>(_ request: URLRequest) async throws -> OktaResponse<T> {
         let (data, response) = try await context.session.data(for: request)
         return try validate(data, response)

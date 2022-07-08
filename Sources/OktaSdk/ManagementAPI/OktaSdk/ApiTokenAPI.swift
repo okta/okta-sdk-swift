@@ -37,6 +37,22 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve an API Token's Metadata
+         
+         - parameter apiTokenId: (path) id of the API Token 
+         - parameter completion: Completion block
+         */
+        public func getApiToken(apiTokenId: String, completion: @escaping (Result<OktaResponse<ApiToken>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/api-tokens/{apiTokenId}".expanded(using: [
+                        "apiTokenId": apiTokenId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all API Token Metadata
          
          - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the &#x60;Link&#x60; response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
@@ -52,6 +68,26 @@ public extension OktaClient {
         }
 
         /**
+         List all API Token Metadata
+         
+         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the &#x60;Link&#x60; response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
+         - parameter limit: (query) A limit on the number of objects to return. (optional, default to 20)
+         - parameter q: (query) Finds a token that matches the name or clientName. (optional)
+         - parameter completion: Completion block
+         */
+        public func listApiTokens(after: String? = nil, limit: Int? = nil, q: String? = nil, completion: @escaping (Result<OktaResponse<[ApiToken]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/api-tokens", method: "GET", query: [
+                        "after": after, 
+                        "limit": limit, 
+                        "q": q
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Revoke an API Token
          
          - parameter apiTokenId: (path) id of the API Token 
@@ -64,12 +100,41 @@ public extension OktaClient {
         }
 
         /**
+         Revoke an API Token
+         
+         - parameter apiTokenId: (path) id of the API Token 
+         - parameter completion: Completion block
+         */
+        public func revokeApiToken(apiTokenId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/api-tokens/{apiTokenId}".expanded(using: [
+                        "apiTokenId": apiTokenId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Revoke the Current API Token
          
          */
         @discardableResult
         public func revokeCurrentApiToken() async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/api-tokens/current", method: "DELETE"))
+        }
+
+        /**
+         Revoke the Current API Token
+         
+         - parameter completion: Completion block
+         */
+        public func revokeCurrentApiToken(completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/api-tokens/current", method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

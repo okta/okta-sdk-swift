@@ -35,6 +35,20 @@ public extension OktaClient {
         }
 
         /**
+         Create a Session with Session Token
+         
+         - parameter createSessionRequest: (body)  
+         - parameter completion: Completion block
+         */
+        public func createSession(createSessionRequest: CreateSessionRequest, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/sessions", method: "POST", body: createSessionRequest), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete a Session
          
          - parameter sessionId: (path)  
@@ -44,6 +58,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
                     "sessionId": sessionId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete a Session
+         
+         - parameter sessionId: (path)  
+         - parameter completion: Completion block
+         */
+        public func endSession(sessionId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
+                        "sessionId": sessionId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -58,6 +88,22 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Session
+         
+         - parameter sessionId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getSession(sessionId: String, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/sessions/{sessionId}".expanded(using: [
+                        "sessionId": sessionId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Refresh a Session
          
          - parameter sessionId: (path)  
@@ -66,6 +112,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/sessions/{sessionId}/lifecycle/refresh".expanded(using: [
                     "sessionId": sessionId
                 ]), method: "POST"))
+        }
+
+        /**
+         Refresh a Session
+         
+         - parameter sessionId: (path)  
+         - parameter completion: Completion block
+         */
+        public func refreshSession(sessionId: String, completion: @escaping (Result<OktaResponse<Session>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/sessions/{sessionId}/lifecycle/refresh".expanded(using: [
+                        "sessionId": sessionId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

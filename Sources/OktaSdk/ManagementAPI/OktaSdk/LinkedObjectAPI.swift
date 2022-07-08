@@ -35,6 +35,20 @@ public extension OktaClient {
         }
 
         /**
+         Create a Linked Object Definition
+         
+         - parameter linkedObject: (body)  
+         - parameter completion: Completion block
+         */
+        public func addLinkedObjectDefinition(linkedObject: LinkedObject, completion: @escaping (Result<OktaResponse<LinkedObject>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/meta/schemas/user/linkedObjects", method: "POST", body: linkedObject), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete a Linked Object Definition
          
          - parameter linkedObjectName: (path)  
@@ -44,6 +58,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
                     "linkedObjectName": linkedObjectName
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete a Linked Object Definition
+         
+         - parameter linkedObjectName: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteLinkedObjectDefinition(linkedObjectName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
+                        "linkedObjectName": linkedObjectName
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -58,11 +88,40 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Linked Object Definition
+         
+         - parameter linkedObjectName: (path)  
+         - parameter completion: Completion block
+         */
+        public func getLinkedObjectDefinition(linkedObjectName: String, completion: @escaping (Result<OktaResponse<LinkedObject>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
+                        "linkedObjectName": linkedObjectName
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Linked Object Definitions
          
          */
         public func listLinkedObjectDefinitions() async throws -> OktaResponse<[LinkedObject]> {
             try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects", method: "GET"))
+        }
+
+        /**
+         List all Linked Object Definitions
+         
+         - parameter completion: Completion block
+         */
+        public func listLinkedObjectDefinitions(completion: @escaping (Result<OktaResponse<[LinkedObject]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/schemas/user/linkedObjects", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

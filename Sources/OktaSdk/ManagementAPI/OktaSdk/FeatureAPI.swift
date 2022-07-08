@@ -37,6 +37,22 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Feature
+         
+         - parameter featureId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getFeature(featureId: String, completion: @escaping (Result<OktaResponse<Feature>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/features/{featureId}".expanded(using: [
+                        "featureId": featureId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Dependencies
          
          - parameter featureId: (path)  
@@ -45,6 +61,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/features/{featureId}/dependencies".expanded(using: [
                     "featureId": featureId
                 ]), method: "GET"))
+        }
+
+        /**
+         List all Dependencies
+         
+         - parameter featureId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listFeatureDependencies(featureId: String, completion: @escaping (Result<OktaResponse<[Feature]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/features/{featureId}/dependencies".expanded(using: [
+                        "featureId": featureId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -59,11 +91,40 @@ public extension OktaClient {
         }
 
         /**
+         List all Dependents
+         
+         - parameter featureId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listFeatureDependents(featureId: String, completion: @escaping (Result<OktaResponse<[Feature]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/features/{featureId}/dependents".expanded(using: [
+                        "featureId": featureId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Features
          
          */
         public func listFeatures() async throws -> OktaResponse<[Feature]> {
             try await send(try request(to: "/api/v1/features", method: "GET"))
+        }
+
+        /**
+         List all Features
+         
+         - parameter completion: Completion block
+         */
+        public func listFeatures(completion: @escaping (Result<OktaResponse<[Feature]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/features", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -80,6 +141,27 @@ public extension OktaClient {
                 ]), method: "POST", query: [
                     "mode": mode
                 ]))
+        }
+
+        /**
+         Update a Feature Lifecycle
+         
+         - parameter featureId: (path)  
+         - parameter lifecycle: (path)  
+         - parameter mode: (query)  (optional)
+         - parameter completion: Completion block
+         */
+        public func updateFeatureLifecycle(featureId: String, lifecycle: String, mode: String? = nil, completion: @escaping (Result<OktaResponse<Feature>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/features/{featureId}/{lifecycle}".expanded(using: [
+                        "featureId": featureId, 
+                        "lifecycle": lifecycle
+                    ]), method: "POST", query: [
+                        "mode": mode
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

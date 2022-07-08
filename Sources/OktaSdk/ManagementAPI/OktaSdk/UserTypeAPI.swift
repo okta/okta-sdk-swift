@@ -35,6 +35,20 @@ public extension OktaClient {
         }
 
         /**
+         Create a User Type
+         
+         - parameter userType: (body)  
+         - parameter completion: Completion block
+         */
+        public func createUserType(userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/meta/types/user", method: "POST", body: userType), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Delete a User Type
          
          - parameter typeId: (path)  
@@ -44,6 +58,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete a User Type
+         
+         - parameter typeId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteUserType(typeId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
+                        "typeId": typeId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -58,11 +88,40 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a User Type
+         
+         - parameter typeId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getUserType(typeId: String, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
+                        "typeId": typeId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all User Types
          
          */
         public func listUserTypes() async throws -> OktaResponse<[UserType]> {
             try await send(try request(to: "/api/v1/meta/types/user", method: "GET"))
+        }
+
+        /**
+         List all User Types
+         
+         - parameter completion: Completion block
+         */
+        public func listUserTypes(completion: @escaping (Result<OktaResponse<[UserType]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/types/user", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -78,6 +137,23 @@ public extension OktaClient {
         }
 
         /**
+         Replace a User Type
+         
+         - parameter typeId: (path)  
+         - parameter userType: (body)  
+         - parameter completion: Completion block
+         */
+        public func replaceUserType(typeId: String, userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
+                        "typeId": typeId
+                    ]), method: "PUT", body: userType), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Update a User Type
          
          - parameter typeId: (path)  
@@ -87,6 +163,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
                 ]), method: "POST", body: userType))
+        }
+
+        /**
+         Update a User Type
+         
+         - parameter typeId: (path)  
+         - parameter userType: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateUserType(typeId: String, userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
+                        "typeId": typeId
+                    ]), method: "POST", body: userType), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

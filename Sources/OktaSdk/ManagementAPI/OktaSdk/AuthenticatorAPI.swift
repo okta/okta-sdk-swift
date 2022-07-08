@@ -37,6 +37,22 @@ public extension OktaClient {
         }
 
         /**
+         Activate an Authenticator
+         
+         - parameter authenticatorId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Authenticator>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/activate".expanded(using: [
+                        "authenticatorId": authenticatorId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Deactivate an Authenticator
          
          - parameter authenticatorId: (path)  
@@ -45,6 +61,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/deactivate".expanded(using: [
                     "authenticatorId": authenticatorId
                 ]), method: "POST"))
+        }
+
+        /**
+         Deactivate an Authenticator
+         
+         - parameter authenticatorId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivateAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Authenticator>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/deactivate".expanded(using: [
+                        "authenticatorId": authenticatorId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -59,11 +91,40 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve an Authenticator
+         
+         - parameter authenticatorId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Authenticator>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authenticators/{authenticatorId}".expanded(using: [
+                        "authenticatorId": authenticatorId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Authenticators
          
          */
         public func listAuthenticators() async throws -> OktaResponse<[Authenticator]> {
             try await send(try request(to: "/api/v1/authenticators", method: "GET"))
+        }
+
+        /**
+         List all Authenticators
+         
+         - parameter completion: Completion block
+         */
+        public func listAuthenticators(completion: @escaping (Result<OktaResponse<[Authenticator]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authenticators", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -76,6 +137,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/authenticators/{authenticatorId}".expanded(using: [
                     "authenticatorId": authenticatorId
                 ]), method: "PUT", body: authenticator))
+        }
+
+        /**
+         Replace an Authenticator
+         
+         - parameter authenticatorId: (path)  
+         - parameter authenticator: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateAuthenticator(authenticatorId: String, authenticator: Authenticator, completion: @escaping (Result<OktaResponse<Authenticator>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authenticators/{authenticatorId}".expanded(using: [
+                        "authenticatorId": authenticatorId
+                    ]), method: "PUT", body: authenticator), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

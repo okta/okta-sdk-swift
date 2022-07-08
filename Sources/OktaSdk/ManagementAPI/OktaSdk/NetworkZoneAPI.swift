@@ -37,12 +37,42 @@ public extension OktaClient {
         }
 
         /**
+         Activate a Network Zone
+         
+         - parameter zoneId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateNetworkZone(zoneId: String, completion: @escaping (Result<OktaResponse<NetworkZone>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/zones/{zoneId}/lifecycle/activate".expanded(using: [
+                        "zoneId": zoneId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Create a Network Zone
          
          - parameter zone: (body)  
          */
         public func createNetworkZone(zone: NetworkZone) async throws -> OktaResponse<NetworkZone> {
             try await send(try requestWithBody(to: "/api/v1/zones", method: "POST", body: zone))
+        }
+
+        /**
+         Create a Network Zone
+         
+         - parameter zone: (body)  
+         - parameter completion: Completion block
+         */
+        public func createNetworkZone(zone: NetworkZone, completion: @escaping (Result<OktaResponse<NetworkZone>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/zones", method: "POST", body: zone), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -54,6 +84,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/zones/{zoneId}/lifecycle/deactivate".expanded(using: [
                     "zoneId": zoneId
                 ]), method: "POST"))
+        }
+
+        /**
+         Deactivate a Network Zone
+         
+         - parameter zoneId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivateNetworkZone(zoneId: String, completion: @escaping (Result<OktaResponse<NetworkZone>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/zones/{zoneId}/lifecycle/deactivate".expanded(using: [
+                        "zoneId": zoneId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -69,6 +115,22 @@ public extension OktaClient {
         }
 
         /**
+         Delete a Network Zone
+         
+         - parameter zoneId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteNetworkZone(zoneId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/zones/{zoneId}".expanded(using: [
+                        "zoneId": zoneId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Network Zone
          
          - parameter zoneId: (path)  
@@ -77,6 +139,22 @@ public extension OktaClient {
             try await send(try request(to: "/api/v1/zones/{zoneId}".expanded(using: [
                     "zoneId": zoneId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Network Zone
+         
+         - parameter zoneId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getNetworkZone(zoneId: String, completion: @escaping (Result<OktaResponse<NetworkZone>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/zones/{zoneId}".expanded(using: [
+                        "zoneId": zoneId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -95,6 +173,26 @@ public extension OktaClient {
         }
 
         /**
+         List all Network Zones
+         
+         - parameter after: (query) Specifies the pagination cursor for the next page of network zones (optional)
+         - parameter limit: (query) Specifies the number of results for a page (optional, default to -1)
+         - parameter filter: (query) Filters zones by usage or id expression (optional)
+         - parameter completion: Completion block
+         */
+        public func listNetworkZones(after: String? = nil, limit: Int? = nil, filter: String? = nil, completion: @escaping (Result<OktaResponse<[NetworkZone]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/zones", method: "GET", query: [
+                        "after": after, 
+                        "limit": limit, 
+                        "filter": filter
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Replace a Network Zone
          
          - parameter zoneId: (path)  
@@ -104,6 +202,23 @@ public extension OktaClient {
             try await send(try requestWithBody(to: "/api/v1/zones/{zoneId}".expanded(using: [
                     "zoneId": zoneId
                 ]), method: "PUT", body: zone))
+        }
+
+        /**
+         Replace a Network Zone
+         
+         - parameter zoneId: (path)  
+         - parameter zone: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateNetworkZone(zoneId: String, zone: NetworkZone, completion: @escaping (Result<OktaResponse<NetworkZone>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/zones/{zoneId}".expanded(using: [
+                        "zoneId": zoneId
+                    ]), method: "PUT", body: zone), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }
