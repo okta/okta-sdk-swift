@@ -32,11 +32,31 @@ public extension OktaClient {
          - parameter templateName: (path) The name of the email template. 
          - parameter instance: (body)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createEmailCustomization(brandId: String, templateName: String, instance: EmailCustomization? = nil) async throws -> OktaResponse<EmailCustomization> {
             try await send(try requestWithBody(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations".expanded(using: [
                     "brandId": brandId, 
                     "templateName": templateName
                 ]), method: "POST", body: instance))
+        }
+
+        /**
+         Create an Email Customization
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter instance: (body)  (optional)
+         - parameter completion: Completion block
+         */
+        public func createEmailCustomization(brandId: String, templateName: String, instance: EmailCustomization? = nil, completion: @escaping (Result<OktaResponse<EmailCustomization>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName
+                    ]), method: "POST", body: instance), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -46,11 +66,30 @@ public extension OktaClient {
          - parameter templateName: (path) The name of the email template. 
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteAllCustomizations(brandId: String, templateName: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations".expanded(using: [
                     "brandId": brandId, 
                     "templateName": templateName
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Delete all Email Customizations
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter completion: Completion block
+         */
+        public func deleteAllCustomizations(brandId: String, templateName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -60,8 +99,42 @@ public extension OktaClient {
          - parameter themeId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteBrandThemeBackgroundImage(brandId: String, themeId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/background-image".expanded(using: [
+                    "brandId": brandId, 
+                    "themeId": themeId
+                ]), method: "DELETE"))
+        }
+
+        /**
+         Delete the Background Image
+         
+         - parameter brandId: (path)  
+         - parameter themeId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteBrandThemeBackgroundImage(brandId: String, themeId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/background-image".expanded(using: [
+                        "brandId": brandId, 
+                        "themeId": themeId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         Delete the Favicon
+         
+         - parameter brandId: (path)  
+         - parameter themeId: (path)  
+         */
+        @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func deleteBrandThemeFavicon(brandId: String, themeId: String) async throws -> OktaResponse<Empty> {
+            try await send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/favicon".expanded(using: [
                     "brandId": brandId, 
                     "themeId": themeId
                 ]), method: "DELETE"))
@@ -72,10 +145,29 @@ public extension OktaClient {
          
          - parameter brandId: (path)  
          - parameter themeId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteBrandThemeFavicon(brandId: String, themeId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/favicon".expanded(using: [
+                        "brandId": brandId, 
+                        "themeId": themeId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         Delete the Logo
+         
+         - parameter brandId: (path)  
+         - parameter themeId: (path)  
          */
         @discardableResult
-        public func deleteBrandThemeFavicon(brandId: String, themeId: String) async throws -> OktaResponse<Empty> {
-            try await send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/favicon".expanded(using: [
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func deleteBrandThemeLogo(brandId: String, themeId: String) async throws -> OktaResponse<Empty> {
+            try await send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/logo".expanded(using: [
                     "brandId": brandId, 
                     "themeId": themeId
                 ]), method: "DELETE"))
@@ -86,13 +178,17 @@ public extension OktaClient {
          
          - parameter brandId: (path)  
          - parameter themeId: (path)  
+         - parameter completion: Completion block
          */
-        @discardableResult
-        public func deleteBrandThemeLogo(brandId: String, themeId: String) async throws -> OktaResponse<Empty> {
-            try await send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/logo".expanded(using: [
-                    "brandId": brandId, 
-                    "themeId": themeId
-                ]), method: "DELETE"))
+        public func deleteBrandThemeLogo(brandId: String, themeId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/logo".expanded(using: [
+                        "brandId": brandId, 
+                        "themeId": themeId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -103,6 +199,7 @@ public extension OktaClient {
          - parameter customizationId: (path) The ID of the email customization. 
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteEmailCustomization(brandId: String, templateName: String, customizationId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations/{customizationId}".expanded(using: [
                     "brandId": brandId, 
@@ -112,14 +209,51 @@ public extension OktaClient {
         }
 
         /**
+         Delete an Email Customization
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter customizationId: (path) The ID of the email customization. 
+         - parameter completion: Completion block
+         */
+        public func deleteEmailCustomization(brandId: String, templateName: String, customizationId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations/{customizationId}".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName, 
+                        "customizationId": customizationId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Brand
          
          - parameter brandId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getBrand(brandId: String) async throws -> OktaResponse<Brand> {
             try await send(try request(to: "/api/v1/brands/{brandId}".expanded(using: [
                     "brandId": brandId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Brand
+         
+         - parameter brandId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getBrand(brandId: String, completion: @escaping (Result<OktaResponse<Brand>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -128,11 +262,30 @@ public extension OktaClient {
          - parameter brandId: (path)  
          - parameter themeId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getBrandTheme(brandId: String, themeId: String) async throws -> OktaResponse<ThemeResponse> {
             try await send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}".expanded(using: [
                     "brandId": brandId, 
                     "themeId": themeId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a Theme
+         
+         - parameter brandId: (path)  
+         - parameter themeId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getBrandTheme(brandId: String, themeId: String, completion: @escaping (Result<OktaResponse<ThemeResponse>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}".expanded(using: [
+                        "brandId": brandId, 
+                        "themeId": themeId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -142,8 +295,45 @@ public extension OktaClient {
          - parameter templateName: (path) The name of the email template. 
          - parameter customizationId: (path) The ID of the email customization. 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getCustomizationPreview(brandId: String, templateName: String, customizationId: String) async throws -> OktaResponse<EmailPreview> {
             try await send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations/{customizationId}/preview".expanded(using: [
+                    "brandId": brandId, 
+                    "templateName": templateName, 
+                    "customizationId": customizationId
+                ]), method: "GET"))
+        }
+
+        /**
+         Preview an Email Customization
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter customizationId: (path) The ID of the email customization. 
+         - parameter completion: Completion block
+         */
+        public func getCustomizationPreview(brandId: String, templateName: String, customizationId: String, completion: @escaping (Result<OktaResponse<EmailPreview>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations/{customizationId}/preview".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName, 
+                        "customizationId": customizationId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         Retrieve an Email Customization
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter customizationId: (path) The ID of the email customization. 
+         */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func getEmailCustomization(brandId: String, templateName: String, customizationId: String) async throws -> OktaResponse<EmailCustomization> {
+            try await send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations/{customizationId}".expanded(using: [
                     "brandId": brandId, 
                     "templateName": templateName, 
                     "customizationId": customizationId
@@ -156,13 +346,18 @@ public extension OktaClient {
          - parameter brandId: (path) The ID of the brand. 
          - parameter templateName: (path) The name of the email template. 
          - parameter customizationId: (path) The ID of the email customization. 
+         - parameter completion: Completion block
          */
-        public func getEmailCustomization(brandId: String, templateName: String, customizationId: String) async throws -> OktaResponse<EmailCustomization> {
-            try await send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations/{customizationId}".expanded(using: [
-                    "brandId": brandId, 
-                    "templateName": templateName, 
-                    "customizationId": customizationId
-                ]), method: "GET"))
+        public func getEmailCustomization(brandId: String, templateName: String, customizationId: String, completion: @escaping (Result<OktaResponse<EmailCustomization>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations/{customizationId}".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName, 
+                        "customizationId": customizationId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -170,10 +365,49 @@ public extension OktaClient {
          
          - parameter brandId: (path) The ID of the brand. 
          - parameter templateName: (path) The name of the email template. 
-         - parameter language: (query) The language to use for the email. Defaults to the current user&#39;s language if unspecified. (optional)
+         - parameter language: (query) The language to use for the email. Defaults to the current user's language if unspecified. (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getEmailDefaultContent(brandId: String, templateName: String, language: String? = nil) async throws -> OktaResponse<EmailDefaultContent> {
             try await send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/default-content".expanded(using: [
+                    "brandId": brandId, 
+                    "templateName": templateName
+                ]), method: "GET", query: [
+                    "language": language
+                ]))
+        }
+
+        /**
+         Retrieve an Email Template Default Content
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter language: (query) The language to use for the email. Defaults to the current user's language if unspecified. (optional)
+         - parameter completion: Completion block
+         */
+        public func getEmailDefaultContent(brandId: String, templateName: String, language: String? = nil, completion: @escaping (Result<OktaResponse<EmailDefaultContent>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/default-content".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName
+                    ]), method: "GET", query: [
+                        "language": language
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         Preview the Email Template Default Content
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter language: (query) The language to use for the email. Defaults to the current user's language if unspecified. (optional)
+         */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func getEmailDefaultPreview(brandId: String, templateName: String, language: String? = nil) async throws -> OktaResponse<EmailPreview> {
+            try await send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/default-content/preview".expanded(using: [
                     "brandId": brandId, 
                     "templateName": templateName
                 ]), method: "GET", query: [
@@ -186,15 +420,20 @@ public extension OktaClient {
          
          - parameter brandId: (path) The ID of the brand. 
          - parameter templateName: (path) The name of the email template. 
-         - parameter language: (query) The language to use for the email. Defaults to the current user&#39;s language if unspecified. (optional)
+         - parameter language: (query) The language to use for the email. Defaults to the current user's language if unspecified. (optional)
+         - parameter completion: Completion block
          */
-        public func getEmailDefaultPreview(brandId: String, templateName: String, language: String? = nil) async throws -> OktaResponse<EmailPreview> {
-            try await send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/default-content/preview".expanded(using: [
-                    "brandId": brandId, 
-                    "templateName": templateName
-                ]), method: "GET", query: [
-                    "language": language
-                ]))
+        public func getEmailDefaultPreview(brandId: String, templateName: String, language: String? = nil, completion: @escaping (Result<OktaResponse<EmailPreview>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/default-content/preview".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName
+                    ]), method: "GET", query: [
+                        "language": language
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -203,11 +442,30 @@ public extension OktaClient {
          - parameter brandId: (path) The ID of the brand. 
          - parameter templateName: (path) The name of the email template. 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getEmailSettings(brandId: String, templateName: String) async throws -> OktaResponse<EmailSettings> {
             try await send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/settings".expanded(using: [
                     "brandId": brandId, 
                     "templateName": templateName
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve the Email Template Settings
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter completion: Completion block
+         */
+        public func getEmailSettings(brandId: String, templateName: String, completion: @escaping (Result<OktaResponse<EmailSettings>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/settings".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -225,6 +483,7 @@ public extension OktaClient {
          - parameter templateName: (path) The name of the email template. 
          - parameter expand: (query) Specifies additional metadata to be included in the response. (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getEmailTemplate(brandId: String, templateName: String, expand: [String]? = nil) async throws -> OktaResponse<EmailTemplate> {
             try await send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}".expanded(using: [
                     "brandId": brandId, 
@@ -235,10 +494,32 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve an Email Template
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter expand: (query) Specifies additional metadata to be included in the response. (optional)
+         - parameter completion: Completion block
+         */
+        public func getEmailTemplate(brandId: String, templateName: String, expand: [String]? = nil, completion: @escaping (Result<OktaResponse<EmailTemplate>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName
+                    ]), method: "GET", query: [
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Themes
          
          - parameter brandId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listBrandThemes(brandId: String) async throws -> OktaResponse<[ThemeResponse]> {
             try await send(try request(to: "/api/v1/brands/{brandId}/themes".expanded(using: [
                     "brandId": brandId
@@ -246,11 +527,41 @@ public extension OktaClient {
         }
 
         /**
+         List all Themes
+         
+         - parameter brandId: (path)  
+         - parameter completion: Completion block
+         */
+        public func listBrandThemes(brandId: String, completion: @escaping (Result<OktaResponse<[ThemeResponse]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/themes".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Brands
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listBrands() async throws -> OktaResponse<[Brand]> {
             try await send(try request(to: "/api/v1/brands", method: "GET"))
+        }
+
+        /**
+         List all Brands
+         
+         - parameter completion: Completion block
+         */
+        public func listBrands(completion: @escaping (Result<OktaResponse<[Brand]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -258,9 +569,10 @@ public extension OktaClient {
          
          - parameter brandId: (path) The ID of the brand. 
          - parameter templateName: (path) The name of the email template. 
-         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the &#x60;Link&#x60; response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
+         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the `Link` response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
          - parameter limit: (query) A limit on the number of objects to return. (optional, default to 20)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listEmailCustomizations(brandId: String, templateName: String, after: String? = nil, limit: Int? = nil) async throws -> OktaResponse<[EmailCustomization]> {
             try await send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations".expanded(using: [
                     "brandId": brandId, 
@@ -269,6 +581,29 @@ public extension OktaClient {
                     "after": after, 
                     "limit": limit
                 ]))
+        }
+
+        /**
+         List all Email Customizations
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the `Link` response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
+         - parameter limit: (query) A limit on the number of objects to return. (optional, default to 20)
+         - parameter completion: Completion block
+         */
+        public func listEmailCustomizations(brandId: String, templateName: String, after: String? = nil, limit: Int? = nil, completion: @escaping (Result<OktaResponse<[EmailCustomization]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName
+                    ]), method: "GET", query: [
+                        "after": after, 
+                        "limit": limit
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -283,10 +618,11 @@ public extension OktaClient {
          List all Email Templates
          
          - parameter brandId: (path) The ID of the brand. 
-         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the &#x60;Link&#x60; response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
+         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the `Link` response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
          - parameter limit: (query) A limit on the number of objects to return. (optional, default to 20)
          - parameter expand: (query) Specifies additional metadata to be included in the response. (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listEmailTemplates(brandId: String, after: String? = nil, limit: Int? = nil, expand: [String]? = nil) async throws -> OktaResponse<[EmailTemplate]> {
             try await send(try request(to: "/api/v1/brands/{brandId}/templates/email".expanded(using: [
                     "brandId": brandId
@@ -298,15 +634,56 @@ public extension OktaClient {
         }
 
         /**
+         List all Email Templates
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter after: (query) The cursor to use for pagination. It is an opaque string that specifies your current location in the list and is obtained from the `Link` response header. See [Pagination](https://developer.okta.com/docs/reference/core-okta-api/#pagination) for more information. (optional)
+         - parameter limit: (query) A limit on the number of objects to return. (optional, default to 20)
+         - parameter expand: (query) Specifies additional metadata to be included in the response. (optional)
+         - parameter completion: Completion block
+         */
+        public func listEmailTemplates(brandId: String, after: String? = nil, limit: Int? = nil, expand: [String]? = nil, completion: @escaping (Result<OktaResponse<[EmailTemplate]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/templates/email".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "GET", query: [
+                        "after": after, 
+                        "limit": limit, 
+                        "expand": expand
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Preview the Error Page
          
          - parameter brandId: (path) The ID of the brand. 
          - parameter customizablePage: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func previewErrorPage(brandId: String, customizablePage: CustomizablePage) async throws -> OktaResponse<String> {
             try await send(try requestWithBody(to: "/api/v1/brands/{brandId}/pages/error/preview".expanded(using: [
                     "brandId": brandId
                 ]), method: "POST", body: customizablePage))
+        }
+
+        /**
+         Preview the Error Page
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter customizablePage: (body)  
+         - parameter completion: Completion block
+         */
+        public func previewErrorPage(brandId: String, customizablePage: CustomizablePage, completion: @escaping (Result<OktaResponse<String>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/brands/{brandId}/pages/error/preview".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "POST", body: customizablePage), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -315,10 +692,28 @@ public extension OktaClient {
          - parameter brandId: (path) The ID of the brand. 
          - parameter signInPage: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func previewSignInPage(brandId: String, signInPage: SignInPage) async throws -> OktaResponse<String> {
             try await send(try requestWithBody(to: "/api/v1/brands/{brandId}/pages/sign-in/preview".expanded(using: [
                     "brandId": brandId
                 ]), method: "POST", body: signInPage))
+        }
+
+        /**
+         Preview the Sign-in Page.
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter signInPage: (body)  
+         - parameter completion: Completion block
+         */
+        public func previewSignInPage(brandId: String, signInPage: SignInPage, completion: @escaping (Result<OktaResponse<String>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/brands/{brandId}/pages/sign-in/preview".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "POST", body: signInPage), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -327,10 +722,28 @@ public extension OktaClient {
          - parameter brandId: (path) The ID of the brand. 
          - parameter customizablePage: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func replaceErrorPage(brandId: String, customizablePage: CustomizablePage) async throws -> OktaResponse<CustomizablePage> {
             try await send(try requestWithBody(to: "/api/v1/brands/{brandId}/pages/error".expanded(using: [
                     "brandId": brandId
                 ]), method: "PUT", body: customizablePage))
+        }
+
+        /**
+         Replace the Error Page
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter customizablePage: (body)  
+         - parameter completion: Completion block
+         */
+        public func replaceErrorPage(brandId: String, customizablePage: CustomizablePage, completion: @escaping (Result<OktaResponse<CustomizablePage>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/brands/{brandId}/pages/error".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "PUT", body: customizablePage), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -339,10 +752,28 @@ public extension OktaClient {
          - parameter brandId: (path) The ID of the brand. 
          - parameter signInPage: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func replaceSignInPage(brandId: String, signInPage: SignInPage) async throws -> OktaResponse<SignInPage> {
             try await send(try requestWithBody(to: "/api/v1/brands/{brandId}/pages/sign-in".expanded(using: [
                     "brandId": brandId
                 ]), method: "PUT", body: signInPage))
+        }
+
+        /**
+         Replace the Sign-in Page
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter signInPage: (body)  
+         - parameter completion: Completion block
+         */
+        public func replaceSignInPage(brandId: String, signInPage: SignInPage, completion: @escaping (Result<OktaResponse<SignInPage>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/brands/{brandId}/pages/sign-in".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "PUT", body: signInPage), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -351,10 +782,28 @@ public extension OktaClient {
          - parameter brandId: (path) The ID of the brand. 
          - parameter hostedPage: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func replaceSignOutPageSettings(brandId: String, hostedPage: HostedPage) async throws -> OktaResponse<HostedPage> {
             try await send(try requestWithBody(to: "/api/v1/brands/{brandId}/pages/sign-out".expanded(using: [
                     "brandId": brandId
                 ]), method: "PUT", body: hostedPage))
+        }
+
+        /**
+         Replace the Sign-out Page Settings
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter hostedPage: (body)  
+         - parameter completion: Completion block
+         */
+        public func replaceSignOutPageSettings(brandId: String, hostedPage: HostedPage, completion: @escaping (Result<OktaResponse<HostedPage>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/brands/{brandId}/pages/sign-out".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "PUT", body: hostedPage), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -363,10 +812,27 @@ public extension OktaClient {
          - parameter brandId: (path) The ID of the brand. 
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func resetErrorPage(brandId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/brands/{brandId}/pages/error".expanded(using: [
                     "brandId": brandId
                 ]), method: "DELETE"))
+        }
+
+        /**
+         Reset the Error Page
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter completion: Completion block
+         */
+        public func resetErrorPage(brandId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/pages/error".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -375,6 +841,7 @@ public extension OktaClient {
          - parameter brandId: (path) The ID of the brand. 
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func resetSignInPage(brandId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/brands/{brandId}/pages/sign-in".expanded(using: [
                     "brandId": brandId
@@ -382,12 +849,57 @@ public extension OktaClient {
         }
 
         /**
+         Reset the Sign-in Page
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter completion: Completion block
+         */
+        public func resetSignInPage(brandId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/pages/sign-in".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve the Error Page
          
          - parameter brandId: (path) The ID of the brand. 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func retrieveErrorPage(brandId: String) async throws -> OktaResponse<CustomizablePage> {
             try await send(try request(to: "/api/v1/brands/{brandId}/pages/error".expanded(using: [
+                    "brandId": brandId
+                ]), method: "GET"))
+        }
+
+        /**
+         Retrieve the Error Page
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter completion: Completion block
+         */
+        public func retrieveErrorPage(brandId: String, completion: @escaping (Result<OktaResponse<CustomizablePage>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/pages/error".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         Retrieve the Sign-in Page
+         
+         - parameter brandId: (path) The ID of the brand. 
+         */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func retrieveSignInPage(brandId: String) async throws -> OktaResponse<SignInPage> {
+            try await send(try request(to: "/api/v1/brands/{brandId}/pages/sign-in".expanded(using: [
                     "brandId": brandId
                 ]), method: "GET"))
         }
@@ -396,9 +908,26 @@ public extension OktaClient {
          Retrieve the Sign-in Page
          
          - parameter brandId: (path) The ID of the brand. 
+         - parameter completion: Completion block
          */
-        public func retrieveSignInPage(brandId: String) async throws -> OktaResponse<SignInPage> {
-            try await send(try request(to: "/api/v1/brands/{brandId}/pages/sign-in".expanded(using: [
+        public func retrieveSignInPage(brandId: String, completion: @escaping (Result<OktaResponse<SignInPage>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/pages/sign-in".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         Retrieve the Sign-out Page Settings
+         
+         - parameter brandId: (path) The ID of the brand. 
+         */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func retrieveSignOutPageSettings(brandId: String) async throws -> OktaResponse<HostedPage> {
+            try await send(try request(to: "/api/v1/brands/{brandId}/pages/sign-out".expanded(using: [
                     "brandId": brandId
                 ]), method: "GET"))
         }
@@ -407,11 +936,16 @@ public extension OktaClient {
          Retrieve the Sign-out Page Settings
          
          - parameter brandId: (path) The ID of the brand. 
+         - parameter completion: Completion block
          */
-        public func retrieveSignOutPageSettings(brandId: String) async throws -> OktaResponse<HostedPage> {
-            try await send(try request(to: "/api/v1/brands/{brandId}/pages/sign-out".expanded(using: [
-                    "brandId": brandId
-                ]), method: "GET"))
+        public func retrieveSignOutPageSettings(brandId: String, completion: @escaping (Result<OktaResponse<HostedPage>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/pages/sign-out".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -419,9 +953,10 @@ public extension OktaClient {
          
          - parameter brandId: (path) The ID of the brand. 
          - parameter templateName: (path) The name of the email template. 
-         - parameter language: (query) The language to use for the email. Defaults to the current user&#39;s language if unspecified. (optional)
+         - parameter language: (query) The language to use for the email. Defaults to the current user's language if unspecified. (optional)
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func sendTestEmail(brandId: String, templateName: String, language: String? = nil) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/test".expanded(using: [
                     "brandId": brandId, 
@@ -432,15 +967,54 @@ public extension OktaClient {
         }
 
         /**
+         Send a Test Email
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter language: (query) The language to use for the email. Defaults to the current user's language if unspecified. (optional)
+         - parameter completion: Completion block
+         */
+        public func sendTestEmail(brandId: String, templateName: String, language: String? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/test".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName
+                    ]), method: "POST", query: [
+                        "language": language
+                    ]), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Replace a Brand
          
          - parameter brandId: (path)  
          - parameter brand: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateBrand(brandId: String, brand: Brand) async throws -> OktaResponse<Brand> {
             try await send(try requestWithBody(to: "/api/v1/brands/{brandId}".expanded(using: [
                     "brandId": brandId
                 ]), method: "PUT", body: brand))
+        }
+
+        /**
+         Replace a Brand
+         
+         - parameter brandId: (path)  
+         - parameter brand: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateBrand(brandId: String, brand: Brand, completion: @escaping (Result<OktaResponse<Brand>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/brands/{brandId}".expanded(using: [
+                        "brandId": brandId
+                    ]), method: "PUT", body: brand), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -450,11 +1024,31 @@ public extension OktaClient {
          - parameter themeId: (path)  
          - parameter theme: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateBrandTheme(brandId: String, themeId: String, theme: Theme) async throws -> OktaResponse<ThemeResponse> {
             try await send(try requestWithBody(to: "/api/v1/brands/{brandId}/themes/{themeId}".expanded(using: [
                     "brandId": brandId, 
                     "themeId": themeId
                 ]), method: "PUT", body: theme))
+        }
+
+        /**
+         Replace a Theme
+         
+         - parameter brandId: (path)  
+         - parameter themeId: (path)  
+         - parameter theme: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateBrandTheme(brandId: String, themeId: String, theme: Theme, completion: @escaping (Result<OktaResponse<ThemeResponse>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/brands/{brandId}/themes/{themeId}".expanded(using: [
+                        "brandId": brandId, 
+                        "themeId": themeId
+                    ]), method: "PUT", body: theme), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -465,12 +1059,34 @@ public extension OktaClient {
          - parameter customizationId: (path) The ID of the email customization. 
          - parameter instance: (body) Request (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateEmailCustomization(brandId: String, templateName: String, customizationId: String, instance: EmailCustomization? = nil) async throws -> OktaResponse<EmailCustomization> {
             try await send(try requestWithBody(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations/{customizationId}".expanded(using: [
                     "brandId": brandId, 
                     "templateName": templateName, 
                     "customizationId": customizationId
                 ]), method: "PUT", body: instance))
+        }
+
+        /**
+         Replace an Email Customization
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter customizationId: (path) The ID of the email customization. 
+         - parameter instance: (body) Request (optional)
+         - parameter completion: Completion block
+         */
+        public func updateEmailCustomization(brandId: String, templateName: String, customizationId: String, instance: EmailCustomization? = nil, completion: @escaping (Result<OktaResponse<EmailCustomization>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/customizations/{customizationId}".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName, 
+                        "customizationId": customizationId
+                    ]), method: "PUT", body: instance), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -481,11 +1097,31 @@ public extension OktaClient {
          - parameter emailSettings: (body)  (optional)
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateEmailSettings(brandId: String, templateName: String, emailSettings: EmailSettings? = nil) async throws -> OktaResponse<Empty> {
             try await send(try requestWithBody(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/settings".expanded(using: [
                     "brandId": brandId, 
                     "templateName": templateName
                 ]), method: "PUT", body: emailSettings))
+        }
+
+        /**
+         Replace the Email Template Settings
+         
+         - parameter brandId: (path) The ID of the brand. 
+         - parameter templateName: (path) The name of the email template. 
+         - parameter emailSettings: (body)  (optional)
+         - parameter completion: Completion block
+         */
+        public func updateEmailSettings(brandId: String, templateName: String, emailSettings: EmailSettings? = nil, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/brands/{brandId}/templates/email/{templateName}/settings".expanded(using: [
+                        "brandId": brandId, 
+                        "templateName": templateName
+                    ]), method: "PUT", body: emailSettings), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -495,8 +1131,43 @@ public extension OktaClient {
          - parameter themeId: (path)  
          - parameter file: (form)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func uploadBrandThemeBackgroundImage(brandId: String, themeId: String, file: URL) async throws -> OktaResponse<ImageUploadResponse> {
             try await send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/background-image".expanded(using: [
+                    "brandId": brandId, 
+                    "themeId": themeId
+                ]), method: "POST"))
+        }
+
+        /**
+         Upload the Background Image
+         
+         - parameter brandId: (path)  
+         - parameter themeId: (path)  
+         - parameter file: (form)  
+         - parameter completion: Completion block
+         */
+        public func uploadBrandThemeBackgroundImage(brandId: String, themeId: String, file: URL, completion: @escaping (Result<OktaResponse<ImageUploadResponse>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/background-image".expanded(using: [
+                        "brandId": brandId, 
+                        "themeId": themeId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         Upload the Favicon
+         
+         - parameter brandId: (path)  
+         - parameter themeId: (path)  
+         - parameter file: (form)  
+         */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func uploadBrandThemeFavicon(brandId: String, themeId: String, file: URL) async throws -> OktaResponse<ImageUploadResponse> {
+            try await send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/favicon".expanded(using: [
                     "brandId": brandId, 
                     "themeId": themeId
                 ]), method: "POST"))
@@ -508,9 +1179,29 @@ public extension OktaClient {
          - parameter brandId: (path)  
          - parameter themeId: (path)  
          - parameter file: (form)  
+         - parameter completion: Completion block
          */
-        public func uploadBrandThemeFavicon(brandId: String, themeId: String, file: URL) async throws -> OktaResponse<ImageUploadResponse> {
-            try await send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/favicon".expanded(using: [
+        public func uploadBrandThemeFavicon(brandId: String, themeId: String, file: URL, completion: @escaping (Result<OktaResponse<ImageUploadResponse>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/favicon".expanded(using: [
+                        "brandId": brandId, 
+                        "themeId": themeId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         Upload the Logo
+         
+         - parameter brandId: (path)  
+         - parameter themeId: (path)  
+         - parameter file: (form)  
+         */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func uploadBrandThemeLogo(brandId: String, themeId: String, file: URL) async throws -> OktaResponse<ImageUploadResponse> {
+            try await send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/logo".expanded(using: [
                     "brandId": brandId, 
                     "themeId": themeId
                 ]), method: "POST"))
@@ -522,12 +1213,17 @@ public extension OktaClient {
          - parameter brandId: (path)  
          - parameter themeId: (path)  
          - parameter file: (form)  
+         - parameter completion: Completion block
          */
-        public func uploadBrandThemeLogo(brandId: String, themeId: String, file: URL) async throws -> OktaResponse<ImageUploadResponse> {
-            try await send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/logo".expanded(using: [
-                    "brandId": brandId, 
-                    "themeId": themeId
-                ]), method: "POST"))
+        public func uploadBrandThemeLogo(brandId: String, themeId: String, file: URL, completion: @escaping (Result<OktaResponse<ImageUploadResponse>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/brands/{brandId}/themes/{themeId}/logo".expanded(using: [
+                        "brandId": brandId, 
+                        "themeId": themeId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

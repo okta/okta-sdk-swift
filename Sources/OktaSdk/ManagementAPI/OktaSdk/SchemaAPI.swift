@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter appInstanceId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getApplicationUserSchema(appInstanceId: String) async throws -> OktaResponse<UserSchema> {
             try await send(try request(to: "/api/v1/meta/schemas/apps/{appInstanceId}/default".expanded(using: [
                     "appInstanceId": appInstanceId
@@ -37,11 +38,41 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve the default Application User Schema for an Application
+         
+         - parameter appInstanceId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getApplicationUserSchema(appInstanceId: String, completion: @escaping (Result<OktaResponse<UserSchema>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/schemas/apps/{appInstanceId}/default".expanded(using: [
+                        "appInstanceId": appInstanceId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve the default Group Schema
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getGroupSchema() async throws -> OktaResponse<GroupSchema> {
             try await send(try request(to: "/api/v1/meta/schemas/group/default", method: "GET"))
+        }
+
+        /**
+         Retrieve the default Group Schema
+         
+         - parameter completion: Completion block
+         */
+        public func getGroupSchema(completion: @escaping (Result<OktaResponse<GroupSchema>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/schemas/group/default", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -49,10 +80,27 @@ public extension OktaClient {
          
          - parameter schemaId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getUserSchema(schemaId: String) async throws -> OktaResponse<UserSchema> {
             try await send(try request(to: "/api/v1/meta/schemas/user/{schemaId}".expanded(using: [
                     "schemaId": schemaId
                 ]), method: "GET"))
+        }
+
+        /**
+         Retrieve a User Schema
+         
+         - parameter schemaId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getUserSchema(schemaId: String, completion: @escaping (Result<OktaResponse<UserSchema>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/schemas/user/{schemaId}".expanded(using: [
+                        "schemaId": schemaId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -61,6 +109,7 @@ public extension OktaClient {
          - parameter appInstanceId: (path)  
          - parameter body: (body)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateApplicationUserProfile(appInstanceId: String, body: UserSchema? = nil) async throws -> OktaResponse<UserSchema> {
             try await send(try requestWithBody(to: "/api/v1/meta/schemas/apps/{appInstanceId}/default".expanded(using: [
                     "appInstanceId": appInstanceId
@@ -68,12 +117,44 @@ public extension OktaClient {
         }
 
         /**
+         Update the default Application User Schema for an Application
+         
+         - parameter appInstanceId: (path)  
+         - parameter body: (body)  (optional)
+         - parameter completion: Completion block
+         */
+        public func updateApplicationUserProfile(appInstanceId: String, body: UserSchema? = nil, completion: @escaping (Result<OktaResponse<UserSchema>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/meta/schemas/apps/{appInstanceId}/default".expanded(using: [
+                        "appInstanceId": appInstanceId
+                    ]), method: "POST", body: body), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Update the default Group Schema
          
          - parameter groupSchema: (body)  (optional)
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateGroupSchema(groupSchema: GroupSchema? = nil) async throws -> OktaResponse<GroupSchema> {
             try await send(try requestWithBody(to: "/api/v1/meta/schemas/group/default", method: "POST", body: groupSchema))
+        }
+
+        /**
+         Update the default Group Schema
+         
+         - parameter groupSchema: (body)  (optional)
+         - parameter completion: Completion block
+         */
+        public func updateGroupSchema(groupSchema: GroupSchema? = nil, completion: @escaping (Result<OktaResponse<GroupSchema>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/meta/schemas/group/default", method: "POST", body: groupSchema), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -82,10 +163,28 @@ public extension OktaClient {
          - parameter schemaId: (path)  
          - parameter userSchema: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateUserProfile(schemaId: String, userSchema: UserSchema) async throws -> OktaResponse<UserSchema> {
             try await send(try requestWithBody(to: "/api/v1/meta/schemas/user/{schemaId}".expanded(using: [
                     "schemaId": schemaId
                 ]), method: "POST", body: userSchema))
+        }
+
+        /**
+         Update a User Schema
+         
+         - parameter schemaId: (path)  
+         - parameter userSchema: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateUserProfile(schemaId: String, userSchema: UserSchema, completion: @escaping (Result<OktaResponse<UserSchema>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/meta/schemas/user/{schemaId}".expanded(using: [
+                        "schemaId": schemaId
+                    ]), method: "POST", body: userSchema), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

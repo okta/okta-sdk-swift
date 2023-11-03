@@ -30,8 +30,37 @@ public extension OktaClient {
          
          - parameter authenticatorId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func activateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
             try await send(try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/activate".expanded(using: [
+                    "authenticatorId": authenticatorId
+                ]), method: "POST"))
+        }
+
+        /**
+         Activate an Authenticator
+         
+         - parameter authenticatorId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Authenticator>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/activate".expanded(using: [
+                        "authenticatorId": authenticatorId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
+         Deactivate an Authenticator
+         
+         - parameter authenticatorId: (path)  
+         */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
+        public func deactivateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
+            try await send(try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/deactivate".expanded(using: [
                     "authenticatorId": authenticatorId
                 ]), method: "POST"))
         }
@@ -40,11 +69,16 @@ public extension OktaClient {
          Deactivate an Authenticator
          
          - parameter authenticatorId: (path)  
+         - parameter completion: Completion block
          */
-        public func deactivateAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
-            try await send(try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/deactivate".expanded(using: [
-                    "authenticatorId": authenticatorId
-                ]), method: "POST"))
+        public func deactivateAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Authenticator>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authenticators/{authenticatorId}/lifecycle/deactivate".expanded(using: [
+                        "authenticatorId": authenticatorId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -52,6 +86,7 @@ public extension OktaClient {
          
          - parameter authenticatorId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getAuthenticator(authenticatorId: String) async throws -> OktaResponse<Authenticator> {
             try await send(try request(to: "/api/v1/authenticators/{authenticatorId}".expanded(using: [
                     "authenticatorId": authenticatorId
@@ -59,11 +94,41 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve an Authenticator
+         
+         - parameter authenticatorId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getAuthenticator(authenticatorId: String, completion: @escaping (Result<OktaResponse<Authenticator>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authenticators/{authenticatorId}".expanded(using: [
+                        "authenticatorId": authenticatorId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Authenticators
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listAuthenticators() async throws -> OktaResponse<[Authenticator]> {
             try await send(try request(to: "/api/v1/authenticators", method: "GET"))
+        }
+
+        /**
+         List all Authenticators
+         
+         - parameter completion: Completion block
+         */
+        public func listAuthenticators(completion: @escaping (Result<OktaResponse<[Authenticator]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/authenticators", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -72,10 +137,28 @@ public extension OktaClient {
          - parameter authenticatorId: (path)  
          - parameter authenticator: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateAuthenticator(authenticatorId: String, authenticator: Authenticator) async throws -> OktaResponse<Authenticator> {
             try await send(try requestWithBody(to: "/api/v1/authenticators/{authenticatorId}".expanded(using: [
                     "authenticatorId": authenticatorId
                 ]), method: "PUT", body: authenticator))
+        }
+
+        /**
+         Replace an Authenticator
+         
+         - parameter authenticatorId: (path)  
+         - parameter authenticator: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateAuthenticator(authenticatorId: String, authenticator: Authenticator, completion: @escaping (Result<OktaResponse<Authenticator>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/authenticators/{authenticatorId}".expanded(using: [
+                        "authenticatorId": authenticatorId
+                    ]), method: "PUT", body: authenticator), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

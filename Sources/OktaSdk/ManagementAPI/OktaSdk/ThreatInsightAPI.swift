@@ -29,8 +29,22 @@ public extension OktaClient {
          Retrieve the ThreatInsight Configuration
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getCurrentConfiguration() async throws -> OktaResponse<ThreatInsightConfiguration> {
             try await send(try request(to: "/api/v1/threats/configuration", method: "GET"))
+        }
+
+        /**
+         Retrieve the ThreatInsight Configuration
+         
+         - parameter completion: Completion block
+         */
+        public func getCurrentConfiguration(completion: @escaping (Result<OktaResponse<ThreatInsightConfiguration>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/threats/configuration", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -38,8 +52,23 @@ public extension OktaClient {
          
          - parameter threatInsightConfiguration: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration) async throws -> OktaResponse<ThreatInsightConfiguration> {
             try await send(try requestWithBody(to: "/api/v1/threats/configuration", method: "POST", body: threatInsightConfiguration))
+        }
+
+        /**
+         Update the ThreatInsight Configuration
+         
+         - parameter threatInsightConfiguration: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateConfiguration(threatInsightConfiguration: ThreatInsightConfiguration, completion: @escaping (Result<OktaResponse<ThreatInsightConfiguration>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/threats/configuration", method: "POST", body: threatInsightConfiguration), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

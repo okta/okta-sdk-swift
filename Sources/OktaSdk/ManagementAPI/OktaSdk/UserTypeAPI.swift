@@ -30,8 +30,23 @@ public extension OktaClient {
          
          - parameter userType: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createUserType(userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try requestWithBody(to: "/api/v1/meta/types/user", method: "POST", body: userType))
+        }
+
+        /**
+         Create a User Type
+         
+         - parameter userType: (body)  
+         - parameter completion: Completion block
+         */
+        public func createUserType(userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/meta/types/user", method: "POST", body: userType), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -40,6 +55,7 @@ public extension OktaClient {
          - parameter typeId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteUserType(typeId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
@@ -47,10 +63,27 @@ public extension OktaClient {
         }
 
         /**
+         Delete a User Type
+         
+         - parameter typeId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteUserType(typeId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
+                        "typeId": typeId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a User Type
          
          - parameter typeId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getUserType(typeId: String) async throws -> OktaResponse<UserType> {
             try await send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
@@ -58,11 +91,41 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a User Type
+         
+         - parameter typeId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getUserType(typeId: String, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
+                        "typeId": typeId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all User Types
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listUserTypes() async throws -> OktaResponse<[UserType]> {
             try await send(try request(to: "/api/v1/meta/types/user", method: "GET"))
+        }
+
+        /**
+         List all User Types
+         
+         - parameter completion: Completion block
+         */
+        public func listUserTypes(completion: @escaping (Result<OktaResponse<[UserType]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/types/user", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -71,10 +134,28 @@ public extension OktaClient {
          - parameter typeId: (path)  
          - parameter userType: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func replaceUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
                 ]), method: "PUT", body: userType))
+        }
+
+        /**
+         Replace a User Type
+         
+         - parameter typeId: (path)  
+         - parameter userType: (body)  
+         - parameter completion: Completion block
+         */
+        public func replaceUserType(typeId: String, userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
+                        "typeId": typeId
+                    ]), method: "PUT", body: userType), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -83,10 +164,28 @@ public extension OktaClient {
          - parameter typeId: (path)  
          - parameter userType: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateUserType(typeId: String, userType: UserType) async throws -> OktaResponse<UserType> {
             try await send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
                     "typeId": typeId
                 ]), method: "POST", body: userType))
+        }
+
+        /**
+         Update a User Type
+         
+         - parameter typeId: (path)  
+         - parameter userType: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateUserType(typeId: String, userType: UserType, completion: @escaping (Result<OktaResponse<UserType>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/meta/types/user/{typeId}".expanded(using: [
+                        "typeId": typeId
+                    ]), method: "POST", body: userType), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

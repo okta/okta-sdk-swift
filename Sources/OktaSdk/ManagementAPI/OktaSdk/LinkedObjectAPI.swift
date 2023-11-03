@@ -30,8 +30,23 @@ public extension OktaClient {
          
          - parameter linkedObject: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func addLinkedObjectDefinition(linkedObject: LinkedObject) async throws -> OktaResponse<LinkedObject> {
             try await send(try requestWithBody(to: "/api/v1/meta/schemas/user/linkedObjects", method: "POST", body: linkedObject))
+        }
+
+        /**
+         Create a Linked Object Definition
+         
+         - parameter linkedObject: (body)  
+         - parameter completion: Completion block
+         */
+        public func addLinkedObjectDefinition(linkedObject: LinkedObject, completion: @escaping (Result<OktaResponse<LinkedObject>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/meta/schemas/user/linkedObjects", method: "POST", body: linkedObject), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -40,6 +55,7 @@ public extension OktaClient {
          - parameter linkedObjectName: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
                     "linkedObjectName": linkedObjectName
@@ -47,10 +63,27 @@ public extension OktaClient {
         }
 
         /**
+         Delete a Linked Object Definition
+         
+         - parameter linkedObjectName: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteLinkedObjectDefinition(linkedObjectName: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
+                        "linkedObjectName": linkedObjectName
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a Linked Object Definition
          
          - parameter linkedObjectName: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getLinkedObjectDefinition(linkedObjectName: String) async throws -> OktaResponse<LinkedObject> {
             try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
                     "linkedObjectName": linkedObjectName
@@ -58,11 +91,41 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a Linked Object Definition
+         
+         - parameter linkedObjectName: (path)  
+         - parameter completion: Completion block
+         */
+        public func getLinkedObjectDefinition(linkedObjectName: String, completion: @escaping (Result<OktaResponse<LinkedObject>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/schemas/user/linkedObjects/{linkedObjectName}".expanded(using: [
+                        "linkedObjectName": linkedObjectName
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Linked Object Definitions
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listLinkedObjectDefinitions() async throws -> OktaResponse<[LinkedObject]> {
             try await send(try request(to: "/api/v1/meta/schemas/user/linkedObjects", method: "GET"))
+        }
+
+        /**
+         List all Linked Object Definitions
+         
+         - parameter completion: Completion block
+         */
+        public func listLinkedObjectDefinitions(completion: @escaping (Result<OktaResponse<[LinkedObject]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/meta/schemas/user/linkedObjects", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

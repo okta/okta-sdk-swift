@@ -30,8 +30,23 @@ public extension OktaClient {
          
          - parameter instance: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createCaptchaInstance(instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try requestWithBody(to: "/api/v1/captchas", method: "POST", body: instance))
+        }
+
+        /**
+         Create a CAPTCHA instance
+         
+         - parameter instance: (body)  
+         - parameter completion: Completion block
+         */
+        public func createCaptchaInstance(instance: CAPTCHAInstance, completion: @escaping (Result<OktaResponse<CAPTCHAInstance>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/captchas", method: "POST", body: instance), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -40,6 +55,7 @@ public extension OktaClient {
          - parameter captchaId: (path) id of the CAPTCHA 
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteCaptchaInstance(captchaId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
                     "captchaId": captchaId
@@ -47,10 +63,27 @@ public extension OktaClient {
         }
 
         /**
+         Delete a CAPTCHA Instance
+         
+         - parameter captchaId: (path) id of the CAPTCHA 
+         - parameter completion: Completion block
+         */
+        public func deleteCaptchaInstance(captchaId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
+                        "captchaId": captchaId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve a CAPTCHA Instance
          
          - parameter captchaId: (path) id of the CAPTCHA 
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getCaptchaInstance(captchaId: String) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
                     "captchaId": captchaId
@@ -58,11 +91,41 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve a CAPTCHA Instance
+         
+         - parameter captchaId: (path) id of the CAPTCHA 
+         - parameter completion: Completion block
+         */
+        public func getCaptchaInstance(captchaId: String, completion: @escaping (Result<OktaResponse<CAPTCHAInstance>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/captchas/{captchaId}".expanded(using: [
+                        "captchaId": captchaId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all CAPTCHA instances
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listCaptchaInstances() async throws -> OktaResponse<[CAPTCHAInstance]> {
             try await send(try request(to: "/api/v1/captchas", method: "GET"))
+        }
+
+        /**
+         List all CAPTCHA instances
+         
+         - parameter completion: Completion block
+         */
+        public func listCaptchaInstances(completion: @escaping (Result<OktaResponse<[CAPTCHAInstance]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/captchas", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -71,10 +134,28 @@ public extension OktaClient {
          - parameter captchaId: (path) id of the CAPTCHA 
          - parameter instance: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func partialUpdateCaptchaInstance(captchaId: String, instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try requestWithBody(to: "/api/v1/captchas/{captchaId}".expanded(using: [
                     "captchaId": captchaId
                 ]), method: "POST", body: instance))
+        }
+
+        /**
+         Update a CAPTCHA instance
+         
+         - parameter captchaId: (path) id of the CAPTCHA 
+         - parameter instance: (body)  
+         - parameter completion: Completion block
+         */
+        public func partialUpdateCaptchaInstance(captchaId: String, instance: CAPTCHAInstance, completion: @escaping (Result<OktaResponse<CAPTCHAInstance>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/captchas/{captchaId}".expanded(using: [
+                        "captchaId": captchaId
+                    ]), method: "POST", body: instance), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -83,10 +164,28 @@ public extension OktaClient {
          - parameter captchaId: (path) id of the CAPTCHA 
          - parameter instance: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateCaptchaInstance(captchaId: String, instance: CAPTCHAInstance) async throws -> OktaResponse<CAPTCHAInstance> {
             try await send(try requestWithBody(to: "/api/v1/captchas/{captchaId}".expanded(using: [
                     "captchaId": captchaId
                 ]), method: "PUT", body: instance))
+        }
+
+        /**
+         Replace a CAPTCHA instance
+         
+         - parameter captchaId: (path) id of the CAPTCHA 
+         - parameter instance: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateCaptchaInstance(captchaId: String, instance: CAPTCHAInstance, completion: @escaping (Result<OktaResponse<CAPTCHAInstance>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/captchas/{captchaId}".expanded(using: [
+                        "captchaId": captchaId
+                    ]), method: "PUT", body: instance), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

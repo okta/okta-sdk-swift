@@ -30,6 +30,7 @@ public extension OktaClient {
          
          - parameter eventHookId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func activateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try request(to: "/api/v1/eventHooks/{eventHookId}/lifecycle/activate".expanded(using: [
                     "eventHookId": eventHookId
@@ -37,12 +38,43 @@ public extension OktaClient {
         }
 
         /**
+         Activate an Event Hook
+         
+         - parameter eventHookId: (path)  
+         - parameter completion: Completion block
+         */
+        public func activateEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/eventHooks/{eventHookId}/lifecycle/activate".expanded(using: [
+                        "eventHookId": eventHookId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Create an Event Hook
          
          - parameter eventHook: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func createEventHook(eventHook: EventHook) async throws -> OktaResponse<EventHook> {
             try await send(try requestWithBody(to: "/api/v1/eventHooks", method: "POST", body: eventHook))
+        }
+
+        /**
+         Create an Event Hook
+         
+         - parameter eventHook: (body)  
+         - parameter completion: Completion block
+         */
+        public func createEventHook(eventHook: EventHook, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/eventHooks", method: "POST", body: eventHook), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -50,10 +82,27 @@ public extension OktaClient {
          
          - parameter eventHookId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deactivateEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try request(to: "/api/v1/eventHooks/{eventHookId}/lifecycle/deactivate".expanded(using: [
                     "eventHookId": eventHookId
                 ]), method: "POST"))
+        }
+
+        /**
+         Deactivate an Event Hook
+         
+         - parameter eventHookId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deactivateEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/eventHooks/{eventHookId}/lifecycle/deactivate".expanded(using: [
+                        "eventHookId": eventHookId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -62,6 +111,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          */
         @discardableResult
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func deleteEventHook(eventHookId: String) async throws -> OktaResponse<Empty> {
             try await send(try request(to: "/api/v1/eventHooks/{eventHookId}".expanded(using: [
                     "eventHookId": eventHookId
@@ -69,10 +119,27 @@ public extension OktaClient {
         }
 
         /**
+         Delete an Event Hook
+         
+         - parameter eventHookId: (path)  
+         - parameter completion: Completion block
+         */
+        public func deleteEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<Empty>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/eventHooks/{eventHookId}".expanded(using: [
+                        "eventHookId": eventHookId
+                    ]), method: "DELETE"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Retrieve an Event Hook
          
          - parameter eventHookId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func getEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try request(to: "/api/v1/eventHooks/{eventHookId}".expanded(using: [
                     "eventHookId": eventHookId
@@ -80,11 +147,41 @@ public extension OktaClient {
         }
 
         /**
+         Retrieve an Event Hook
+         
+         - parameter eventHookId: (path)  
+         - parameter completion: Completion block
+         */
+        public func getEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/eventHooks/{eventHookId}".expanded(using: [
+                        "eventHookId": eventHookId
+                    ]), method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          List all Event Hooks
          
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func listEventHooks() async throws -> OktaResponse<[EventHook]> {
             try await send(try request(to: "/api/v1/eventHooks", method: "GET"))
+        }
+
+        /**
+         List all Event Hooks
+         
+         - parameter completion: Completion block
+         */
+        public func listEventHooks(completion: @escaping (Result<OktaResponse<[EventHook]>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/eventHooks", method: "GET"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
         /**
@@ -93,6 +190,7 @@ public extension OktaClient {
          - parameter eventHookId: (path)  
          - parameter eventHook: (body)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func updateEventHook(eventHookId: String, eventHook: EventHook) async throws -> OktaResponse<EventHook> {
             try await send(try requestWithBody(to: "/api/v1/eventHooks/{eventHookId}".expanded(using: [
                     "eventHookId": eventHookId
@@ -100,14 +198,48 @@ public extension OktaClient {
         }
 
         /**
+         Replace an Event Hook
+         
+         - parameter eventHookId: (path)  
+         - parameter eventHook: (body)  
+         - parameter completion: Completion block
+         */
+        public func updateEventHook(eventHookId: String, eventHook: EventHook, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
+            do {
+                send(try requestWithBody(to: "/api/v1/eventHooks/{eventHookId}".expanded(using: [
+                        "eventHookId": eventHookId
+                    ]), method: "PUT", body: eventHook), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
+        }
+
+        /**
          Verify an Event Hook
          
          - parameter eventHookId: (path)  
          */
+        @available(iOS 13.0.0, tvOS 13.0.0, *)
         public func verifyEventHook(eventHookId: String) async throws -> OktaResponse<EventHook> {
             try await send(try request(to: "/api/v1/eventHooks/{eventHookId}/lifecycle/verify".expanded(using: [
                     "eventHookId": eventHookId
                 ]), method: "POST"))
+        }
+
+        /**
+         Verify an Event Hook
+         
+         - parameter eventHookId: (path)  
+         - parameter completion: Completion block
+         */
+        public func verifyEventHook(eventHookId: String, completion: @escaping (Result<OktaResponse<EventHook>, Error>) -> Void) {
+            do {
+                send(try request(to: "/api/v1/eventHooks/{eventHookId}/lifecycle/verify".expanded(using: [
+                        "eventHookId": eventHookId
+                    ]), method: "POST"), completion: completion)
+            } catch {
+                completion(.failure(error))
+            }
         }
 
     }

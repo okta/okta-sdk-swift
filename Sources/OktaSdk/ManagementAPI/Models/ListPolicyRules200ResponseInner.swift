@@ -16,42 +16,42 @@
 import Foundation
 import AnyCodable
 
-public struct IdentityProvider: Codable, Hashable {
+public struct ListPolicyRules200ResponseInner: Codable, Hashable {
 
     public var created: Date?
     public var id: String?
-    public var issuerMode: IssuerMode?
     public var lastUpdated: Date?
     public var name: String?
-    public var policy: IdentityProviderPolicy?
-    public var _protocol: ModelProtocol?
+    public var priority: Int?
     public var status: LifecycleStatus?
-    public var type: IdentityProviderType?
-    public var links: [String: AnyCodable]?
+    public var system: Bool? = false
+    public var type: PolicyRuleType?
+    public var actions: OktaSignOnPolicyRuleActions?
+    public var conditions: OktaSignOnPolicyRuleConditions?
 
-    public init(created: Date? = nil, id: String? = nil, issuerMode: IssuerMode? = nil, lastUpdated: Date? = nil, name: String? = nil, policy: IdentityProviderPolicy? = nil, _protocol: ModelProtocol? = nil, status: LifecycleStatus? = nil, type: IdentityProviderType? = nil, links: [String: AnyCodable]? = nil) {
+    public init(created: Date? = nil, id: String? = nil, lastUpdated: Date? = nil, name: String? = nil, priority: Int? = nil, status: LifecycleStatus? = nil, system: Bool? = false, type: PolicyRuleType? = nil, actions: OktaSignOnPolicyRuleActions? = nil, conditions: OktaSignOnPolicyRuleConditions? = nil) {
         self.created = created
         self.id = id
-        self.issuerMode = issuerMode
         self.lastUpdated = lastUpdated
         self.name = name
-        self.policy = policy
-        self._protocol = _protocol
+        self.priority = priority
         self.status = status
+        self.system = system
         self.type = type
-        self.links = links
+        self.actions = actions
+        self.conditions = conditions
     }
     public enum CodingKeys: String, CodingKey, CaseIterable {
         case created
         case id
-        case issuerMode
         case lastUpdated
         case name
-        case policy
-        case _protocol = "protocol"
+        case priority
         case status
+        case system
         case type
-        case links = "_links"
+        case actions
+        case conditions
     }
 
     // Encodable protocol methods
@@ -60,14 +60,14 @@ public struct IdentityProvider: Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(created, forKey: .created)
         try container.encodeIfPresent(id, forKey: .id)
-        try container.encodeIfPresent(issuerMode, forKey: .issuerMode)
         try container.encodeIfPresent(lastUpdated, forKey: .lastUpdated)
         try container.encodeIfPresent(name, forKey: .name)
-        try container.encodeIfPresent(policy, forKey: .policy)
-        try container.encodeIfPresent(_protocol, forKey: ._protocol)
+        try container.encodeIfPresent(priority, forKey: .priority)
         try container.encodeIfPresent(status, forKey: .status)
+        try container.encodeIfPresent(system, forKey: .system)
         try container.encodeIfPresent(type, forKey: .type)
-        try container.encodeIfPresent(links, forKey: .links)
+        try container.encodeIfPresent(actions, forKey: .actions)
+        try container.encodeIfPresent(conditions, forKey: .conditions)
     }
 
 
