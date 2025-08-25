@@ -13,7 +13,15 @@ jobs:
   setup:
     executor: apple-ci-arm-medium
     steps:
-      - checkout
+      - run:
+          name: Manual HTTPS checkout (avoid SSH)
+          command: |
+            git --version
+            rm -rf .git || true
+            git init .
+            git remote add origin https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git
+            git fetch --depth=1 origin $CIRCLE_SHA1
+            git checkout --force $CIRCLE_SHA1
       - persist_to_workspace:
           root: ~/project
           paths:
