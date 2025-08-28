@@ -13,7 +13,15 @@ jobs:
   setup:
     executor: apple-ci-arm-medium
     steps:
-      - checkout
+      - run:
+          name: Manual HTTPS checkout (avoid SSH)
+          command: |
+            git --version
+            rm -rf .git || true
+            git init .
+            git remote add origin https://github.com/okta/okta-sdk-swift.git
+            git fetch --depth=1 origin master
+            git checkout --force master
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -34,6 +42,7 @@ jobs:
       - general-platform-helpers/step-run-snyk-monitor:
           scan-all-projects: true
           skip-unresolved: false
+          run-on-non-main: true
           os: macos
 
 workflows:
@@ -41,25 +50,13 @@ workflows:
     jobs:
       - general-platform-helpers/job-semgrep-scan:
           name: semgrep-scan
-          filters:
-            branches:
-              only:
-                - master
           context:
             - static-analysis
   security-scan:
     jobs:
-      - setup:
-          filters:
-            branches:
-              only:
-                - master
+      - setup
       - snyk-scan:
           name: execute-snyk
-          filters:
-            branches:
-              only:
-                - master
           requires:
             - setup
           context:
