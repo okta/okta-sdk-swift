@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   general-platform-helpers: okta/general-platform-helpers@1.9
+  platform-helpers: okta/platform-helpers@1
 
 executors:
   apple-ci-arm-medium:
@@ -13,15 +14,7 @@ jobs:
   setup:
     executor: apple-ci-arm-medium
     steps:
-      - run:
-          name: Manual HTTPS checkout (avoid SSH)
-          command: |
-            git --version
-            rm -rf .git || true
-            git init .
-            git remote add origin https://github.com/okta/okta-sdk-swift.git
-            git fetch --depth=1 origin master
-            git checkout --force master
+      - checkout
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -48,7 +41,7 @@ jobs:
 workflows:
   semgrep:
     jobs:
-      - general-platform-helpers/job-semgrep-scan:
+      - platform-helpers/job-semgrep-scan:
           name: semgrep-scan
           context:
             - static-analysis
