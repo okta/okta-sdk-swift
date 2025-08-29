@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   general-platform-helpers: okta/general-platform-helpers@1.9
+  platform-helpers: okta/platform-helpers@1
 
 executors:
   apple-ci-arm-medium:
@@ -34,32 +35,21 @@ jobs:
       - general-platform-helpers/step-run-snyk-monitor:
           scan-all-projects: true
           skip-unresolved: false
+          run-on-non-main: true
           os: macos
 
 workflows:
   semgrep:
     jobs:
-      - general-platform-helpers/job-semgrep-scan:
+      - platform-helpers/job-semgrep-scan:
           name: semgrep-scan
-          filters:
-            branches:
-              only:
-                - master
           context:
             - static-analysis
   security-scan:
     jobs:
-      - setup:
-          filters:
-            branches:
-              only:
-                - master
+      - setup
       - snyk-scan:
           name: execute-snyk
-          filters:
-            branches:
-              only:
-                - master
           requires:
             - setup
           context:
