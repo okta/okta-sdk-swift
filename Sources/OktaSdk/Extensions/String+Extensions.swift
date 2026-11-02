@@ -48,10 +48,24 @@ private let systemVersion: String = {
     #endif
 }()
 
+private let pathSegmentAllowed = CharacterSet.urlPathAllowed.subtracting(CharacterSet(charactersIn: "/"))
+
 extension String {
+    /// Percent-encodes the string so it is treated as a single, literal URL path segment.
+    ///
+    /// Path delimiters (`/`) are encoded, and dot-segments (`.` and `..`) are encoded so they cannot
+    /// be used to traverse to a different endpoint during URL resolution.
+    var percentEncodedPathSegment: String {
+        if self == "." || self == ".." {
+            return replacingOccurrences(of: ".", with: "%2E")
+        }
+        return addingPercentEncoding(withAllowedCharacters: pathSegmentAllowed) ?? ""
+    }
+
     func expanded(using: [String: OktaClientArgument]) -> String {
         using.reduce(self) { (string, argument) in
-            string.replacingOccurrences(of: "{\(argument.key)}", with: argument.value.stringValue)
+            string.replacingOccurrences(of: "{\(argument.key)}",
+                                        with: argument.value.stringValue.percentEncodedPathSegment)
         }
     }
     
