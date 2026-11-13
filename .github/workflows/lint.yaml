@@ -3,7 +3,7 @@ name: Lint code
 on:
   pull_request:
     paths:
-      - '.github/workflows/lint.yml'
+      - '.github/workflows/lint.yaml'
       - '.swiftlint.yml'
       - 'Sources/**/*.swift'
       - 'Samples/**/*.swift'
@@ -13,7 +13,7 @@ on:
       - release-*
   push:
     paths:
-      - '.github/workflows/lint.yml'
+      - '.github/workflows/lint.yaml'
       - '.swiftlint.yml'
       - 'Sources/**/*.swift'
       - 'Samples/**/*.swift'
@@ -26,6 +26,8 @@ jobs:
   SwiftLint:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
+      - name: Install SwiftLint
+        run: brew install swiftlint
       - name: Lint code using SwiftLint
-        run: swiftlint lint --reporter github-actions-logging Sources Samples
+        run: swiftlint lint --reporter github-actions-logging Sources

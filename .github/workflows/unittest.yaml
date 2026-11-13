@@ -3,7 +3,7 @@ name: OktaSdk
 on:
   push:
     paths:
-      - '.github/workflows/okta-sdk.yml'
+      - '.github/workflows/unittest.yaml'
       - 'Package.swift'
       - 'Sources/**/*.swift'
       - 'Tests/**/*.swift'
@@ -17,7 +17,7 @@ on:
       - dev-*
       - release-*
     paths:
-      - '.github/workflows/okta-sdk.yml'
+      - '.github/workflows/unittest.yaml'
       - 'Package.swift'
       - 'Sources/**/*.swift'
       - 'Tests/**/*.swift'
@@ -25,12 +25,12 @@ on:
 jobs:
   SwiftBuild:
     name: Swift Unit Tests
-    runs-on: macos-12
+    runs-on: macos-15
     timeout-minutes: 10
     steps:
     - name: Get swift version
       run: swift --version
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v4
     - name: Build
       run: swift build --build-tests
     - name: Test
