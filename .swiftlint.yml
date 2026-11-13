@@ -1,4 +1,4 @@
-whitelist_rules:
+only_rules:
   # Spacing
   - closing_brace
   - closure_spacing
@@ -40,7 +40,6 @@ whitelist_rules:
   - protocol_property_accessors_order
 
   # Lint
-  - anyobject_protocol
   - class_delegate_protocol
   - cyclomatic_complexity
 
@@ -104,11 +103,7 @@ file_header:
                   \/\/ See the License for the specific language governing permissions and limitations under the License\.
                   \/\/
 
-anyobject_protocol:
-  severity: error
 class_delegate_protocol:
-  severity: error
-cyclomatic_complexity:
   severity: error
 
 # Paths to ignore
