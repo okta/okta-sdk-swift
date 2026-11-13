@@ -16,7 +16,7 @@ import Foundation
 import FoundationNetworking
 #endif
 
-public let Version = "0.1.0"
+public let Version = "0.1.1"
 
 enum OktaClientError: Error {
     case invalidUrl
